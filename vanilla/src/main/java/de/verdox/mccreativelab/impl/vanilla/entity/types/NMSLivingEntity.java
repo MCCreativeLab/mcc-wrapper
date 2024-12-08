@@ -23,7 +23,7 @@ public class NMSLivingEntity<T extends LivingEntity> extends NMSEntity<T> implem
     }
 
     @Override
-    public MCCEntityMultiProperty<MCCEntityType, MCCLivingEntity> getUntargetableProperty() {
+    public MCCEntityMultiProperty<MCCEntityType<?>, MCCLivingEntity> getUntargetableProperty() {
         throw new OperationNotPossibleOnNMS();
     }
 

@@ -1,8 +1,6 @@
 package de.verdox.mccreativelab.wrapper.world.chunk;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
-import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -30,40 +28,56 @@ public interface MCCChunk extends MCCWrapped {
 
     default MCCBlockState getBlockDataAt(MCCLocation location) {
         checkIfLocationInChunk(location);
-        return getBlockDataAt(location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
+        return getBlockDataAtLocal(location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
     }
 
     default MCCBlockType getBlockTypeAt(MCCLocation location) {
         checkIfLocationInChunk(location);
-        return getBlockTypeAt(location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
+        return getBlockTypeAtLocal(location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
     }
 
     default void setBlock(@NotNull MCCBlockType mccBlockType, MCCLocation location) {
         checkIfLocationInChunk(location);
-        setBlock(mccBlockType, location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
+        setBlockLocal(mccBlockType, location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
     }
 
     default void setBlock(@NotNull MCCBlockState mccBlockState, MCCLocation location) {
         checkIfLocationInChunk(location);
-        setBlock(mccBlockState, location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
+        setBlockLocal(mccBlockState, location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
     }
 
-    default MCCBlockType getBlockTypeAt(int localX, int localY, int localZ){
+    default MCCBlockType getBlockTypeAt(int globalX, int globalY, int globalZ) {
+        return getBlockTypeAtLocal(MCCLocation.toChunkBlockLocalX(globalX), MCCLocation.toChunkBlockLocalY(globalY), MCCLocation.toChunkBlockLocalZ(globalZ));
+    }
+
+    default MCCBlockType getBlockTypeAtLocal(int localX, int localY, int localZ) {
         MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localY);
         return chunkSection.getBlockState(localX, localY, localZ).getBlockType();
     }
 
-    default void setBlock(@NotNull MCCBlockType mccBlockType, int localX, int localY, int localZ){
+    default void setBlock(@NotNull MCCBlockType mccBlockType, int globalX, int globalY, int globalZ) {
+        setBlockLocal(mccBlockType, MCCLocation.toChunkBlockLocalX(globalX), MCCLocation.toChunkBlockLocalY(globalY), MCCLocation.toChunkBlockLocalZ(globalZ));
+    }
+
+    default void setBlockLocal(@NotNull MCCBlockType mccBlockType, int localX, int localY, int localZ) {
         MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localY);
         chunkSection.setBlockState(localX, localY, localZ, mccBlockType.getDefaultState());
     }
 
-    default void setBlock(@NotNull MCCBlockState mccBlockState, int localX, int localY, int localZ){
+    default void setBlock(@NotNull MCCBlockState mccBlockState, int globalX, int globalY, int globalZ) {
+        setBlockLocal(mccBlockState, MCCLocation.toChunkBlockLocalX(globalX), MCCLocation.toChunkBlockLocalY(globalY), MCCLocation.toChunkBlockLocalZ(globalZ));
+    }
+
+    default void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int localY, int localZ) {
         MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localY);
         chunkSection.setBlockState(localX, localY, localZ, mccBlockState);
     }
 
-    default MCCBlockState getBlockDataAt(int localX, int localY, int localZ) {
+    default MCCBlockState getBlockDataAt(int globalX, int globalY, int globalZ) {
+        return getBlockDataAtLocal(MCCLocation.toChunkBlockLocalX(globalX), MCCLocation.toChunkBlockLocalY(globalY), MCCLocation.toChunkBlockLocalZ(globalZ));
+    }
+
+    default MCCBlockState getBlockDataAtLocal(int localX, int localY, int localZ) {
         MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localY);
         return chunkSection.getBlockState(localX, localY, localZ);
     }
@@ -77,8 +91,12 @@ public interface MCCChunk extends MCCWrapped {
     MCCChunkSection getChunkSectionByGlobalYCoordinate(int blockHeight);
 
     default void checkIfLocationInChunk(MCCLocation location) {
-        if (!location.world().equals(getWorld()) || location.getChunkX() != getX() || location.getChunkZ() != getZ()) {
-            throw new IllegalArgumentException("The provided location is not in this chunk");
+
+        if (!location.world().equals(getWorld())) {
+            throw new IllegalArgumentException("The provided location is not in this world");
+        }
+        if (location.getChunkX() != getX() || location.getChunkZ() != getZ()) {
+            throw new IllegalArgumentException("The provided location " + location + " (" + location.getChunkX() + ", " + location.getChunkZ() + ") is not in this chunk (" + getX() + "," + getZ() + ")");
         }
     }
 }

@@ -19,8 +19,8 @@ import de.verdox.mccreativelab.wrapper.item.components.MCCBlockItemStateProperti
 import de.verdox.mccreativelab.wrapper.item.components.MCCSuspiciousStewEffects;
 import de.verdox.mccreativelab.wrapper.item.components.MCCResolvableProfile;
 import de.verdox.mccreativelab.wrapper.item.components.MCCJukeboxPlayable;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.item.components.MCCArmorTrim;
 import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
 import de.verdox.mccreativelab.wrapper.types.MCCInstrument;

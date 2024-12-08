@@ -23,15 +23,13 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
 
     default CompletableFuture<MCCBlockState> getBlockDataAt(int x, int y, int z) {
         return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
-            mccChunk.getBlockDataAt(x, y, z);
-            return null;
+            return mccChunk.getBlockDataAt(x, y, z);
         });
     }
 
     default CompletableFuture<MCCBlockType> getBlockTypeAt(int x, int y, int z) {
         return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
-            mccChunk.getBlockTypeAt(x, y, z);
-            return null;
+            return mccChunk.getBlockTypeAt(x, y, z);
         });
     }
 
@@ -53,14 +51,14 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
         if (!location.world().equals(this)) {
             throw new IllegalArgumentException("The provided location does not belong to this world.");
         }
-        return getBlockTypeAt((int) location.x(), (int) location.y(), (int) location.z());
+        return getBlockTypeAt(location.blockX(), location.blockY(), location.blockZ());
     }
 
     default CompletableFuture<MCCBlock> getBlockAt(MCCLocation location) {
         if (!location.world().equals(this)) {
             throw new IllegalArgumentException("The provided location does not belong to this world.");
         }
-        return getBlockAt((int) location.x(), (int) location.y(), (int) location.z());
+        return getBlockAt(location.blockX(), location.blockY(), location.blockZ());
     }
 
     /**

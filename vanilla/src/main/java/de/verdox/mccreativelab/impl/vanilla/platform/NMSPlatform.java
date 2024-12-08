@@ -63,6 +63,7 @@ import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -187,19 +188,39 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public void setServerResourcePack(@NotNull MCCResourcePack resourcePack) {
         String downloadUrl = getServerProperties().read(MCCPropertyKey.RESOURCE_PACK);
-        UUID packID = UUID.fromString(getServerProperties().read(MCCPropertyKey.RESOURCE_PACK_ID));
+        String packIdString = getServerProperties().read(MCCPropertyKey.RESOURCE_PACK_ID);
+
+        LOGGER.info("Found server resource pack settings:");
+        LOGGER.info("Download url: " + downloadUrl);
+
+        UUID packID = null;
+        try {
+            packID = UUID.fromString(packIdString);
+            LOGGER.info("Pack id: " + packID);
+        } catch (Throwable e) {
+            LOGGER.warning("The resource pack id " + packIdString + " is not a valid uuid.");
+        }
+
+
 
         if (resourcePack.getUUID().equals(packID) && resourcePack.url().equals(downloadUrl)) {
             return;
         }
-        Component component = conversionService.unwrap(resourcePack.prompt(), new TypeToken<>() {});
+        Component component = conversionService.unwrap(resourcePack.prompt() != null ? resourcePack.prompt() : net.kyori.adventure.text.Component.empty());
 
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK, resourcePack.url());
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK_ID, resourcePack.getUUID().toString());
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK_PROMPT, component.getString());
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK_SHA1, resourcePack.hash());
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK_REQUIRE, resourcePack.isRequired());
-        getServerProperties().saveAction();
+        LOGGER.info("Restarting the platform to write the resource pack settings to the server.properties file.");
+        LOGGER.info(MCCPropertyKey.RESOURCE_PACK.id() + " = " + resourcePack.url());
+        LOGGER.info(MCCPropertyKey.RESOURCE_PACK_ID.id() + " = " + resourcePack.getUUID());
+        LOGGER.info(MCCPropertyKey.RESOURCE_PACK_PROMPT.id() + " = " + component.getString());
+        LOGGER.info(MCCPropertyKey.RESOURCE_PACK_SHA1.id() + " = " + resourcePack.hash());
+        LOGGER.info(MCCPropertyKey.RESOURCE_PACK_REQUIRE.id() + " = " + resourcePack.isRequired());
+        LOGGER.info("...");
+        getServerProperties().saveToFile();
         shutdown();
     }
 
@@ -224,7 +245,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerPlatformType(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
     }
 
-    private void registerContainerTypes(){
+    private void registerContainerTypes() {
         conversionService.registerPlatformType(MCCPlayerInventory.class, NMSPlayerInventory.CONVERTER);
     }
 

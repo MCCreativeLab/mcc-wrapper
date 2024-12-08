@@ -15,11 +15,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * The main entrance point for the MCC-Wrapper Library.
  */
 public interface MCCPlatform {
+    Logger LOGGER = Logger.getLogger(MCCPlatform.class.getSimpleName());
+
     /**
      * The respective server software implements this interface and sets the singleton accordingly
      */

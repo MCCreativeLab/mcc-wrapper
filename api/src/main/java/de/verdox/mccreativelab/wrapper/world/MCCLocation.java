@@ -10,6 +10,7 @@ import java.util.concurrent.CompletableFuture;
 public record MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) implements MCCWrapped {
 
     public static final int CHUNK_X_LENGTH = 16;
+    public static final int SECTION_Y_LENGTH = 16;
     public static final int CHUNK_Z_LENGTH = 16;
 
     public MCCLocation(MCCWorld world, double x, double y, double z) {
@@ -53,16 +54,28 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return world().getBlockAt(this).getNow(null);
     }
 
+    public static int toChunkBlockLocalX(int globalX){
+        return Math.floorMod(globalX, CHUNK_X_LENGTH);
+    }
+
     public int toChunkBlockLocalX() {
-        return Math.floorMod(blockX(), CHUNK_X_LENGTH);
+        return toChunkBlockLocalX(blockX());
+    }
+
+    public static int toChunkBlockLocalY(int globalY){
+        return Math.floorMod(globalY, SECTION_Y_LENGTH);
     }
 
     public int toChunkBlockLocalY() {
-        return blockY();
+        return toChunkBlockLocalY(blockY());
+    }
+
+    public static int toChunkBlockLocalZ(int globalZ){
+        return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
     }
 
     public int toChunkBlockLocalZ() {
-        return Math.floorMod(blockZ(), CHUNK_Z_LENGTH);
+        return toChunkBlockLocalZ(blockZ());
     }
 
     public int getChunkX() {
@@ -74,11 +87,11 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
     }
 
     public static int calculateChunkX(int globalX) {
-        return globalX / 16;
+        return globalX >> 4;
     }
 
     public static int calculateChunkZ(int globalZ) {
-        return globalZ / 16;
+        return globalZ >> 4;
     }
 
     public int blockX() {

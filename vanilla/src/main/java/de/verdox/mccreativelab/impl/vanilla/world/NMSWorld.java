@@ -24,6 +24,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,7 +64,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
                     getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, net.minecraft.world.level.block.Block.getId(nmsBlockState));
                 }
             }
-            if (dropExperience){
+            if (dropExperience) {
                 //TODO
                 //block.popExperience(this.world.getMinecraftWorld(), this.position, block.getExpDrop(iblockdata, this.world.getMinecraftWorld(), this.position, nmsItem, true));
             }
@@ -148,7 +149,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(MCCLocation location) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(new BlockPos(location.blockX(), location.blockY(), location.blockZ())));
+        return conversionService.wrap(handle.getChunkIfLoadedImmediately(location.getChunkX(), location.getChunkZ()));
     }
 
     @Override
@@ -186,9 +187,9 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()
-                .withDynamic(net.kyori.adventure.identity.Identity.NAME, this::getName)
-                .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
-                .build();
+                    .withDynamic(net.kyori.adventure.identity.Identity.NAME, this::getName)
+                    .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
+                    .build();
         }
 
         return this.adventurePointer;

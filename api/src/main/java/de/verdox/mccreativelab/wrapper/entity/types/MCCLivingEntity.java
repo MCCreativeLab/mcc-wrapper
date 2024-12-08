@@ -20,7 +20,7 @@ public interface MCCLivingEntity extends MCCEntity {
      *
      * @return the targetable property
      */
-    MCCEntityMultiProperty<MCCEntityType, MCCLivingEntity> getUntargetableProperty();
+    MCCEntityMultiProperty<MCCEntityType<?>, MCCLivingEntity> getUntargetableProperty();
 
     /**
      * Represents the ability of a living entity to pickup items

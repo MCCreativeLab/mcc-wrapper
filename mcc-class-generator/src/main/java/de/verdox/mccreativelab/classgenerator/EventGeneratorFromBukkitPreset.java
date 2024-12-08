@@ -80,7 +80,7 @@ public class EventGeneratorFromBukkitPreset extends AbstractClassGenerator {
         String packageFolder = bukkitEventClass.getPackageName().replace(".", "/");
         String fileName = bukkitEventClass.getSimpleName();
 
-        Path sourceFileOfEvent = Path.of("../../mccreativelab-api/src/main/java/" + packageFolder + "/" + fileName + ".java");
+        Path sourceFileOfEvent = Path.of("../../../../MCCreativeLab/mccreativelab-api/src/main/java/" + packageFolder + "/" + fileName + ".java");
         if (!sourceFileOfEvent.toFile().exists()) {
             LOGGER.info("Could not find class file of " + bukkitEventClass.getSimpleName());
             return null;

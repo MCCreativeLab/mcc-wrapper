@@ -116,7 +116,7 @@ public class ClassGenerator {
             createItemComponentConverters();
             generateMenuTypesClass();
             generateTypedKeys();
-            //generateEventClasses();
+            generateEventClasses();
             //converterGenerator.buildConverterInterface(GENERATION_DIR);
             //converterGenerator.buildWrapperAdapters(GENERATION_DIR);
             MCCConverterGenerator.createGeneratedConvertersClass(VANILLA_GENERATION_DIR);
