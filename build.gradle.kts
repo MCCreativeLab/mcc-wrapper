@@ -73,29 +73,3 @@ java {
 tasks.test {
     useJUnitPlatform()
 }
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            pom {
-                groupId = "de.verdox.mccreativelab"
-                artifactId = "mcc-wrapper"
-                version = "1.0.0-SNAPSHOT"
-                from(components["java"])
-                licenses {
-                    license {
-                        name = "GNU GENERAL PUBLIC LICENSE Version 3"
-                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "verdox"
-                        name = "Lukas Jonsson"
-                        email = "mail.ysp@web.de"
-                    }
-                }
-            }
-        }
-    }
-}
