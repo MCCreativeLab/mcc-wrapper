@@ -30,7 +30,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     private Class<R> getNativeTypeOfRegistry() {
         if (handle.getAny().isEmpty())
             return null;
-        return (Class<R>) handle.getAny().get().getClass();
+        return (Class<R>) handle.getAny().get().value().getClass();
     }
 
     private R unwrap(T value) {
