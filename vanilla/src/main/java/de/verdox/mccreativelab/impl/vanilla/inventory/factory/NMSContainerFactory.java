@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Function4;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.impl.vanilla.inventory.factory.creator.AbstractLocationBasedMenuCreatorInstance;
@@ -41,9 +42,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NMSContainerFactory implements MCCContainerFactory {
-    private final Map<MCCMenuType<?>, Function<MCCLocation, LocationBasedMenuCreatorInstance<MCCLocatedContainerMenu<?, ?>>>> containerBasedCache = new HashMap<>();
-    private final Map<MCCMenuType<?>, Function<MCCContainer, SharedMenuCreatorInstance<MCCContainer, MCCSharedContainerMenu<?, ?>>>> sharedBasedCache = new HashMap<>();
-    private final Map<MCCMenuType<?>, Supplier<MenuCreatorInstance<MCCPrivateContainerMenu<?, ?>>>> privateContainerCache = new HashMap<>();
+    private final Map<MCCMenuType<?>, Function<MCCLocation, ? extends LocationBasedMenuCreatorInstance<? extends MCCLocatedContainerMenu<?, ?>>>> containerBasedCache = new HashMap<>();
+    private final Map<MCCMenuType<?>, Function<MCCContainer, ? extends SharedMenuCreatorInstance<MCCContainer, ? extends MCCSharedContainerMenu<?, ?>>>> sharedBasedCache = new HashMap<>();
+    private final Map<MCCMenuType<?>, Supplier<? extends MenuCreatorInstance<? extends MCCPrivateContainerMenu<?, ?>>>> privateContainerCache = new HashMap<>();
     private final Map<MCCMenuType<?>, Supplier<? extends MenuCreatorInstance<? extends MCCContainerMenu<?, ?>>>> standardCache = new HashMap<>();
 
     public NMSContainerFactory() {
@@ -53,13 +54,13 @@ public class NMSContainerFactory implements MCCContainerFactory {
     }
 
     public <F extends MCCPrivateContainerMenu<?, ?>> void registerPrivate(MCCMenuType<F> menuType, Class<F> mccType, BiFunction<Integer, Inventory, AbstractContainerMenu> menuCreator) {
-        Supplier<MenuCreatorInstance<MCCPrivateContainerMenu<?, ?>>> supplier = () -> new AbstractMenuCreatorInstance<>() {
+        Supplier<MenuCreatorInstance<F>> supplier = () -> new AbstractMenuCreatorInstance<>() {
             @Override
-            public MCCPrivateContainerMenu<?, ?> createMenuForPlayer(MCCPlayer player, Component title) {
+            public F createMenuForPlayer(MCCPlayer player, Component title) {
                 ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
+                ServerPlayer serverPlayer = conversionService.unwrap(player, new TypeToken<>() {});
 
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> menuCreator.apply(syncId, inventory));
+                return openViaNMSMenuProvider(TypeToken.of(mccType), serverPlayer, title, (syncId, inventory, player1) -> menuCreator.apply(syncId, inventory));
             }
         };
         privateContainerCache.put(menuType, supplier);
@@ -67,38 +68,38 @@ public class NMSContainerFactory implements MCCContainerFactory {
     }
 
     public <F extends MCCLocatedContainerMenu<?, ?>> void registerLocationBased(MCCMenuType<F> menuType, Class<F> mccType, TriFunction<Integer, Inventory, ContainerLevelAccess, AbstractContainerMenu> menuCreator) {
-        containerBasedCache.put(menuType, AbstractLocationBasedMenuCreatorInstance.createWithoutDelegate(menuCreator));
-        standardCache.put(menuType, () -> AbstractLocationBasedMenuCreatorInstance.createWithoutDelegate(menuCreator).apply(null));
+        containerBasedCache.put(menuType, AbstractLocationBasedMenuCreatorInstance.createWithoutDelegate(TypeToken.of(mccType), menuCreator));
+        standardCache.put(menuType, () -> AbstractLocationBasedMenuCreatorInstance.createWithoutDelegate(TypeToken.of(mccType), menuCreator).apply(null));
     }
 
     public <F extends MCCLocatedContainerMenu<?, ?>> void registerLocationBased(MCCMenuType<F> menuType, Class<F> mccType, int containerDataSize, Function4<Integer, Inventory, ContainerLevelAccess, ContainerData, AbstractContainerMenu> menuCreator) {
-        containerBasedCache.put(menuType, AbstractLocationBasedMenuCreatorInstance.createWithDelegate(containerDataSize, menuCreator));
-        standardCache.put(menuType, () -> AbstractLocationBasedMenuCreatorInstance.createWithDelegate(containerDataSize, menuCreator).apply(null));
+        containerBasedCache.put(menuType, AbstractLocationBasedMenuCreatorInstance.createWithDelegate(TypeToken.of(mccType), containerDataSize, menuCreator));
+        standardCache.put(menuType, () -> AbstractLocationBasedMenuCreatorInstance.createWithDelegate(TypeToken.of(mccType), containerDataSize, menuCreator).apply(null));
     }
 
-    public <N extends Container, F extends MCCSharedContainerMenu<?, ?>> void registerShared(MCCMenuType<F> menuType, Class<F> mccType, int containerSize, TriFunction<Integer, Inventory, N, AbstractContainerMenu> menuCreator) {
-        sharedBasedCache.put(menuType, AbstractSharedBasedMenuCreatorInstance.createWithoutDelegate(containerSize, menuCreator));
-        standardCache.put(menuType, () -> AbstractSharedBasedMenuCreatorInstance.createWithoutDelegate(containerSize, menuCreator).apply(createSimpleContainer(containerSize)));
+    public <N extends Container, F extends MCCSharedContainerMenu<?, ?>> void registerShared(MCCMenuType<F> menuType, Class<F> mccType, TypeToken<N> containerType, int containerSize, TriFunction<Integer, Inventory, N, AbstractContainerMenu> menuCreator) {
+        sharedBasedCache.put(menuType, AbstractSharedBasedMenuCreatorInstance.createWithoutDelegate(TypeToken.of(mccType), containerType, containerSize, menuCreator));
+        standardCache.put(menuType, () -> AbstractSharedBasedMenuCreatorInstance.createWithoutDelegate(TypeToken.of(mccType), containerType, containerSize, menuCreator).apply(createSimpleContainer(containerSize)));
     }
 
-    public <N extends Container, F extends MCCSharedContainerMenu<?, ?>> void registerShared(MCCMenuType<F> menuType, Class<F> mccType, int containerSize, int containerDataSize, Function4<Integer, Inventory, N, ContainerData, AbstractContainerMenu> menuCreator) {
-        sharedBasedCache.put(menuType, AbstractSharedBasedMenuCreatorInstance.createWithDelegate(containerSize, containerDataSize, menuCreator));
-        standardCache.put(menuType, () -> AbstractSharedBasedMenuCreatorInstance.createWithDelegate(containerSize, containerDataSize, menuCreator).apply(createSimpleContainer(containerSize)));
+    public <N extends Container, F extends MCCSharedContainerMenu<?, ?>> void registerShared(MCCMenuType<F> menuType, Class<F> mccType, TypeToken<N> containerType, int containerSize, int containerDataSize, Function4<Integer, Inventory, N, ContainerData, AbstractContainerMenu> menuCreator) {
+        sharedBasedCache.put(menuType, AbstractSharedBasedMenuCreatorInstance.createWithDelegate(TypeToken.of(mccType), containerType, containerSize, containerDataSize, menuCreator));
+        standardCache.put(menuType, () -> AbstractSharedBasedMenuCreatorInstance.createWithDelegate(TypeToken.of(mccType), containerType, containerSize, containerDataSize, menuCreator).apply(createSimpleContainer(containerSize)));
     }
 
     @Override
     public MCCContainer createSimpleContainer(@Positive int size) {
-        return MCCPlatform.getInstance().getConversionService().wrap(new SimpleContainer(size));
+        return MCCPlatform.getInstance().getConversionService().wrap(new SimpleContainer(size), new TypeToken<>() {});
     }
 
 
     @Override
-    public <F extends MCCLocatedContainerMenu<?, ?>> LocationBasedMenuCreatorInstance<F> createLocated(MCCMenuType<F> menuType,@NotNull MCCLocation location) {
+    public <F extends MCCLocatedContainerMenu<?, ?>> LocationBasedMenuCreatorInstance<F> createLocated(MCCMenuType<F> menuType, @NotNull MCCLocation location) {
         return (LocationBasedMenuCreatorInstance<F>) containerBasedCache.get(menuType).apply(location);
     }
 
     @Override
-    public <C extends MCCContainer, F extends MCCSharedContainerMenu<?, ?>> SharedMenuCreatorInstance<C, F> createShared(MCCMenuType<F> menuType,@NotNull C container) {
+    public <C extends MCCContainer, F extends MCCSharedContainerMenu<?, ?>> SharedMenuCreatorInstance<C, F> createShared(MCCMenuType<F> menuType, @NotNull C container) {
         return (SharedMenuCreatorInstance<C, F>) sharedBasedCache.get(menuType).apply(container);
     }
 
@@ -125,22 +126,22 @@ public class NMSContainerFactory implements MCCContainerFactory {
     }
 
     public void initShared() {
-        registerShared(MCCMenuTypes.GENERIC_3x3, MCCDispenserContainerMenu.class, 9, CustomDispenserMenu::new);
+        registerShared(MCCMenuTypes.GENERIC_3x3, MCCDispenserContainerMenu.class, new TypeToken<>() {}, 9, CustomDispenserMenu::new);
 
-        registerShared(MCCMenuTypes.BLAST_FURNACE, MCCFurnaceContainerMenu.class, 3, 4, CustomBlastFurnaceMenu::new);
-        registerShared(MCCMenuTypes.BREWING_STAND, MCCBrewingStandContainerMenu.class, 5, 3, CustomBrewingStandMenu::new);
-        registerShared(MCCMenuTypes.FURNACE, MCCFurnaceContainerMenu.class, 3, 4, CustomFurnaceMenu::new);
-        registerShared(MCCMenuTypes.HOPPER, MCCHopperContainerMenu.class, 5, CustomHopperMenu::new);
-        registerShared(MCCMenuTypes.LECTERN, MCCLecternContainerMenu.class, 1, 1, CustomLecternMenu::new);
-        registerShared(MCCMenuTypes.SHULKER_BOX, MCCShulkerContainerMenu.class, 27, CustomShulkerBoxMenu::new);
-        registerShared(MCCMenuTypes.SMOKER, MCCFurnaceContainerMenu.class, 3, 4, CustomSmokerMenu::new);
+        registerShared(MCCMenuTypes.BLAST_FURNACE, MCCFurnaceContainerMenu.class, new TypeToken<>() {}, 3, 4, CustomBlastFurnaceMenu::new);
+        registerShared(MCCMenuTypes.BREWING_STAND, MCCBrewingStandContainerMenu.class, new TypeToken<>() {}, 5, 3, CustomBrewingStandMenu::new);
+        registerShared(MCCMenuTypes.FURNACE, MCCFurnaceContainerMenu.class, new TypeToken<>() {}, 3, 4, CustomFurnaceMenu::new);
+        registerShared(MCCMenuTypes.HOPPER, MCCHopperContainerMenu.class, new TypeToken<>() {}, 5, CustomHopperMenu::new);
+        registerShared(MCCMenuTypes.LECTERN, MCCLecternContainerMenu.class, new TypeToken<>() {}, 1, 1, CustomLecternMenu::new);
+        registerShared(MCCMenuTypes.SHULKER_BOX, MCCShulkerContainerMenu.class, new TypeToken<>() {}, 27, CustomShulkerBoxMenu::new);
+        registerShared(MCCMenuTypes.SMOKER, MCCFurnaceContainerMenu.class, new TypeToken<>() {}, 3, 4, CustomSmokerMenu::new);
 
-        registerShared(MCCMenuTypes.GENERIC_9x1, MCCChestContainerMenu.class, 9, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 1));
-        registerShared(MCCMenuTypes.GENERIC_9x2, MCCChestContainerMenu.class, 18, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 2));
-        registerShared(MCCMenuTypes.GENERIC_9x3, MCCChestContainerMenu.class, 27, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 3));
-        registerShared(MCCMenuTypes.GENERIC_9x4, MCCChestContainerMenu.class, 36, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 4));
-        registerShared(MCCMenuTypes.GENERIC_9x5, MCCChestContainerMenu.class, 45, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 5));
-        registerShared(MCCMenuTypes.GENERIC_9x6, MCCChestContainerMenu.class, 54, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 6));
+        registerShared(MCCMenuTypes.GENERIC_9x1, MCCChestContainerMenu.class, new TypeToken<>() {}, 9, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 1));
+        registerShared(MCCMenuTypes.GENERIC_9x2, MCCChestContainerMenu.class, new TypeToken<>() {}, 18, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 2));
+        registerShared(MCCMenuTypes.GENERIC_9x3, MCCChestContainerMenu.class, new TypeToken<>() {}, 27, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 3));
+        registerShared(MCCMenuTypes.GENERIC_9x4, MCCChestContainerMenu.class, new TypeToken<>() {}, 36, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 4));
+        registerShared(MCCMenuTypes.GENERIC_9x5, MCCChestContainerMenu.class, new TypeToken<>() {}, 45, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 5));
+        registerShared(MCCMenuTypes.GENERIC_9x6, MCCChestContainerMenu.class, new TypeToken<>() {}, 54, (syncId, inventory, container) -> new CustomChestMenu(MenuType.GENERIC_9x1, syncId, inventory, container, 6));
     }
 
     public void initPrivate() {

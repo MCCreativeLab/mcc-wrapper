@@ -70,12 +70,12 @@ public abstract class NMSContainerMenu<T extends MCCContainerSource, A extends A
 
     @Override
     public void setTitle(Component component) {
-        handle.setTitle(conversionService.unwrap(component));
+        handle.setTitle(conversionService.unwrap(component, new TypeToken<>() {}));
     }
 
     @Override
     public Component getTitle() {
-        return conversionService.wrap(getTitle());
+        return conversionService.wrap(getTitle(), new TypeToken<>() {});
     }
 
     @Override

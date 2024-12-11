@@ -31,7 +31,7 @@ public class NMSFurnaceContainerMenu extends NMSContainerMenu<MCCBlockContainerS
     @Override
     public boolean canSmelt(@Nullable MCCItemStack stack) {
         ServerLevel mainWorld = MCCPlatform.getInstance().getConversionService().unwrap(MCCPlatform.getInstance().getWorlds().get(0), new TypeToken<ServerLevel>() {});
-        Container container = conversionService.unwrap(getContainer());
+        Container container = conversionService.unwrap(getContainer(), new TypeToken<>() {});
         return stack != null && !stack.getType().isEmpty() && mainWorld.getRecipeManager().getRecipeFor(((AbstractFurnaceBlockEntity) container).recipeType, new net.minecraft.world.item.crafting.SingleRecipeInput(MCCPlatform.getInstance().getConversionService().unwrap(stack, new TypeToken<>() {})), mainWorld).isPresent();
     }
 
@@ -69,6 +69,6 @@ public class NMSFurnaceContainerMenu extends NMSContainerMenu<MCCBlockContainerS
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("container"));
+        return conversionService.wrap(readContainerFromField("container"), new TypeToken<>() {});
     }
 }

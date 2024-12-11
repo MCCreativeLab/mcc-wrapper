@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
@@ -16,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,6 +31,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.entity.*;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -40,6 +43,7 @@ public class BukkitCraftConverters {
     public static void init(){}
 
     public static final BukkitCraftConverter<ServerLevel, CraftWorld, MCCWorld> WORLD = register(new TypeToken<>() {}, new TypeToken<>() {}, CraftWorld::getHandle, Level::getWorld);
+    public static final BukkitCraftConverter<ItemStack, CraftItemStack, MCCItemStack> ITEM_STACK = register(new TypeToken<>() {}, new TypeToken<>() {}, (craftItemStack) -> craftItemStack.handle, itemStack -> (CraftItemStack) itemStack.getBukkitStack());
     public static final BukkitCraftConverter<Entity, CraftEntity, MCCEntity> ENTITY = register(new TypeToken<>() {}, new TypeToken<>() {}, CraftEntity::getHandle, Entity::getBukkitEntity);
     public static final BukkitCraftConverter<ChunkAccess, CraftChunk, MCCChunk> CHUNK = register(new TypeToken<>() {}, new TypeToken<>() {}, craftChunk -> craftChunk.getHandle(ChunkStatus.FULL), chunkAccess -> new CraftChunk((LevelChunk) chunkAccess));
     public static final BukkitCraftConverter<BlockState, CraftBlockData, MCCBlockState> BLOCK_DATA = register(new TypeToken<>() {}, new TypeToken<>() {}, CraftBlockData::getState, CraftBlockData::createData);

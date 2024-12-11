@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory.creator;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Function4;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.annotations.MCCRequireVanillaElement;
@@ -16,6 +17,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +35,7 @@ public abstract class AbstractLocationBasedMenuCreatorInstance<F extends MCCLoca
         if (mccLocation == null) {
             this.containerLevelAccess = ContainerLevelAccess.NULL;
         } else {
-            this.containerLevelAccess = ContainerLevelAccess.create(converter().unwrap(mccLocation.world()), new BlockPos(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ()));
+            this.containerLevelAccess = ContainerLevelAccess.create(converter().unwrap(mccLocation.world(), new TypeToken<>() {}), new BlockPos(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ()));
         }
     }
 
@@ -42,26 +44,26 @@ public abstract class AbstractLocationBasedMenuCreatorInstance<F extends MCCLoca
         return mccLocation;
     }
 
-    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithoutDelegate(TriFunction<Integer, Inventory, ContainerLevelAccess, AbstractContainerMenu> nmsMenuCreator) {
+    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithoutDelegate(TypeToken<F> containerMenuType, TriFunction<Integer, Inventory, ContainerLevelAccess, AbstractContainerMenu> nmsMenuCreator) {
         return mccLocation -> new AbstractLocationBasedMenuCreatorInstance<>(mccLocation) {
             @Override
             public F createMenuForPlayer(MCCPlayer player, Component title) {
                 ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess));
+                ServerPlayer serverPlayer = conversionService.unwrap(player, new TypeToken<>() {});
+                return openViaNMSMenuProvider(containerMenuType, serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess));
             }
         };
     }
 
-    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithDelegate(int containerDataSize, Function4<Integer, Inventory, ContainerLevelAccess, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
+    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithDelegate(TypeToken<F> containerMenuType, int containerDataSize, Function4<Integer, Inventory, ContainerLevelAccess, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
         return mccLocation -> new AbstractLocationBasedMenuCreatorInstance<>(mccLocation) {
             private final ContainerData containerData = new SimpleContainerData(containerDataSize);
 
             @Override
             public F createMenuForPlayer(MCCPlayer player, Component title) {
                 ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess, containerData));
+                ServerPlayer serverPlayer = conversionService.unwrap(player, new TypeToken<>() {});
+                return openViaNMSMenuProvider(containerMenuType, serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess, containerData));
             }
         };
     }

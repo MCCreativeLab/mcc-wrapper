@@ -98,7 +98,7 @@ public class NMSMerchantContainerMenu extends NMSContainerMenu<MCCEntityContaine
 
     @Override
     public MCCContainer getContainerOfMerchant() {
-        return conversionService.wrap(readContainerDataFromField("tradeContainer"));
+        return conversionService.wrap(readContainerDataFromField("tradeContainer"), new TypeToken<>() {});
     }
 
     @Override
@@ -114,6 +114,6 @@ public class NMSMerchantContainerMenu extends NMSContainerMenu<MCCEntityContaine
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("trader"));
+        return conversionService.wrap(readContainerFromField("trader"), new TypeToken<>() {});
     }
 }

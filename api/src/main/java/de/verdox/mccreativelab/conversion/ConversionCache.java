@@ -14,6 +14,9 @@ public class ConversionCache<V> {
     private final TypeHierarchyMap<V> implToValue = new TypeHierarchyMap<>();
 
     public <A, T extends A, F> void put(Class<A> apiType, Class<T> implType, Class<F> nativeType, V value) {
+
+        
+
         apiToImpls.computeIfAbsent(apiType, aClass -> new LinkedList<>()).addFirst(implType);
         nativeToImpls.computeIfAbsent(nativeType, aClass -> new LinkedList<>()).addFirst(implType);
 

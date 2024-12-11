@@ -24,6 +24,8 @@ public class NMSReference<T> extends MCCHandle<Holder<?>> implements MCCReferenc
 
     @Override
     public T get() {
-        return (T) MCCPlatform.getInstance().getConversionService().wrap(handle.value());
+        //TODO Is this correct?
+        Class<T> apiType = MCCPlatform.getInstance().getConversionService().wrapClassType(handle.value().getClass());
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.value(), apiType);
     }
 }

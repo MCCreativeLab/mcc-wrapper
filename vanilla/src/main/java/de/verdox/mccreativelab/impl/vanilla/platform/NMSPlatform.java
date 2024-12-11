@@ -206,7 +206,7 @@ public class NMSPlatform implements MCCPlatform {
         if (resourcePack.getUUID().equals(packID) && resourcePack.url().equals(downloadUrl)) {
             return;
         }
-        Component component = conversionService.unwrap(resourcePack.prompt() != null ? resourcePack.prompt() : net.kyori.adventure.text.Component.empty());
+        Component component = conversionService.unwrap(resourcePack.prompt() != null ? resourcePack.prompt() : net.kyori.adventure.text.Component.empty(), new TypeToken<>() {});
 
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK, resourcePack.url());
         getServerProperties().write(MCCPropertyKey.RESOURCE_PACK_ID, resourcePack.getUUID().toString());

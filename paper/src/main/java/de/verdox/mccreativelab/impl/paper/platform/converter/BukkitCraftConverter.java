@@ -12,12 +12,14 @@ import java.util.function.Function;
  * @param <T> The MCC type to convert to
  */
 public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
+    private final TypeToken<F> nativeType;
     private final TypeToken<B> bukkitType;
     private final TypeToken<T> apiType;
     private final Function<B, F> getter;
     private final Function<F, B> wrapper;
 
-    public BukkitCraftConverter(TypeToken<B> bukkitType, TypeToken<T> apiType, Function<B, F> getter, Function<F,B> wrapper) {
+    public BukkitCraftConverter(TypeToken<F> nativeType, TypeToken<B> bukkitType, TypeToken<T> apiType, Function<B, F> getter, Function<F, B> wrapper) {
+        this.nativeType = nativeType;
         this.bukkitType = bukkitType;
         this.apiType = apiType;
         this.getter = getter;
@@ -27,17 +29,17 @@ public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
     @Override
     public ConversionResult<T> wrap(B nativeType) {
         F nmsObject = getter.apply(nativeType);
-        if(nmsObject == null){
+        if (nmsObject == null) {
             return notDone(null);
         }
-        return done((T) MCCPlatform.getInstance().getConversionService().wrap(nmsObject));
+        return done(MCCPlatform.getInstance().getConversionService().wrap(nmsObject, apiType));
     }
 
     @Override
     public ConversionResult<B> unwrap(T platformImplType) {
-        F unwrappedNativeType = (F) MCCPlatform.getInstance().getConversionService().unwrap(platformImplType);
+        F unwrappedNativeType = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType, nativeType);
         B bukkitType = wrapper.apply(unwrappedNativeType);
-        if(bukkitType == null){
+        if (bukkitType == null) {
             return notDone(null);
         }
         return done(bukkitType);

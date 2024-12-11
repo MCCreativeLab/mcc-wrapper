@@ -1,19 +1,25 @@
 package de.verdox.mccreativelab.conversion.converter;
 
-public interface MCCConverter<F, T> {
-    ConversionResult<T> wrap(F nativeType);
+import com.google.common.reflect.TypeToken;
 
-    ConversionResult<F> unwrap(T platformImplType);
+public interface MCCConverter<F, T> {
+    //ConversionResult<T> wrap(F nativeType);
+
+    ConversionResult<T> wrap(F nativeType, TypeToken<T> tokenToConvertTo);
+
+    //ConversionResult<F> unwrap(T platformImplType);
+
+    ConversionResult<F> unwrap(T platformImplType, TypeToken<F> tokenToConvertTo);
 
     Class<T> apiImplementationClass();
 
     Class<F> nativeMinecraftType();
 
-    default <V> ConversionResult<V> done(V result){
+    default <V> ConversionResult<V> done(V result) {
         return new ConversionResult<>(ResultType.DONE, result);
     }
 
-    default <V> ConversionResult<V> notDone(V result){
+    default <V> ConversionResult<V> notDone(V result) {
         return new ConversionResult<>(ResultType.NOT_DONE, result);
     }
 
@@ -22,9 +28,9 @@ public interface MCCConverter<F, T> {
 
     enum ResultType {
         DONE,
-        NOT_DONE
-        ;
-        public boolean isDone(){
+        NOT_DONE;
+
+        public boolean isDone() {
             return this.equals(DONE);
         }
     }

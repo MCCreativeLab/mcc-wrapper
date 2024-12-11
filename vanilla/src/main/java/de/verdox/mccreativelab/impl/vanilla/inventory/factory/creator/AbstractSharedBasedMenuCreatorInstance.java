@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory.creator;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Function4;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.annotations.MCCRequireVanillaElement;
@@ -34,7 +35,7 @@ public abstract class AbstractSharedBasedMenuCreatorInstance<C extends MCCContai
         return container;
     }
 
-    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithoutDelegate(int containerSize, TriFunction<Integer, Inventory, N, AbstractContainerMenu> nmsMenuCreator) {
+    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithoutDelegate(TypeToken<F> containerMenuType, TypeToken<N> containerType, int containerSize, TriFunction<Integer, Inventory, N, AbstractContainerMenu> nmsMenuCreator) {
         return mccContainer -> new AbstractSharedBasedMenuCreatorInstance<>(mccContainer) {
 
             @Override
@@ -45,14 +46,14 @@ public abstract class AbstractSharedBasedMenuCreatorInstance<C extends MCCContai
             @Override
             public F createMenuForPlayer(MCCPlayer player, Component title) {
                 ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
+                ServerPlayer serverPlayer = conversionService.unwrap(player, new TypeToken<>() {});
 
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container)));
+                return openViaNMSMenuProvider(containerMenuType, serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container, containerType)));
             }
         };
     }
 
-    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithDelegate(int containerSize, int containerDataSize, Function4<Integer, Inventory, N, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
+    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithDelegate(TypeToken<F> containerMenuType, TypeToken<N> containerType, int containerSize, int containerDataSize, Function4<Integer, Inventory, N, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
         return mccContainer -> new AbstractSharedBasedMenuCreatorInstance<>(mccContainer) {
             private final ContainerData containerData = new SimpleContainerData(containerDataSize);
 
@@ -64,9 +65,9 @@ public abstract class AbstractSharedBasedMenuCreatorInstance<C extends MCCContai
             @Override
             public F createMenuForPlayer(MCCPlayer player, Component title) {
                 ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
+                ServerPlayer serverPlayer = conversionService.unwrap(player, new TypeToken<>() {});
 
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container), containerData));
+                return openViaNMSMenuProvider(containerMenuType, serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container, containerType), containerData));
             }
         };
     }

@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
@@ -8,6 +9,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,12 +25,12 @@ public class NMSContainer extends MCCHandle<Container> implements MCCContainer {
 
     @Override
     public void setItem(int index, @Nullable MCCItemStack stack) {
-        handle.setItem(index, conversionService.unwrap(stack));
+        handle.setItem(index, conversionService.unwrap(stack, new TypeToken<>() {}));
     }
 
     @Override
     public MCCItemStack getItem(int index) {
-        return conversionService.wrap(handle.getItem(index));
+        return conversionService.wrap(handle.getItem(index), new TypeToken<>() {});
     }
 
     @Override

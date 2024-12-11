@@ -1,17 +1,18 @@
 package de.verdox.mccreativelab.impl.vanilla.platform.converter;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import net.kyori.adventure.key.Key;
 import net.minecraft.resources.ResourceLocation;
 
 public class ResourceLocationConverter implements MCCConverter<ResourceLocation, Key> {
     @Override
-    public ConversionResult<Key> wrap(ResourceLocation nativeType) {
+    public ConversionResult<Key> wrap(ResourceLocation nativeType, TypeToken<Key> tokenToConvertTo) {
         return done(Key.key(nativeType.getNamespace(), nativeType.getPath()));
     }
 
     @Override
-    public ConversionResult<ResourceLocation> unwrap(Key platformImplType) {
+    public ConversionResult<ResourceLocation> unwrap(Key platformImplType, TypeToken<ResourceLocation> tokenToConvertTo) {
         return done(ResourceLocation.tryBuild(platformImplType.namespace(), platformImplType.value()));
     }
 

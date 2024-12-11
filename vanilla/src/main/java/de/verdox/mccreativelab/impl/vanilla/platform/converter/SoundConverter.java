@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 
 public class SoundConverter implements MCCConverter<SoundEvent, Sound> {
     @Override
-    public ConversionResult<Sound> wrap(SoundEvent nativeType) {
+    public ConversionResult<Sound> wrap(SoundEvent nativeType, TypeToken<Sound> tokenToConvertTo) {
         Sound sound = Sound.sound()
             .source(Sound.Source.MASTER)
             .type(MCCPlatform.getInstance().getConversionService().wrap(nativeType.getLocation(), new TypeToken<Key>(){}))
@@ -22,7 +22,7 @@ public class SoundConverter implements MCCConverter<SoundEvent, Sound> {
     }
 
     @Override
-    public ConversionResult<SoundEvent> unwrap(Sound platformImplType) {
+    public ConversionResult<SoundEvent> unwrap(Sound platformImplType, TypeToken<SoundEvent> tokenToConvertTo) {
         Registry<SoundEvent> registry = (Registry<SoundEvent>) BuiltInRegistries.REGISTRY.get(Registries.SOUND_EVENT.location());
         SoundEvent soundEvent = registry.get(MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.name(), new TypeToken<ResourceLocation>(){}));
         return done(soundEvent);

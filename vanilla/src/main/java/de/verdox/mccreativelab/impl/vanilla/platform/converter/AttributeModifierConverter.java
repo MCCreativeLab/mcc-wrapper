@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class AttributeModifierConverter implements MCCConverter<AttributeModifier, MCCAttributeModifier> {
     @Override
-    public ConversionResult<MCCAttributeModifier> wrap(AttributeModifier nativeType) {
+    public ConversionResult<MCCAttributeModifier> wrap(AttributeModifier nativeType, TypeToken<MCCAttributeModifier> tokenToConvertTo) {
         Key key = MCCPlatform.getInstance().getConversionService().wrap(nativeType.id(), new TypeToken<>() {});
         double amount = nativeType.amount();
         MCCAttributeModifier.Operation operation = wrap(nativeType.operation());
@@ -18,7 +18,7 @@ public class AttributeModifierConverter implements MCCConverter<AttributeModifie
     }
 
     @Override
-    public ConversionResult<AttributeModifier> unwrap(MCCAttributeModifier platformImplType) {
+    public ConversionResult<AttributeModifier> unwrap(MCCAttributeModifier platformImplType, TypeToken<AttributeModifier> tokenToConvertTo) {
         ResourceLocation key = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.key(), new TypeToken<>() {});
         double amount = platformImplType.amount();
         AttributeModifier.Operation operation = unwrap(platformImplType.operation());

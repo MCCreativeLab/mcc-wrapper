@@ -85,7 +85,7 @@ import net.minecraft.world.item.component.BlockItemStateProperties;
 
 public class DataComponentTypeConverter implements MCCConverter<DataComponentType, NMSDataComponentType>  {
 
-	public MCCConverter.ConversionResult<NMSDataComponentType> wrap(DataComponentType nativeType){
+	public MCCConverter.ConversionResult<NMSDataComponentType> wrap(DataComponentType nativeType, TypeToken<NMSDataComponentType> tokenToConvertTo){
 		if(nativeType.equals(DataComponents.MAX_STACK_SIZE)) {
 			return done(new NMSDataComponentType<>(nativeType, new TypeToken<Integer>(){}, new TypeToken<Integer>(){}, null));
 		}
@@ -191,7 +191,7 @@ public class DataComponentTypeConverter implements MCCConverter<DataComponentTyp
 		return notDone(null);
 	}
 
-	public MCCConverter.ConversionResult<DataComponentType> unwrap(NMSDataComponentType platformImplType){
+	public MCCConverter.ConversionResult<DataComponentType> unwrap(NMSDataComponentType platformImplType, TypeToken<DataComponentType> tokenToConvertTo){
 		return done((DataComponentType) platformImplType.getHandle());
 	}
 

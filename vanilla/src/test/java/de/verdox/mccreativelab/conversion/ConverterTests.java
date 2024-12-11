@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.conversion;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
@@ -90,22 +91,8 @@ public class ConverterTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("testInputs")
-    void testWrapWithoutProvidingTheApiType(TestEntry<?, ?, ?> testEntry) {
-        var wrapped = MCCPlatform.getInstance().getConversionService().wrap(testEntry.nativeObject());
-        Assertions.assertEquals(testEntry.implObject(), wrapped, "Entry: " + testEntry);
-    }
-
-    @ParameterizedTest
-    @MethodSource("testInputs")
     void testSimpleUnWrap(TestEntry<?, ?, ?> testEntry) {
         var unwrapped = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.implObject(), testEntry.converter().nativeMinecraftType());
-        Assertions.assertEquals(testEntry.nativeObject(), unwrapped, "Entry: " + testEntry);
-    }
-
-    @ParameterizedTest
-    @MethodSource("testInputs")
-    void testSimpleUnWrapWithoutProvidingTheNativeType(TestEntry<?, ?, ?> testEntry) {
-        var unwrapped = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.implObject());
         Assertions.assertEquals(testEntry.nativeObject(), unwrapped, "Entry: " + testEntry);
     }
 
@@ -118,13 +105,6 @@ public class ConverterTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("testInputs")
-    void testWrapOptionalWithoutProvidingTheNativeType(TestEntry<?, ?, ?> testEntry) {
-        var wrapped = MCCPlatform.getInstance().getConversionService().wrap(Optional.of(testEntry.nativeObject()));
-        Assertions.assertEquals(Optional.of(testEntry.implObject()), wrapped, "Entry: " + testEntry);
-    }
-
-    @ParameterizedTest
-    @MethodSource("testInputs")
     void testUnwrapOptional(TestEntry<?, ?, ?> testEntry) {
         var wrapped = MCCPlatform.getInstance().getConversionService().unwrap(Optional.of(testEntry.implObject()), Optional.class);
         Assertions.assertEquals(Optional.of(testEntry.nativeObject()), wrapped, "Entry: " + testEntry);
@@ -132,15 +112,7 @@ public class ConverterTests extends TestBase {
 
     @ParameterizedTest
     @MethodSource("testInputs")
-    void testUnwrapOptionalWithoutProvidingTheNativeType(TestEntry<?, ?, ?> testEntry) {
-        var wrapped = MCCPlatform.getInstance().getConversionService().unwrap(Optional.of(testEntry.implObject()));
-        Assertions.assertEquals(Optional.of(testEntry.nativeObject()), wrapped, "Entry: " + testEntry);
-    }
-
-    @ParameterizedTest
-    @MethodSource("testInputs")
     void testWrapClassType(TestEntry<?, ?, ?> testEntry) {
-
         var wrapped = MCCPlatform.getInstance().getConversionService().wrapClassType(testEntry.nativeObject().getClass());
         Assertions.assertEquals(testEntry.apiType, wrapped, "Entry: " + testEntry);
     }
@@ -149,7 +121,7 @@ public class ConverterTests extends TestBase {
     public void findConverterForSpecificWhenOnlyInterfaceConverterIsKnown() {
         SimpleContainer simpleContainer = new SimpleContainer(3);
         Assertions.assertDoesNotThrow(() -> {
-            MCCContainer mccContainer = MCCPlatform.getInstance().getConversionService().wrap(simpleContainer);
+            MCCContainer mccContainer = MCCPlatform.getInstance().getConversionService().wrap(simpleContainer, new TypeToken<>() {});
         });
     }
 

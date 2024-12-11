@@ -9,9 +9,13 @@ import java.util.Set;
 public interface ConversionService {
     <A, T extends A, F> void registerPlatformType(Class<A> apiType, MCCConverter<F, T> converter);
 
-    <F, T> T wrap(F nativeObject);
+    //<F, T> T wrap(F nativeObject);
 
-    <F, T> F unwrap(T apiObject);
+    <F, T> T wrap(F nativeObject, TypeToken<T> apiTypeToConvertTo);
+
+    //<F, T> F unwrap(T apiObject);
+
+    <F, T> F unwrap(T apiObject, TypeToken<F> nativeTypeToConvertTo);
 
     /**
      * Returns the api type a native type would be wrapped to
@@ -29,20 +33,12 @@ public interface ConversionService {
 
     boolean isApiTypeKnown(Class<?> apiType);
 
-    default <F, T> T wrap(@Nullable F objectToWrap, TypeToken<T> apiTypeToConvertTo) {
-        return (T) wrap(objectToWrap);
-    }
-
     default <F, T> T wrap(@Nullable F objectToWrap, Class<T> apiTypeToConvertTo) {
-        return (T) wrap(objectToWrap);
-    }
-
-    default <F, T> F unwrap(@Nullable T objectToUnwrap, TypeToken<F> nativePlatformType) {
-        return (F) unwrap(objectToUnwrap);
+        return wrap(objectToWrap, TypeToken.of(apiTypeToConvertTo));
     }
 
     default <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
-        return (F) unwrap(objectToUnwrap);
+        return unwrap(objectToUnwrap, TypeToken.of(nativePlatformType));
     }
 
 

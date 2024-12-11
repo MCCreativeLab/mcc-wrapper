@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.TypeUtil;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 import java.util.Collection;
@@ -15,21 +17,22 @@ public class CollectionConverter <C extends Collection, T extends C> implements 
     }
 
     @Override
-    public ConversionResult<C> wrap(C nativeType) {
-
+    public ConversionResult<C> wrap(C nativeType, TypeToken<C> tokenToConvertTo) {
         C newCollection = constructor.get();
+        TypeToken<?> apiType = TypeUtil.extractGeneric(tokenToConvertTo, 0);
         for (Object o : nativeType) {
-            newCollection.add(MCCPlatform.getInstance().getConversionService().wrap(o));
+            newCollection.add(MCCPlatform.getInstance().getConversionService().wrap(o, apiType));
         }
 
         return done(newCollection);
     }
 
     @Override
-    public ConversionResult<C> unwrap(C platformImplType) {
+    public ConversionResult<C> unwrap(C platformImplType, TypeToken<C> tokenToConvertTo) {
         C newCollection = constructor.get();
+        TypeToken<?> nativeType = TypeUtil.extractGeneric(tokenToConvertTo, 0);
         for (Object o : platformImplType) {
-            newCollection.add(MCCPlatform.getInstance().getConversionService().unwrap(o));
+            newCollection.add(MCCPlatform.getInstance().getConversionService().unwrap(o, nativeType));
         }
         return done(newCollection);
     }

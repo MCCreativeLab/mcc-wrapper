@@ -18,16 +18,16 @@ public class PaperWorld extends NMSWorld {
 
     @Override
     public List<MCCPlayer> getPlayers() {
-        return conversionService.wrap(handle.getPlayers(serverPlayer -> serverPlayer.isRealPlayer).stream().toList());
+        return conversionService.wrap(handle.getPlayers(serverPlayer -> serverPlayer.isRealPlayer).stream().toList(), new TypeToken<>() {});
     }
 
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
-        return handle.getWorld().getChunkAtAsync(chunkX, chunkZ).thenApply(chunk -> conversionService.wrap(chunk));
+        return handle.getWorld().getChunkAtAsync(chunkX, chunkZ).thenApply(chunk -> conversionService.wrap(chunk, new TypeToken<>() {}));
     }
 
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location) {
-        return handle.getWorld().getChunkAtAsync(conversionService.unwrap(location, new TypeToken<Location>(){})).thenApply(chunk -> conversionService.wrap(chunk));
+        return handle.getWorld().getChunkAtAsync(conversionService.unwrap(location, new TypeToken<Location>(){})).thenApply(chunk -> conversionService.wrap(chunk, new TypeToken<>() {}));
     }
 }

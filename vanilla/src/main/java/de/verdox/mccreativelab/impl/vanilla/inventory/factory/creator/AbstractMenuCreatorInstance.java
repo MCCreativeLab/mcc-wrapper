@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory.creator;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.creator.MenuCreatorInstance;
@@ -18,11 +19,11 @@ public abstract class AbstractMenuCreatorInstance<F extends MCCContainerMenu<?, 
         return MCCPlatform.getInstance().getConversionService();
     }
 
-    protected <F extends MCCContainerMenu<?, ?>> F openViaNMSMenuProvider(ServerPlayer serverPlayer, net.kyori.adventure.text.Component title, TriFunction<Integer, Inventory, Player, AbstractContainerMenu> vanillaCreateMenuFunction) {
+    protected F openViaNMSMenuProvider(TypeToken<F> containerMenuType, ServerPlayer serverPlayer, net.kyori.adventure.text.Component title, TriFunction<Integer, Inventory, Player, AbstractContainerMenu> vanillaCreateMenuFunction) {
         serverPlayer.openMenu(new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return MCCPlatform.getInstance().getConversionService().unwrap(title);
+                return MCCPlatform.getInstance().getConversionService().unwrap(title, new TypeToken<>() {});
             }
 
             @Override
@@ -31,7 +32,7 @@ public abstract class AbstractMenuCreatorInstance<F extends MCCContainerMenu<?, 
             }
         });
         try {
-            return MCCPlatform.getInstance().getConversionService().wrap(serverPlayer.containerMenu);
+            return MCCPlatform.getInstance().getConversionService().wrap(serverPlayer.containerMenu, containerMenuType);
         }
         catch (Throwable e){
             e.printStackTrace();

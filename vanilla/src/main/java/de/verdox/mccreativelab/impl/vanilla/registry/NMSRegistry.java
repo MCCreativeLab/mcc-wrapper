@@ -27,6 +27,11 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
         conversionService = MCCPlatform.getInstance().getConversionService();
     }
 
+    private Class<T> getApiType(){
+        Class<R> type = getNativeTypeOfRegistry();
+        return conversionService.wrapClassType(type);
+    }
+
     private Class<R> getNativeTypeOfRegistry() {
         if (handle.getAny().isEmpty())
             return null;
@@ -36,13 +41,13 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     private R unwrap(T value) {
         if (value == null)
             return null;
-        return (R) conversionService.unwrap(value);
+        return conversionService.unwrap(value, getNativeTypeOfRegistry());
     }
 
     private T wrap(R value) {
         if (value == null)
             return null;
-        return (T) conversionService.wrap(value);
+        return conversionService.wrap(value, getApiType());
     }
 
     private ResourceLocation unwrap(Key key) {
@@ -56,13 +61,11 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     }
 
     private ResourceKey<R> unwrap(MCCTypedKey<T> reference) {
-        return conversionService.unwrap(reference, new TypeToken<>() {
-        });
+        return conversionService.unwrap(reference, new TypeToken<>() {});
     }
 
     private MCCReference<T> wrap(ResourceKey<R> resourceKey) {
-        return conversionService.wrap(resourceKey, new TypeToken<>() {
-        });
+        return conversionService.wrap(resourceKey, new TypeToken<>() {});
     }
 
     @Override
@@ -99,7 +102,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public T getOrThrow(MCCTypedKey<T> key) {
-        return (T) conversionService.wrap(handle.getOrThrow(unwrap(key)));
+        return key.getAsReference().get();
     }
 
     @Override

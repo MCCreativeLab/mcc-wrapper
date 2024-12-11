@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.world;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -22,6 +23,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import org.bukkit.craftbukkit.block.CraftBlock;
@@ -55,7 +58,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         BlockState nmsBlockState = getHandle().getBlockState(blockPos);
         if (!mccBlock.getBlockType().equals(MCCBlocks.AIR) && (tool == null || !mccBlock.getBlockState().requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(mccBlock.getBlockState()))) {
 
-            mccBlock.dropBlockLoot(null, conversionService.unwrap(tool));
+            mccBlock.dropBlockLoot(null, conversionService.unwrap(tool, new TypeToken<>() {}));
             if (triggerEffect) {
                 if (mccBlock.getBlockType().equals(MCCBlocks.FIRE)) {
                     getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.SOUND_EXTINGUISH_FIRE, blockPos, 0);
@@ -80,7 +83,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         if (result) {
             // special cases
             if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.IceBlock iceBlock) {
-                iceBlock.afterDestroy(getHandle(), blockPos, conversionService.unwrap(tool));
+                iceBlock.afterDestroy(getHandle(), blockPos, conversionService.unwrap(tool, new TypeToken<>() {}));
             } else if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.TurtleEggBlock turtleEggBlock) {
                 turtleEggBlock.decreaseEggs(getHandle(), blockPos, nmsBlockState);
             }
@@ -104,52 +107,52 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
-        ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
+        ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy(), new TypeToken<>() {}));
         entity.pickupDelay = 10;
-        MCCEntity mccEntity = conversionService.wrap(entity);
+        MCCEntity mccEntity = conversionService.wrap(entity, new TypeToken<>() {});
         if (dropCallback != null) {
             dropCallback.accept(mccEntity);
         }
         getHandle().addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        return conversionService.wrap(mccEntity);
+        return conversionService.wrap(mccEntity, new TypeToken<>() {});
     }
 
     @Override
     public List<MCCPlayer> getPlayers() {
-        return conversionService.wrap(handle.getPlayers(serverPlayer -> true));
+        return conversionService.wrap(handle.getPlayers(serverPlayer -> true), new TypeToken<>() {});
     }
 
     @Override
     public CompletableFuture<MCCEntity> summon(@NotNull MCCLocation location, @NotNull MCCEntityType mccEntityType) {
         MCCEntity constructedEntity = mccEntityType.constructNewEntity();
-        Entity entity = conversionService.unwrap(constructedEntity);
+        Entity entity = conversionService.unwrap(constructedEntity, new TypeToken<>() {});
 
         if (entity instanceof Mob) {
             ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.COMMAND, null);
         }
 
         this.getHandle().addFreshEntity(entity);
-        return CompletableFuture.completedFuture(conversionService.wrap(entity));
+        return CompletableFuture.completedFuture(conversionService.wrap(entity, new TypeToken<>() {}));
     }
 
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
-        return conversionService.wrap(handle.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true));
+        return CompletableFuture.completedFuture(conversionService.wrap(handle.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true), new TypeToken<>() {}));
     }
 
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location) {
-        return conversionService.wrap(handle.getChunk(location.getChunkX(), location.getChunkZ(), ChunkStatus.FULL, true));
+        return CompletableFuture.completedFuture(conversionService.wrap(handle.getChunk(location.getChunkX(), location.getChunkZ(), ChunkStatus.FULL, true), new TypeToken<>() {}));
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(int x, int z) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(x, z));
+        return conversionService.wrap(handle.getChunkIfLoadedImmediately(x, z), new TypeToken<>() {});
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(MCCLocation location) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(location.getChunkX(), location.getChunkZ()));
+        return conversionService.wrap(handle.getChunkIfLoadedImmediately(location.getChunkX(), location.getChunkZ()), new TypeToken<>() {});
     }
 
     @Override
@@ -160,7 +163,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public void triggerBlockUpdate(MCCLocation location) {
         Objects.requireNonNull(location.getBlockNow(), "The chunk at the location " + location + " is not loaded.");
-        handle.updateNeighborsAt(new BlockPos(location.blockX(), location.blockY(), location.blockZ()), conversionService.unwrap(location.getBlockNow().getBlockType()));
+        handle.updateNeighborsAt(new BlockPos(location.blockX(), location.blockY(), location.blockZ()), conversionService.unwrap(location.getBlockNow().getBlockType(), new TypeToken<>() {}));
     }
 
     @Override
@@ -175,7 +178,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @NotNull Key key() {
-        return conversionService.wrap(handle.getTypeKey().location());
+        return conversionService.wrap(handle.getTypeKey().location(), new TypeToken<>() {});
     }
 
     @Override

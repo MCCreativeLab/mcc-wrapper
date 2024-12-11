@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
@@ -17,6 +18,6 @@ public class NMSDispenserContainerMenu extends NMSContainerMenu<MCCBlockContaine
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerDataFromField("dispenser"));
+        return conversionService.wrap(readContainerDataFromField("dispenser"), new TypeToken<>() {});
     }
 }

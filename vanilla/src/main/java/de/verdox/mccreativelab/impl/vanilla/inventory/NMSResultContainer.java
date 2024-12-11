@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCResultContainer;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -16,11 +17,11 @@ public class NMSResultContainer implements MCCResultContainer {
 
     @Override
     public MCCContainer getResultInventory() {
-        return MCCPlatform.getInstance().getConversionService().wrap(resultInventory);
+        return MCCPlatform.getInstance().getConversionService().wrap(resultInventory, new TypeToken<>() {});
     }
 
     @Override
     public MCCContainer getIngredientsInventory() {
-        return MCCPlatform.getInstance().getConversionService().wrap(ingredientsInventory);
+        return MCCPlatform.getInstance().getConversionService().wrap(ingredientsInventory, new TypeToken<>() {});
     }
 }

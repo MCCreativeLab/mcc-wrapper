@@ -23,12 +23,12 @@ public class MCCHandle<T> {
     protected static <F, T> MCCConverter<F, T> converterCustomResult(Class<T> apiType, Class<F> platformType, Function<F, MCCConverter.ConversionResult<T>> wrap, Function<T, MCCConverter.ConversionResult<F>> unwrap) {
         return new MCCConverter<>() {
             @Override
-            public ConversionResult<T> wrap(F platform) {
+            public ConversionResult<T> wrap(F platform, TypeToken<T> apiTypeToConvertTo) {
                 return wrap.apply(platform);
             }
 
             @Override
-            public ConversionResult<F> unwrap(T api) {
+            public ConversionResult<F> unwrap(T api, TypeToken<F> nativeTypeToConvertTo) {
                 return unwrap.apply(api);
             }
 
@@ -47,12 +47,12 @@ public class MCCHandle<T> {
     protected static <F, T> MCCConverter<F, T> converter(Class<T> apiType, Class<F> platformType, Function<F, T> wrap, Function<T, F> unwrap) {
         return new MCCConverter<>() {
             @Override
-            public ConversionResult<T> wrap(F platform) {
+            public ConversionResult<T> wrap(F platform, TypeToken<T> apiTypeToConvertTo) {
                 return done(wrap.apply(platform));
             }
 
             @Override
-            public ConversionResult<F> unwrap(T api) {
+            public ConversionResult<F> unwrap(T api, TypeToken<F> nativeTypeToConvertTo) {
                 return done(unwrap.apply(api));
             }
 

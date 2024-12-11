@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
+
 public class EnumConverter<F extends Enum<F>, A extends Enum<A>> implements MCCConverter<F, A> {
     private final Class<F> nativeEnum;
     private final Class<A> apiEnum;
@@ -10,12 +12,12 @@ public class EnumConverter<F extends Enum<F>, A extends Enum<A>> implements MCCC
     }
 
     @Override
-    public ConversionResult<A> wrap(F nativeType) {
+    public ConversionResult<A> wrap(F nativeType, TypeToken<A> tokenToConvertTo) {
         return done(Enum.valueOf(apiEnum, nativeType.name()));
     }
 
     @Override
-    public ConversionResult<F> unwrap(A platformImplType) {
+    public ConversionResult<F> unwrap(A platformImplType, TypeToken<F> tokenToConvertTo) {
         return done(Enum.valueOf(nativeEnum, platformImplType.name()));
     }
 

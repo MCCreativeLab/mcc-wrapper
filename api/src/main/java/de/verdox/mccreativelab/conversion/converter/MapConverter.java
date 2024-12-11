@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.TypeUtil;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 import java.util.Collection;
@@ -16,22 +18,30 @@ public class MapConverter<M extends Map, T extends M> implements MCCConverter<M,
     }
 
     @Override
-    public ConversionResult<M> wrap(M nativeType) {
+    public ConversionResult<M> wrap(M nativeType, TypeToken<M> tokenToConvertTo) {
         M newMap = constructor.get();
+
+        TypeToken<?> keyType = TypeUtil.extractGeneric(tokenToConvertTo, 0);
+        TypeToken<?> valueType = TypeUtil.extractGeneric(tokenToConvertTo, 1);
+
         nativeType.forEach((nativeKey, nativeValue) -> {
-            Object wrappedKey = MCCPlatform.getInstance().getConversionService().wrap(nativeKey);
-            Object wrappedValue = MCCPlatform.getInstance().getConversionService().wrap(nativeValue);
+            Object wrappedKey = MCCPlatform.getInstance().getConversionService().wrap(nativeKey, keyType);
+            Object wrappedValue = MCCPlatform.getInstance().getConversionService().wrap(nativeValue, valueType);
             newMap.put(wrappedKey, wrappedValue);
         });
         return done(newMap);
     }
 
     @Override
-    public ConversionResult<M> unwrap(M platformImplType) {
+    public ConversionResult<M> unwrap(M platformImplType, TypeToken<M> tokenToConvertTo) {
         M newMap = constructor.get();
+
+        TypeToken<?> keyType = TypeUtil.extractGeneric(tokenToConvertTo, 0);
+        TypeToken<?> valueType = TypeUtil.extractGeneric(tokenToConvertTo, 1);
+
         platformImplType.forEach((wrappedKey, wrappedValue) -> {
-            Object nativeKey = MCCPlatform.getInstance().getConversionService().unwrap(wrappedKey);
-            Object nativeValue = MCCPlatform.getInstance().getConversionService().unwrap(wrappedValue);
+            Object nativeKey = MCCPlatform.getInstance().getConversionService().unwrap(wrappedKey, keyType);
+            Object nativeValue = MCCPlatform.getInstance().getConversionService().unwrap(wrappedValue, valueType);
             newMap.put(nativeKey, nativeValue);
         });
         return done(newMap);
