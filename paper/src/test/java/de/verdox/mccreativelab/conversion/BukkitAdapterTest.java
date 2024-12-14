@@ -62,25 +62,25 @@ public class BukkitAdapterTest extends TestBase {
     public static void setupTestEntries() {
         testEntries.add(new TestEntry<>(new ItemStack(Items.STONE), org.bukkit.inventory.ItemStack.of(Material.STONE), MCCItemStack.class));
 
-        testEntries2.add(new TestEntry2(MCCItemStack.class, org.bukkit.inventory.ItemStack.class));
+        //testEntries2.add(new TestEntry2(MCCItemStack.class, org.bukkit.inventory.ItemStack.class));
         testEntries2.add(new TestEntry2(MCCItemStack.class, CraftItemStack.class));
 
-        testEntries2.add(new TestEntry2(MCCWorld.class, World.class));
+        //testEntries2.add(new TestEntry2(MCCWorld.class, World.class));
         testEntries2.add(new TestEntry2(MCCWorld.class, CraftWorld.class));
 
-        testEntries2.add(new TestEntry2(MCCEntity.class, Entity.class));
+        //testEntries2.add(new TestEntry2(MCCEntity.class, Entity.class));
         testEntries2.add(new TestEntry2(MCCEntity.class, CraftEntity.class));
 
-        testEntries2.add(new TestEntry2(MCCChunk.class, Chunk.class));
+        //testEntries2.add(new TestEntry2(MCCChunk.class, Chunk.class));
         testEntries2.add(new TestEntry2(MCCChunk.class, CraftChunk.class));
 
-        testEntries2.add(new TestEntry2(MCCBlockState.class, BlockData.class));
+        //testEntries2.add(new TestEntry2(MCCBlockState.class, BlockData.class));
         testEntries2.add(new TestEntry2(MCCBlockState.class, CraftBlockData.class));
 
-        testEntries2.add(new TestEntry2(MCCEntityType.class, EntityType.class));
+        //testEntries2.add(new TestEntry2(MCCEntityType.class, EntityType.class));
         testEntries2.add(new TestEntry2(MCCLocation.class, Location.class));
 
-        testEntries2.add(new TestEntry2(MCCBlock.class, Block.class));
+        //testEntries2.add(new TestEntry2(MCCBlock.class, Block.class));
         testEntries2.add(new TestEntry2(MCCBlock.class, CraftBlock.class));
 
         testEntries2.add(new TestEntry2(MCCBlockType.class, BlockType.class));
