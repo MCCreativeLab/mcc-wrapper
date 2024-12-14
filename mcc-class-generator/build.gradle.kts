@@ -45,7 +45,7 @@ dependencies {
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     compileOnly("net.kyori:adventure-api:4.17.0")
     //implementation(project(":mcc-wrapper"))
-    implementation("de.verdox.mccreativelab:mcc-wrapper:1.0.0-SNAPSHOT")
+    implementation("de.verdox.mccreativelab:mcc-wrapper:"+providers.gradleProperty("version").get())
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("org.reflections:reflections:0.10.2")
     implementation("net.bytebuddy:byte-buddy:1.15.10")
@@ -64,7 +64,7 @@ publishing {
             pom {
                 groupId = "de.verdox.mccreativelab"
                 artifactId = "mcc-class-generator"
-                version = "1.0.0-SNAPSHOT"
+                version = providers.gradleProperty("version").get()
                 from(components["java"])
                 licenses {
                     license {
