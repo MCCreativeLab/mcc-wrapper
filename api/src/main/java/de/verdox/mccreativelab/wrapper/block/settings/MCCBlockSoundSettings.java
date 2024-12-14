@@ -27,6 +27,11 @@ public interface MCCBlockSoundSettings {
      */
     void setSoundGroup(MCCBlockType blockType, MCCBlockSoundGroup mccBlockSoundGroup);
 
+    /**
+     * Returns the sound group of a provided block type
+     * @param mccBlockType the block type
+     * @return the sound group
+     */
     MCCBlockSoundGroup getSoundGroup(MCCBlockType mccBlockType);
 
     /**
@@ -37,6 +42,11 @@ public interface MCCBlockSoundSettings {
      */
     void swapVanillaSoundGroup(@MCCRequireVanillaElement MCCBlockSoundGroup vanillaSoundGroup, MCCBlockSoundGroup customSoundGroup);
 
+    /**
+     * Gets whether the provided block type has a custom sound group that deviates from its vanilla sound group
+     * @param mccBlockType the block type
+     * @return true if it is different
+     */
     default boolean hasCustomSoundGroup(MCCBlockType mccBlockType) {
         if (!mccBlockType.isVanilla()) {
             return true;
