@@ -14,10 +14,6 @@ sourceSets {
     }
 }
 
-tasks.build {
-    dependsOn(project(":api"))
-}
-
 tasks.register("runCodeGenerator") {
     group = "CodeGen"
     description = "First updates the wrapper files in the code gen then runs the code gen."
