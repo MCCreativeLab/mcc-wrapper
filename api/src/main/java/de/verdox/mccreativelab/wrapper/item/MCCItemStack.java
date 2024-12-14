@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.wrapper.item;
 
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
 import net.kyori.adventure.text.Component;
@@ -14,33 +15,10 @@ import java.util.function.Function;
  */
 public interface MCCItemStack {
     /**
-     * Edits an item component
-     *
-     * @param dataComponentType the component type
-     * @param editor            the editor
-     * @param <R>               the generic data type
-     * @param <T>               the component data type
-     * @return the same item but with changed components
+     * Returns the data component map of this item stack
+     * @return the data component map
      */
-    <R, T extends MCCDataComponentType<R>> MCCItemStack edit(T dataComponentType, Consumer<MCCDataComponentEditor<R, T>> editor);
-    /**
-     * Edits an item component and returns a result. Can also be used as a getter.
-     *
-     * @param dataComponentType the component type
-     * @param editor            the editor
-     * @param <R>               the generic data type
-     * @param <T>               the component data type
-     */
-    <R, T extends MCCDataComponentType<R>> R editAndGet(T dataComponentType, Function<MCCDataComponentEditor<R, T>, R> editor);
-
-    /**
-     * Edits an item component and returns a result. Can also be used as a getter.
-     *
-     * @param dataComponentType the component type
-     * @param <R>               the generic data type
-     * @param <T>               the component data type
-     */
-    <R, T extends MCCDataComponentType<R>> R get(T dataComponentType);
+    MCCDataComponentMap components();
 
     boolean hasDataComponentType(MCCDataComponentType<?> type);
 

@@ -78,7 +78,7 @@ public class NMSContainer extends MCCHandle<Container> implements MCCContainer {
 
                     int amount = item.getAmount();
                     int partialAmount = partialItem.getAmount();
-                    int maxAmount = partialItem.get(MCCDataComponentTypes.MAX_STACK_SIZE.get());
+                    int maxAmount = partialItem.components().get(MCCDataComponentTypes.MAX_STACK_SIZE.get());
 
                     // Check if it fully fits
                     if (amount + partialAmount <= maxAmount) {

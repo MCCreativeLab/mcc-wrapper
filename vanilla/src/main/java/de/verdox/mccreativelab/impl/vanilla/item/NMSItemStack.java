@@ -2,11 +2,13 @@ package de.verdox.mccreativelab.impl.vanilla.item;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentMap;
 import de.verdox.mccreativelab.impl.vanilla.item.components.NMSMCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -29,22 +31,8 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
     }
 
     @Override
-    public <R, T extends MCCDataComponentType<R>> MCCItemStack edit(T dataComponentType, Consumer<MCCDataComponentEditor<R, T>> editor) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
-        editor.accept(nmsItemComponentEditor);
-        return this;
-    }
-
-    @Override
-    public <R, T extends MCCDataComponentType<R>> R editAndGet(T dataComponentType, Function<MCCDataComponentEditor<R, T>, R> editor) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
-        return editor.apply(nmsItemComponentEditor);
-    }
-
-    @Override
-    public <R, T extends MCCDataComponentType<R>> R get(T dataComponentType) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
-        return nmsItemComponentEditor.get();
+    public MCCDataComponentMap components() {
+        return new NMSDataComponentMap(handle.getComponents());
     }
 
     @Override
