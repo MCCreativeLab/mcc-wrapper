@@ -22,8 +22,26 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run tests
-        run: ./gradlew test
+      - name: Run api tests
+        run: ./gradlew api:test
 
-      - name: Publish package
-        run: ./gradlew publish
+      - name: Publish api package
+        run: ./gradlew api:publish
+
+      - name: Run vanilla tests
+        run: ./gradlew vanilla:test
+
+      - name: Publish vanilla package
+        run: ./gradlew vanilla:publish
+
+      - name: Run paper tests
+        run: ./gradlew paper:test
+
+      - name: Publish paper package
+        run: ./gradlew paper:publish
+
+      - name: Run mcc-class-generator tests
+        run: ./gradlew mcc-class-generator:test
+
+      - name: Publish mcc-class-generator package
+        run: ./gradlew mcc-class-generator:publish

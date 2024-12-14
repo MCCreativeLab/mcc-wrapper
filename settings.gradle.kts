@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 rootProject.name = "mcc-wrapper"
-include("mcc-class-generator")
 include("api")
 include("vanilla")
 include("paper")
+include("mcc-class-generator")

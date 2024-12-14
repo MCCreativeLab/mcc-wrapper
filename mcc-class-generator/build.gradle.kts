@@ -14,6 +14,10 @@ sourceSets {
     }
 }
 
+tasks.build {
+    dependsOn(project(":api"))
+}
+
 tasks.register("runCodeGenerator") {
     group = "CodeGen"
     description = "First updates the wrapper files in the code gen then runs the code gen."
@@ -42,10 +46,20 @@ tasks.register("runCodeGeneratorNoUpdate") {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle(providers.gradleProperty("version").get())
+
+
     compileOnly("net.kyori:adventure-api:4.17.0")
     //implementation(project(":mcc-wrapper"))
-    implementation("de.verdox.mccreativelab:mcc-wrapper:"+providers.gradleProperty("version").get())
+    implementation(
+        providers.gradleProperty("wrapper_group").get() + ":api:" + providers.gradleProperty("version").get()
+    )
+    implementation(
+        providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("version").get()
+    )
+    implementation(
+        providers.gradleProperty("wrapper_group").get() + ":paper:" + providers.gradleProperty("version").get()
+    )
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("org.reflections:reflections:0.10.2")
     implementation("net.bytebuddy:byte-buddy:1.15.10")

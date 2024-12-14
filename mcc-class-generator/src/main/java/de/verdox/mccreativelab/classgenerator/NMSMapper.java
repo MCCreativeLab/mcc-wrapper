@@ -8,7 +8,6 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
-import de.verdox.mccreativelab.wrapper.entity.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.entity.ai.MCCMemoryModuleType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.*;
@@ -65,7 +64,8 @@ public class NMSMapper {
     }
 
     static {
-        useSwapCacheFromPlatform();
+        //TODO: Disabled -> We are using the platform converter now in the NMSMapper
+        //useSwapCacheFromPlatform();
         // NMS to adventure
         register(Component.class, net.kyori.adventure.text.Component.class);
         register(MutableComponent.class, net.kyori.adventure.text.Component.class);
@@ -81,11 +81,11 @@ public class NMSMapper {
         //register(IntList.class, IntList.class, true);
     }
 
-    public static void useSwapCacheFromPlatform() {
+/*    public static void useSwapCacheFromPlatform() {
         for (ConversionService.ClassPair classPair : MCCPlatform.getInstance().getConversionService().getAllKnownClassPairs()) {
             register(classPair.nativeType(), classPair.apiType());
         }
-    }
+    }*/
 
     public static boolean isSwapped(Type type) {
         return isSwapped(DynamicType.of(type, false));
