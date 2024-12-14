@@ -28,4 +28,8 @@ public interface MCCConverter<F, T> {
             return this.equals(DONE);
         }
     }
+
+    default String toReadableString(){
+        return "MCCConverter<"+nativeMinecraftType()+" <-> "+apiImplementationClass()+">";
+    }
 }

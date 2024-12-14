@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.paper.block.settings;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -145,8 +146,8 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
 
     @EventHandler
     public void gameEvent(GenericGameEvent genericGameEvent) {
-        MCCBlock block = MCCPlatform.getInstance().getConversionService().wrap(genericGameEvent.getLocation().getBlock(), new TypeToken<>() {});
-        MCCEntity entity = MCCPlatform.getInstance().getConversionService().wrap(genericGameEvent.getEntity(), new TypeToken<>() {});
+        MCCBlock block = BukkitAdapter.wrap(genericGameEvent.getLocation().getBlock(), new TypeToken<>() {});
+        MCCEntity entity = BukkitAdapter.wrap(genericGameEvent.getEntity(), new TypeToken<>() {});
 
         if (genericGameEvent.getEvent().equals(GameEvent.BLOCK_PLACE)) {
             simulateBlockPlaceSound(entity, block);
@@ -161,7 +162,7 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
 
     @EventHandler
     public void resetDiggingDelayOnBlockBreak(BlockBreakEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         DIGGING_SOUND_DELAY.reset(player);
     }
 
@@ -174,15 +175,15 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
             return;
         }
 
-        MCCBlock block = MCCPlatform.getInstance().getConversionService().wrap(e.getBlock(), new TypeToken<>() {});
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCBlock block = BukkitAdapter.wrap(e.getBlock(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
 
         simulateBreakSound(player, block);
     }
 
     @EventHandler
     public void storeLastPlayerInteraction(PlayerInteractEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         if (e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
             player.getTempData().storeData("last_hit_block", e.getClickedBlock());
         } else {
@@ -204,8 +205,8 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
 
         Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue());
 
-        MCCBlock block = MCCPlatform.getInstance().getConversionService().wrap(bukkitTargetBlock, new TypeToken<>() {});
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(bukkitPlayer, new TypeToken<>() {});
+        MCCBlock block = BukkitAdapter.wrap(bukkitTargetBlock, new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});
         simulateDiggingSound(player, block);
     }
 }

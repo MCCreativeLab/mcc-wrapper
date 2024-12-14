@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -62,14 +63,24 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
     }
 
     @Override
-    public boolean isSimilar(MCCItemStack mccItemStack) {
-        var copy1 = this.handle.copy();
-        var copy2 = ((NMSItemStack) mccItemStack).handle.copy();
+    public boolean isSimilar(MCCItemStack stack) {
+        if (stack == null) {
+            return false;
+        }
+        if (stack == this) {
+            return true;
+        }
+        if(!(stack instanceof NMSItemStack that)){
+            return false;
+        }
+        if (this.handle == that.handle) {
+            return true;
+        }
+        if (this.handle == null || that.handle == null) {
+            return false;
+        }
+        return net.minecraft.world.item.ItemStack.isSameItemSameComponents(this.handle, that.handle);
 
-        copy1.setCount(1);
-        copy2.setCount(1);
-
-        return copy1.equals(copy2);
     }
 
     @Override
@@ -138,11 +149,20 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NMSItemStack that = (NMSItemStack) o;
-        return Objects.equals(handle, that.handle);
+        if (this.handle == that.handle) return true;
+        else if (this.handle == null || that.handle == null) return false;
+        else if (this.handle.isEmpty() && that.handle.isEmpty()) return true;
+        else return net.minecraft.world.item.ItemStack.matches(this.handle, that.handle);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(handle);
+        if (this.handle == null || this.handle.isEmpty()) {
+            return net.minecraft.world.item.ItemStack.EMPTY.hashCode();
+        } else {
+            int hash = net.minecraft.world.item.ItemStack.hashItemAndComponents(this.handle);
+            hash = hash * 31 + this.handle.getCount();
+            return hash;
+        }
     }
 }

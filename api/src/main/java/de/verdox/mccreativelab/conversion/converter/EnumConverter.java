@@ -28,4 +28,9 @@ public class EnumConverter<F extends Enum<F>, A extends Enum<A>> implements MCCC
     public Class<F> nativeMinecraftType() {
         return nativeEnum;
     }
+
+    @Override
+    public String toString() {
+        return toReadableString();
+    }
 }

@@ -4,14 +4,27 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
-
 public interface ConversionService {
-    <A, T extends A, F> void registerPlatformType(Class<A> apiType, MCCConverter<F, T> converter);
+    <A, T extends A, F> void registerConverterForNewImplType(Class<A> apiType, MCCConverter<F, T> converter);
 
     <F, T> T wrap(F nativeObject);
 
     <F, T> F unwrap(T apiObject);
+
+    /**
+     * This method is used to convert from one type tree to another.
+     * <p>
+     * It works when both api types are mapped to the same native type. Via the native type we can convert it from one api type to another.
+     * The method is useful when you want to convert between MCC objects and Bukkit Objects for example. Both usually map to the same native type.
+     * However, be advised that not all impl types might work here.
+     *
+     * @param apiType the api object to convert
+     * @param conversionService the other conversion service that holds the information of the second api type
+     * @return an object of the other api type but with the same native type
+     * @param <A1> the first api type
+     * @param <A2> the second api type
+     */
+    <A1, A2> A2 apiTypeToOtherApiType(A1 apiType, ConversionService conversionService);
 
     /**
      * Returns the api type a native type would be wrapped to
@@ -44,9 +57,6 @@ public interface ConversionService {
     default <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
         return (F) unwrap(objectToUnwrap);
     }
-
-
-    Set<ClassPair> getAllKnownClassPairs();
 
     record ClassPair(Class<?> apiType, Class<?> nativeType) {}
 }

@@ -34,7 +34,7 @@ public class ConverterTests extends TestBase {
                                                 F nativeObject, boolean shouldRegister) {
         private void register() {
             if (shouldRegister) {
-                MCCPlatform.getInstance().getConversionService().registerPlatformType(apiType(), converter());
+                MCCPlatform.getInstance().getConversionService().registerConverterForNewImplType(apiType(), converter());
             }
         }
 

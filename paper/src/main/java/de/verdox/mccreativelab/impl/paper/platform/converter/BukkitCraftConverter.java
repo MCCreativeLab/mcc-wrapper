@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.paper.platform.converter;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import org.bukkit.craftbukkit.CraftChunk;
 
 import java.util.function.Function;
 
@@ -13,13 +14,13 @@ import java.util.function.Function;
  */
 public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
     private final TypeToken<B> bukkitType;
-    private final TypeToken<T> apiType;
+    private final TypeToken<T> apiImplType;
     private final Function<B, F> getter;
     private final Function<F, B> wrapper;
 
-    public BukkitCraftConverter(TypeToken<B> bukkitType, TypeToken<T> apiType, Function<B, F> getter, Function<F,B> wrapper) {
+    public BukkitCraftConverter(TypeToken<B> bukkitType, TypeToken<T> apiImplType, Function<B, F> getter, Function<F,B> wrapper) {
         this.bukkitType = bukkitType;
-        this.apiType = apiType;
+        this.apiImplType = apiImplType;
         this.getter = getter;
         this.wrapper = wrapper;
     }
@@ -30,12 +31,12 @@ public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
         if(nmsObject == null){
             return notDone(null);
         }
-        return done((T) MCCPlatform.getInstance().getConversionService().wrap(nmsObject));
+        return done(MCCPlatform.getInstance().getConversionService().wrap(nmsObject));
     }
 
     @Override
     public ConversionResult<B> unwrap(T platformImplType) {
-        F unwrappedNativeType = (F) MCCPlatform.getInstance().getConversionService().unwrap(platformImplType);
+        F unwrappedNativeType = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType);
         B bukkitType = wrapper.apply(unwrappedNativeType);
         if(bukkitType == null){
             return notDone(null);
@@ -45,11 +46,16 @@ public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
 
     @Override
     public Class<T> apiImplementationClass() {
-        return (Class<T>) apiType.getRawType();
+        return (Class<T>) apiImplType.getRawType();
     }
 
     @Override
     public Class<B> nativeMinecraftType() {
         return (Class<B>) bukkitType.getRawType();
+    }
+
+    @Override
+    public String toString() {
+        return toReadableString();
     }
 }

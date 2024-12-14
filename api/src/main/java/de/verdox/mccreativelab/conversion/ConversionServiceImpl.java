@@ -1,12 +1,12 @@
 package de.verdox.mccreativelab.conversion;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class ConversionServiceImpl implements ConversionService {
     //TODO: Introduce caching of nativeObjects to object allocations
@@ -15,17 +15,17 @@ public class ConversionServiceImpl implements ConversionService {
     private final ConversionCache<MCCConverter<?, ?>> conversionCache = new ConversionCache<>();
 
     public ConversionServiceImpl() {
-        registerPlatformType(Optional.class, new OptionalConverter());
-        registerPlatformType(List.class, new CollectionConverter<>(ArrayList::new, List.class));
+        registerConverterForNewImplType(Optional.class, new OptionalConverter());
+        registerConverterForNewImplType(List.class, new CollectionConverter<>(ArrayList::new, List.class));
 
-        registerPlatformType(Set.class, new CollectionConverter<>(HashSet::new, Set.class));
-        registerPlatformType(Map.class, new MapConverter<>(HashMap::new, Map.class));
-        registerPlatformType(Map.Entry.class, new MapEntryConverter());
+        registerConverterForNewImplType(Set.class, new CollectionConverter<>(HashSet::new, Set.class));
+        registerConverterForNewImplType(Map.class, new MapConverter<>(HashMap::new, Map.class));
+        registerConverterForNewImplType(Map.Entry.class, new MapEntryConverter());
     }
 
     @Override
-    public <A, T extends A, F> void registerPlatformType(Class<A> apiType, MCCConverter<F, T> converter) {
-        LOGGER.log(Level.FINER, "Registering converter for "+apiType.getSimpleName()+" ("+converter.nativeMinecraftType().getSimpleName()+" <-> "+converter.apiImplementationClass().getSimpleName()+")");
+    public <A, T extends A, F> void registerConverterForNewImplType(Class<A> apiType, MCCConverter<F, T> converter) {
+        LOGGER.log(Level.FINER, "Registering converter for " + apiType.getSimpleName() + " (" + converter.nativeMinecraftType().getSimpleName() + " <-> " + converter.apiImplementationClass().getSimpleName() + ")");
         conversionCache.put(apiType, converter.apiImplementationClass(), converter.nativeMinecraftType(), converter);
     }
 
@@ -33,7 +33,7 @@ public class ConversionServiceImpl implements ConversionService {
     public <F, T> Class<T> wrapClassType(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
         Class<T> result = wrapClassTypeOrNull(nativeType);
-        if(result == null){
+        if (result == null) {
             throw new NoConverterFoundException("Could not find a converter to wrap the native type (" + nativeType.getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
         }
         return result;
@@ -43,40 +43,61 @@ public class ConversionServiceImpl implements ConversionService {
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
         return (Class<T>) conversionCache.getAllVariantsForNativeType(nativeType)
-            .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
-            .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
-            .map(MCCConverter::apiImplementationClass)
-            .map(objectClass -> conversionCache.getImplToApi().get(objectClass))
-            .filter(Objects::nonNull)
-            .findAny().orElse(null);
+                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
+                .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
+                .map(MCCConverter::apiImplementationClass)
+                .map(objectClass -> conversionCache.getApiTypeOfImplType(objectClass))
+                .filter(Objects::nonNull)
+                .findAny().orElse(null);
     }
 
     @Override
-    public Object wrap(@Nullable Object nativeObject) {
+    public <F, T> T wrap(@Nullable F nativeObject) {
         if (nativeObject == null) {
             return null;
         }
+
         return conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
-            .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
-            .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
-            .map(mccConverter -> mccConverter.wrap(nativeObject))
-            .filter(objectConversionResult -> objectConversionResult.result().isDone())
-            .map(MCCConverter.ConversionResult::value)
-            .findAny().orElseThrow(() -> new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type."));
+                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
+                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
+                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .filter(objectConversionResult -> objectConversionResult.result().isDone())
+                .map(MCCConverter.ConversionResult::value)
+                .findAny().orElseThrow(() -> new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type."));
     }
 
     @Override
-    public Object unwrap(@Nullable Object apiObject) {
-        if (apiObject == null) {
+    public <F, T> F unwrap(@Nullable T implementedApiObject) {
+        if (implementedApiObject == null) {
             return null;
         }
-        return conversionCache.getAllVariantsForApiType(apiObject.getClass())
-            .filter(mccConverter -> mccConverter.apiImplementationClass().isAssignableFrom(apiObject.getClass()))
-            .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
-            .map(mccConverter -> mccConverter.unwrap(apiObject))
-            .filter(objectConversionResult -> objectConversionResult.result().isDone())
-            .map(MCCConverter.ConversionResult::value)
-            .findAny().orElseThrow(() -> new NoConverterFoundException("Could not find a converter to wrap the api type " + apiObject + " (" + apiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type."));
+
+        MCCConverter<F, T> converter = (MCCConverter<F, T>) conversionCache.getValue(implementedApiObject.getClass());
+        if (converter == null) {
+            throw new NoConverterFoundException("Could not find a converter to wrap the api type " + implementedApiObject + " (" + implementedApiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+        }
+        MCCConverter.ConversionResult<F> result = converter.unwrap(implementedApiObject);
+        if (result.result().isDone()) {
+            try {
+                return result.value();
+            } catch (ClassCastException e) {
+                throw new IllegalStateException("The found converter for the implemented api type " + implementedApiObject.getClass() + " was able to unwrap the provided object but failed produced a ClassCastException because the native type of the converter that was used is different from what was expected", e);
+            }
+        } else {
+            throw new IllegalStateException("The found converter could not provide a valid result for the implemented api type " + implementedApiObject.getClass());
+        }
+    }
+
+    @Override
+    public <A1, A2> A2 apiTypeToOtherApiType(A1 apiType, ConversionService conversionService) {
+        if(conversionService.equals(this)){
+            throw new IllegalArgumentException("The provided conversion service is identical to this conversion service.");
+        }
+        if (apiType == null) {
+            return null;
+        }
+        Object nativeObject = unwrap(apiType);
+        return conversionService.wrap(nativeObject);
     }
 
     @Override
@@ -90,14 +111,9 @@ public class ConversionServiceImpl implements ConversionService {
     }
 
     @Override
-    public Set<ClassPair> getAllKnownClassPairs() {
-        return conversionCache.getApiToNativeMapping().stream().map(pair -> new ClassPair(pair.getKey(), pair.getValue())).collect(Collectors.toSet());
-    }
-
-    @Override
     public String toString() {
         return "ConversionServiceImpl{" +
-            "conversionCache=" + conversionCache +
-            '}';
+                "conversionCache=" + conversionCache +
+                '}';
     }
 }

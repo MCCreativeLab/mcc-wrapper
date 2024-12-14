@@ -21,19 +21,19 @@ public class PaperAttributeInstance extends NMSAttributeInstance {
 
     @Override
     public void addModifier(@NotNull MCCAttributeModifier modifier) {
-        AttributeModifier attributeModifier = MCCPlatform.getInstance().getConversionService().unwrap(modifier, new TypeToken<>() {});
+        AttributeModifier attributeModifier = conversionService.unwrap(modifier, new TypeToken<>() {});
         handle.addPermanentModifier(attributeModifier);
     }
 
     @Override
     public void removeModifier(@NotNull Key key) {
-        ResourceLocation resourceLocation = MCCPlatform.getInstance().getConversionService().unwrap(key, new TypeToken<>() {});
+        ResourceLocation resourceLocation = conversionService.unwrap(key, new TypeToken<>() {});
         handle.removeModifier(resourceLocation);
     }
 
     @Override
     public void addTransientModifier(@NotNull MCCAttributeModifier modifier) {
-        AttributeModifier attributeModifier = MCCPlatform.getInstance().getConversionService().unwrap(modifier, new TypeToken<>() {});
+        AttributeModifier attributeModifier = conversionService.unwrap(modifier, new TypeToken<>() {});
         handle.addOrUpdateTransientModifier(attributeModifier);
     }
 }

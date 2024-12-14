@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.paper.block.settings;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -68,7 +69,7 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         if (e.getClickedBlock() == null || e.getAction().isRightClick()) {
             stopBlockBreakAction(player);
         }
@@ -88,30 +89,30 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
 
     @EventHandler
     public void onStopDigging(BlockDamageAbortEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler
     public void stopDiggingOnQuit(PlayerQuitEvent e) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler
     public void tickPlayers(ServerTickEndEvent e) {
-        Bukkit.getOnlinePlayers().forEach(player -> tick(MCCPlatform.getInstance().getConversionService().wrap(player, new TypeToken<>() {})));
+        Bukkit.getOnlinePlayers().forEach(player -> tick(BukkitAdapter.wrap(player, new TypeToken<>() {})));
     }
 
     public void startBlockBreakAction(Player bukkitPlayer, Block bukkitBlock, Cancellable cancellable) {
-        MCCPlayer player = MCCPlatform.getInstance().getConversionService().wrap(bukkitPlayer, new TypeToken<>() {});
-        MCCBlock block = MCCPlatform.getInstance().getConversionService().wrap(bukkitBlock, new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});
+        MCCBlock block = BukkitAdapter.wrap(bukkitBlock, new TypeToken<>() {});
 
         if (!doesHardnessDifferFromVanilla(block.getBlockType())) {
             player.getTempData().storeData("isBreakingNormalBlock", block);
@@ -256,8 +257,8 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
                 progress = stage * (1f / 9);
 
             if (progress > 0) {
-                Block bukkitBlock = MCCPlatform.getInstance().getConversionService().unwrap(block, new TypeToken<Block>() {});
-                Player bukkitPlayer = MCCPlatform.getInstance().getConversionService().unwrap(player, new TypeToken<Player>() {});
+                Block bukkitBlock = BukkitAdapter.unwrap(block, new TypeToken<>() {});
+                Player bukkitPlayer = BukkitAdapter.unwrap(player, new TypeToken<>() {});
                 BlockBreakProgressUpdateEvent blockBreakProgressUpdateEvent = new BlockBreakProgressUpdateEvent(bukkitBlock, progress, bukkitPlayer);
                 blockBreakProgressUpdateEvent.callEvent();
             }

@@ -63,7 +63,6 @@ import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -81,32 +80,32 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public void init() {
-        conversionService.registerPlatformType(MCCBlockState.class, NMSBlockState.CONVERTER);
-        conversionService.registerPlatformType(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
-        conversionService.registerPlatformType(MCCBlockType.class, NMSBlockType.CONVERTER);
-        conversionService.registerPlatformType(MCCEntity.class, NMSEntity.CONVERTER);
-        conversionService.registerPlatformType(MCCAttribute.class, NMSAttribute.CONVERTER);
-        conversionService.registerPlatformType(MCCEntityType.class, NMSEntityType.CONVERTER);
-        conversionService.registerPlatformType(MCCItemStack.class, NMSItemStack.CONVERTER);
-        conversionService.registerPlatformType(MCCItemType.class, NMSItemType.CONVERTER);
-        conversionService.registerPlatformType(MCCWorld.class, NMSWorld.CONVERTER);
-        conversionService.registerPlatformType(MCCBiome.class, NMSBiome.CONVERTER);
-        conversionService.registerPlatformType(MCCEffectType.class, NMSEffectType.CONVERTER);
-        conversionService.registerPlatformType(MCCEffect.class, NMSEffect.CONVERTER);
-        conversionService.registerPlatformType(MCCPlayer.class, NMSPlayer.CONVERTER);
-        conversionService.registerPlatformType(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
-        conversionService.registerPlatformType(MCCChunk.class, NMSChunk.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockState.class, NMSBlockState.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockType.class, NMSBlockType.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEntity.class, NMSEntity.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCAttribute.class, NMSAttribute.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEntityType.class, NMSEntityType.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCItemStack.class, NMSItemStack.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCItemType.class, NMSItemType.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBiome.class, NMSBiome.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEffectType.class, NMSEffectType.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEffect.class, NMSEffect.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCChunk.class, NMSChunk.CONVERTER);
 
-        conversionService.registerPlatformType(Key.class, new ResourceLocationConverter());
-        conversionService.registerPlatformType(Sound.class, new SoundConverter());
-        conversionService.registerPlatformType(MCCAttributeModifier.class, new AttributeModifierConverter());
-        conversionService.registerPlatformType(MCCTypedKey.class, NMSTypedKey.CONVERTER);
-        conversionService.registerPlatformType(MCCReference.class, NMSReference.CONVERTER);
-        conversionService.registerPlatformType(MCCTag.class, NMSTag.CONVERTER);
-        conversionService.registerPlatformType(MCCReferenceSet.class, NMSReferenceSet.CONVERTER);
-        conversionService.registerPlatformType(MCCEitherReference.class, NMSEitherReference.CONVERTER);
-        conversionService.registerPlatformType(MCCRegistry.class, NMSRegistry.CONVERTER);
-        conversionService.registerPlatformType(MCCContainer.class, NMSContainer.CONVERTER);
+        conversionService.registerConverterForNewImplType(Key.class, new ResourceLocationConverter());
+        conversionService.registerConverterForNewImplType(Sound.class, new SoundConverter());
+        conversionService.registerConverterForNewImplType(MCCAttributeModifier.class, new AttributeModifierConverter());
+        conversionService.registerConverterForNewImplType(MCCTypedKey.class, NMSTypedKey.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCReference.class, NMSReference.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCTag.class, NMSTag.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCReferenceSet.class, NMSReferenceSet.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEitherReference.class, NMSEitherReference.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistry.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCContainer.class, NMSContainer.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -225,34 +224,34 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     private void registerMenuTypes() {
-        conversionService.registerPlatformType(MCCAnvilContainerMenu.class, NMSAnvilContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCBeaconContainerMenu.class, NMSBeaconContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCBrewingStandContainerMenu.class, NMSBrewingStandContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCCartographyTableContainerMenu.class, NMSCartographyTableContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCChestContainerMenu.class, NMSChestContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCCrafterContainerMenu.class, NMSCrafterContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCDispenserContainerMenu.class, NMSDispenserContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCEnchantingTableContainerMenu.class, NMSEnchantingTableContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCLoomContainerMenu.class, NMSLoomContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCGrindstoneContainerMenu.class, NMSGrindstoneContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCLecternContainerMenu.class, NMSLecternContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCMerchantContainerMenu.class, NMSMerchantContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCWorkBenchContainerMenu.class, NMSWorkBenchContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCHopperContainerMenu.class, NMSHopperContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCShulkerContainerMenu.class, NMSShulkerContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCStonecutterContainerMenu.class, NMSStoneCutterContainerMenu.CONVERTER);
-        conversionService.registerPlatformType(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCAnvilContainerMenu.class, NMSAnvilContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBeaconContainerMenu.class, NMSBeaconContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBrewingStandContainerMenu.class, NMSBrewingStandContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCCartographyTableContainerMenu.class, NMSCartographyTableContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCChestContainerMenu.class, NMSChestContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCCrafterContainerMenu.class, NMSCrafterContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDispenserContainerMenu.class, NMSDispenserContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEnchantingTableContainerMenu.class, NMSEnchantingTableContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCLoomContainerMenu.class, NMSLoomContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCGrindstoneContainerMenu.class, NMSGrindstoneContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCLecternContainerMenu.class, NMSLecternContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCMerchantContainerMenu.class, NMSMerchantContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCWorkBenchContainerMenu.class, NMSWorkBenchContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCHopperContainerMenu.class, NMSHopperContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCShulkerContainerMenu.class, NMSShulkerContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCStonecutterContainerMenu.class, NMSStoneCutterContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
     }
 
     private void registerContainerTypes() {
-        conversionService.registerPlatformType(MCCPlayerInventory.class, NMSPlayerInventory.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCPlayerInventory.class, NMSPlayerInventory.CONVERTER);
     }
 
     private void registerEnumConverters() {
-        conversionService.registerPlatformType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
-        conversionService.registerPlatformType(MCCEquipmentSlotGroup.class, new EnumConverter<>(net.minecraft.world.entity.EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
-        conversionService.registerPlatformType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
-        conversionService.registerPlatformType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
+        conversionService.registerConverterForNewImplType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
+        conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(net.minecraft.world.entity.EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
+        conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
+        conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
     }
 }

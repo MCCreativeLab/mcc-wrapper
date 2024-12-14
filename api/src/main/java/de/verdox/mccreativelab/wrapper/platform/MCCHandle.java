@@ -41,6 +41,11 @@ public class MCCHandle<T> {
             public Class<F> nativeMinecraftType() {
                 return platformType;
             }
+
+            @Override
+            public String toString() {
+                return toReadableString();
+            }
         };
     }
 
@@ -64,6 +69,11 @@ public class MCCHandle<T> {
             @Override
             public Class<F> nativeMinecraftType() {
                 return platformType;
+            }
+
+            @Override
+            public String toString() {
+                return "MCCConverter " + nativeMinecraftType() + " <-> " + apiImplementationClass();
             }
         };
     }
@@ -107,5 +117,10 @@ public class MCCHandle<T> {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" + "handle=" + handle + '}';
     }
 }

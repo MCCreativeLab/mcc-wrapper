@@ -33,9 +33,9 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             pom {
-                groupId = "de.verdox.mccreativelab.mcc-wrapper"
+                groupId = providers.gradleProperty("wrapper_group").get()
+                version = providers.gradleProperty("version").get()
                 artifactId = "api"
-                version = "1.0.0-SNAPSHOT"
                 from(components["java"])
                 licenses {
                     license {

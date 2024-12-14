@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     implementation(project(":api"))
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
@@ -32,9 +32,9 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             pom {
-                groupId = "de.verdox.mccreativelab.mcc-wrapper"
+                groupId = providers.gradleProperty("wrapper_group").get()
+                version = providers.gradleProperty("version").get()
                 artifactId = "vanilla"
-                version = "1.0.0-SNAPSHOT"
                 from(components["java"])
                 licenses {
                     license {

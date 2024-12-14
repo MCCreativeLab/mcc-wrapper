@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.paper.block;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCCapturedBlockState;
@@ -29,8 +30,8 @@ public class PaperCapturedBlockState extends MCCCapturedBlockState {
     public PaperCapturedBlockState(@NotNull MCCBlock block, int flag) {
         super(block, flag);
 
-        World world = conversionService.unwrap(block.getLocation().world(), new TypeToken<>() {});
-        Location location = conversionService.unwrap(block.getLocation(), new TypeToken<>() {});
+        World world = BukkitAdapter.unwrap(block.getLocation().world(), new TypeToken<>() {});
+        Location location = BukkitAdapter.unwrap(block.getLocation(), new TypeToken<>() {});
         CraftBlockState craftBlockState = (CraftBlockState) world.getBlockAt(location).getState(true);
         try {
             bukkitBlockState = createProxy(craftBlockState.getClass(), craftBlockState);
