@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,7 +90,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public MCCEntity dropItemsNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback) {
+    public MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
@@ -96,22 +98,22 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         double ys = (handle.random.nextFloat() * 0.5F) + 0.25D;
         double zs = (handle.random.nextFloat() * 0.5F) + 0.25D;
         location = location.add(xs, ys, zs);
-        return this.dropItems(location, item, dropCallback);
+        return this.dropItem(location, item, dropCallback);
     }
 
     @Override
-    public MCCEntity dropItems(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback) {
+    public MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
         ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
         entity.pickupDelay = 10;
-        MCCEntity mccEntity = conversionService.wrap(entity);
+        MCCItemEntity mccEntity = conversionService.wrap(entity);
         if (dropCallback != null) {
             dropCallback.accept(mccEntity);
         }
         getHandle().addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        return conversionService.wrap(mccEntity);
+        return mccEntity;
     }
 
     @Override

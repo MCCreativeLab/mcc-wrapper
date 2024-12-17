@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.StonecutterBlock;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ import java.util.stream.Stream;
 
 public class ConverterTests extends TestBase {
 
-    private record TestEntry<A, T extends A, F>(Class<A> apiType, MCCConverter<F, T> converter, T implObject,
+    private record TestEntry<A, T extends A, F>(Class<A> apiType, @Nullable MCCConverter<F, T> converter, T implObject,
                                                 F nativeObject, boolean shouldRegister) {
         private void register() {
             if (shouldRegister) {
@@ -38,15 +39,19 @@ public class ConverterTests extends TestBase {
             }
         }
 
+        public Class<F> getNativeType(){
+            return converter != null ? converter.nativeMinecraftType() : (Class<F>) nativeObject.getClass();
+        }
+
         @Override
         public String toString() {
             return "TestEntry{" +
-                "apiType=" + apiType.getSimpleName() +
-                ", implType=" + converter.apiImplementationClass().getSimpleName() +
-                ", nativeType=" + converter.nativeMinecraftType().getSimpleName() +
-                ", implObject=" + implObject +
-                ", nativeObject=" + nativeObject +
-                '}';
+                    "apiType=" + apiType.getSimpleName() +
+                    ", implType=" + (converter != null ? converter.apiImplementationClass().getSimpleName() : "null") +
+                    ", nativeType=" + (converter != null ? converter.nativeMinecraftType().getSimpleName() : "null") +
+                    ", implObject=" + implObject +
+                    ", nativeObject=" + nativeObject +
+                    '}';
         }
     }
 
@@ -77,8 +82,13 @@ public class ConverterTests extends TestBase {
     }
 
     @Test
-    public void testNoNullEntriesInMapping() {
+    public void testConvertPrimitive() {
+        boolean value = false;
+        boolean converted = MCCPlatform.getInstance().getConversionService().wrap(value);
+        Optional<Boolean> convertedOptional = MCCPlatform.getInstance().getConversionService().wrap(Optional.of(false));
 
+        Assertions.assertEquals(value, converted);
+        Assertions.assertEquals(Optional.of(false), convertedOptional);
     }
 
     @ParameterizedTest
@@ -98,7 +108,7 @@ public class ConverterTests extends TestBase {
     @ParameterizedTest
     @MethodSource("testInputs")
     void testSimpleUnWrap(TestEntry<?, ?, ?> testEntry) {
-        var unwrapped = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.implObject(), testEntry.converter().nativeMinecraftType());
+        var unwrapped = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.implObject(), testEntry.getNativeType());
         Assertions.assertEquals(testEntry.nativeObject(), unwrapped, "Entry: " + testEntry);
     }
 
