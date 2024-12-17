@@ -90,7 +90,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback) {
+    public MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
@@ -102,7 +102,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback) {
+    public MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
         Preconditions.checkArgument(location != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
