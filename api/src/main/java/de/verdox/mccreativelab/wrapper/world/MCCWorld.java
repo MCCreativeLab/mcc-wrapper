@@ -125,7 +125,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param dropCallback the function to be run before the entity is spawned.
      * @return ItemDrop entity created as a result of this method
      */
-    MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
+    MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback);
 
     /**
      * Drops an item at the specified {@link MCCLocation} with a random offset
@@ -136,7 +136,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param dropCallback the function to be run before the entity is spawned.
      * @return ItemDrop entity created as a result of this method
      */
-    MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
+    MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback);
 
 
     /**
