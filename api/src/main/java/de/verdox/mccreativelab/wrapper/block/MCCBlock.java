@@ -75,7 +75,7 @@ public final class MCCBlock implements MCCKeyedWrapper {
 
     public void dropBlockLoot(@Nullable MCCEntity entity, @Nullable MCCItemStack tool) {
         for (MCCItemStack drop : getBlockState().getDrops(getLocation(), entity, tool)) {
-            getLocation().world().dropItemsNaturally(getLocation(), drop);
+            getLocation().world().dropItemNaturally(getLocation(), drop);
         }
     }
 

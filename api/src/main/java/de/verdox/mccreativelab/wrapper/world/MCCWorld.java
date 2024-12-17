@@ -147,7 +147,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param item     ItemStack to drop
      * @return ItemDrop entity created as a result of this method
      */
-    default MCCItemEntity dropItemsNaturally(MCCLocation location, MCCItemStack item) {
+    default MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item) {
         return dropItemNaturally(location, item, null);
     }
 
