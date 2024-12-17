@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
@@ -124,7 +125,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param dropCallback the function to be run before the entity is spawned.
      * @return ItemDrop entity created as a result of this method
      */
-    MCCEntity dropItemsNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
+    MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
 
     /**
      * Drops an item at the specified {@link MCCLocation} with a random offset
@@ -135,7 +136,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param dropCallback the function to be run before the entity is spawned.
      * @return ItemDrop entity created as a result of this method
      */
-    MCCEntity dropItems(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
+    MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCEntity> dropCallback);
 
 
     /**
@@ -146,8 +147,8 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param item     ItemStack to drop
      * @return ItemDrop entity created as a result of this method
      */
-    default MCCEntity dropItemsNaturally(MCCLocation location, MCCItemStack item) {
-        return dropItemsNaturally(location, item, null);
+    default MCCItemEntity dropItemsNaturally(MCCLocation location, MCCItemStack item) {
+        return dropItemNaturally(location, item, null);
     }
 
     /**
