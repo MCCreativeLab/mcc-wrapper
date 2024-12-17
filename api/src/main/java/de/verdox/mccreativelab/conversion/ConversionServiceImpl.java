@@ -57,13 +57,23 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        return conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .findAny().orElseThrow(() -> new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type."));
+                .findAny().orElse(null);
+
+        if (result != null) {
+            return result;
+        }
+
+        try {
+            return (T) nativeObject;
+        } catch (ClassCastException e) {
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+        }
     }
 
     @Override
@@ -72,8 +82,32 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        MCCConverter<F, T> converter = (MCCConverter<F, T>) conversionCache.getValue(implementedApiObject.getClass());
-        if (converter == null) {
+        MCCConverter<F, T> converter;
+        MCCConverter.ConversionResult<F> result = null;
+        // First we use the converter the object type is mapped to in the conversion cache
+        if ((converter = (MCCConverter<F, T>) conversionCache.getValue(implementedApiObject.getClass())) != null && (result = converter.unwrap(implementedApiObject)).result().isDone()) {
+            try {
+                return result.value();
+            } catch (ClassCastException e) {
+                throw new IllegalStateException("The found converter for the implemented api type " + implementedApiObject.getClass() + " was able to unwrap the provided object but failed produced a ClassCastException because the native type of the converter that was used is different from what was expected", e);
+            }
+        }
+        // If the produced result is not null but also not done we throw a specific exception for that
+        else if (result != null) {
+            throw new IllegalStateException("The found converter could not provide a valid result for the implemented api type " + implementedApiObject.getClass());
+        }
+
+        // At this point no converter was found
+        // Maybe F = T so at last we try to return it directly. If that does not work also we throw the NoConverterFoundException
+        try{
+            return (F) implementedApiObject;
+        }
+        catch (ClassCastException e){
+            throw new NoConverterFoundException("Could not find a converter to wrap the api type " + implementedApiObject + " (" + implementedApiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+        }
+
+
+/*        if (converter == null) {
             throw new NoConverterFoundException("Could not find a converter to wrap the api type " + implementedApiObject + " (" + implementedApiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
         }
         MCCConverter.ConversionResult<F> result = converter.unwrap(implementedApiObject);
@@ -85,12 +119,12 @@ public class ConversionServiceImpl implements ConversionService {
             }
         } else {
             throw new IllegalStateException("The found converter could not provide a valid result for the implemented api type " + implementedApiObject.getClass());
-        }
+        }*/
     }
 
     @Override
     public <A1, A2> A2 apiTypeToOtherApiType(A1 apiType, ConversionService conversionService) {
-        if(conversionService.equals(this)){
+        if (conversionService.equals(this)) {
             throw new IllegalArgumentException("The provided conversion service is identical to this conversion service.");
         }
         if (apiType == null) {
