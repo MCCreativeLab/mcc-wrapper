@@ -7,7 +7,11 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,13 +40,13 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     private R unwrap(T value) {
         if (value == null)
             return null;
-        return (R) conversionService.unwrap(value);
+        return conversionService.unwrap(value);
     }
 
     private T wrap(R value) {
         if (value == null)
             return null;
-        return (T) conversionService.wrap(value);
+        return conversionService.wrap(value);
     }
 
     private ResourceLocation unwrap(Key key) {
@@ -99,7 +103,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public T getOrThrow(MCCTypedKey<T> key) {
-        return (T) conversionService.wrap(handle.getOrThrow(unwrap(key)));
+        return conversionService.wrap(handle.getOrThrow(unwrap(key)));
     }
 
     @Override
@@ -162,10 +166,16 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     public Stream<MCCTag<T>> getTagNames() {
         return handle.getTagNames().map(rTagKey -> conversionService.wrap(rTagKey, new TypeToken<MCCTag<T>>() {}));
     }
-    
+
 
     @Override
     public Stream<Pair<MCCTag<T>, MCCReferenceSet<T>>> getTags() {
         return handle.getTags().map(pair -> Pair.of(conversionService.wrap(pair.getFirst(), new TypeToken<>() {}), conversionService.wrap(pair.getSecond(), new TypeToken<>() {})));
+    }
+
+    @Override
+    public MCCReference<T> register(MCCTypedKey<T> key, T value) {
+        WritableRegistry<R> writableRegistry = (WritableRegistry<R>) handle;
+        return conversionService.wrap(writableRegistry.register(conversionService.unwrap(key), conversionService.unwrap(value), RegistrationInfo.BUILT_IN));
     }
 }

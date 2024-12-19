@@ -41,6 +41,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
 import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
@@ -54,11 +55,13 @@ import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,11 +74,15 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSTypedKeyFactory typedKeyFactory;
     protected final ConversionService conversionService;
     protected final MCCContainerFactory containerFactory;
+    protected final NMSRegistryStorage registryStorage;
+    protected final NMSLifecycleTrigger lifecycleTrigger;
 
     public NMSPlatform() {
         this.typedKeyFactory = new NMSTypedKeyFactory();
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory();
+        this.registryStorage = new NMSRegistryStorage();
+        this.lifecycleTrigger = new NMSLifecycleTrigger();
     }
 
     @Override
@@ -142,6 +149,16 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public void shutdown() {
         MinecraftServer.getServer().halt(false);
+    }
+
+    @Override
+    public MCCRegistryStorage getRegistryStorage() {
+        return registryStorage;
+    }
+
+    @Override
+    public MCCLifecycleTrigger getLifecycleTrigger() {
+        return lifecycleTrigger;
     }
 
     @Override
@@ -250,7 +267,7 @@ public class NMSPlatform implements MCCPlatform {
 
     private void registerEnumConverters() {
         conversionService.registerConverterForNewImplType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
-        conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(net.minecraft.world.entity.EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
+        conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
         conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
         conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
     }

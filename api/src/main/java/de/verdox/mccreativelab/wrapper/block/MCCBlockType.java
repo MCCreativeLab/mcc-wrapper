@@ -1,12 +1,17 @@
 package de.verdox.mccreativelab.wrapper.block;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.vserializer.generic.Serializer;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +23,7 @@ import java.util.List;
 @MCCInstantiationSource(sourceClasses = MCCChunk.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
 public interface MCCBlockType extends MCCKeyedWrapper {
+    Serializer<MCCBlockType> SERIALIZER = MCCKeyedWrapper.createSerializer("block", new TypeToken<>() {});
 
     /**
      * Changes a block at the provided location to this block type
@@ -51,6 +57,10 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      * @return the default block state
      */
     MCCBlockState getDefaultState();
+
+    default int getIndexOfState(MCCBlockState mccBlockState){
+        return getAllBlockStates().indexOf(mccBlockState);
+    }
 
     /**
      * Returns the sound group of this block type
@@ -110,4 +120,9 @@ public interface MCCBlockType extends MCCKeyedWrapper {
     //TODO: 
     // - Piston Push Reaction
     // - Light Level
+
+    @Override
+    default Key getRegistryKey(){
+        return MCCRegistries.BLOCK_REGISTRY.key();
+    }
 }

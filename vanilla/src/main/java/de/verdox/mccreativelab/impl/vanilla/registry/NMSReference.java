@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
 
 import java.util.Optional;
 
@@ -24,6 +25,6 @@ public class NMSReference<T> extends MCCHandle<Holder<?>> implements MCCReferenc
 
     @Override
     public T get() {
-        return (T) MCCPlatform.getInstance().getConversionService().wrap(handle.value());
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.value());
     }
 }

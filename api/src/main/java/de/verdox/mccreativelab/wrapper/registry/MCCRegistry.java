@@ -145,7 +145,7 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @param value the id
      * @return the reference as optional
      */
-    default Optional<MCCReference<T>> getReference(T value){
+    default Optional<MCCReference<T>> getReference(T value) {
         MCCTypedKey<T> key = getTypedKey(value).get();
         return getReference(key);
     }
@@ -203,4 +203,12 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @return all tags and references
      */
     Stream<Pair<MCCTag<T>, MCCReferenceSet<T>>> getTags();
+
+    /**
+     * Used to register a new value to this registry. Works only when the registry is not frozen yet.
+     * @param key the key for this value
+     * @param value the value
+     * @return the reference
+     */
+    MCCReference<T> register(MCCTypedKey<T> key, T value);
 }

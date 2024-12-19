@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
+import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -52,6 +53,7 @@ public class NMSTypedKey<T,F> extends MCCHandle<ResourceKey<F>> implements MCCTy
         if (handle.registry().equals(ResourceLocation.tryBuild("minecraft", "root"))) {
             registry = BuiltInRegistries.REGISTRY;
         } else {
+            MCCPlatform.getInstance().getRegistryStorage().getRegistry(conversionService.wrap(handle.registryKey()));
             registry = BuiltInRegistries.REGISTRY.get(handle.registry());
         }
 

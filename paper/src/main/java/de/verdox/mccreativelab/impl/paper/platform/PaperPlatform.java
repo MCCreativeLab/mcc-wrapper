@@ -17,7 +17,9 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.*;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import io.papermc.paper.adventure.PaperAdventure;
+import me.lucko.spark.paper.PaperPlatformInfo;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
@@ -30,15 +32,13 @@ import java.util.logging.Logger;
 public class PaperPlatform extends NMSPlatform {
     private static final Logger LOGGER = Logger.getLogger(PaperPlatform.class.getSimpleName());
 
-
-    protected final JavaPlugin javaPlugin;
     private final PaperBlockSoundSettings blockSoundSettings = new PaperBlockSoundSettings();
     private final PaperBlockHardnessSettings paperBlockHardnessSettings = new PaperBlockHardnessSettings();
     private final PaperFurnaceSettings paperFurnaceSettings = new PaperFurnaceSettings();
     private final ConversionService bukkitConversionService = new ConversionServiceImpl();
+    private final PaperLifecycleListener paperLifecycleListener = new PaperLifecycleListener();
 
-    public PaperPlatform(JavaPlugin javaPlugin) {
-        this.javaPlugin = javaPlugin;
+    public PaperPlatform() {
         LOGGER.info("Setting up Paper Platform");
     }
 
@@ -73,11 +73,12 @@ public class PaperPlatform extends NMSPlatform {
         LOGGER.info("Paper Platform initialized");
     }
 
-    public void enableListeners() {
+    public void enableListeners(JavaPlugin javaPlugin) {
         paperFurnaceSettings.initVanillaBurnDurations();
         Bukkit.getPluginManager().registerEvents(paperBlockHardnessSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
+        Bukkit.getPluginManager().registerEvents(paperLifecycleListener, javaPlugin);
     }
 
     public ConversionService getBukkitConversionService() {
