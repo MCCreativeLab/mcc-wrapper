@@ -9,13 +9,15 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":vanilla"))
+    compileOnly(project(":api"))
+    compileOnly(project(":vanilla"))
     implementation("net.bytebuddy:byte-buddy:1.15.10")
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation(project(":api"))
+    testImplementation(project(":vanilla"))
 }
 
 sourceSets {
@@ -37,6 +39,7 @@ publishing {
                 groupId = providers.gradleProperty("wrapper_group").get()
                 version = providers.gradleProperty("version").get()
                 artifactId = "paper"
+                //artifact(tasks.named("reobfJar"))
                 from(components["java"])
                 licenses {
                     license {
