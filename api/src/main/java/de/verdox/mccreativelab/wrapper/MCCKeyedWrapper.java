@@ -20,7 +20,7 @@ public interface MCCKeyedWrapper extends Keyed, MCCWrapped {
         return SerializerBuilder.create(id, type)
                 .constructor(
                         new SerializableField<>("key", Serializer.Primitive.STRING, wrapped -> wrapped.key().asString()),
-                        new SerializableField<>("registry", Serializer.Primitive.STRING, wrapped -> wrapped.key().asString()),
+                        new SerializableField<>("registry", Serializer.Primitive.STRING, wrapped -> wrapped.getRegistryKey().asString()),
                         (keyString, registryKeyString) -> {
                             if (!Key.parseable(keyString)) {
                                 throw new IllegalStateException("No valid minecraft key format for the value key: " + keyString);

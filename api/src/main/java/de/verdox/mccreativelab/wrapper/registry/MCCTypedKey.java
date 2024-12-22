@@ -7,6 +7,7 @@ import net.kyori.adventure.key.Keyed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -49,4 +50,11 @@ public interface MCCTypedKey<T> extends Keyed, MCCWrapped {
      * @return the reference
      */
     MCCReference<T> getAsReference();
+
+    /**
+     * Gets a reference of this typed key that wraps the underlying element.
+     *
+     * @return the reference
+     */
+    Optional<MCCReference<T>> getAsOptionalReference();
 }

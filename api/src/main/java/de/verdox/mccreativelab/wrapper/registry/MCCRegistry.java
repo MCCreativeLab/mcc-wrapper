@@ -34,14 +34,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
     Optional<MCCTypedKey<T>> getTypedKey(T value);
 
     /**
-     * Returns the raw id of the element in the registry
-     *
-     * @param value the value
-     * @return the raw id
-     */
-    int getId(T value);
-
-    /**
      * Gets the value associated with the provided key or null if the key is unknown to the registry
      *
      * @param key the provided key
@@ -102,13 +94,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
     Set<Key> keySet();
 
     /**
-     * Returns the entry set of this registry
-     *
-     * @return the entry set
-     */
-    Set<Map.Entry<MCCTypedKey<T>, T>> entrySet();
-
-    /**
      * Returns the typed key set of the registry
      *
      * @return the typed key set
@@ -130,14 +115,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @return true if the key is known to the registry
      */
     boolean containsKey(MCCTypedKey<T> key);
-
-    /**
-     * Gets the reference associated with the provided id
-     *
-     * @param rawId the id
-     * @return the reference as optional
-     */
-    Optional<MCCReference<T>> getReference(int rawId);
 
     /**
      * Gets the reference associated with the provided id
@@ -196,13 +173,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @return a stream of all tags
      */
     Stream<MCCTag<T>> getTagNames();
-
-    /**
-     * Returns all tags and references that are registered to this registry as a stream
-     *
-     * @return all tags and references
-     */
-    Stream<Pair<MCCTag<T>, MCCReferenceSet<T>>> getTags();
 
     /**
      * Used to register a new value to this registry. Works only when the registry is not frozen yet.

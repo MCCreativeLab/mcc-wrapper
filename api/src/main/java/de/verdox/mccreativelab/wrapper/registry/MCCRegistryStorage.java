@@ -5,21 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 public interface MCCRegistryStorage {
     /**
-     * Finds a registry by its key
-     * @param registryKey the registry key
-     * @return the found registry or null
-     * @param <T> the generic type
-     */
-    @Nullable
-    <T> MCCRegistry<T> getRegistry(MCCTypedKey<MCCRegistry<T>> registryKey);
-
-    /**
      * Finds a registry in the native minecraft main registry of registries
      * @param registryKey the registry key
      * @return the found registry or null
      * @param <T> the generic type
      */
-    @Nullable
     <T> MCCRegistry<T> getMinecraftRegistry(Key registryKey);
 
     /**
@@ -27,7 +17,7 @@ public interface MCCRegistryStorage {
      * @return the new registry
      * @param <T> the generic type
      */
-    <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key);
+    <T> MCCRegistry<T> createMinecraftRegistry(Key key);
 
     /**
      * Custom registries are not frozen when minecraft tries to freeze them.

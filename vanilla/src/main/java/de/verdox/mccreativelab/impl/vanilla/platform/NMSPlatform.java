@@ -112,6 +112,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCReferenceSet.class, NMSReferenceSet.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEitherReference.class, NMSEitherReference.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistry.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistryLookup.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCContainer.class, NMSContainer.CONVERTER);
 
         registerMenuTypes();

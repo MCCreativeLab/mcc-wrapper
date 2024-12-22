@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.minecraft.core.Holder;
-import net.minecraft.core.MappedRegistry;
 
 import java.util.Optional;
 
@@ -20,7 +18,7 @@ public class NMSReference<T> extends MCCHandle<Holder<?>> implements MCCReferenc
 
     @Override
     public Optional<MCCTypedKey<T>> unwrapKey() {
-        return MCCPlatform.getInstance().getConversionService().wrap(handle.unwrapKey(), new TypeToken<>() {});
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.unwrapKey());
     }
 
     @Override
