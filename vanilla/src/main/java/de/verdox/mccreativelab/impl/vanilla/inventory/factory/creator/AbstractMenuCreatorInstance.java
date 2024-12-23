@@ -18,7 +18,7 @@ public abstract class AbstractMenuCreatorInstance<F extends MCCContainerMenu<?, 
         return MCCPlatform.getInstance().getConversionService();
     }
 
-    protected <F extends MCCContainerMenu<?, ?>> F openViaNMSMenuProvider(ServerPlayer serverPlayer, net.kyori.adventure.text.Component title, TriFunction<Integer, Inventory, Player, AbstractContainerMenu> vanillaCreateMenuFunction) {
+    protected F openViaNMSMenuProvider(ServerPlayer serverPlayer, net.kyori.adventure.text.Component title, TriFunction<Integer, Inventory, Player, AbstractContainerMenu> vanillaCreateMenuFunction) {
         serverPlayer.openMenu(new MenuProvider() {
             @Override
             public Component getDisplayName() {

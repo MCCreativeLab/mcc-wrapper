@@ -10,6 +10,7 @@ import de.verdox.mccreativelab.impl.paper.block.settings.PaperFurnaceSettings;
 import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.paper.platform.converter.CraftBlockStateConverter;
+import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
 import de.verdox.mccreativelab.wrapper.block.MCCCapturedBlockState;
@@ -18,6 +19,7 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
 import io.papermc.paper.adventure.PaperAdventure;
 import me.lucko.spark.paper.PaperPlatformInfo;
 import net.kyori.adventure.text.Component;
@@ -37,6 +39,7 @@ public class PaperPlatform extends NMSPlatform {
     private final PaperFurnaceSettings paperFurnaceSettings = new PaperFurnaceSettings();
     private final ConversionService bukkitConversionService = new ConversionServiceImpl();
     private final PaperLifecycleListener paperLifecycleListener = new PaperLifecycleListener();
+    private PaperTaskScheduler paperTaskScheduler;
 
     public PaperPlatform() {
         LOGGER.info("Setting up Paper Platform");
@@ -75,6 +78,7 @@ public class PaperPlatform extends NMSPlatform {
 
     public void enableListeners(JavaPlugin javaPlugin) {
         paperFurnaceSettings.initVanillaBurnDurations();
+        this.paperTaskScheduler = new PaperTaskScheduler(javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperBlockHardnessSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
@@ -99,5 +103,10 @@ public class PaperPlatform extends NMSPlatform {
     @Override
     public @NotNull MCCBlockSoundSettings getBlockSoundSettings() {
         return blockSoundSettings;
+    }
+
+    @Override
+    public @NotNull MCCTaskManager getTaskManager() {
+        return paperTaskScheduler;
     }
 }

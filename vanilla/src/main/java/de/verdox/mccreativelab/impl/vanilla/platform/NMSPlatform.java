@@ -15,10 +15,7 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.container.NMSPlayerI
 import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
-import de.verdox.mccreativelab.impl.vanilla.platform.converter.AttributeModifierConverter;
-import de.verdox.mccreativelab.impl.vanilla.platform.converter.GeneratedConverters;
-import de.verdox.mccreativelab.impl.vanilla.platform.converter.ResourceLocationConverter;
-import de.verdox.mccreativelab.impl.vanilla.platform.converter.SoundConverter;
+import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
@@ -35,6 +32,8 @@ import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
+import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
+import de.verdox.mccreativelab.wrapper.inventory.MCCMenuTypes;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
@@ -55,16 +54,20 @@ import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -80,8 +83,22 @@ public class NMSPlatform implements MCCPlatform {
     public NMSPlatform() {
         this.typedKeyFactory = new NMSTypedKeyFactory();
         this.conversionService = new ConversionServiceImpl();
-        this.containerFactory = new NMSContainerFactory();
+        this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
+        this.lifecycleTrigger = new NMSLifecycleTrigger();
+    }
+
+    /**
+     * We use this constructor for testing purposes only. Our Test Suite uses a different bootstrapping mechanism that skips core parts of the server startup to make the test way faster.
+     * @param fullRegistryAccess The full registry access to the builtin and vanilla registries
+     * @param reloadableRegistries the registry access to the reloadable resources
+     */
+    @VisibleForTesting
+    public NMSPlatform(RegistryAccess.Frozen fullRegistryAccess, RegistryAccess.Frozen reloadableRegistries){
+        this.typedKeyFactory = new NMSTypedKeyFactory();
+        this.conversionService = new ConversionServiceImpl();
+        this.containerFactory = new NMSContainerFactory(this);
+        this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger();
     }
 
@@ -106,6 +123,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(Key.class, new ResourceLocationConverter());
         conversionService.registerConverterForNewImplType(Sound.class, new SoundConverter());
         conversionService.registerConverterForNewImplType(MCCAttributeModifier.class, new AttributeModifierConverter());
+        conversionService.registerConverterForNewImplType(MCCMenuType.class, new MenuTypeConverter());
         conversionService.registerConverterForNewImplType(MCCTypedKey.class, NMSTypedKey.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCReference.class, NMSReference.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCTag.class, NMSTag.CONVERTER);
@@ -194,7 +212,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @Nullable MCCPlayer getOnlinePlayer(@NotNull UUID uuid) {
-        return null;
+        return conversionService.wrap(MinecraftServer.getServer().getPlayerList().getPlayer(uuid));
     }
 
     @Override

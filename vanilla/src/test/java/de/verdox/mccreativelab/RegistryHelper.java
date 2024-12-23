@@ -28,7 +28,6 @@ public final class RegistryHelper {
 
     private static ReloadableServerResources dataPack;
     private static RegistryAccess.Frozen registry;
-    private static Registry<Biome> biomes;
 
     private RegistryHelper() {
     }
@@ -47,13 +46,6 @@ public final class RegistryHelper {
         return RegistryHelper.registry;
     }
 
-    public static Registry<Biome> getBiomes() {
-        if (RegistryHelper.biomes == null) {
-            RegistryHelper.throwError("biomes");
-        }
-        return RegistryHelper.biomes;
-    }
-
     public static RegistryAccess.Frozen createRegistry(FeatureFlagSet featureFlagSet) {
         return RegistryHelper.createLayers(RegistryHelper.createResourceManager(featureFlagSet)).compositeAccess().freeze();
     }
@@ -70,8 +62,6 @@ public final class RegistryHelper {
         RegistryHelper.dataPack = ReloadableServerResources.loadResources(resourceManager, layers, featureFlagSet, Commands.CommandSelection.DEDICATED, 0, MoreExecutors.directExecutor(), MoreExecutors.directExecutor()).join();
         // Bind tags
         RegistryHelper.dataPack.updateRegistryTags();
-        // Biome shortcut
-        RegistryHelper.biomes = RegistryHelper.registry.registryOrThrow(Registries.BIOME);
     }
 
     public static <T extends Keyed> Class<T> updateClass(Class<T> aClass, NamespacedKey key) {

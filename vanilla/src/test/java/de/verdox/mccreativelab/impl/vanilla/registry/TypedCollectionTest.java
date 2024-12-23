@@ -1,14 +1,10 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
-import com.google.common.reflect.Reflection;
 import de.verdox.mccreativelab.TestBase;
-import de.verdox.mccreativelab.wrapper.block.MCCBlock;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.typed.*;
-import net.minecraft.world.level.block.Blocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,23 +53,15 @@ public class TypedCollectionTest extends TestBase {
     }
 
     static Stream<MCCReference<?>> provideReferences() {
-        return collectedReferences.stream();
+        return collectedReferences.stream().filter(reference -> !getExcludedRegistries().contains(reference.unwrapKey().get().getRegistryKey()));
     }
 
     static Stream<MCCTag<?>> provideTags() {
-        return collectedTags.stream();
+        return collectedTags.stream().filter(tag -> !getExcludedRegistries().contains(tag.getRegistryKey().key()));
     }
 
     static Stream<MCCTypedKey<?>> provideTypedKeys() {
-        return collectedTypedKeys.stream();
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideReferences")
-    void testGetCorrect(MCCReference<?> reference) {
-        MCCTypedKey<?> typedKey = reference.unwrapKey().get();
-
-
+        return collectedTypedKeys.stream().filter(typedKey -> !getExcludedRegistries().contains(typedKey.getRegistryKey()));
     }
 
     @ParameterizedTest

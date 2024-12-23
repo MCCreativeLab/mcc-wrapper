@@ -8,6 +8,8 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +25,7 @@ public class NMSContainer extends MCCHandle<Container> implements MCCContainer {
 
     @Override
     public void setItem(int index, @Nullable MCCItemStack stack) {
-        handle.setItem(index, conversionService.unwrap(stack));
+        handle.setItem(index, stack == null ? ItemStack.EMPTY : conversionService.unwrap(stack));
     }
 
     @Override

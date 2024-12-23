@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -13,72 +14,156 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.RecipeManager;
+import org.bukkit.craftbukkit.CraftServer;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
+import java.lang.reflect.Field;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class NMSRegistryStorage implements MCCRegistryStorage {
     private final Map<Key, DelayedFreezingRegistry<?>> CUSTOM_REGISTRIES = new HashMap<>();
+    private final RegistryAccess.Frozen fullRegistryAccess;
+    private final RegistryAccess.Frozen reloadableRegistries;
     private boolean frozen;
+
+    @VisibleForTesting
+    public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, RegistryAccess.Frozen reloadableRegistries) {
+        this.fullRegistryAccess = fullRegistryAccess;
+        this.reloadableRegistries = reloadableRegistries;
+    }
+
+    public NMSRegistryStorage() {
+        this(MinecraftServer.getServer().registries().compositeAccess(), MinecraftServer.getServer().reloadableRegistries().get());
+    }
 
     @Override
     public @Nullable <T> MCCRegistry<T> getMinecraftRegistry(Key registryKey) {
-        if(registryKey.equals(Key.key("minecraft", "root"))){
-            return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY);
+        MCCRegistry<T> registry = searchForRegistry(registryKey);
+        if (registry == null) {
+            throw new IllegalStateException("The registry " + registryKey + " does not exist");
         }
-        
-        Registry<? extends Registry<?>> mainRegistry = BuiltInRegistries.REGISTRY;
-        ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
-        
-        Registry<?> foundBuiltinRegistry = mainRegistry.get(registryResourceKey.location());
-        if(foundBuiltinRegistry != null){
-            return new NMSRegistry<>(foundBuiltinRegistry);
-        }
-
-        Optional<? extends HolderLookup.RegistryLookup<?>> registryLookup = VanillaRegistries.createLookup().lookup(registryResourceKey);
-
-        if(registryLookup.isPresent()){
-            return new NMSRegistryLookup<>(registryLookup.get());
-        }
-        
-        throw new IllegalStateException("The registry "+registryKey+" does not exist");
+        return registry;
     }
 
     @Override
     @MCCReflective
-    public <T> MCCRegistry<T> createMinecraftRegistry(Key key) {
-        if(frozen){
+    public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key) {
+        if (frozen) {
             throw new IllegalStateException("The minecraft registries are already frozen. You cannot create a new registry now. The custom registries are frozen on the 'Lifecycle.BEFORE_WORLD_LOAD' platform trigger.");
         }
-        if(CUSTOM_REGISTRIES.containsKey(key) || getMinecraftRegistry(key) != null){
-            throw new IllegalStateException("A minecraft registry with the key "+key+" does already exist.");
-        }
-/*
-        MappedRegistry<WritableRegistry<?>> mainRegistry = (MappedRegistry<WritableRegistry<?>>) BuiltInRegistries.REGISTRY;
-        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key, new TypeToken<>() {});
-        if (mainRegistry.containsKey(registryLocation)) {
-            throw new IllegalArgumentException("A registry with the key " + key + " does already exist");
-        }
-        ResourceKey<Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
-        try {
-            mainRegistry.validateWrite((ResourceKey) registryKey);
-        } catch (IllegalStateException e) {
-            throw new IllegalArgumentException("The platform registries are already frozen. Please create new registries when the platform is bootstrapped.");
+        if (CUSTOM_REGISTRIES.containsKey(key) || searchForRegistry(key) != null) {
+            throw new IllegalStateException("A minecraft registry with the key " + key + " does already exist.");
         }
 
-
-        CUSTOM_REGISTRIES.add(mappedRegistry);
-        return MCCPlatform.getInstance().getConversionService().wrap(mainRegistry.register((ResourceKey) registryKey, mappedRegistry, RegistrationInfo.BUILT_IN));*/
         ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
-        ResourceKey<Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
+        ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
         DelayedFreezingRegistry<T> mappedRegistry = new DelayedFreezingRegistry<>(registryKey, Lifecycle.stable());
         CUSTOM_REGISTRIES.put(key, mappedRegistry);
-        return MCCPlatform.getInstance().getConversionService().wrap(mappedRegistry);
+
+        Holder<DelayedFreezingRegistry<T>> holder = new DelayedFreezingRegistryHolder<>(mappedRegistry, registryLocation, registryKey);
+
+        return MCCPlatform.getInstance().getConversionService().wrap(holder);
+    }
+
+    @Nullable
+    private <T> MCCRegistry<T> searchForRegistry(Key registryKey) {
+        if (registryKey.equals(Key.key("minecraft", "root"))) {
+            return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY);
+        }
+
+        if (CUSTOM_REGISTRIES.containsKey(registryKey)) {
+            return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
+        }
+
+        ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
+
+        Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.registry(registryResourceKey);
+
+        if (optionalFoundRegistry.isEmpty()) {
+            optionalFoundRegistry = reloadableRegistries.registry(registryResourceKey);
+        }
+
+        return optionalFoundRegistry.<MCCRegistry<T>>map(objects -> new NMSRegistryLookup<>(objects.asLookup())).orElse(null);
     }
 
     @Override
     public void freezeCustomRegistries() {
         frozen = true;
         CUSTOM_REGISTRIES.values().forEach(DelayedFreezingRegistry::delayedFreeze);
+    }
+
+    private record DelayedFreezingRegistryHolder<T>(DelayedFreezingRegistry<T> mappedRegistry,
+                                                    ResourceLocation registryLocation,
+                                                    ResourceKey<? extends Registry<T>> registryKey) implements Holder<DelayedFreezingRegistry<T>> {
+
+        @Override
+        public DelayedFreezingRegistry<T> value() {
+            return mappedRegistry;
+        }
+
+        @Override
+        public boolean isBound() {
+            return true;
+        }
+
+        @Override
+        public boolean is(ResourceLocation id) {
+            return registryLocation.equals(id);
+        }
+
+        @Override
+        public boolean is(ResourceKey<DelayedFreezingRegistry<T>> key) {
+            return key.equals(registryKey);
+        }
+
+        @Override
+        public boolean is(Predicate<ResourceKey<DelayedFreezingRegistry<T>>> predicate) {
+            ResourceKey<DelayedFreezingRegistry<T>> cast = (ResourceKey<DelayedFreezingRegistry<T>>) registryKey;
+            return predicate.test(cast);
+        }
+
+        @Override
+        public boolean is(Holder<DelayedFreezingRegistry<T>> entry) {
+            return mappedRegistry.equals(entry.value()) && entry.is(registryLocation);
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.REFERENCE;
+        }
+
+        @Override
+        public Either<ResourceKey<DelayedFreezingRegistry<T>>, DelayedFreezingRegistry<T>> unwrap() {
+            ResourceKey<DelayedFreezingRegistry<T>> cast = (ResourceKey<DelayedFreezingRegistry<T>>) registryKey;
+            return Either.left(cast);
+        }
+
+        @Override
+        public Optional<ResourceKey<DelayedFreezingRegistry<T>>> unwrapKey() {
+            ResourceKey<DelayedFreezingRegistry<T>> cast = (ResourceKey<DelayedFreezingRegistry<T>>) registryKey;
+            return Optional.of(cast);
+        }
+
+        @Override
+        public boolean is(TagKey<DelayedFreezingRegistry<T>> tag) {
+            return false;
+        }
+
+        @Override
+        public Stream<TagKey<DelayedFreezingRegistry<T>>> tags() {
+            return Stream.empty();
+        }
+
+        @Override
+        public boolean canSerializeIn(HolderOwner<DelayedFreezingRegistry<T>> owner) {
+            return true;
+        }
     }
 }

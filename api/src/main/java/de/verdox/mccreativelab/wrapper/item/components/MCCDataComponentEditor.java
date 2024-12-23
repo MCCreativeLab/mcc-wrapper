@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Used to edit an item component
@@ -36,14 +37,13 @@ public interface MCCDataComponentEditor<R, T extends MCCDataComponentType<R>> {
     @NotNull R create();
 
     /**
-     *
-     * @param consumer
+     * Creates a new component data and applies some changes to it and returns the object or a new one.
+     * @param function the change function
      */
-    default void with(@NotNull Consumer<R> consumer) {
-        Objects.requireNonNull(consumer);
+    default void with(@NotNull Function<R, R> function) {
+        Objects.requireNonNull(function);
         R component = create();
-        consumer.accept(component);
-        set(component);
+        set(function.apply(component));
     }
 
     /**

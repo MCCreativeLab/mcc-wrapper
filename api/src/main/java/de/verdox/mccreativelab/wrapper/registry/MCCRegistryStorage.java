@@ -17,7 +17,7 @@ public interface MCCRegistryStorage {
      * @return the new registry
      * @param <T> the generic type
      */
-    <T> MCCRegistry<T> createMinecraftRegistry(Key key);
+    <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key);
 
     /**
      * Custom registries are not frozen when minecraft tries to freeze them.

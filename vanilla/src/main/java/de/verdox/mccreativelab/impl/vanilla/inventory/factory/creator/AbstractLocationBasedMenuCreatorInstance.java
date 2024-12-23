@@ -41,29 +41,4 @@ public abstract class AbstractLocationBasedMenuCreatorInstance<F extends MCCLoca
     public MCCLocation getLocation() {
         return mccLocation;
     }
-
-    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithoutDelegate(TriFunction<Integer, Inventory, ContainerLevelAccess, AbstractContainerMenu> nmsMenuCreator) {
-        return mccLocation -> new AbstractLocationBasedMenuCreatorInstance<>(mccLocation) {
-            @Override
-            public F createMenuForPlayer(MCCPlayer player, Component title) {
-                ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess));
-            }
-        };
-    }
-
-    public static <F extends MCCLocatedContainerMenu<?, ?>> Function<MCCLocation, LocationBasedMenuCreatorInstance<F>> createWithDelegate(int containerDataSize, Function4<Integer, Inventory, ContainerLevelAccess, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
-        return mccLocation -> new AbstractLocationBasedMenuCreatorInstance<>(mccLocation) {
-            private final ContainerData containerData = new SimpleContainerData(containerDataSize);
-
-            @Override
-            public F createMenuForPlayer(MCCPlayer player, Component title) {
-                ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, containerLevelAccess, containerData));
-            }
-        };
-    }
-
 }
