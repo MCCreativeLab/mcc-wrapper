@@ -34,14 +34,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
     Optional<MCCTypedKey<T>> getTypedKey(T value);
 
     /**
-     * Returns the raw id of the element in the registry
-     *
-     * @param value the value
-     * @return the raw id
-     */
-    int getId(T value);
-
-    /**
      * Gets the value associated with the provided key or null if the key is unknown to the registry
      *
      * @param key the provided key
@@ -102,13 +94,6 @@ public interface MCCRegistry<T> extends MCCWrapped {
     Set<Key> keySet();
 
     /**
-     * Returns the entry set of this registry
-     *
-     * @return the entry set
-     */
-    Set<Map.Entry<MCCTypedKey<T>, T>> entrySet();
-
-    /**
      * Returns the typed key set of the registry
      *
      * @return the typed key set
@@ -134,18 +119,10 @@ public interface MCCRegistry<T> extends MCCWrapped {
     /**
      * Gets the reference associated with the provided id
      *
-     * @param rawId the id
-     * @return the reference as optional
-     */
-    Optional<MCCReference<T>> getReference(int rawId);
-
-    /**
-     * Gets the reference associated with the provided id
-     *
      * @param value the id
      * @return the reference as optional
      */
-    default Optional<MCCReference<T>> getReference(T value){
+    default Optional<MCCReference<T>> getReference(T value) {
         MCCTypedKey<T> key = getTypedKey(value).get();
         return getReference(key);
     }
@@ -198,9 +175,10 @@ public interface MCCRegistry<T> extends MCCWrapped {
     Stream<MCCTag<T>> getTagNames();
 
     /**
-     * Returns all tags and references that are registered to this registry as a stream
-     *
-     * @return all tags and references
+     * Used to register a new value to this registry. Works only when the registry is not frozen yet.
+     * @param key the key for this value
+     * @param value the value
+     * @return the reference
      */
-    Stream<Pair<MCCTag<T>, MCCReferenceSet<T>>> getTags();
+    MCCReference<T> register(MCCTypedKey<T> key, T value);
 }

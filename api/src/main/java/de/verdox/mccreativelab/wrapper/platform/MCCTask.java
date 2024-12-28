@@ -10,11 +10,10 @@ public interface MCCTask {
     void cancel();
 
     /**
-     * Gets the id of the task
-     *
-     * @return the id
+     * Returns true when this task is running on the tick thread. The tick thread might be different based on the context of the task.
+     * @return true or false
      */
-    long id();
+    boolean runsOnTickThread();
 
     /**
      * Returns true if the task is still running

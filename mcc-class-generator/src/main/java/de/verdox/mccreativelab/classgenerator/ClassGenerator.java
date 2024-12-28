@@ -111,7 +111,7 @@ public class ClassGenerator {
     public static void run() {
         LOGGER.info("Running class generator");
         try {
-            MCCPlatform.INSTANCE.setup(new PaperPlatform(null), MCCPlatform::init);
+            MCCPlatform.INSTANCE.setup(new PaperPlatform(), MCCPlatform::init);
             generateMCCItemComponentWrapper();
             createItemComponentConverters();
             generateMenuTypesClass();

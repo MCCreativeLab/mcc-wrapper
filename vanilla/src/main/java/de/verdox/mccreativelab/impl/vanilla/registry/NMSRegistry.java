@@ -7,7 +7,10 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,63 +30,35 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
         conversionService = MCCPlatform.getInstance().getConversionService();
     }
 
-    private Class<R> getNativeTypeOfRegistry() {
-        if (handle.getAny().isEmpty())
-            return null;
-        return (Class<R>) handle.getAny().get().value().getClass();
-    }
-
     private R unwrap(T value) {
         if (value == null)
             return null;
-        return (R) conversionService.unwrap(value);
+        return conversionService.unwrap(value);
     }
 
     private T wrap(R value) {
         if (value == null)
             return null;
-        return (T) conversionService.wrap(value);
+        return conversionService.wrap(value);
     }
 
     private ResourceLocation unwrap(Key key) {
-        return conversionService.unwrap(key, new TypeToken<>() {
-        });
-    }
-
-    private Key wrap(ResourceLocation resourceLocation) {
-        return conversionService.wrap(resourceLocation, new TypeToken<>() {
-        });
-    }
-
-    private ResourceKey<R> unwrap(MCCTypedKey<T> reference) {
-        return conversionService.unwrap(reference, new TypeToken<>() {
-        });
-    }
-
-    private MCCReference<T> wrap(ResourceKey<R> resourceKey) {
-        return conversionService.wrap(resourceKey, new TypeToken<>() {
-        });
+        return conversionService.unwrap(key);
     }
 
     @Override
     public @Nullable Key getKey(T value) {
-        return wrap(handle.getKey(unwrap(value)));
+        return conversionService.wrap(handle.getKey(unwrap(value)));
     }
 
     @Override
     public Optional<MCCTypedKey<T>> getTypedKey(T value) {
-        return conversionService.wrap(handle.getResourceKey(unwrap(value)), new TypeToken<>() {
-        });
-    }
-
-    @Override
-    public int getId(T value) {
-        return handle.getId(unwrap(value));
+        return conversionService.wrap(handle.getResourceKey(unwrap(value)));
     }
 
     @Override
     public @Nullable T get(@Nullable MCCTypedKey<T> key) {
-        return wrap(handle.get(unwrap(key)));
+        return key.get();
     }
 
     @Override
@@ -93,29 +68,22 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Optional<MCCReference<T>> getAny() {
-        return conversionService.wrap(handle.getAny(), new TypeToken<>() {
-        });
+        return conversionService.wrap(handle.getAny());
     }
 
     @Override
     public T getOrThrow(MCCTypedKey<T> key) {
-        return (T) conversionService.wrap(handle.getOrThrow(unwrap(key)));
+        return key.getAsReference().get();
     }
 
     @Override
     public Set<Key> keySet() {
-        return conversionService.wrap(handle.keySet(), new TypeToken<>() {
-        });
-    }
-
-    @Override
-    public Set<Map.Entry<MCCTypedKey<T>, T>> entrySet() {
-        return conversionService.wrap(handle.entrySet(), new TypeToken<>() {});
+        return conversionService.wrap(handle.keySet());
     }
 
     @Override
     public Set<MCCTypedKey<T>> registryKeySet() {
-        return conversionService.wrap(handle.registryKeySet(), new TypeToken<>() {});
+        return conversionService.wrap(handle.registryKeySet());
     }
 
     @Override
@@ -125,47 +93,42 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public boolean containsKey(MCCTypedKey<T> key) {
-        return handle.containsKey(unwrap(key));
-    }
-
-    @Override
-    public Optional<MCCReference<T>> getReference(int rawId) {
-        return conversionService.wrap(handle.getHolder(rawId), new TypeToken<>() {});
+        return handle.containsKey(ResourceKey.create(ResourceKey.createRegistryKey(unwrap(key.getRegistryKey())), unwrap(key.key())));
     }
 
     @Override
     public Optional<MCCReference<T>> getReference(Key key) {
-        return conversionService.wrap(handle.getHolder(unwrap(key)), new TypeToken<>() {});
+        return conversionService.wrap(handle.getHolder(unwrap(key)));
     }
 
     @Override
     public Optional<MCCReference<T>> getReference(MCCTypedKey<T> key) {
-        return conversionService.wrap(handle.getHolder(unwrap(key)), new TypeToken<>() {});
+        return key.getAsOptionalReference();
     }
 
     @Override
     public MCCReference<T> wrapAsReference(T value) {
-        return conversionService.wrap(handle.wrapAsHolder(unwrap(value)), new TypeToken<>() {});
+        return conversionService.wrap(handle.wrapAsHolder(unwrap(value)));
     }
 
     @Override
     public Optional<MCCReferenceSet<T>> getTag(MCCTag<T> tag) {
-        return conversionService.wrap(handle.getTag(conversionService.unwrap(tag, new TypeToken<>() {})), new TypeToken<>() {});
+        return conversionService.wrap(handle.getTag(conversionService.unwrap(tag)));
     }
 
     @Override
     public MCCReferenceSet<T> getOrCreateTag(MCCTag<T> tag) {
-        return conversionService.wrap(handle.getOrCreateTag(conversionService.unwrap(tag, new TypeToken<>() {})), new TypeToken<>() {});
+        return conversionService.wrap(handle.getOrCreateTag(conversionService.unwrap(tag)));
     }
 
     @Override
     public Stream<MCCTag<T>> getTagNames() {
-        return handle.getTagNames().map(rTagKey -> conversionService.wrap(rTagKey, new TypeToken<MCCTag<T>>() {}));
+        return handle.getTagNames().map(conversionService::wrap);
     }
-    
 
     @Override
-    public Stream<Pair<MCCTag<T>, MCCReferenceSet<T>>> getTags() {
-        return handle.getTags().map(pair -> Pair.of(conversionService.wrap(pair.getFirst(), new TypeToken<>() {}), conversionService.wrap(pair.getSecond(), new TypeToken<>() {})));
+    public MCCReference<T> register(MCCTypedKey<T> key, T value) {
+        WritableRegistry<R> writableRegistry = (WritableRegistry<R>) handle;
+        return conversionService.wrap(writableRegistry.register(conversionService.unwrap(key), conversionService.unwrap(value), RegistrationInfo.BUILT_IN));
     }
 }

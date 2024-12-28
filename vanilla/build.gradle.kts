@@ -9,11 +9,12 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":api"))
+    compileOnly(project(":api"))
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation(project(":api"))
 }
 
 sourceSets {
@@ -23,19 +24,24 @@ sourceSets {
         }
     }
 }
-
 tasks.test {
     useJUnitPlatform()
 }
+
+/*tasks.named<Jar>("reobfJar") {
+    archiveClassifier.set("") // Entfernt den "dev"-Classifier
+}*/
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
             pom {
                 groupId = providers.gradleProperty("wrapper_group").get()
-                version = providers.gradleProperty("version").get()
+                version = providers.gradleProperty("version").get() // Nur für die Veröffentlichung bereinigen
                 artifactId = "vanilla"
                 from(components["java"])
+
+                //artifact(tasks.named("reobfJar"))
                 licenses {
                     license {
                         name = "GNU GENERAL PUBLIC LICENSE Version 3"
@@ -51,5 +57,6 @@ publishing {
                 }
             }
         }
+
     }
 }

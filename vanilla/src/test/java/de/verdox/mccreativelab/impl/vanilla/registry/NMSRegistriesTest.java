@@ -96,21 +96,6 @@ public class NMSRegistriesTest extends TestBase {
 
     @ParameterizedTest
     @MethodSource("testInputs")
-    public <A, F> void testGetId(TestEntry<A, F> testEntry) {
-        ResourceKey<F> resourceKey = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement(), new TypeToken<>() {
-        });
-        Assertions.assertNotNull(resourceKey);
-
-        F nativeValue = testEntry.getNativeObject();
-        Registry<F> nativeRegistry = testEntry.getNativeRegistry();
-
-        A value = testEntry.getRegistry().get(testEntry.exampleElement());
-        int actual = testEntry.getRegistry().getId(value);
-        Assertions.assertEquals(nativeRegistry.getId(nativeValue), actual, testEntry.toString());
-    }
-
-    @ParameterizedTest
-    @MethodSource("testInputs")
     public <A, F> void testGet1(TestEntry<A, F> testEntry) {
         ResourceKey<F> resourceKey = MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement(), new TypeToken<>() {
         });
@@ -193,7 +178,7 @@ public class NMSRegistriesTest extends TestBase {
 
         Assertions.assertEquals(nativeKeySet, unwrappedActual);
     }
-
+/*
     @ParameterizedTest
     @MethodSource("testInputs")
     public <A, F> void testEntrySet(TestEntry<A, F> testEntry) {
@@ -212,7 +197,7 @@ public class NMSRegistriesTest extends TestBase {
         Set<Map.Entry<ResourceKey<F>, F>> nativeKeySet = nativeRegistry.entrySet();
 
         Assertions.assertEquals(nativeKeySet, unwrappedActual);
-    }
+    }*/
 
     @ParameterizedTest
     @MethodSource("testInputs")

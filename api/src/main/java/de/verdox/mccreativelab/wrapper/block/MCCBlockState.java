@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,4 +83,9 @@ public interface MCCBlockState extends MCCKeyedWrapper {
      * @return true if the block type requires correct tools for drops
      */
     boolean requiresCorrectToolForDrops();
+
+    @Override
+    default Key getRegistryKey(){
+        return getBlockType().getRegistryKey();
+    }
 }

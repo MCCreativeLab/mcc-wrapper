@@ -15,7 +15,7 @@ public class TestBase {
         Bootstrap.bootStrap();
         Bootstrap.validate();
         if(!MCCPlatform.INSTANCE.isSetup()) {
-            MCCPlatform.INSTANCE.setup(new PaperPlatform(null), MCCPlatform::init);
+            MCCPlatform.INSTANCE.setup(new PaperPlatform(), MCCPlatform::init);
         }
     }
 }

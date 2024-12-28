@@ -16,7 +16,6 @@ import java.lang.reflect.InvocationTargetException;
 
 public record NMSMCCDataComponentEditor<R, T extends MCCDataComponentType<R>>(DataComponentMap dataComponents,
                                                                               T type) implements MCCDataComponentEditor<R, T> {
-    //TODO Needs tests
     @Override
     public @Nullable R get() {
         // The native data that is stored inside a minecraft DataComponentType
@@ -54,6 +53,7 @@ public record NMSMCCDataComponentEditor<R, T extends MCCDataComponentType<R>>(Da
                 throw new RuntimeException(e);
             }
         }
+        else throw new IllegalStateException("Trying to manipulate an immutable data component map");
 
 
     }

@@ -26,8 +26,11 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket;
 import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.inventory.MainHand;
 import org.jetbrains.annotations.NotNull;
@@ -205,35 +208,16 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     }
 
     @Override
-    public boolean openContainer(MCCContainerMenu<?,?> mccContainerMenu, Component title) {
-/*        getServerPlayer().openMenu(new MenuProvider() {
-            @Override
-            public net.minecraft.network.chat.Component getDisplayName() {
-                return conversionService.unwrap(title, new TypeToken<>() {});
-            }
-
-            @Override
-            public @Nullable AbstractContainerMenu createMenu(int syncId, Inventory playerInventory, Player player) {
-
-                return null;
-            }
-        });
- */
-        //TODO: CraftMenus Klasse nachschauen.
-        return false;
-    }
-
-    @Override
     public void closeCurrentInventory(MCCContainerCloseReason closeReason) {
         handle.containerMenu = handle.inventoryMenu;
     }
 
     @Override
-    public @Nullable MCCContainerMenu<?,?> getCurrentlyViewedInventory() {
-        return null;
+    public @Nullable MCCContainerMenu<?, ?> getCurrentlyViewedInventory() {
+        return conversionService.wrap(handle.containerMenu);
     }
 
-    protected ServerPlayer getServerPlayer(){
+    protected ServerPlayer getServerPlayer() {
         return (ServerPlayer) getHandle();
     }
 
@@ -256,12 +240,12 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
         var locale = Objects.requireNonNullElse(net.kyori.adventure.translation.Translator.parseLocale(getServerPlayer().language), java.util.Locale.US); // Paper
         if (this.adventurePointer == null) {
             this.adventurePointer = net.kyori.adventure.pointer.Pointers.builder()
-                .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
-                .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
-                .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
-                .withDynamic(net.kyori.adventure.identity.Identity.NAME, this::getPlayerName)
-                .withDynamic(net.kyori.adventure.identity.Identity.LOCALE, () -> locale)
-                .build();
+                    .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
+                    .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
+                    .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
+                    .withDynamic(net.kyori.adventure.identity.Identity.NAME, this::getPlayerName)
+                    .withDynamic(net.kyori.adventure.identity.Identity.LOCALE, () -> locale)
+                    .build();
         }
 
         return this.adventurePointer;

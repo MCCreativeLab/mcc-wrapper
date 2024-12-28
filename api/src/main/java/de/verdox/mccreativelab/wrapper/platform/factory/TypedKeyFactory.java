@@ -22,8 +22,10 @@ public interface TypedKeyFactory {
      * @return the typed key
      */
     <T> MCCTypedKey<T> getKey(Key key, Key registryKey, TypeToken<T> type);
+    <T> MCCTypedKey<T> getKey(Key key, Key registryKey);
 
     <T> MCCTag<T> createTag(Key key, Key registryKey, TypeToken<T> type);
+    <T> MCCTag<T> createTag(Key key, Key registryKey);
 
     <T> MCCReferenceSet<T> createImmutableSetWithoutKey(List<MCCReference<T>> references);
 

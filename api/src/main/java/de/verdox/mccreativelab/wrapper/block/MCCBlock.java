@@ -126,4 +126,9 @@ public final class MCCBlock implements MCCKeyedWrapper {
         }
         return this.mccChunk;
     }
+
+    @Override
+    public Key getRegistryKey() {
+        return getBlockType().getRegistryKey();
+    }
 }

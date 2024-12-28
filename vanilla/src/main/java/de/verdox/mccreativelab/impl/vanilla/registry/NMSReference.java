@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -19,11 +18,11 @@ public class NMSReference<T> extends MCCHandle<Holder<?>> implements MCCReferenc
 
     @Override
     public Optional<MCCTypedKey<T>> unwrapKey() {
-        return MCCPlatform.getInstance().getConversionService().wrap(handle.unwrapKey(), new TypeToken<>() {});
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.unwrapKey());
     }
 
     @Override
     public T get() {
-        return (T) MCCPlatform.getInstance().getConversionService().wrap(handle.value());
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.value());
     }
 }

@@ -32,17 +32,17 @@ public class NMSReferenceSet<T> extends MCCHandle<HolderSet<?>> implements MCCRe
 
     @Override
     public boolean contains(MCCReference<T> reference) {
-        return handle.contains(conversionService.unwrap(reference, new TypeToken<Holder>() {}));
+        return handle.contains(conversionService.unwrap(reference));
     }
 
     @Override
     public Stream<MCCReference<T>> stream() {
-        return Stream.empty();
+        return handle.stream().map(holder -> conversionService.wrap(holder));
     }
 
     @Override
     public Optional<MCCTag<T>> unwrapKey() {
-        return Optional.empty();
+        return conversionService.wrap(handle.unwrapKey());
     }
 
     @Override

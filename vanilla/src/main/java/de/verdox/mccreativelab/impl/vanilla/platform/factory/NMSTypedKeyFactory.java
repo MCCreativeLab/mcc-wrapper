@@ -24,7 +24,17 @@ public class NMSTypedKeyFactory implements TypedKeyFactory {
     }
 
     @Override
+    public <T> MCCTypedKey<T> getKey(Key key, Key registryKey) {
+        return new NMSTypedKey<>(key, registryKey);
+    }
+
+    @Override
     public <T> MCCTag<T> createTag(Key key, Key registryKey, TypeToken<T> type) {
+        return new NMSTag<>(key, registryKey);
+    }
+
+    @Override
+    public <T> MCCTag<T> createTag(Key key, Key registryKey) {
         return new NMSTag<>(key, registryKey);
     }
 

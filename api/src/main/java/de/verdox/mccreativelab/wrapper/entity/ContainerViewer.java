@@ -11,15 +11,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface ContainerViewer extends MCCWrapped {
     /**
-     * Opens a container with a respective title to the player.
-     *
-     * @param mccContainerMenu the container
-     * @param title        the title
-     * @return true if the container could be opened
-     */
-    boolean openContainer(MCCContainerMenu<?,?> mccContainerMenu, Component title);
-
-    /**
      * Closes the current inventory viewed by this player
      *
      * @param closeReason the reason for why it was closed

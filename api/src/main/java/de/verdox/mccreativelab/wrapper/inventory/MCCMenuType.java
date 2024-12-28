@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.wrapper.inventory;
 
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
+import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,5 +38,10 @@ public record MCCMenuType<T extends MCCContainerMenu<?,?>>(Key key, int containe
     @Override
     public int hashCode() {
         return Objects.hashCode(key);
+    }
+
+    @Override
+    public Key getRegistryKey(){
+        return MCCRegistries.MENU_REGISTRY.key();
     }
 }

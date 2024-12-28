@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.platform;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -9,12 +10,18 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
+import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
+import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**
@@ -120,9 +127,52 @@ public interface MCCPlatform {
      */
     @NotNull MCCFurnaceSettings getFurnaceSettings();
 
+    /**
+     * Gets the public tick of the platform
+     * @return the public tick
+     */
     int getPublicTick();
 
+    /**
+     * Gets the server properties of the server
+     * @return the server properties
+     */
     MCCServerProperties getServerProperties();
 
+    /**
+     * Shuts down the server platform
+     */
     void shutdown();
+
+    /**
+     * Gets the platform registry storage
+     * @return the registry storage
+     */
+    MCCRegistryStorage getRegistryStorage();
+
+    /**
+     * Returns the {@link MCCLifecycleTrigger} of this platform
+     * @return the lifecycle trigger
+     */
+    MCCLifecycleTrigger getLifecycleTrigger();
+
+    /**
+     * Triggers a platform lifecycle event
+     * @param lifecycle the lifecycle state
+     */
+    default void triggerLifecycleEvent(Lifecycle lifecycle) {
+        lifecycle.lifecycleFunction.accept(getLifecycleTrigger());
+    }
+
+    enum Lifecycle {
+        BOOTSTRAP(MCCLifecycleTrigger::bootstrap),
+        BEFORE_WORLD_LOAD(MCCLifecycleTrigger::beforeWorldLoad),
+        AFTER_WORLD_LOAD(MCCLifecycleTrigger::afterWorldLoad),
+        SERVER_STARTUP_COMPLETE(MCCLifecycleTrigger::onServerStartupComplete);
+        private final Consumer<MCCLifecycleTrigger> lifecycleFunction;
+
+        Lifecycle(Consumer<MCCLifecycleTrigger> lifecycleFunction) {
+            this.lifecycleFunction = lifecycleFunction;
+        }
+    }
 }

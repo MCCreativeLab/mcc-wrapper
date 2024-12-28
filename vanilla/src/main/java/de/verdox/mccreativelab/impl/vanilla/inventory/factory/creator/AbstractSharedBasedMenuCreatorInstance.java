@@ -18,12 +18,15 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class AbstractSharedBasedMenuCreatorInstance<C extends MCCContainer, F extends MCCSharedContainerMenu<?, ?>> extends AbstractMenuCreatorInstance<F> implements SharedMenuCreatorInstance<C, F> {
     protected final C container;
 
     public AbstractSharedBasedMenuCreatorInstance(@MCCRequireVanillaElement C container) {
+        Objects.requireNonNull(container, "The container cannot be null");
         container.requireVanilla();
         Preconditions.checkArgument(isRightContainerSize(container));
         this.container = container;
@@ -32,43 +35,6 @@ public abstract class AbstractSharedBasedMenuCreatorInstance<C extends MCCContai
     @Override
     public C getSharedContainer() {
         return container;
-    }
-
-    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithoutDelegate(int containerSize, TriFunction<Integer, Inventory, N, AbstractContainerMenu> nmsMenuCreator) {
-        return mccContainer -> new AbstractSharedBasedMenuCreatorInstance<>(mccContainer) {
-
-            @Override
-            public boolean isRightContainerSize(C mccContainer) {
-                return mccContainer.getSize() == containerSize;
-            }
-
-            @Override
-            public F createMenuForPlayer(MCCPlayer player, Component title) {
-                ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container)));
-            }
-        };
-    }
-
-    public static <C extends MCCContainer, N extends Container, F extends MCCSharedContainerMenu<?, ?>> Function<C, SharedMenuCreatorInstance<C, F>> createWithDelegate(int containerSize, int containerDataSize, Function4<Integer, Inventory, N, ContainerData, AbstractContainerMenu> nmsMenuCreator) {
-        return mccContainer -> new AbstractSharedBasedMenuCreatorInstance<>(mccContainer) {
-            private final ContainerData containerData = new SimpleContainerData(containerDataSize);
-
-            @Override
-            public boolean isRightContainerSize(C mccContainer) {
-                return mccContainer.getSize() == containerSize;
-            }
-
-            @Override
-            public F createMenuForPlayer(MCCPlayer player, Component title) {
-                ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
-                ServerPlayer serverPlayer = conversionService.unwrap(player);
-
-                return openViaNMSMenuProvider(serverPlayer, title, (syncId, inventory, player1) -> nmsMenuCreator.apply(syncId, inventory, conversionService.unwrap(container), containerData));
-            }
-        };
     }
 
     public abstract boolean isRightContainerSize(C mccContainer);
