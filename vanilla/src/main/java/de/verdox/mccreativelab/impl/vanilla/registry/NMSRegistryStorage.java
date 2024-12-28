@@ -25,22 +25,27 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class NMSRegistryStorage implements MCCRegistryStorage {
     private final Map<Key, DelayedFreezingRegistry<?>> CUSTOM_REGISTRIES = new HashMap<>();
-    private final RegistryAccess.Frozen fullRegistryAccess;
-    private final RegistryAccess.Frozen reloadableRegistries;
+    private final Supplier<RegistryAccess.Frozen> fullRegistryAccess;
+    private final Supplier<RegistryAccess.Frozen> reloadableRegistries;
     private boolean frozen;
+
+    public NMSRegistryStorage() {
+        this(() -> MinecraftServer.getServer().registries().compositeAccess(), () -> MinecraftServer.getServer().reloadableRegistries().get());
+    }
 
     @VisibleForTesting
     public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, RegistryAccess.Frozen reloadableRegistries) {
-        this.fullRegistryAccess = fullRegistryAccess;
-        this.reloadableRegistries = reloadableRegistries;
+        this(() -> fullRegistryAccess, () -> reloadableRegistries);
     }
 
-    public NMSRegistryStorage() {
-        this(MinecraftServer.getServer().registries().compositeAccess(), MinecraftServer.getServer().reloadableRegistries().get());
+    public NMSRegistryStorage(Supplier<RegistryAccess.Frozen> fullRegistryAccess, Supplier<RegistryAccess.Frozen> reloadableRegistries) {
+        this.fullRegistryAccess = fullRegistryAccess;
+        this.reloadableRegistries = reloadableRegistries;
     }
 
     @Override
@@ -58,8 +63,11 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         if (frozen) {
             throw new IllegalStateException("The minecraft registries are already frozen. You cannot create a new registry now. The custom registries are frozen on the 'Lifecycle.BEFORE_WORLD_LOAD' platform trigger.");
         }
-        if (CUSTOM_REGISTRIES.containsKey(key) || searchForRegistry(key) != null) {
-            throw new IllegalStateException("A minecraft registry with the key " + key + " does already exist.");
+        if (key.namespace().equals("minecraft")) {
+            throw new IllegalStateException("The minecraft namespace is reserved for minecraft registries only. Please use another namespace");
+        }
+        if (CUSTOM_REGISTRIES.containsKey(key)) {
+            throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
         ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
@@ -84,10 +92,10 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
 
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
 
-        Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.registry(registryResourceKey);
+        Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.get().registry(registryResourceKey);
 
         if (optionalFoundRegistry.isEmpty()) {
-            optionalFoundRegistry = reloadableRegistries.registry(registryResourceKey);
+            optionalFoundRegistry = reloadableRegistries.get().registry(registryResourceKey);
         }
 
         return optionalFoundRegistry.<MCCRegistry<T>>map(objects -> new NMSRegistryLookup<>(objects.asLookup())).orElse(null);
