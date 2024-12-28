@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.entity.ai;
 
-import de.verdox.mccreativelab.wrapper.entity.ai.brain.MCCMemoryModuleType;
+import de.verdox.mccreativelab.wrapper.entity.ai.MCCMemoryModuleType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 

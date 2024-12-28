@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.entity.ai.brain;
+package de.verdox.mccreativelab.wrapper.entity.ai;
 
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
