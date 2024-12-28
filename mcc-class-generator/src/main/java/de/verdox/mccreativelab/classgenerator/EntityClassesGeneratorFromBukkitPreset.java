@@ -33,6 +33,6 @@ public class EntityClassesGeneratorFromBukkitPreset extends AbstractClassGenerat
         if (DONE.containsKey(bukkitEventClass) || bukkitEventClass.isAnnotationPresent(Deprecated.class)) {
             return DONE.get(bukkitEventClass);
         }
-
+        return null;
     }
 }
