@@ -6,6 +6,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
 
+
+
 sourceSets {
     main {
         java {
@@ -42,30 +44,39 @@ tasks.register("runCodeGeneratorNoUpdate") {
 }
 
 dependencies {
-    paperweight.paperDevBundle(providers.gradleProperty("version").get())
+    paperweight.paperDevBundle(providers.gradleProperty("class_generator_dependency_version").get())
 
 
     compileOnly("net.kyori:adventure-api:4.17.0")
     //implementation(project(":mcc-wrapper"))
-    implementation(
-        providers.gradleProperty("wrapper_group").get() + ":api:" + providers.gradleProperty("version").get()
+
+    implementation(project(":api"));
+    implementation(project(":vanilla"));
+    implementation(project(":paper"));
+/*    implementation(
+        providers.gradleProperty("wrapper_group").get() + ":api:" + providers.gradleProperty("class_generator_dependency_version").get()
     )
     implementation(
-        providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("version").get()
+        providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("class_generator_dependency_version").get()
     )
     implementation(
-        providers.gradleProperty("wrapper_group").get() + ":paper:" + providers.gradleProperty("version").get()
-    )
+        providers.gradleProperty("wrapper_group").get() + ":paper:" + providers.gradleProperty("class_generator_dependency_version").get()
+    )*/
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("org.reflections:reflections:0.10.2")
     implementation("net.bytebuddy:byte-buddy:1.15.10")
     implementation("com.github.javaparser:javaparser-core:3.25.4")
+    implementation("de.verdox:vserializer:+")
 
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.jetbrains:annotations:26.0.1")
     testImplementation("org.ow2.asm:asm-tree:9.7")
     testImplementation("com.google.guava:guava:33.3.1-jre")
+
+    testImplementation(project(":api"));
+    testImplementation(project(":vanilla"));
+    testImplementation(project(":paper"));
 }
 
 publishing {

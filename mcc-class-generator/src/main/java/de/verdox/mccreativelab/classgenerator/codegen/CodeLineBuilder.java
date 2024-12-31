@@ -105,11 +105,14 @@ public class CodeLineBuilder {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (CodeLine line : lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            CodeLine line = lines.get(i);
             if (line.depth > 0)
                 stringBuilder.append("\t".repeat(line.depth));
             stringBuilder.append(line.content);
-            stringBuilder.append("\n");
+            if (i < lines.size() - 1){
+                stringBuilder.append("\n");
+            }
         }
         return stringBuilder.toString();
     }

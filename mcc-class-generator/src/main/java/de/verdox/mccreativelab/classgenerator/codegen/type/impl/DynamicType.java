@@ -268,41 +268,6 @@ public class DynamicType {
         }
     }
 
-    public Type toType() {
-        if (rawType != null) {
-            // 1. Einfacher Typ (z. B. String, int, etc.)
-            if (genericTypes.isEmpty() && arrayComponentType == null) {
-                return rawType;
-            }
-
-            // 2. ParameterizedType (z. B. List<String>)
-            if (!genericTypes.isEmpty()) {
-                DynamicParameterizedType dynamicParameterizedType = new DynamicParameterizedType(rawType, genericTypes.stream().map(DynamicType::toType).toArray(Type[]::new));
-                for (Type actualTypeArgument : dynamicParameterizedType.getActualTypeArguments()) {
-                    if (actualTypeArgument instanceof DynamicParameterizedType parameterizedType) {
-                        parameterizedType.setOwnerType(dynamicParameterizedType);
-                    }
-                }
-                return dynamicParameterizedType;
-            }
-
-            // 3. GenericArrayType (z. B. T[])
-            if (arrayComponentType != null) {
-                return new DynamicGenericArrayType(DynamicType.of(arrayComponentType, false).toType());
-            }
-        }
-
-        // 4. WildcardType (z. B. ? extends Number)
-        if (!upperBounds.isEmpty() || !lowerBounds.isEmpty()) {
-            return new DynamicWildcardType(
-                upperBounds.stream().map(DynamicType::toType).toArray(Type[]::new),
-                lowerBounds.stream().map(DynamicType::toType).toArray(Type[]::new)
-            );
-        }
-
-        throw new UnsupportedOperationException("Unsupported DynamicType: " + this);
-    }
-
     public String debugString() {
         return "DynamicType{" +
             "importedClasses=" + importedClasses +

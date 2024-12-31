@@ -38,7 +38,7 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
         Logger.getLogger(TypedKeyCollectionBuilder.class.getSimpleName()).info("Generate collection class " + groupClassName + ".");
         List<Result> list = new LinkedList<>();
 
-        Registry<F> registry = (Registry<F>) BuiltInRegistries.REGISTRY.get(registryKey.location());
+        Registry<F> registry = (Registry<F>) BuiltInRegistries.REGISTRY.get(registryKey.location()).get().value();
         String minecraftRegistryKey = registryKey.location().getPath();
         ClassBuilder classBuilder = new ClassBuilder();
         classBuilder.withPackage(newClassPackage);

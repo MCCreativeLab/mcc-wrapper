@@ -39,15 +39,15 @@ import net.minecraft.world.entity.decoration.PaintingVariants;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimMaterials;
-import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraft.world.item.armortrim.TrimPatterns;
 import net.minecraft.world.item.component.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
+import net.minecraft.world.item.equipment.trim.TrimPatterns;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
@@ -78,8 +78,14 @@ public class ClassGenerator {
     //TODO: BlockItemKeys -> Create a class that contains all BlockItems
 
     public static final Logger LOGGER = Logger.getLogger(ClassGenerator.class.getName());
-    public static final File API_GENERATION_DIR = new File("../../api/generated/");
-    public static final File VANILLA_GENERATION_DIR = new File("../../vanilla/generated/");
+
+    public static final File API_MODULE_GENERATION_DIR = new File("../../api/generated/");
+    public static final File VANILLA_MODULE_GENERATION_DIR = new File("../../vanilla/generated/");
+    public static final File CLASS_GENERATOR_MODULE_GENERATION_DIR = new File("../generated/");
+
+
+    public static final File API_GENERATION_DIR = new File(CLASS_GENERATOR_MODULE_GENERATION_DIR+"/api/");
+    public static final File VANILLA_GENERATION_DIR = new File(CLASS_GENERATOR_MODULE_GENERATION_DIR+"/vanilla/");
     public static final List<String> EXCLUDED_PACKAGES = List.of("java.");
     ;
 
@@ -111,14 +117,12 @@ public class ClassGenerator {
     public static void run() {
         LOGGER.info("Running class generator");
         try {
-            MCCPlatform.INSTANCE.setup(new PaperPlatform(), MCCPlatform::init);
+            MCCPlatform.INSTANCE.setup(new PaperPlatform(false), MCCPlatform::init);
             generateMCCItemComponentWrapper();
             createItemComponentConverters();
             generateMenuTypesClass();
             generateTypedKeys();
-            generateEventClasses();
-            //converterGenerator.buildConverterInterface(GENERATION_DIR);
-            //converterGenerator.buildWrapperAdapters(GENERATION_DIR);
+            //generateEventClasses();
             MCCConverterGenerator.createGeneratedConvertersClass(VANILLA_GENERATION_DIR);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -278,9 +282,6 @@ public class ClassGenerator {
         generator.generateWrapper(DecoratedPotPattern.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(DecoratedPotPatterns.class, new TypeToken<>() {}, Registries.DECORATED_POT_PATTERN, "de.verdox.mccreativelab.wrapper.typed", "MCCDecoratedPotPatterns");
 
-        generator.generateWrapper(ArmorMaterial.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
-        typedKeyCollectionBuilder.generateForPlatformGroupingClass(ArmorMaterials.class, new TypeToken<>() {}, Registries.ARMOR_MATERIAL, "de.verdox.mccreativelab.wrapper.typed", "MCCArmorMaterials");
-
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Biomes.class, new TypeToken<>() {}, Registries.BIOME, "de.verdox.mccreativelab.wrapper.typed", "MCCBiomes");
 
         generator.generateWrapper(DimensionType.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
@@ -294,6 +295,7 @@ public class ClassGenerator {
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaHusbandryAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCHusbandryAdvancements");
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaNetherAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCNetherAdvancements");
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaTheEndAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCEndAdvancements");
+
 
         generator.generateWrapper(TrimMaterial.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(TrimMaterials.class, new TypeToken<>() {}, Registries.TRIM_MATERIAL, "de.verdox.mccreativelab.wrapper.typed", "MCCTrimMaterials");
