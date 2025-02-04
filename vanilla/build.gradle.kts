@@ -1,16 +1,23 @@
 plugins {
     id("java")
-    id("io.papermc.paperweight.userdev") version "1.7.3"
-    id("xyz.jpenilla.run-paper") version "2.3.1" apply false // Adds runServer and runMojangMappedServer tasks for testing
+    id("fabric-loom") version "1.9-SNAPSHOT"
 }
 
 repositories {
     mavenCentral()
+    maven("https://maven.parchmentmc.org")
 }
 
 dependencies {
+    val mcVersion = providers.gradleProperty("mcversion").get()
     compileOnly(project(":api"))
-    paperweight.paperDevBundle(providers.gradleProperty("version").get())
+
+    minecraft("com.mojang:minecraft:$mcVersion")
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-$mcVersion:2024.11.17@zip")
+    })
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
