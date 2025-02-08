@@ -4,7 +4,7 @@ import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import de.verdox.mccreativelab.wrapper.typed.*;
+import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.entity.types;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
@@ -18,22 +19,22 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public UUID getOwner() {
-        return handle.target;
+        return readFieldFromHandle("target", new TypeToken<>() {});
     }
 
     @Override
     public void setOwner(UUID owner) {
-        handle.target = owner;
+        handle.setTarget(owner);
     }
 
     @Override
     public UUID getThrower() {
-        return handle.thrower;
+        return readFieldFromHandle("thrower", new TypeToken<>() {});
     }
 
     @Override
     public void setThrower(UUID thrower) {
-        handle.thrower = thrower;
+        writeFieldInHandle("thrower", thrower);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public short getAge() {
-        return (short) handle.age;
+        return (short) handle.getAge();
     }
 
     @Override

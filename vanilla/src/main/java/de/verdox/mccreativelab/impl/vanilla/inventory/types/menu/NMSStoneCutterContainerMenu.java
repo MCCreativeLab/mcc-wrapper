@@ -8,10 +8,6 @@ import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCResultContai
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCStonecutterContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.StonecutterMenu;
-import org.bukkit.inventory.StonecuttingRecipe;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class NMSStoneCutterContainerMenu extends NMSContainerMenu<MCCBlockContainerSource, StonecutterMenu, MCCResultContainer> implements MCCStonecutterContainerMenu {
     public static final MCCConverter<StonecutterMenu, NMSStoneCutterContainerMenu> CONVERTER = converter(NMSStoneCutterContainerMenu.class, StonecutterMenu.class, NMSStoneCutterContainerMenu::new, MCCHandle::getHandle);

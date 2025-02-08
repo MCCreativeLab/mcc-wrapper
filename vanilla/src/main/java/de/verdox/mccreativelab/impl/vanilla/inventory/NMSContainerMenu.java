@@ -75,7 +75,7 @@ public abstract class NMSContainerMenu<T extends MCCContainerSource, A extends A
 
     @Override
     public Component getTitle() {
-        return conversionService.wrap(getTitle());
+        return null; // TODO: handle.getTitle();
     }
 
     @Override

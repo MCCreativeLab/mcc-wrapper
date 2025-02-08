@@ -19,6 +19,7 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-$mcVersion:2024.11.17@zip")
     })
 
+    testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))

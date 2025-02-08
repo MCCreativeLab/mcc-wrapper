@@ -5,8 +5,6 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 public class NMSLifecycleTrigger implements MCCLifecycleTrigger {
 
-
-
     @Override
     public void bootstrap() {
 

@@ -9,8 +9,8 @@ import java.util.StringJoiner;
 public class NMSSkinParts implements MCCClientOption.SkinParts {
     private final int raw;
 
-    public NMSSkinParts(Player player){
-        this.raw = player.getEntityData().get(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION);
+    public NMSSkinParts(Player player) {
+        this.raw = player.getEntityData().get(Player.DATA_PLAYER_MODE_CUSTOMISATION);
     }
 
     public boolean hasCapeEnabled() {

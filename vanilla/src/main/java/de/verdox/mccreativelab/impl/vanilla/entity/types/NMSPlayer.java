@@ -26,13 +26,9 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket;
 import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.inventory.MainHand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -222,7 +218,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     }
 
     private String getLocale() {
-        final String locale = getServerPlayer().language;
+        final String locale = getServerPlayer().clientInformation().language();
         return locale != null ? locale : "en_us";
     }
 
@@ -237,7 +233,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public net.kyori.adventure.pointer.Pointers pointers() {
-        var locale = Objects.requireNonNullElse(net.kyori.adventure.translation.Translator.parseLocale(getServerPlayer().language), java.util.Locale.US); // Paper
+        var locale = Objects.requireNonNullElse(net.kyori.adventure.translation.Translator.parseLocale(getServerPlayer().clientInformation().language()), java.util.Locale.US); // Paper
         if (this.adventurePointer == null) {
             this.adventurePointer = net.kyori.adventure.pointer.Pointers.builder()
                     .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)

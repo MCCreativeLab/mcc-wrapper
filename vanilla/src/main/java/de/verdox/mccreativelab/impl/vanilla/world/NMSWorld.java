@@ -12,15 +12,12 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.TempData;
 import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
-import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -28,9 +25,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftItem;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +44,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public String getName() {
-        return handle.serverLevelData.getLevelName();
+        return handle.getLevelData().getLevelName();
     }
 
     @Override
@@ -110,12 +104,12 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
         ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
-        entity.pickupDelay = 10;
+        entity.setPickUpDelay(10);
         MCCItemEntity mccEntity = conversionService.wrap(entity);
         if (dropCallback != null) {
             dropCallback.accept(mccEntity);
         }
-        getHandle().addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        getHandle().addFreshEntity(entity);
         return mccEntity;
     }
 

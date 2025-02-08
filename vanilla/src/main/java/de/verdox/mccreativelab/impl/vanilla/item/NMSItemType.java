@@ -6,7 +6,6 @@ import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class NMSItemType extends MCCHandle<Item> implements MCCItemType {
     public static final MCCConverter<Item, NMSItemType> CONVERTER = converter(NMSItemType.class, Item.class, NMSItemType::new, MCCHandle::getHandle);
