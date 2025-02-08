@@ -100,6 +100,10 @@ public class MCCHandle<T> {
         writeFieldInHandle(getHandle(), fieldName, value);
     }
 
+    public <R> R invokeMethodInHandle(String methodName, Object... args) {
+        return invokeMethodInHandle(getHandle(), methodName, args);
+    }
+
     public <H, R> R readFieldFromHandle(H handle, String fieldName, TypeToken<R> type) {
         return ReflectionUtils.readFieldFromClass(handle, fieldName, type);
     }
