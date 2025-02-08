@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.platform;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -99,24 +100,16 @@ public class MCCHandle<T> {
         writeFieldInHandle(getHandle(), fieldName, value);
     }
 
-    public static <H, R> R readFieldFromHandle(H handle, String fieldName, TypeToken<R> type) {
-        try {
-            Field field = handle.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return (R) field.get(handle);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+    public <H, R> R readFieldFromHandle(H handle, String fieldName, TypeToken<R> type) {
+        return ReflectionUtils.readFieldFromClass(handle, fieldName, type);
     }
 
-    public static <H, R> void writeFieldInHandle(H handle, String fieldName, R value) {
-        try {
-            Field field = handle.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(handle, value);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
+    public <H, R> void writeFieldInHandle(H handle, String fieldName, R value) {
+        ReflectionUtils.writeFieldInClass(handle, fieldName, value);
+    }
+
+    public <H, R> R invokeMethodInHandle(H handle, String methodName, Object... args) {
+        return ReflectionUtils.invokeMethodInClass(handle, methodName, args);
     }
 
     @Override
