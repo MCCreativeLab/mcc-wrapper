@@ -23,6 +23,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
 import io.papermc.paper.adventure.PaperAdventure;
 import me.lucko.spark.paper.PaperPlatformInfo;
 import net.kyori.adventure.text.Component;
+import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
@@ -74,6 +75,11 @@ public class PaperPlatform extends NMSPlatform {
             }
         });
         LOGGER.info("Paper Platform initialized");
+    }
+
+    @Override
+    public MinecraftServer getServer() {
+        return MinecraftServer.getServer();
     }
 
     public void enableListeners(JavaPlugin javaPlugin) {

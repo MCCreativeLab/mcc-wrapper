@@ -23,6 +23,7 @@ import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -61,6 +62,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -161,13 +163,16 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public MCCServerProperties getServerProperties() {
-        DedicatedServer dedicatedServer = (DedicatedServer) MinecraftServer.getServer();
-        return new MCCServerProperties(dedicatedServer.getProperties().properties, () -> dedicatedServer.settings.forceSave());
+        DedicatedServer dedicatedServer = (DedicatedServer) getServer();
+        return new MCCServerProperties(
+                ReflectionUtils.readFieldFromClass(dedicatedServer.getProperties(), "properties", new TypeToken<>() {}),
+                () -> ReflectionUtils.readFieldFromClass(dedicatedServer, "settings", new TypeToken<DedicatedServerSettings>() {}).forceSave()
+        );
     }
 
     @Override
     public void shutdown() {
-        MinecraftServer.getServer().halt(false);
+        getServer().halt(false);
     }
 
     @Override
@@ -204,7 +209,7 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public @NotNull List<MCCWorld> getWorlds() {
         List<MCCWorld> worlds = new LinkedList<>();
-        MinecraftServer.getServer().getAllLevels().forEach(serverLevel -> {
+        getServer().getAllLevels().forEach(serverLevel -> {
             worlds.add(getConversionService().wrap(serverLevel, new TypeToken<>() {}));
         });
         return worlds;
@@ -212,12 +217,12 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @Nullable MCCPlayer getOnlinePlayer(@NotNull UUID uuid) {
-        return conversionService.wrap(MinecraftServer.getServer().getPlayerList().getPlayer(uuid));
+        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid));
     }
 
     @Override
     public @NotNull List<MCCPlayer> getOnlinePlayers() {
-        return MinecraftServer.getServer().getPlayerList().getPlayers().stream().map(serverPlayer -> getConversionService().wrap(serverPlayer, new TypeToken<MCCPlayer>() {})).toList();
+        return getServer().getPlayerList().getPlayers().stream().map(serverPlayer -> getConversionService().wrap(serverPlayer, new TypeToken<MCCPlayer>() {})).toList();
     }
 
     @Override
@@ -257,6 +262,10 @@ public class NMSPlatform implements MCCPlatform {
         LOGGER.info("...");
         getServerProperties().saveToFile();
         shutdown();
+    }
+
+    public MinecraftServer getServer() {
+        return null;
     }
 
     private void registerMenuTypes() {
