@@ -3,11 +3,9 @@ package de.verdox.mccreativelab.impl.vanilla.item;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentMap;
-import de.verdox.mccreativelab.impl.vanilla.item.components.NMSMCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -17,11 +15,6 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
     public static final MCCConverter<ItemStack, NMSItemStack> CONVERTER = converter(NMSItemStack.class, ItemStack.class, NMSItemStack::new, MCCHandle::getHandle);

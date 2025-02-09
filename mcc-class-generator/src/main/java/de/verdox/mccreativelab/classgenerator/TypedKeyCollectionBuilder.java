@@ -2,7 +2,8 @@ package de.verdox.mccreativelab.classgenerator;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedParameterizedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
@@ -13,7 +14,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Blocks;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,13 +41,13 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
         Logger.getLogger(TypedKeyCollectionBuilder.class.getSimpleName()).info("Generate collection class " + groupClassName + ".");
         List<Result> list = new LinkedList<>();
 
-        Registry<F> registry = (Registry<F>) BuiltInRegistries.REGISTRY.get(registryKey.location()).get().value();
+
         String minecraftRegistryKey = registryKey.location().getPath();
         ClassBuilder classBuilder = new ClassBuilder();
         classBuilder.withPackage(newClassPackage);
         classBuilder.withHeader("public", ClassBuilder.ClassHeader.CLASS, groupClassName, "");
 
-        classBuilder.withField("public static final", DynamicType.of(Key.class), "VANILLA_REGISTRY_KEY", "Key.key(\"minecraft\", \"" + minecraftRegistryKey + "\")");
+        classBuilder.withField("public static final", CapturedParameterizedType.from(Key.class), "VANILLA_REGISTRY_KEY", "Key.key(\"minecraft\", \"" + minecraftRegistryKey + "\")");
 
         for (Field declaredField : groupingClass.getDeclaredFields()) {
             if (!Modifier.isPublic(declaredField.getModifiers())) {
@@ -60,17 +63,17 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
             Type fieldType = declaredField.getGenericType();
             Object fieldValue = declaredField.get(null);
             if (isForbiddenType(fieldType)) {
-                Logger.getLogger(TypedKeyCollectionBuilder.class.getSimpleName()).warning("Type was found that has no wrapper yet in MCC. (" + DynamicType.of(fieldType, false) + ")");
+                Logger.getLogger(TypedKeyCollectionBuilder.class.getSimpleName()).warning("Type was found that has no wrapper yet in MCC. (" + CapturedType.from(fieldType) + ")");
                 continue;
             }
             String fieldName = declaredField.getName();
-            DynamicType resultFieldType;
+            CapturedParameterizedType resultFieldType;
             Type nativeType;
 
             try {
                 if (ResourceKey.class.isAssignableFrom(declaredField.getType()) ||
-                    Holder.class.isAssignableFrom(declaredField.getType()) ||
-                    TagKey.class.isAssignableFrom(declaredField.getType())) {
+                        Holder.class.isAssignableFrom(declaredField.getType()) ||
+                        TagKey.class.isAssignableFrom(declaredField.getType())) {
                     ParameterizedType type = (ParameterizedType) declaredField.getGenericType();
                     nativeType = type.getActualTypeArguments()[0];
 
@@ -88,7 +91,17 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
                         throw new IllegalStateException("Could not create field for " + fieldName + " with type " + declaredField.getGenericType());
                     }
                 } else if (typeToGroup.getRawType().isAssignableFrom(declaredField.getType())) {
+                    Registry<F> registry = findRegistry(registryKey);
+                    if (registry == null) {
+                        LOGGER.warning("Could not find registry with key " + registryKey);
+                        break;
+                    }
+
                     ResourceLocation resourceLocation = registry.getKey((F) fieldValue);
+                    if (resourceLocation == null) {
+                        LOGGER.warning("Could not find key of field " + fieldName + " with type " + typeToGroup + ". We are stopping here because the registry lookup code cannot find these types in general.");
+                        break;
+                    }
                     String key = resourceLocation.getPath();
                     nativeType = fieldType;
                     resultFieldType = setupReferenceField(classBuilder, key, fieldName, fieldType);
@@ -105,10 +118,10 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
                 continue;
             }
 
-            classBuilder.includeImport(DynamicType.of(Key.class));
-            classBuilder.includeImport(DynamicType.of(TypeToken.class));
-            classBuilder.includeImport(DynamicType.of(MCCPlatform.class));
-            list.add(new Result(groupingClass, declaredField.getName(), DynamicType.of(fieldType, false), fieldName, resultFieldType));
+            classBuilder.includeImport(CapturedType.from(Key.class));
+            classBuilder.includeImport(CapturedType.from(TypeToken.class));
+            classBuilder.includeImport(CapturedType.from(MCCPlatform.class));
+            list.add(new Result(groupingClass, declaredField.getName(), CapturedType.from(fieldType), fieldName, resultFieldType));
         }
         if (list.isEmpty()) {
             Logger.getLogger(TypedKeyCollectionBuilder.class.getSimpleName()).warning("Could not generate collection class " + groupClassName + " because no fields were found.");
@@ -119,39 +132,62 @@ public class TypedKeyCollectionBuilder extends AbstractClassGenerator {
         return list;
     }
 
-    public record Result(Class<?> groupingClass, String nmsFieldName, DynamicType nmsFieldType, String apiFieldName,
-                         DynamicType apiFieldType) {}
+    public record Result(Class<?> groupingClass, String nmsFieldName, CapturedType<?, ?> nmsFieldType,
+                         String apiFieldName, CapturedParameterizedType apiFieldType) {}
 
-    private DynamicType setupTypedKeyField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
-        DynamicType swappedNativeType = NMSMapper.getSwap(nativeType);
-        DynamicType resultFieldType = DynamicType.of(MCCTypedKey.class).withAddedGeneric(swappedNativeType);
+    private CapturedParameterizedType setupTypedKeyField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
+        CapturedType<?, ?> swappedNativeType = CapturedType.swap(nativeType);
+        CapturedParameterizedType resultFieldType = CapturedParameterizedType.from(MCCTypedKey.class).withExplicitType(swappedNativeType);
 
         String initValue = "MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key(\"minecraft\", \"" + key + "\"), VANILLA_REGISTRY_KEY, new TypeToken<>(){})";
         classBuilder.withField("public static final", resultFieldType, fieldName, initValue);
         classBuilder.includeImport(swappedNativeType);
+        classBuilder.includeImport(resultFieldType);
 
         return resultFieldType;
     }
 
-    private DynamicType setupReferenceField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
-        DynamicType swappedNativeType = DynamicType.of(nativeType);
-        DynamicType resultFieldType = DynamicType.of(MCCReference.class).withAddedGeneric(swappedNativeType);
+    private CapturedParameterizedType setupReferenceField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
+        CapturedType<?, ?> swappedNativeType = CapturedType.swap(nativeType);
+        CapturedParameterizedType resultFieldType = CapturedParameterizedType.from(MCCReference.class).withExplicitType(swappedNativeType);
 
         String initValue = "MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key(\"minecraft\", \"" + key + "\"), VANILLA_REGISTRY_KEY, new TypeToken<" + swappedNativeType.toString() + ">(){}).getAsReference()";
         classBuilder.withField("public static final", resultFieldType, fieldName, initValue);
         classBuilder.includeImport(swappedNativeType);
+        classBuilder.includeImport(resultFieldType);
 
         return resultFieldType;
     }
 
-    private DynamicType setupTagKeyField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
-        DynamicType swappedNativeType = DynamicType.of(nativeType);
-        DynamicType resultFieldType = DynamicType.of(MCCTag.class).withAddedGeneric(swappedNativeType);
+    private CapturedParameterizedType setupTagKeyField(ClassBuilder classBuilder, String key, String fieldName, Type nativeType) {
+        CapturedType<?, ?> swappedNativeType = CapturedType.swap(nativeType);
+        CapturedParameterizedType resultFieldType = CapturedParameterizedType.from(MCCTag.class).withExplicitType(swappedNativeType);
 
         String initValue = "MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key(\"minecraft\", \"" + key + "\"), VANILLA_REGISTRY_KEY, new TypeToken<>(){})";
         classBuilder.withField("public static final", resultFieldType, fieldName, initValue);
         classBuilder.includeImport(swappedNativeType);
+        classBuilder.includeImport(resultFieldType);
 
         return resultFieldType;
+    }
+
+    public static <T> Registry<T> findRegistry(ResourceKey<? extends Registry<T>> registryKey) {
+        Registry<T> found = MinecraftServer.getServer().registries().compositeAccess().get(registryKey).map(Holder.Reference::value).orElse(null);
+        if(found != null){
+            return found;
+        }
+        found = MinecraftServer.getServer().registryAccess().get(registryKey).map(Holder.Reference::value).orElse(null);
+        if(found != null){
+            return found;
+        }
+        found = MinecraftServer.getServer().reloadableRegistries().lookup().get(registryKey).map(Holder.Reference::value).orElse(null);
+        if(found != null){
+            return found;
+        }
+        found = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location()).map(Holder.Reference::value).orElse(null);
+        if(found != null){
+            return found;
+        }
+        return null;
     }
 }

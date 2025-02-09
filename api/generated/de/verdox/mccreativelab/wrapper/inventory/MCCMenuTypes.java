@@ -1,27 +1,8 @@
 package de.verdox.mccreativelab.wrapper.inventory;
-
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCSmithingContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCGrindstoneContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCLoomContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCEnchantingTableContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCCrafterContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCFurnaceContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCLecternContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCAnvilContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCHopperContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCDispenserContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCBeaconContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCChestContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCBrewingStandContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCWorkBenchContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCCartographyTableContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCMerchantContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCStonecutterContainerMenu;
-import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCShulkerContainerMenu;
+import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
 import net.kyori.adventure.key.Key;
 
 public interface MCCMenuTypes  {
-
 	public static final MCCMenuType<MCCChestContainerMenu> GENERIC_9x1  = new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, "generic_9x1"), 9);
 
 	public static final MCCMenuType<MCCChestContainerMenu> GENERIC_9x2  = new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, "generic_9x2"), 18);
@@ -71,5 +52,4 @@ public interface MCCMenuTypes  {
 	public static final MCCMenuType<MCCCartographyTableContainerMenu> CARTOGRAPHY_TABLE  = new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, "cartography_table"), 3);
 
 	public static final MCCMenuType<MCCStonecutterContainerMenu> STONECUTTER  = new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, "stonecutter"), 2);
-
 }

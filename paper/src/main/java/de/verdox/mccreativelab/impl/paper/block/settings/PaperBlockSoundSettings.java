@@ -8,7 +8,6 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCBlockTags;
 import de.verdox.mccreativelab.wrapper.util.DataHolderPredicate;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
@@ -203,7 +202,7 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
                 return;
         }
 
-        Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue());
+        Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getValue());
 
         MCCBlock block = BukkitAdapter.wrap(bukkitTargetBlock, new TypeToken<>() {});
         MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});

@@ -35,8 +35,8 @@ public class NMSBiome extends MCCHandle<Biome> implements MCCBiome {
     }
 
     @Override
-    public Precipitation getPrecipitationAt(MCCBlockPos pos) {
-        return Precipitation.valueOf(getHandle().getPrecipitationAt(new BlockPos(pos.x(), pos.y(), pos.z())).name());
+    public Precipitation getPrecipitationAt(MCCBlockPos pos, int seaLevel) {
+        return Precipitation.valueOf(getHandle().getPrecipitationAt(new BlockPos(pos.x(), pos.y(), pos.z()), seaLevel).name());
     }
 
     @Override

@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import net.kyori.adventure.sound.Sound;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
-
+import net.kyori.adventure.sound.Sound;
 public class MCCSounds  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "sound_event");
 
 	public static final MCCReference<Sound> ALLAY_AMBIENT_WITH_ITEM  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.allay.ambient_with_item"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -430,6 +428,8 @@ public class MCCSounds  {
 
 	public static final MCCReference<Sound> BUBBLE_COLUMN_WHIRLPOOL_INSIDE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.bubble_column.whirlpool_inside"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
+	public static final MCCReference<Sound> BUBBLE_POP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "ui.hud.bubble_pop"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
 	public static final MCCReference<Sound> BUCKET_EMPTY  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bucket.empty"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> BUCKET_EMPTY_AXOLOTL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bucket.empty_axolotl"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -457,6 +457,8 @@ public class MCCSounds  {
 	public static final MCCReference<Sound> BUNDLE_DROP_CONTENTS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bundle.drop_contents"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> BUNDLE_INSERT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bundle.insert"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> BUNDLE_INSERT_FAIL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bundle.insert_fail"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> BUNDLE_REMOVE_ONE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.bundle.remove_one"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
@@ -754,6 +756,44 @@ public class MCCSounds  {
 
 	public static final MCCReference<Sound> CRAFTER_FAIL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.crafter.fail"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
+	public static final MCCReference<Sound> CREAKING_AMBIENT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.ambient"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_ACTIVATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.activate"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_DEACTIVATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.deactivate"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_ATTACK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.attack"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_DEATH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.death"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_FREEZE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.freeze"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_UNFREEZE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.unfreeze"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_SPAWN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.spawn"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_SWAY  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.sway"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_TWITCH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creaking.twitch"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_FALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.fall"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_HIT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.hit"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_HURT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.hurt"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_PLACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.place"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_IDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.idle"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> CREAKING_HEART_SPAWN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.creaking_heart.spawn"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
 	public static final MCCReference<Sound> CREEPER_DEATH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creeper.death"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> CREEPER_HURT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.creeper.hurt"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -1014,6 +1054,16 @@ public class MCCSounds  {
 
 	public static final MCCReference<Sound> EXPERIENCE_ORB_PICKUP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.experience_orb.pickup"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
+	public static final MCCReference<Sound> EYEBLOSSOM_OPEN_LONG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.eyeblossom.open_long"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> EYEBLOSSOM_OPEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.eyeblossom.open"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> EYEBLOSSOM_CLOSE_LONG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.eyeblossom.close_long"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> EYEBLOSSOM_CLOSE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.eyeblossom.close"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> EYEBLOSSOM_IDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.eyeblossom.idle"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
 	public static final MCCReference<Sound> FENCE_GATE_CLOSE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.fence_gate.close"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> FENCE_GATE_OPEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.fence_gate.open"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -1244,8 +1294,6 @@ public class MCCSounds  {
 
 	public static final MCCReference<Sound> GOAT_HORN_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.horn_break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
-	public static final MCCReference<Sound> GOAT_HORN_PLAY  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "item.goat_horn.play"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
-
 	public static final MCCReference<Sound> GOAT_SCREAMING_AMBIENT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.screaming.ambient"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> GOAT_SCREAMING_DEATH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.screaming.death"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -1261,8 +1309,6 @@ public class MCCSounds  {
 	public static final MCCReference<Sound> GOAT_SCREAMING_PREPARE_RAM  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.screaming.prepare_ram"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> GOAT_SCREAMING_RAM_IMPACT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.screaming.ram_impact"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
-
-	public static final MCCReference<Sound> GOAT_SCREAMING_HORN_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.screaming.horn_break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> GOAT_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.goat.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
@@ -2022,6 +2068,8 @@ public class MCCSounds  {
 
 	public static final MCCReference<Sound> PAINTING_PLACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.painting.place"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
+	public static final MCCReference<Sound> PALE_HANGING_MOSS_IDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.pale_hanging_moss.idle"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
 	public static final MCCReference<Sound> PANDA_PRE_SNEEZE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.panda.pre_sneeze"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> PANDA_SNEEZE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.panda.sneeze"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
@@ -2059,6 +2107,8 @@ public class MCCSounds  {
 	public static final MCCReference<Sound> PARROT_IMITATE_BOGGED  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.parrot.imitate.bogged"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> PARROT_IMITATE_BREEZE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.parrot.imitate.breeze"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> PARROT_IMITATE_CREAKING  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.parrot.imitate.creaking"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> PARROT_IMITATE_CREEPER  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "entity.parrot.imitate.creeper"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
@@ -2587,6 +2637,34 @@ public class MCCSounds  {
 	public static final MCCReference<Sound> SOUL_SOIL_FALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.soul_soil.fall"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> SOUL_ESCAPE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "particle.soul_escape"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> SPAWNER_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spawner.break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> SPAWNER_FALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spawner.fall"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> SPAWNER_HIT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spawner.hit"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> SPAWNER_PLACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spawner.place"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> SPAWNER_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spawner.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin.break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_FALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin.fall"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_PLACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin.place"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BRICKS_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin_bricks.break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BRICKS_FALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin_bricks.fall"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BRICKS_HIT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin_bricks.hit"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BRICKS_PLACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin_bricks.place"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
+
+	public static final MCCReference<Sound> RESIN_BRICKS_STEP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.resin_bricks.step"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> SPORE_BLOSSOM_BREAK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block.spore_blossom.break"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
@@ -3215,5 +3293,4 @@ public class MCCSounds  {
 	public static final MCCReference<Sound> APPLY_EFFECT_TRIAL_OMEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "event.mob_effect.trial_omen"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
 
 	public static final MCCReference<Sound> APPLY_EFFECT_RAID_OMEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "event.mob_effect.raid_omen"), VANILLA_REGISTRY_KEY, new TypeToken<Sound>(){}).getAsReference();
-
 }

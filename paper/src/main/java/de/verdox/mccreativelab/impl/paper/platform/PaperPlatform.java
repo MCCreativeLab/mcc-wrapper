@@ -23,6 +23,8 @@ import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
 import io.papermc.paper.adventure.PaperAdventure;
 import me.lucko.spark.paper.PaperPlatformInfo;
 import net.kyori.adventure.text.Component;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.RegistryAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.EquipmentSlot;
@@ -38,11 +40,18 @@ public class PaperPlatform extends NMSPlatform {
     private final PaperBlockHardnessSettings paperBlockHardnessSettings = new PaperBlockHardnessSettings();
     private final PaperFurnaceSettings paperFurnaceSettings = new PaperFurnaceSettings();
     private final ConversionService bukkitConversionService = new ConversionServiceImpl();
-    private final PaperLifecycleListener paperLifecycleListener = new PaperLifecycleListener();
     private PaperTaskScheduler paperTaskScheduler;
 
     public PaperPlatform() {
         LOGGER.info("Setting up Paper Platform");
+    }
+
+    public PaperPlatform(boolean useGeneratedConverters) {
+        super(useGeneratedConverters);
+    }
+
+    public PaperPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
+        super(fullRegistryAccess, reloadableRegistries);
     }
 
     @Override
@@ -82,7 +91,6 @@ public class PaperPlatform extends NMSPlatform {
         Bukkit.getPluginManager().registerEvents(paperBlockHardnessSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
-        Bukkit.getPluginManager().registerEvents(paperLifecycleListener, javaPlugin);
     }
 
     public ConversionService getBukkitConversionService() {

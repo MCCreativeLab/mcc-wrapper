@@ -7,7 +7,6 @@ import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import de.verdox.mccreativelab.wrapper.typed.MCCItems;
-import net.kyori.adventure.text.Component;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;

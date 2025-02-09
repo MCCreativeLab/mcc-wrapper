@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.classgenerator.codegen.expressions;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.Parameter;
 
 import java.util.Arrays;
 import java.util.Collection;

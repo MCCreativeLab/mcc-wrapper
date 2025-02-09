@@ -1,15 +1,20 @@
 package de.verdox.mccreativelab.wrapper.registry;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Represents a group of minecraft elements
  *
  * @param <T> the tag type
  */
-public interface MCCTag<T> extends Keyed, MCCWrapped {
+public interface MCCTag<T> extends Keyed, MCCWrapped, Iterable<MCCReference<T>> {
     /**
      * Checks whether the tag belongs to a particular registry
      *
@@ -39,6 +44,11 @@ public interface MCCTag<T> extends Keyed, MCCWrapped {
      */
     default MCCReferenceSet<T> getValues() {
         return getRegistry().getOrCreateTag(this);
+    }
+
+    @Override
+    @NotNull default Iterator<MCCReference<T>> iterator(){
+        return getRegistry().getTagValues(this).get().iterator();
     }
 
     default boolean contains(T value){

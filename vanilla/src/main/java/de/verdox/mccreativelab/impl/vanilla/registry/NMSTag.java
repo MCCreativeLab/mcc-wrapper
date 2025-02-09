@@ -39,7 +39,7 @@ public class NMSTag<T> extends MCCHandle<TagKey<?>> implements MCCTag<T> {
 
     @Override
     public MCCRegistry<T> getRegistry() {
-        return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY.get(handle.registry().location()), new TypeToken<>() {});
+        return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY.getValue(handle.registry().location()), new TypeToken<>() {});
     }
 
     @Override

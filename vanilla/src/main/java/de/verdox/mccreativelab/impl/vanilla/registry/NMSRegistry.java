@@ -1,24 +1,20 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegistry<T> {
@@ -63,7 +59,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public @Nullable T get(@Nullable Key id) {
-        return wrap(handle.get(unwrap(id)));
+        return wrap(handle.getValue(unwrap(id)));
     }
 
     @Override
@@ -98,7 +94,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Optional<MCCReference<T>> getReference(Key key) {
-        return conversionService.wrap(handle.getHolder(unwrap(key)));
+        return conversionService.wrap(handle.get(unwrap(key)));
     }
 
     @Override
@@ -112,18 +108,25 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     }
 
     @Override
-    public Optional<MCCReferenceSet<T>> getTag(MCCTag<T> tag) {
-        return conversionService.wrap(handle.getTag(conversionService.unwrap(tag)));
+    public Optional<MCCReferenceSet<T>> getTagValues(MCCTag<T> tag) {
+        return Optional.of(getOrCreateTag(tag)) ;
     }
 
     @Override
     public MCCReferenceSet<T> getOrCreateTag(MCCTag<T> tag) {
-        return conversionService.wrap(handle.getOrCreateTag(conversionService.unwrap(tag)));
+        List<MCCReference<T>> list = new ArrayList<>();
+        handle.getTagOrEmpty(conversionService.unwrap(tag)).iterator().forEachRemaining(rHolder -> list.add(conversionService.wrap(rHolder)));
+        return MCCPlatform.getInstance().getTypedKeyFactory().createImmutableSetWithoutKey(list);
+    }
+
+    @Override
+    public Iterable<MCCReference<T>> iterate(MCCTag<T> tag) {
+        return getOrCreateTag(tag);
     }
 
     @Override
     public Stream<MCCTag<T>> getTagNames() {
-        return handle.getTagNames().map(conversionService::wrap);
+        return handle.getTags().map(conversionService::wrap);
     }
 
     @Override

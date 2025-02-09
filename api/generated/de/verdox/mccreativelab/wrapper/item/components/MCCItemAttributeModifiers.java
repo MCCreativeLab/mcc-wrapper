@@ -1,44 +1,41 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
+import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlot;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
+import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 
-public interface MCCItemAttributeModifiers extends MCCItemComponent  {
+import java.util.List;
+import java.lang.Object;
 
-	public MCCItemAttributeModifiers.Builder createBuilder();
+public interface MCCItemAttributeModifiers {
+    public MCCItemAttributeModifiers.Builder createBuilder();
 
-	public MCCItemAttributeModifiers.Entry createEntry();
+    public MCCItemAttributeModifiers.Entry createEntry();
 
-	public List<de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers.Entry> getModifiers();
+    public List<MCCItemAttributeModifiers.Entry> getModifiers();
 
-	public MCCItemAttributeModifiers withModifiers(List<de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers.Entry> modifiers);
+    public MCCItemAttributeModifiers withModifiers(List<MCCItemAttributeModifiers.Entry> modifiers);
 
-	public boolean getShowInTooltip();
+    public boolean getShowInTooltip();
 
-	public MCCItemAttributeModifiers withShowInTooltip(boolean showInTooltip);
+    public MCCItemAttributeModifiers withShowInTooltip(boolean showInTooltip);
 
+    public static interface Entry {
+        public MCCReference<MCCAttribute> getAttribute();
 
-	public static interface Builder  {
-	
-	}
+        public MCCItemAttributeModifiers.Entry withAttribute(MCCReference<MCCAttribute> attribute);
 
-	public static interface Entry  {
-	
-		public MCCReference<MCCAttribute> getAttribute();
-	
-		public MCCItemAttributeModifiers.Entry withAttribute(MCCReference<MCCAttribute> attribute);
-	
-		public MCCAttributeModifier getModifier();
-	
-		public MCCItemAttributeModifiers.Entry withModifier(MCCAttributeModifier modifier);
-	
-		public MCCEquipmentSlotGroup getSlot();
-	
-		public MCCItemAttributeModifiers.Entry withSlot(MCCEquipmentSlotGroup slot);
-	
-	}
+        public MCCAttributeModifier getModifier();
+
+        public MCCItemAttributeModifiers.Entry withModifier(MCCAttributeModifier modifier);
+
+        public MCCEquipmentSlotGroup getSlot();
+
+        public MCCItemAttributeModifiers.Entry withSlot(MCCEquipmentSlotGroup slot);
+    }
+
+    public static interface Builder {
+    }
 }

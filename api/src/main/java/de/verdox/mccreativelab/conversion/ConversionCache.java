@@ -85,4 +85,13 @@ public class ConversionCache<V> {
                 ", implToValue=" + implToValue +
                 '}';
     }
+
+    public SwapMap createNativeToApiSwapMap() {
+        SwapMap swapMap = new SwapMap();
+        for (Class<?> nativeType : nativeToApi.keySet()) {
+            Class<?> apiTypeOfNativeType = nativeToApi.get(nativeType);
+            swapMap.nativeToApiClasses.put(SwapMap.Description.from(nativeType), SwapMap.Description.from(apiTypeOfNativeType));
+        }
+        return swapMap;
+    }
 }

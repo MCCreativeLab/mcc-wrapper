@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.classgenerator.codegen.expressions;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.Parameter;
 
 public record SuperConstructorCall(Parameter... parameters) implements CodeExpression {
     @Override

@@ -3,7 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
-import de.verdox.mccreativelab.wrapper.world.MCCDamageType;
+import de.verdox.mccreativelab.wrapper.types.MCCDamageType;
 import org.jetbrains.annotations.Nullable;
 
 public interface MCCLivingEntity extends MCCEntity {

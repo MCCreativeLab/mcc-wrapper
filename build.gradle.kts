@@ -1,12 +1,13 @@
 plugins {
     id("java")
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.3"
+    id("io.papermc.paperweight.userdev") apply false
     id("xyz.jpenilla.run-paper") version "2.3.1" apply false // Adds runServer and runMojangMappedServer tasks for testing
 }
 
 repositories {
     mavenCentral()
+    maven("https://papermc.io/repo/repository/maven-releases/")
 }
 
 subprojects {
@@ -20,6 +21,7 @@ subprojects {
             name = "Verdox Reposilite"
             url = uri("https://repo.verdox.de/snapshots")
         }
+        maven("https://papermc.io/repo/repository/maven-releases/")
     }
 
     java {
@@ -51,10 +53,9 @@ subprojects {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     compileOnly("net.kyori:adventure-api:4.17.0")
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
-    compileOnly("com.mojang:authlib:3.13.56")
+    //compileOnly("com.mojang:authlib:1.5.25")
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("net.bytebuddy:byte-buddy:1.15.10")
 

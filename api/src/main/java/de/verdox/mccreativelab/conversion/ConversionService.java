@@ -18,11 +18,11 @@ public interface ConversionService {
      * The method is useful when you want to convert between MCC objects and Bukkit Objects for example. Both usually map to the same native type.
      * However, be advised that not all impl types might work here.
      *
-     * @param apiType the api object to convert
+     * @param apiType           the api object to convert
      * @param conversionService the other conversion service that holds the information of the second api type
+     * @param <A1>              the first api type
+     * @param <A2>              the second api type
      * @return an object of the other api type but with the same native type
-     * @param <A1> the first api type
-     * @param <A2> the second api type
      */
     <A1, A2> A2 apiTypeToOtherApiType(A1 apiType, ConversionService conversionService);
 
@@ -58,5 +58,5 @@ public interface ConversionService {
         return (F) unwrap(objectToUnwrap);
     }
 
-    record ClassPair(Class<?> apiType, Class<?> nativeType) {}
+    SwapMap createSwapMap();
 }

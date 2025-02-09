@@ -1,10 +1,9 @@
 package capture;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.*;
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedClassType;
 import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +15,19 @@ public class CaptureClassTest {
     public void testRightCapture() {
         CapturedType<?, ?> capturedType = CapturedType.from(SimpleClass.class);
 
-        Assertions.assertInstanceOf(CapturedClassType.class, capturedType);
+        Assertions.assertInstanceOf(ClassType.class, capturedType);
+    }
+
+    @Test
+    public void testRightCapture2() {
+        CapturedType<?, ?> capturedType = CapturedType.from(Map.class);
+
+        Assertions.assertInstanceOf(ClassType.class, capturedType);
     }
 
     @Test
     public void testRightName() {
-        CapturedClassType capturedType = (CapturedClassType) CapturedType.from(SimpleClass.class);
+        ClassType<?> capturedType = (ClassType<?>) CapturedType.from(SimpleClass.class);
 
         Assertions.assertEquals("SimpleClass", capturedType.getClassName());
     }
@@ -59,16 +65,4 @@ public class CaptureClassTest {
         CapturedType.from(token).write(codeLineBuilder);
         Assertions.assertEquals("Map<? extends String, ? super Integer>", codeLineBuilder.toString());
     }
-
-    @Test
-    public void testSerialization() {
-        CodeLineBuilder codeLineBuilder = new CodeLineBuilder(null, 0);
-
-        var token = new TypeToken<Map<? extends String, ? super Integer>>() {};
-
-        CapturedType<?,?> before = CapturedType.from(token);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        gson.toJsonTree(before);
-    }
-
 }

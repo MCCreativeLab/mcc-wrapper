@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.conversion;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,6 +141,11 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public boolean isApiTypeKnown(Class<?> apiType) {
         return conversionCache.knowsApiType(apiType);
+    }
+
+    @Override
+    public SwapMap createSwapMap() {
+        return conversionCache.createNativeToApiSwapMap();
     }
 
     @Override
