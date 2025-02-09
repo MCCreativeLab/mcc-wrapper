@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
-import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -62,7 +61,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
         handle.stopRiding();
 
         if (!getLocation().world().equals(location.world())) {
-            Preconditions.checkState(!handle.generation, "Cannot teleport entity to an other world during world generation");
             CompletableFuture<MCCEntity> done = new CompletableFuture<>();
             handle.changeDimension(new DimensionTransition(conversionService.unwrap(location.world(), new TypeToken<>() {}), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
                 done.complete(this);
@@ -133,7 +131,7 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public boolean isInBubbleColumn() {
-        return handle.isInBubbleColumn();
+        return invokeMethodInHandle("isInBubbleColumn");
     }
 
     @Override

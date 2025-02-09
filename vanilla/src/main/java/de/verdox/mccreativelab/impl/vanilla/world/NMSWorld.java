@@ -81,7 +81,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
             if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.IceBlock iceBlock) {
                 iceBlock.afterDestroy(getHandle(), blockPos, conversionService.unwrap(tool));
             } else if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.TurtleEggBlock turtleEggBlock) {
-                turtleEggBlock.decreaseEggs(getHandle(), blockPos, nmsBlockState);
+                invokeMethodInHandle("decreaseEggs", blockPos, nmsBlockState); // TODO: should do turtleEggBlock.decreaseEggs(getHandle(), blockPos, nmsBlockState); (check this)
             }
         }
     }
