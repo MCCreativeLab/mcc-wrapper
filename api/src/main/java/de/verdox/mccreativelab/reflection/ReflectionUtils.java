@@ -60,6 +60,7 @@ public class ReflectionUtils {
      * @param <R>        Return type
      * @return Method return value
      */
+    @SuppressWarnings("unchecked")
     public static <C, R> R invokeMethodInClass(C clazz, String methodName, Object... args) {
         try {
             Method method = clazz.getClass().getDeclaredMethod(methodName);
