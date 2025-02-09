@@ -9,4 +9,4 @@ rootProject.name = "mcc-wrapper"
 include("api")
 include("vanilla")
 include("paper")
-include("mcc-class-generator")
+include("class-generator")
