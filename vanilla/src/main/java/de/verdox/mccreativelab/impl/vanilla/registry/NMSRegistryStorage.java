@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.registry;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
@@ -35,7 +36,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     private boolean frozen;
 
     public NMSRegistryStorage() {
-        this(() -> MinecraftServer.getServer().registries().compositeAccess(), () -> MinecraftServer.getServer().reloadableRegistries().get());
+        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().get());
     }
 
     @VisibleForTesting
