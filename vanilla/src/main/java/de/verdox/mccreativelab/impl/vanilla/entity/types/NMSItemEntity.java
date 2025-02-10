@@ -49,12 +49,13 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public short getHealth() {
-        return (short) handle.health;
+        int health = readFieldFromHandle("health", new TypeToken<>() {});
+        return (short) health;
     }
 
     @Override
     public void setHealth(short health) {
-        handle.health = health;
+        writeFieldInHandle("health", (int) health);
     }
 
     @Override
@@ -64,16 +65,17 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public void setAge(short age) {
-        handle.age = age;
+        writeFieldInHandle("age", (int) age);
     }
 
     @Override
     public short getPickupDelay() {
-        return (short) handle.pickupDelay;
+        int pickupDelay = readFieldFromHandle("pickupDelay", new TypeToken<>() {});
+        return (short) pickupDelay;
     }
 
     @Override
     public void setPickupDelay(short pickupDelay) {
-        handle.pickupDelay = pickupDelay;
+        writeFieldInHandle("pickupDelay", (int) pickupDelay);
     }
 }
