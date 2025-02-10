@@ -3,7 +3,6 @@ package de.verdox.mccreativelab.impl.paper.platform.converter;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import org.bukkit.craftbukkit.CraftChunk;
 
 import java.util.function.Function;
 
