@@ -11,6 +11,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCResultContai
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCAnvilContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.DataSlot;
 import org.jetbrains.annotations.Nullable;
 
 public class NMSAnvilContainerMenu extends NMSContainerMenu<MCCBlockContainerSource, AnvilMenu, MCCResultContainer> implements MCCAnvilContainerMenu {
@@ -45,7 +46,7 @@ public class NMSAnvilContainerMenu extends NMSContainerMenu<MCCBlockContainerSou
 
     @Override
     public void setRepairCost(int cost) {
-        getHandle().cost.set(cost);
+        readFieldFromHandle("cost", new TypeToken<DataSlot>() {}).set(cost);
     }
 
     @Override

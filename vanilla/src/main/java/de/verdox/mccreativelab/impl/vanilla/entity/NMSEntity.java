@@ -75,7 +75,7 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public MCCLocation getLocation() {
-        return new MCCLocation(conversionService.wrap(handle.level(), new TypeToken<>() {}), handle.position().x(), handle.position().y(), handle.position().z(), handle.getBukkitYaw(), handle.getXRot());
+        return new MCCLocation(conversionService.wrap(handle.level(), new TypeToken<>() {}), handle.position().x(), handle.position().y(), handle.position().z(), handle.getYRot(), handle.getXRot());
     }
 
     @Override
