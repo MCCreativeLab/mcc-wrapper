@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.world;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.storage.ServerLevelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +46,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public String getName() {
-        return handle.getLevelData().getLevelName();
+        return readFieldFromHandle("serverLevelData", new TypeToken<ServerLevelData>() {}).getLevelName();
     }
 
     @Override
