@@ -222,8 +222,9 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
         return locale != null ? locale : "en_us";
     }
 
-    private MainHand getMainHand() {
-        return this.getHandle().getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT;
+    // TODO: check if this casts correctly
+    private MCCClientOption.MainHand getMainHand() {
+        return this.getHandle().getMainArm() == HumanoidArm.LEFT ? MCCClientOption.MainHand.LEFT : MCCClientOption.MainHand.RIGHT;
     }
 
 
