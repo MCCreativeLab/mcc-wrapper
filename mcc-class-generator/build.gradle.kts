@@ -51,7 +51,7 @@ dependencies {
     //implementation(project(":mcc-wrapper"))
 
 
-    implementation(
+    compileOnly(
         providers.gradleProperty("wrapper_group")
             .get() + ":api:" + providers.gradleProperty("class_generator_upgrade_from").get()
     )

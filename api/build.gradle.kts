@@ -12,7 +12,7 @@ dependencies {
     //compileOnly("com.mojang:authlib:1.5.25")
     implementation("org.joml:joml:1.10.8")
     implementation("org.apache.commons:commons-lang3:3.17.0")
-    implementation(project(":mcc-class-generator"))
+    compileOnly(project(":mcc-class-generator"))
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

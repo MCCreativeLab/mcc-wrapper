@@ -37,7 +37,7 @@ public class NMSRegistriesTest extends TestBase {
         }
 
         private Registry<F> getNativeRegistry() {
-            Registry<F> mccRegistry = (Registry<F>) BuiltInRegistries.REGISTRY.get(nativeRegistryKey().location()).get();
+            Registry<F> mccRegistry = (Registry<F>) BuiltInRegistries.REGISTRY.get(nativeRegistryKey().location()).get().value();
             Assertions.assertNotNull(mccRegistry);
             return mccRegistry;
         }
@@ -103,8 +103,8 @@ public class NMSRegistriesTest extends TestBase {
 
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
-        A actual = testEntry.getRegistry().get(testEntry.exampleElement());
-        Assertions.assertEquals(nativeRegistry.get(resourceKey), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        A actual = testEntry.getRegistry().getOrThrow(testEntry.exampleElement());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
@@ -117,7 +117,7 @@ public class NMSRegistriesTest extends TestBase {
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
         A actual = testEntry.getRegistry().get(testEntry.exampleElement().key());
-        Assertions.assertEquals(nativeRegistry.get(resourceKey.location()), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
@@ -156,7 +156,7 @@ public class NMSRegistriesTest extends TestBase {
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
         A actual = testEntry.getRegistry().getOrThrow(testEntry.exampleElement());
-        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
