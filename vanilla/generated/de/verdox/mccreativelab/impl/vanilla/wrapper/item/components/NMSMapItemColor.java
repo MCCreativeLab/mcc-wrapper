@@ -1,14 +1,9 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import net.minecraft.world.item.component.MapItemColor;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSMapItemColor;
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.item.components.MCCMapItemColor;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import net.minecraft.world.item.component.MapItemColor;
 
 public class NMSMapItemColor extends MCCHandle<MapItemColor> implements MCCMapItemColor  {
 

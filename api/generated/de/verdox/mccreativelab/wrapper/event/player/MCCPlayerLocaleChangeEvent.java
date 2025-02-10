@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
 import java.util.Locale;
-import java.lang.String;
 
 /**
  *  Called when a player changes their locale in the client settings.

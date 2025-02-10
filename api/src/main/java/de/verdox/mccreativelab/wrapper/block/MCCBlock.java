@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.block;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;

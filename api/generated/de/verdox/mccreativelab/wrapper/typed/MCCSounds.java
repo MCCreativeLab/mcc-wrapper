@@ -1,10 +1,10 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import net.kyori.adventure.sound.Sound;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
 
 public class MCCSounds  {
 

@@ -1,7 +1,8 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import java.util.List;
 import net.kyori.adventure.text.Component;
+
+import java.util.List;
 
 public interface MCCItemLore extends MCCItemComponent  {
 

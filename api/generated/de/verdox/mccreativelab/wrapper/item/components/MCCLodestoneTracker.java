@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+
 import java.util.Optional;
 
 public interface MCCLodestoneTracker extends MCCItemComponent  {

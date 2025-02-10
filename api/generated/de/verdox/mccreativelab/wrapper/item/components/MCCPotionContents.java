@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import java.util.List;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
+
+import java.util.List;
 import java.util.Optional;
-import java.lang.Integer;
 
 public interface MCCPotionContents extends MCCItemComponent  {
 

@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 
 /**
  *  Called when a block causes an entity to combust.

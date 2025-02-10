@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.wrapper.inventory.types.menu;
 
-import de.verdox.mccreativelab.wrapper.inventory.*;
+import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCBlockContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.MCCLocatedContainerMenu;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;

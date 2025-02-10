@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.types.MCCPaintingVariant;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.types.MCCPaintingVariant;
 import net.kyori.adventure.key.Key;
 
 public class MCCPaintingVariants  {

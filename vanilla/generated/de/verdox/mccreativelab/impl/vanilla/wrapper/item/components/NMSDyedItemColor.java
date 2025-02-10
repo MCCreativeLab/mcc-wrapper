@@ -1,14 +1,9 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDyedItemColor;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSDyedItemColor;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import net.minecraft.world.item.component.DyedItemColor;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
 
 public class NMSDyedItemColor extends MCCHandle<DyedItemColor> implements MCCDyedItemColor  {
 

@@ -4,7 +4,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Set;
 
 /**
  * This Conversion Service is used to implement interfaces on a particular platform.

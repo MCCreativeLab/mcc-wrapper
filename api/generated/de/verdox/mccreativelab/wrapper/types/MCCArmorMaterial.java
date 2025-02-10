@@ -1,12 +1,11 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import java.util.List;
-import net.kyori.adventure.sound.Sound;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.types.MCCArmorMaterial;
-import java.lang.String;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.sound.Sound;
+
+import java.util.List;
 
 public interface MCCArmorMaterial extends MCCWrapped  {
 

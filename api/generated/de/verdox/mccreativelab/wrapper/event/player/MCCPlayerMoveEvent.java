@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 
 /**
  *  Holds information for player movement events

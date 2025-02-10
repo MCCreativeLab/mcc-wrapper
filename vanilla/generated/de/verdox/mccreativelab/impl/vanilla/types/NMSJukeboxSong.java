@@ -1,19 +1,16 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.types.MCCJukeboxSong;
-import net.minecraft.world.item.JukeboxSong;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSJukeboxSong;
-import java.util.List;
+import de.verdox.mccreativelab.wrapper.types.MCCJukeboxSong;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
-import net.kyori.adventure.text.Component;
+import net.minecraft.world.item.JukeboxSong;
 
 public class NMSJukeboxSong extends MCCHandle<JukeboxSong> implements MCCJukeboxSong  {
 

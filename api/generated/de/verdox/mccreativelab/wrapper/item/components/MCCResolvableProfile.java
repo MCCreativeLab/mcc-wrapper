@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.PropertyMap;
+
 import java.util.Optional;
-import java.lang.String;
 import java.util.UUID;
 
 public interface MCCResolvableProfile extends MCCItemComponent  {

@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.block;
 
-import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import net.kyori.adventure.sound.Sound;
 

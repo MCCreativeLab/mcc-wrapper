@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.types.MCCDecoratedPotPattern;
-import com.google.common.reflect.TypeToken;
 import net.kyori.adventure.key.Key;
 
 public class MCCDecoratedPotPatterns  {

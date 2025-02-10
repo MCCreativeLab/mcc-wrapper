@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 
 /**
  *  Thrown when a non-player entity is teleported from one location to another.

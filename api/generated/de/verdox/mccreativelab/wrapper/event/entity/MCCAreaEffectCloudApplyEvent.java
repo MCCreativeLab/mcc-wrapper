@@ -1,7 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import java.util.List;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
+import java.util.List;
 
 /**
  *  Called when a lingering potion applies its effects. Happens

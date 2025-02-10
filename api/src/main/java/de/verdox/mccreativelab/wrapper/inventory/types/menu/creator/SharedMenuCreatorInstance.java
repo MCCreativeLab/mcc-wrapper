@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.wrapper.inventory.types.menu.creator;
 
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
-import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.types.MCCSharedContainerMenu;
 
 /**

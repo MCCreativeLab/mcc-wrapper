@@ -1,22 +1,21 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
+import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
+import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSItemAttributeModifiers;
-import com.google.common.reflect.TypeToken;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import java.util.List;
 import net.minecraft.core.Holder;
-import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
-import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+
+import java.util.List;
 
 public class NMSItemAttributeModifiers extends MCCHandle<ItemAttributeModifiers> implements MCCItemAttributeModifiers  {
 

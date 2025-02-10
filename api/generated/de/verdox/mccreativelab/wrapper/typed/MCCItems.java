@@ -1,10 +1,10 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import com.google.common.reflect.TypeToken;
-import net.kyori.adventure.key.Key;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+import net.kyori.adventure.key.Key;
 
 public class MCCItems  {
 

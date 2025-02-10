@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.block;
 
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 
 /**
  *  Thrown when a block physics check is called.

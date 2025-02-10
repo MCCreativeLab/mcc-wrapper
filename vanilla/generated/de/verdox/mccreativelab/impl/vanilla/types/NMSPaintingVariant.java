@@ -1,16 +1,13 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import de.verdox.mccreativelab.wrapper.types.MCCPaintingVariant;
-import net.minecraft.resources.ResourceLocation;
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import net.minecraft.world.entity.decoration.PaintingVariant;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSPaintingVariant;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.types.MCCPaintingVariant;
 import net.kyori.adventure.key.Key;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 
 public class NMSPaintingVariant extends MCCHandle<PaintingVariant> implements MCCPaintingVariant  {
 

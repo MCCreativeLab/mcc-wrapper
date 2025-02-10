@@ -2,8 +2,8 @@ package de.verdox.mccreativelab.wrapper.item.components;
 
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 
 @MCCInstantiationSource(sourceClasses = MCCDataComponentEditor.class)

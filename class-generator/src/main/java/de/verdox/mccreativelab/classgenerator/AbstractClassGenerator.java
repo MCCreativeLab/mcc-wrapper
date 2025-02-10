@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.classgenerator;
 
 import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import net.minecraft.world.level.block.Block;
 
 import java.io.File;
 import java.lang.reflect.Type;

@@ -1,14 +1,9 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.item.components.MCCCustomModelData;
-import java.util.Set;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.item.component.CustomModelData;
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSCustomModelData;
 
 public class NMSCustomModelData extends MCCHandle<CustomModelData> implements MCCCustomModelData  {
 

@@ -1,10 +1,9 @@
 package de.verdox.mccreativelab.wrapper.types;
 
+import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.types.MCCGameEvent;
 
 public interface MCCGameEvent extends MCCWrapped  {
 

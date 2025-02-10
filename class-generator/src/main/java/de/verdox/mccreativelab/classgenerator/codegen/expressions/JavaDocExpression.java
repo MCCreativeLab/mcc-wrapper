@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.classgenerator.codegen.expressions;
 
 import com.github.javaparser.ast.comments.Comment;
-import com.github.javaparser.javadoc.JavadocBlockTag;
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
 
 import java.util.LinkedList;

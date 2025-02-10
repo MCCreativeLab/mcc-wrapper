@@ -1,12 +1,3 @@
-import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
 public class ClassDescriptionTests {
     //TODO: FIX
     /*@Test

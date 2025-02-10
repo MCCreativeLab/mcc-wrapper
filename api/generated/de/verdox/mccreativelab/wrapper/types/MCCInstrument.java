@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import net.kyori.adventure.sound.Sound;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+import net.kyori.adventure.sound.Sound;
 
 public interface MCCInstrument extends MCCWrapped  {
 

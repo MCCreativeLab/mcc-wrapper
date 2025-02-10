@@ -1,21 +1,18 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.lang.Float;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import net.minecraft.core.HolderSet;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.item.components.MCCTool;
-import net.minecraft.world.item.component.Tool;
-import java.util.List;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import java.util.Optional;
-import java.lang.Boolean;
+import de.verdox.mccreativelab.wrapper.item.components.MCCTool;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
+import net.minecraft.core.HolderSet;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.level.block.Block;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSTool;
+
+import java.util.List;
+import java.util.Optional;
 
 public class NMSTool extends MCCHandle<Tool> implements MCCTool  {
 

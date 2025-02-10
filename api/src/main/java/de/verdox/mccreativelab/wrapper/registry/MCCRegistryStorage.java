@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.wrapper.registry;
 
 import net.kyori.adventure.key.Key;
-import org.jetbrains.annotations.Nullable;
 
 public interface MCCRegistryStorage {
     /**

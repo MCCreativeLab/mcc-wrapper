@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
 import net.kyori.adventure.key.Key;
 
 public class MCCPoiTypes  {

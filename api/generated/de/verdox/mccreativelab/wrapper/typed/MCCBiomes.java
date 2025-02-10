@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 

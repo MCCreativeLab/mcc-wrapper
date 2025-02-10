@@ -5,7 +5,6 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.Objects;
 import java.util.function.Function;
 

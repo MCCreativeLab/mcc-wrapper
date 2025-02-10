@@ -2,7 +2,6 @@ package de.verdox.mccreativelab.conversion.converter;
 
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.function.Supplier;
 

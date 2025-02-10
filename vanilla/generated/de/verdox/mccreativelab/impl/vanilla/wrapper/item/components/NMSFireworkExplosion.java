@@ -1,15 +1,14 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import it.unimi.dsi.fastutil.ints.IntList;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSFireworkExplosion;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import de.verdox.mccreativelab.wrapper.item.components.MCCFireworkExplosion;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCFireworkExplosion;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.world.item.component.FireworkExplosion;
+
+import java.util.List;
 
 public class NMSFireworkExplosion extends MCCHandle<FireworkExplosion> implements MCCFireworkExplosion  {
 

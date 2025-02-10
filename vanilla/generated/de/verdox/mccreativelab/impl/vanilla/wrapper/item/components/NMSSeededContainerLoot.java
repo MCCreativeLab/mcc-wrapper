@@ -1,17 +1,14 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSSeededContainerLoot;
-import java.util.List;
-import net.minecraft.world.item.component.SeededContainerLoot;
-import de.verdox.mccreativelab.wrapper.item.components.MCCSeededContainerLoot;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import java.util.Set;
-import net.minecraft.world.level.storage.loot.LootTable;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCSeededContainerLoot;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.component.SeededContainerLoot;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 public class NMSSeededContainerLoot extends MCCHandle<SeededContainerLoot> implements MCCSeededContainerLoot  {
 

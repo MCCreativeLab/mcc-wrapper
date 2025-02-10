@@ -2,7 +2,6 @@ package de.verdox.mccreativelab.wrapper.inventory.types.menu;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
-import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCMerchantRecipe;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCEntityContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.MCCPrivateContainerMenu;

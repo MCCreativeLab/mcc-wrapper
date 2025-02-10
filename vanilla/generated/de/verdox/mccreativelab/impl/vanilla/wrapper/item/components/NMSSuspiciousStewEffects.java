@@ -1,18 +1,17 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.item.components.MCCSuspiciousStewEffects;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSSuspiciousStewEffects;
-import java.util.List;
+import de.verdox.mccreativelab.wrapper.item.components.MCCSuspiciousStewEffects;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.component.SuspiciousStewEffects;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.component.SuspiciousStewEffects;
+
+import java.util.List;
 
 public class NMSSuspiciousStewEffects extends MCCHandle<SuspiciousStewEffects> implements MCCSuspiciousStewEffects  {
 

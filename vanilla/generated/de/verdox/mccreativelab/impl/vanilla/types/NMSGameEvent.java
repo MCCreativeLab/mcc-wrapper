@@ -1,23 +1,21 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSGameEvent;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import de.verdox.mccreativelab.wrapper.types.MCCGameEvent;
-import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Field;
-import java.util.List;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.phys.Vec3;
+
+import java.lang.reflect.Field;
 
 public class NMSGameEvent extends MCCHandle<GameEvent> implements MCCGameEvent  {
 

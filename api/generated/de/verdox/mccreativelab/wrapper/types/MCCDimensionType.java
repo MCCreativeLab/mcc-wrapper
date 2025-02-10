@@ -1,10 +1,11 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import java.util.OptionalLong;
-import de.verdox.mccreativelab.wrapper.registry.MCCTag;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import net.kyori.adventure.key.Key;
+
+import java.util.OptionalLong;
 
 public interface MCCDimensionType extends MCCWrapped  {
 

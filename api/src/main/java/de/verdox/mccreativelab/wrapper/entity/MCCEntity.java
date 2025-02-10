@@ -5,7 +5,6 @@ import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
-import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.audience.Audience;

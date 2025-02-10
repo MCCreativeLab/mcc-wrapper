@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
 import java.util.Collection;
-import java.lang.String;
 
 /**
  *  This event is called when the list of available server commands is sent to

@@ -1,11 +1,11 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import net.kyori.adventure.sound.Sound;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import java.util.Set;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import java.lang.String;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import net.kyori.adventure.sound.Sound;
+
+import java.util.Set;
 
 public interface MCCVillagerProfession extends MCCWrapped  {
 

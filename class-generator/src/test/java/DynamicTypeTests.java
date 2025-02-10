@@ -1,18 +1,3 @@
-import de.verdox.mccreativelab.classgenerator.NMSMapper;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import model.TestImplClass;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Type;
-import java.util.List;
-
 public class DynamicTypeTests {
 
     //TODO: FIX

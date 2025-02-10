@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.types.MCCJukeboxSong;
 import de.verdox.mccreativelab.wrapper.registry.MCCEitherReference;
+import de.verdox.mccreativelab.wrapper.types.MCCJukeboxSong;
 
 public interface MCCJukeboxPlayable extends MCCItemComponent  {
 

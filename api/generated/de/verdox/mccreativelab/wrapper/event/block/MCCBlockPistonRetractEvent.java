@@ -1,8 +1,9 @@
 package de.verdox.mccreativelab.wrapper.event.block;
 
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
+
+import java.util.List;
 
 /**
  *  Called when a piston retracts

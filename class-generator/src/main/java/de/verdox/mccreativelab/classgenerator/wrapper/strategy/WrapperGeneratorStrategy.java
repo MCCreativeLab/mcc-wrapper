@@ -3,10 +3,9 @@ package de.verdox.mccreativelab.classgenerator.wrapper.strategy;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.classgenerator.NMSMapper;
 import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.*;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
 import de.verdox.mccreativelab.classgenerator.util.FieldNameUtil;
-
 import de.verdox.mccreativelab.classgenerator.wrapper.WrapperInterfaceGenerator;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.jetbrains.annotations.Nullable;

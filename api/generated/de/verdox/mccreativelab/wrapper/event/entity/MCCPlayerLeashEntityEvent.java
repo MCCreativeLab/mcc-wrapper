@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.event.MCCEvent;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlot;
+import de.verdox.mccreativelab.wrapper.event.MCCEvent;
 
 /**
  *  Called immediately prior to a creature being leashed by a player.

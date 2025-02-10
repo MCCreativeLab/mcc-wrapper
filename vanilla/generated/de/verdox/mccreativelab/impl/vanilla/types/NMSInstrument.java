@@ -1,14 +1,11 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSInstrument;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.types.MCCInstrument;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import java.util.List;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;

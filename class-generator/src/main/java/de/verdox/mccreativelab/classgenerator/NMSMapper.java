@@ -1,40 +1,21 @@
 package de.verdox.mccreativelab.classgenerator;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.mojang.authlib.GameProfile;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
 import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.conversion.ConversionService;
-import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
-import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
-import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
-import de.verdox.mccreativelab.wrapper.entity.ai.MCCMemoryModuleType;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.*;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import io.papermc.paper.registry.data.util.Conversions;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.kyori.adventure.key.Key;
-import net.minecraft.core.*;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.BlastFurnaceMenu;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import org.bukkit.potion.PotionEffect;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class NMSMapper {

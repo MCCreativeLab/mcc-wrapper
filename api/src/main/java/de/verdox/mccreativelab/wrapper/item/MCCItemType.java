@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.item;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
+import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;

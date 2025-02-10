@@ -1,10 +1,10 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
-import com.google.common.reflect.TypeToken;
 import net.kyori.adventure.key.Key;
-import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 
 public class MCCItemTags  {
 

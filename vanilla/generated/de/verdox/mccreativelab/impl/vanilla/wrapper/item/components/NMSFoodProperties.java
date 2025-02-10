@@ -1,19 +1,18 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import net.minecraft.world.food.FoodProperties;
-import de.verdox.mccreativelab.wrapper.item.components.MCCFoodProperties;
-import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSFoodProperties;
-import java.util.Set;
-import net.minecraft.world.effect.MobEffectInstance;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.item.components.MCCFoodProperties;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.List;
 import java.util.Optional;
-import net.minecraft.world.item.ItemStack;
 
 public class NMSFoodProperties extends MCCHandle<FoodProperties> implements MCCFoodProperties  {
 

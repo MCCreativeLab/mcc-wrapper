@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 
 /**
  *  This event is called when a {@link org.bukkit.entity.Item} is removed from

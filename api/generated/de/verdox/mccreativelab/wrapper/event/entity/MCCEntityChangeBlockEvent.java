@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 
 /**
  *  Called when any Entity changes a block and a more specific event is not available.

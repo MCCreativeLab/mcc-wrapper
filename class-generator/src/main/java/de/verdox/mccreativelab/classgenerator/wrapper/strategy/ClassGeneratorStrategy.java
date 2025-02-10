@@ -1,8 +1,11 @@
 package de.verdox.mccreativelab.classgenerator.wrapper.strategy;
 
 import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.CodeExpression;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.ConstructorCall;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.LocalVariableAssignment;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.MethodCall;
 import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import de.verdox.mccreativelab.classgenerator.codegen.expressions.*;
 
 import java.util.Arrays;
 import java.util.LinkedList;

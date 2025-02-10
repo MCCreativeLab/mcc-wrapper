@@ -1,8 +1,9 @@
 package de.verdox.mccreativelab.wrapper.event.block;
 
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
+import java.util.List;
 
 /**
  *  Called when a bell resonated after being rung and highlights nearby raiders.

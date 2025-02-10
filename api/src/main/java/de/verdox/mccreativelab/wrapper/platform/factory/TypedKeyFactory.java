@@ -2,7 +2,10 @@ package de.verdox.mccreativelab.wrapper.platform.factory;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.*;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
+import de.verdox.mccreativelab.wrapper.registry.MCCTag;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.kyori.adventure.key.Key;
 
 import java.util.*;

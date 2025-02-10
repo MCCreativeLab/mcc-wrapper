@@ -14,8 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Modifier;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class WrapperInterfaceGenerator extends AbstractClassGenerator {
