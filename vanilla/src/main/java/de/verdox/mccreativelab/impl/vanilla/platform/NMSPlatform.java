@@ -158,7 +158,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public int getPublicTick() {
-        return MinecraftServer.currentTick;
+        return getServer().getTickCount(); // TODO: check if this replaces return MinecraftServer.currentTick;
     }
 
     @Override
