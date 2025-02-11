@@ -21,6 +21,7 @@ public class ReflectionUtils {
      * @param <R>       Field type
      * @return Field value
      */
+    @SuppressWarnings("unchecked")
     public static <C, R> R readFieldFromClass(C clazz, String fieldName, TypeToken<R> type) {
         try {
             Field field = clazz.getClass().getDeclaredField(fieldName);

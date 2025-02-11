@@ -13,7 +13,9 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -216,7 +218,9 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public boolean isTicking() {
-        return handle.isTicking();
+        return ((ServerChunkCache) getHandle().level().getChunkSource()).isPositionTicking(
+                ChunkPos.asLong(net.minecraft.util.Mth.floor(getHandle().getX()) >> 4, net.minecraft.util.Mth.floor(getHandle().getZ()) >> 4)
+        );
     }
 
     @Override
