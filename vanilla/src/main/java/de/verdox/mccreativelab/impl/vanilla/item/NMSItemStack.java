@@ -12,6 +12,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
 import net.kyori.adventure.text.Component;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -121,8 +122,9 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
 
     @Override
     public int getEnchantmentLevel(MCCEnchantment mccEnchantment) {
-        //TODO
-        return 0;
+        return getHandle().getEnchantments().getLevel(
+                Holder.direct(MCCPlatform.getInstance().getConversionService().unwrap(mccEnchantment, new TypeToken<>() {})) // TODO: check if this is the direct way to get the holder of the enchantment
+        );
     }
 
     @Override
