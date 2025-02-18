@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.entity.player.client;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import net.minecraft.world.entity.player.Player;
 
@@ -10,7 +12,7 @@ public class NMSSkinParts implements MCCClientOption.SkinParts {
     private final int raw;
 
     public NMSSkinParts(Player player) {
-        this.raw = player.getEntityData().get(Player.DATA_PLAYER_MODE_CUSTOMISATION);
+        this.raw = player.getEntityData().get(ReflectionUtils.readFieldFromClass(Player.class, "DATA_PLAYER_MODE_CUSTOMISATION", new TypeToken<>() {})); // TODO: check if this returns Player.DATA_PLAYER_MODE_CUSTOMISATION
     }
 
     public boolean hasCapeEnabled() {
