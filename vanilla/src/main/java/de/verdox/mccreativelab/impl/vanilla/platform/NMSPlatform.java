@@ -293,7 +293,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEntity.class, NMSEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemEntity.class, NMSItemEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER);
+        // conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER); TODO
     }
 
     private void registerContainerTypes() {
