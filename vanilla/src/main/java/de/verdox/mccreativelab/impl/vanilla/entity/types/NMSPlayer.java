@@ -62,25 +62,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityProperty<Long, MCCPlayer> getTimeProperty() {
-        return new MCCEntityProperty<>() {
-            @Override
-            public @Nullable Long get() {
-                return getServerPlayer().getPlayerTime();
-            }
-
-            @Override
-            public void set(@Nullable Long newValue) {
-                Objects.requireNonNull(newValue);
-                getServerPlayer().timeOffset = newValue;
-                getServerPlayer().relativeTime = false;
-            }
-
-            @Override
-            public void sync() {
-                getServerPlayer().timeOffset = 0;
-                getServerPlayer().relativeTime = false;
-            }
-        };
+        throw new OperationNotPossibleOnNMS(); // TODO: implement
     }
 
     @Override
@@ -95,24 +77,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty() {
-        return new MCCEntityProperty<>() {
-            @Override
-            public @Nullable MCCItemStack get() {
-                return MCCPlatform.getInstance().getConversionService().wrap(getServerPlayer().containerMenu.getCarried(), new TypeToken<>() {});
-            }
-
-            @Override
-            public void set(@Nullable MCCItemStack newValue) {
-                ItemStack stack = MCCPlatform.getInstance().getConversionService().unwrap(newValue, new TypeToken<>() {});
-                getServerPlayer().containerMenu.setCarried(stack);
-                getServerPlayer().containerMenu.broadcastCarriedItem();
-            }
-
-            @Override
-            public void sync() {
-
-            }
-        };
+        throw  new OperationNotPossibleOnNMS(); // TODO: implement
     }
 
     @Override
