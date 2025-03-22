@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockSoundSettings
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperFurnaceSettings;
 import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.entity.types.PaperPlayer;
+import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
@@ -70,6 +71,9 @@ public class PaperPlatform extends NMSPlatform {
                 return net.minecraft.network.chat.Component.class;
             }
         });
+
+        PlatformEvents.init(this);
+
         LOGGER.info("Paper Platform initialized");
     }
 
