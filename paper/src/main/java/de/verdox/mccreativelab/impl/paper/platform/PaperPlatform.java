@@ -72,8 +72,6 @@ public class PaperPlatform extends NMSPlatform {
             }
         });
 
-        PlatformEvents.init(this);
-
         LOGGER.info("Paper Platform initialized");
     }
 
@@ -88,6 +86,8 @@ public class PaperPlatform extends NMSPlatform {
         Bukkit.getPluginManager().registerEvents(paperBlockHardnessSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
+
+        PlatformEvents.init(javaPlugin);
     }
 
     public ConversionService getBukkitConversionService() {
