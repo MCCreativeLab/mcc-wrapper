@@ -3,6 +3,7 @@ package de.verdox.mccreativelab;
 import com.google.common.util.concurrent.MoreExecutors;
 import net.minecraft.SharedConstants;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -17,17 +18,21 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagLoader;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 
+import java.util.List;
 import java.util.Locale;
 
 public final class RegistryHelper {
 
     private static ReloadableServerResources dataPack;
     private static RegistryAccess.Frozen registry;
+    private static Registry<Biome> biomes;
 
     private RegistryHelper() {
     }
@@ -46,8 +51,29 @@ public final class RegistryHelper {
         return RegistryHelper.registry;
     }
 
+    public static Registry<Biome> getBiomes() {
+        if (RegistryHelper.biomes == null) {
+            RegistryHelper.throwError("biomes");
+        }
+        return RegistryHelper.biomes;
+    }
+
     public static RegistryAccess.Frozen createRegistry(FeatureFlagSet featureFlagSet) {
-        return RegistryHelper.createLayers(RegistryHelper.createResourceManager(featureFlagSet)).compositeAccess().freeze();
+        MultiPackResourceManager ireloadableresourcemanager = RegistryHelper.createResourceManager(featureFlagSet);
+        // add tags and loot tables for unit tests
+        LayeredRegistryAccess<RegistryLayer> layeredregistryaccess = RegistryLayer.createRegistryAccess();
+        List<Registry.PendingTags<?>> list = TagLoader.loadTagsForExistingRegistries(ireloadableresourcemanager, layeredregistryaccess.getLayer(RegistryLayer.STATIC));
+        RegistryAccess.Frozen iregistrycustom_dimension = layeredregistryaccess.getAccessForLoading(RegistryLayer.WORLDGEN);
+        List<HolderLookup.RegistryLookup<?>> list1 = TagLoader.buildUpdatedLookups(iregistrycustom_dimension, list);
+        RegistryAccess.Frozen iregistrycustom_dimension1 = RegistryDataLoader.load((ResourceManager) ireloadableresourcemanager, list1, RegistryDataLoader.WORLDGEN_REGISTRIES);
+        LayeredRegistryAccess<RegistryLayer> layers = layeredregistryaccess.replaceFrom(RegistryLayer.WORLDGEN, iregistrycustom_dimension1);
+        // Paper start - load registry here to ensure bukkit object registry are correctly delayed if needed
+        try {
+            Class.forName("org.bukkit.Registry");
+        } catch (final ClassNotFoundException ignored) {}
+        // Paper end - load registry here to ensure bukkit object registry are correctly delayed if needed
+
+        return layers.compositeAccess().freeze();
     }
 
     public static void setup(FeatureFlagSet featureFlagSet) {
@@ -55,13 +81,26 @@ public final class RegistryHelper {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
 
-        MultiPackResourceManager resourceManager = RegistryHelper.createResourceManager(featureFlagSet);
-        LayeredRegistryAccess<RegistryLayer> layers = RegistryHelper.createLayers(resourceManager);
+        MultiPackResourceManager ireloadableresourcemanager = RegistryHelper.createResourceManager(featureFlagSet);
+        // add tags and loot tables for unit tests
+        LayeredRegistryAccess<RegistryLayer> layeredregistryaccess = RegistryLayer.createRegistryAccess();
+        List<Registry.PendingTags<?>> list = TagLoader.loadTagsForExistingRegistries(ireloadableresourcemanager, layeredregistryaccess.getLayer(RegistryLayer.STATIC));
+        RegistryAccess.Frozen iregistrycustom_dimension = layeredregistryaccess.getAccessForLoading(RegistryLayer.WORLDGEN);
+        List<HolderLookup.RegistryLookup<?>> list1 = TagLoader.buildUpdatedLookups(iregistrycustom_dimension, list);
+        RegistryAccess.Frozen iregistrycustom_dimension1 = RegistryDataLoader.load((ResourceManager) ireloadableresourcemanager, list1, RegistryDataLoader.WORLDGEN_REGISTRIES);
+        LayeredRegistryAccess<RegistryLayer> layers = layeredregistryaccess.replaceFrom(RegistryLayer.WORLDGEN, iregistrycustom_dimension1);
+        // Paper start - load registry here to ensure bukkit object registry are correctly delayed if needed
+        try {
+            Class.forName("org.bukkit.Registry");
+        } catch (final ClassNotFoundException ignored) {}
+        // Paper end - load registry here to ensure bukkit object registry are correctly delayed if needed
         RegistryHelper.registry = layers.compositeAccess().freeze();
         // Register vanilla pack
-        RegistryHelper.dataPack = ReloadableServerResources.loadResources(resourceManager, layers, featureFlagSet, Commands.CommandSelection.DEDICATED, 0, MoreExecutors.directExecutor(), MoreExecutors.directExecutor()).join();
+        RegistryHelper.dataPack = ReloadableServerResources.loadResources(ireloadableresourcemanager, layers, list, featureFlagSet, Commands.CommandSelection.DEDICATED, 0, MoreExecutors.directExecutor(), MoreExecutors.directExecutor()).join();
         // Bind tags
-        RegistryHelper.dataPack.updateRegistryTags();
+        RegistryHelper.dataPack.updateStaticRegistryTags();
+        // Biome shortcut
+        RegistryHelper.biomes = RegistryHelper.registry.lookupOrThrow(Registries.BIOME);
     }
 
     public static <T extends Keyed> Class<T> updateClass(Class<T> aClass, NamespacedKey key) {
@@ -84,19 +123,6 @@ public final class RegistryHelper {
         resourceRepository.reload();
         // Set up resource manager
         return new MultiPackResourceManager(PackType.SERVER_DATA, resourceRepository.getAvailablePacks().stream().filter(pack -> pack.getRequestedFeatures().isSubsetOf(featureFlagSet)).map(Pack::open).toList());
-    }
-
-    private static LayeredRegistryAccess<RegistryLayer> createLayers(MultiPackResourceManager resourceManager) {
-        // add tags and loot tables for unit tests
-        LayeredRegistryAccess<RegistryLayer> layers = RegistryLayer.createRegistryAccess();
-        // Paper start - load registry here to ensure bukkit object registry are correctly delayed if needed
-        try {
-            Class.forName("org.bukkit.Registry");
-        } catch (final ClassNotFoundException ignored) {}
-        // Paper end - load registry here to ensure bukkit object registry are correctly delayed if needed
-        layers = WorldLoader.loadAndReplaceLayer(resourceManager, layers, RegistryLayer.WORLDGEN, RegistryDataLoader.WORLDGEN_REGISTRIES);
-
-        return layers;
     }
 
     private static void throwError(String field) {

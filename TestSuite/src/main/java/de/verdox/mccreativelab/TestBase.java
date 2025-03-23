@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab;
 
-import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Key;
 import net.minecraft.world.flag.FeatureFlags;
@@ -19,7 +19,7 @@ public class TestBase {
     public static void bootstrap() {
         if (!MCCPlatform.INSTANCE.isSetup()) {
             RegistryHelper.setup(FeatureFlags.REGISTRY.allFlags());
-            MCCPlatform.INSTANCE.setup(new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().get()), MCCPlatform::init);
+            MCCPlatform.INSTANCE.setup(new PaperPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()), MCCPlatform::init);
             MCCPlatform.getInstance().getRegistryStorage().freezeCustomRegistries();
         }
     }
