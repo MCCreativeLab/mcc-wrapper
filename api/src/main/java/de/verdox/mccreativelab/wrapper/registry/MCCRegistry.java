@@ -157,7 +157,7 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @param tag the tag
      * @return the reference set as an optional
      */
-    Optional<MCCReferenceSet<T>> getTag(MCCTag<T> tag);
+    Optional<MCCReferenceSet<T>> getTagValues(MCCTag<T> tag);
 
     /**
      * Gets or registers a tag to this registry
@@ -166,6 +166,14 @@ public interface MCCRegistry<T> extends MCCWrapped {
      * @return the references set
      */
     MCCReferenceSet<T> getOrCreateTag(MCCTag<T> tag);
+
+    /**
+     * Returns an iterable that iterates through all values of the tag
+     *
+     * @param tag the tag
+     * @return the iterable
+     */
+    Iterable<MCCReference<T>> iterate(MCCTag<T> tag);
 
     /**
      * Returns all tag names known to this registry
