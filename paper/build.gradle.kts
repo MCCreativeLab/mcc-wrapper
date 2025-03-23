@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":api"))
-    compileOnly(project(":vanilla"))
+    implementation(project(":api"))
+    implementation(project(":vanilla"))
     implementation("net.bytebuddy:byte-buddy:1.15.10")
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
