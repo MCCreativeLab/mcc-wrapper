@@ -1,9 +1,13 @@
 package de.verdox.mccreativelab.classgenerator.codegen.type.impl;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.classgenerator.NMSMapper;
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.CodeExpression;
-import de.verdox.vserializer.generic.Serializer;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.CapturedJavaClass;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.MutableClassType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.reference.CapturedTypeReference;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
@@ -15,12 +19,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- *
  * @param <C> Self referencing generic
  * @param <T>
  */
-public abstract class CapturedType<C extends CapturedType<C, T>, T extends Type> implements CodeExpression {
-    static final CapturedRegistry CAPTURED_REGISTRY = new CapturedRegistry();
+public abstract class CapturedType<C extends CapturedType<C, T>, T> implements CodeExpression {
+
+    public static final CapturedRegistry CAPTURED_REGISTRY = new CapturedRegistry();
+
+    public static CapturedType<?, ?> swap(Type type) {
+        return NMSMapper.swap(from(type));
+    }
+
+    public static CapturedType<?, ?> swap(TypeToken<?> type) {
+        return NMSMapper.swap(from(type));
+    }
 
     public static CapturedType<?, ?> from(Type type) {
         CapturedType<?, ?> found = CAPTURED_REGISTRY.resolve(type);
@@ -29,13 +41,17 @@ public abstract class CapturedType<C extends CapturedType<C, T>, T extends Type>
         }
 
         if (type instanceof Class<?> clazz) {
-            return new CapturedClassType(clazz);
+            found = new CapturedJavaClass(clazz);
         } else if (type instanceof TypeVariable<?> typeVariable) {
-            return new CapturedTypeVariable(typeVariable);
+            found = new CapturedTypeVariable(typeVariable);
         } else if (type instanceof ParameterizedType parameterizedType) {
-            return new CapturedParameterizedType(parameterizedType);
+            found = new CapturedParameterizedType(parameterizedType);
         } else if (type instanceof WildcardType wildcardType) {
-            return new CapturedWildcardType(wildcardType);
+            found = new CapturedWildcardType(wildcardType);
+        }
+        if (found != null) {
+            CAPTURED_REGISTRY.linkToRealType(type, found);
+            return found;
         } else {
             throw new IllegalStateException("No captured type found for type " + type.getTypeName() + " (" + type.getClass().getCanonicalName() + ")");
         }
@@ -47,19 +63,17 @@ public abstract class CapturedType<C extends CapturedType<C, T>, T extends Type>
         return from(type.getType());
     }
 
-    protected CapturedType(T type) {
-        if (type != null) {
-            CAPTURED_REGISTRY.link(type, this);
-        }
-    }
-
     protected <O extends CapturedType<?, ?>> O edit(Consumer<O> edit) {
         edit.accept((O) this);
         return (O) this;
     }
 
     protected List<CapturedType<?, ?>> capture(Type[] types) {
-        return (List<CapturedType<?, ?>>) Arrays.stream(types).map(CapturedType::from).map(capturedType -> ((CapturedType<?, ?>) capturedType).copy()).toList();
+        List<CapturedType<?, ?>> captured = new LinkedList<>();
+        for (Type type : types) {
+            captured.add(from(type));
+        }
+        return captured;
     }
 
     protected void writeCollectionOfTypes(@Nullable List<? extends CapturedType<?, ?>> collection, CodeLineBuilder codeLineBuilder) {
@@ -88,12 +102,24 @@ public abstract class CapturedType<C extends CapturedType<C, T>, T extends Type>
     }
 
     protected <A extends CapturedType<?, ?>> A copyType(Function<C, A> getter, boolean mutable) {
-        return copy(getter, (a) -> (A) a.copy(false), a -> (A) a.copy(true), mutable);
+        return copy(getter, (a) -> {
+            if (a instanceof ClassType<?> classType && !(classType instanceof MutableClassType)) {
+                return a;
+            }
+            return (A) a.copy(false);
+        }, a -> {
+            if (a instanceof ClassType<?> classType && !(classType instanceof MutableClassType)) {
+                return a;
+            }
+            return (A) a.copy(true);
+        }, mutable);
     }
 
-    protected <A extends CapturedType<?, ?>> List<A> copyCollection(Function<C, List<A>> getter, boolean mutable) {
+    protected <A> List<A> copyCollection(Function<C, List<A>> getter, boolean mutable) {
         return copy(getter, List::copyOf, LinkedList::new, mutable);
     }
+
+    public abstract ClassType<?> getRawType();
 
     public final C copy() {
         return copy(false);
@@ -105,5 +131,12 @@ public abstract class CapturedType<C extends CapturedType<C, T>, T extends Type>
 
     protected abstract C copy(boolean mutable);
 
-    protected abstract void collectTypesOnImport(Set<CapturedClassType> imports);
+    public abstract void collectTypesOnImport(Set<ClassType<?>> imports);
+
+    @Override
+    public String toString() {
+        CodeLineBuilder codeLineBuilder = new CodeLineBuilder(null, 0);
+        write(codeLineBuilder);
+        return codeLineBuilder.toString();
+    }
 }

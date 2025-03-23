@@ -1,7 +1,8 @@
 package de.verdox.mccreativelab.classgenerator;
 
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import net.minecraft.world.level.block.Block;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.*;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -26,27 +27,68 @@ public class AbstractClassGenerator {
         this.excludedPackages = excludedPackages;
     }
 
-    public boolean isForbiddenType(DynamicType dynamicType) {
-        for (DynamicType genericType : dynamicType.getGenericTypes()) {
-            if (isForbiddenType(genericType)) {
+    public boolean isForbiddenType(CapturedType<?, ?> capturedType) {
+
+        if (capturedType instanceof CapturedParameterizedType parameterizedType) {
+            if (isForbiddenType(parameterizedType.getRawType())) {
                 return true;
             }
+            if (isForbiddenType(parameterizedType.getOwner())) {
+                return true;
+            }
+            for (CapturedType<?, ?> typeArgument : parameterizedType.getTypeArguments()) {
+                if(isForbiddenType(typeArgument)){
+                    return true;
+                }
+            }
         }
+        else if (capturedType instanceof CapturedTypeVariable capturedTypeVariable) {
 
-        if (dynamicType.getClassDescription().getPackageName().contains("de.verdox.mccreativelab")) {
-            return false;
+            for (CapturedType<?, ?> upperBound : capturedTypeVariable.getUpperBounds()) {
+                if(isForbiddenType(upperBound)){
+                    return true;
+                }
+            }
         }
-        if (dynamicType.getClassDescription().getPackageName().contains("net.minecraft") && !NMSMapper.isSwapped(dynamicType)) {
-            return true;
+        else if (capturedType instanceof CapturedWildcardType wildcardType) {
+            for (CapturedType<?, ?> upperBound : wildcardType.getUpperBounds()) {
+                if(isForbiddenType(upperBound)){
+                    return true;
+                }
+            }
+            for (CapturedType<?, ?> upperBound : wildcardType.getLowerBounds()) {
+                if(isForbiddenType(upperBound)){
+                    return true;
+                }
+            }
         }
+        else if (capturedType instanceof ClassType<?> classType) {
+            for (CapturedTypeVariable typeVariable : classType.getTypeVariables()) {
+                if (isForbiddenType(typeVariable))
+                    return true;
+            }
+            if (isForbiddenType(classType.getDeclaringClass())) {
+                return true;
+            }
 
-        if (dynamicType.getRawType() != null && excludedTypes.contains(dynamicType.getRawType())) {
-            return true;
+            if (classType.getPackageName().contains("de.verdox.mccreativelab")) {
+                return false;
+            }
+            if (classType.getPackageName().contains("net.minecraft") && !NMSMapper.isSwapped(classType)) {
+                return true;
+            }
+
+            return excludedTypes.stream().anyMatch(aClass -> ClassType.from(aClass).equals(capturedType));
         }
         return false;
     }
 
     public boolean isForbiddenType(Type type) {
-        return isForbiddenType(DynamicType.of(type, false));
+        return isForbiddenType(CapturedType.from(type));
+    }
+
+    @Nullable
+    public <T extends CapturedType<?, ?>> T swap(T typeToSwap) {
+        return NMSMapper.swap(typeToSwap);
     }
 }

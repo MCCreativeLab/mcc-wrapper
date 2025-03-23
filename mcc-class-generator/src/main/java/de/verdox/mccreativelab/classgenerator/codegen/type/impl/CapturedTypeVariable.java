@@ -1,9 +1,7 @@
 package de.verdox.mccreativelab.classgenerator.codegen.type.impl;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
-import de.verdox.vserializer.SerializableField;
-import de.verdox.vserializer.generic.Serializer;
-import de.verdox.vserializer.generic.SerializerBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 
 import java.lang.reflect.TypeVariable;
 import java.util.*;
@@ -15,6 +13,9 @@ public class CapturedTypeVariable extends CapturedType<CapturedTypeVariable, Typ
     public static CapturedTypeVariable create(String name) {
         return new CapturedTypeVariable().withName(name);
     }
+    public static CapturedTypeVariable from(TypeVariable<?> typeVariable){
+        return new CapturedTypeVariable(typeVariable);
+    }
 
 /*    public static final Serializer<CapturedTypeVariable> SERIALIZER = SerializerBuilder.create("type_variable", CapturedTypeVariable.class)
             .constructor(
@@ -25,6 +26,11 @@ public class CapturedTypeVariable extends CapturedType<CapturedTypeVariable, Typ
             .build();*/
 
     @Override
+    public ClassType<?> getRawType() {
+        throw new IllegalStateException("Type Variables don't have a raw type");
+    }
+
+    @Override
     protected CapturedTypeVariable copy(boolean mutable) {
         CapturedTypeVariable other = new CapturedTypeVariable();
         other.name = this.name;
@@ -33,23 +39,23 @@ public class CapturedTypeVariable extends CapturedType<CapturedTypeVariable, Typ
     }
 
     private String name;
-    private List<CapturedType<?, ?>> bounds;
+    private List<CapturedType<?, ?>> bounds = new LinkedList<>();
 
     protected CapturedTypeVariable(TypeVariable<?> type) {
-        super(type);
         name = type.getName();
+        CAPTURED_REGISTRY.linkToRealType(type, this);
         bounds = capture(type.getBounds());
     }
 
     protected CapturedTypeVariable() {
-        super(null);
+
     }
 
     public String getName() {
         return name;
     }
 
-    public List<CapturedType<?, ?>> getBounds() {
+    public List<CapturedType<?, ?>> getUpperBounds() {
         return bounds;
     }
 
@@ -57,24 +63,29 @@ public class CapturedTypeVariable extends CapturedType<CapturedTypeVariable, Typ
         return mutableCopy().edit(capturedTypeVariable -> capturedTypeVariable.name = name);
     }
 
-    public CapturedTypeVariable withNoBounds() {
+    public CapturedTypeVariable withNoUpperBounds() {
         return mutableCopy().edit(capturedTypeVariable -> capturedTypeVariable.bounds.clear());
     }
 
-    public CapturedTypeVariable withBounds(List<CapturedType<?, ?>> bounds) {
-        return mutableCopy().edit(capturedTypeVariable -> capturedTypeVariable.bounds.addAll(bounds));
+    public CapturedTypeVariable withUpperBounds(List<CapturedType<?, ?>> bounds, boolean clear) {
+        return mutableCopy().edit(capturedTypeVariable -> {
+            if(clear){
+                capturedTypeVariable.bounds.clear();
+            }
+            capturedTypeVariable.bounds.addAll(bounds);
+        });
     }
 
-    public CapturedTypeVariable withBound(int index, CapturedType<?, ?> bound) {
+    public CapturedTypeVariable withUpperBound(int index, CapturedType<?, ?> bound) {
         return mutableCopy().edit(capturedTypeVariable -> capturedTypeVariable.bounds.set(index, bound));
     }
 
-    public CapturedTypeVariable withBound(CapturedType<?, ?> bound) {
+    public CapturedTypeVariable withUpperBound(CapturedType<?, ?> bound) {
         return mutableCopy().edit(capturedTypeVariable -> capturedTypeVariable.bounds.add(bound));
     }
 
     @Override
-    protected void collectTypesOnImport(Set<CapturedClassType> imports) {
+    public void collectTypesOnImport(Set<ClassType<?>> imports) {
         for (CapturedType<?, ?> bound : bounds) {
             bound.collectTypesOnImport(imports);
         }
@@ -85,16 +96,21 @@ public class CapturedTypeVariable extends CapturedType<CapturedTypeVariable, Typ
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CapturedTypeVariable that = (CapturedTypeVariable) o;
-        return Objects.equals(name, that.name) && Objects.equals(bounds, that.bounds);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, bounds);
+        return that.toString().equals(this.toString());
     }
 
     @Override
     public void write(CodeLineBuilder codeLineBuilder) {
         codeLineBuilder.append(name);
+        List<CapturedType<?, ?>> boundsWithoutObject = this.bounds.stream().filter(capturedType -> !capturedType.equals(CapturedType.OBJECT_TYPE)).toList();
+        if (boundsWithoutObject.isEmpty())
+            return;
+        for (int i = 0; i < boundsWithoutObject.size(); i++) {
+            CapturedType<?, ?> upperBound = boundsWithoutObject.get(i);
+            codeLineBuilder.append("extends ").append(upperBound);
+            if (i < boundsWithoutObject.size() - 1) {
+                codeLineBuilder.append(", ");
+            }
+        }
     }
 }

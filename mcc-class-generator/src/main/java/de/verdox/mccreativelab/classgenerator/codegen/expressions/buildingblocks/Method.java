@@ -1,33 +1,36 @@
-package de.verdox.mccreativelab.classgenerator.codegen.expressions;
+package de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
 import de.verdox.mccreativelab.classgenerator.codegen.JavaDocElement;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.CodeExpressionWithModifierAndParameters;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.JavaDocExpression;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedTypeVariable;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Method extends CodeExpressionWithModifierAndParameters<Method> implements JavaDocElement<Method> {
 
-    private DynamicType type;
+    private CapturedType<?, ?> type;
     private Consumer<CodeLineBuilder> content;
     private String name;
-    private final List<GenericDeclaration> genericDeclarations = new LinkedList<>();
+    private final List<CapturedTypeVariable> genericDeclarations = new LinkedList<>();
     private JavaDocExpression javaDoc;
 
-    public Method type(DynamicType type) {
+    public Method type(CapturedType<?, ?> type) {
+        Objects.requireNonNull(type, "The method with name " + name + " cannot have return type null");
         this.type = type;
         return this;
     }
 
-    public DynamicType type() {
+    public CapturedType<?, ?> type() {
         return type;
     }
 
     public Method name(String name) {
+        Objects.requireNonNull(name, "Method name cannot be null");
         this.name = name;
         return this;
     }
@@ -45,21 +48,21 @@ public class Method extends CodeExpressionWithModifierAndParameters<Method> impl
         return content;
     }
 
-    public Method generic(GenericDeclaration... declarations){
+    public Method generic(CapturedTypeVariable... declarations) {
         this.genericDeclarations.addAll(Arrays.asList(declarations));
         return this;
     }
 
-    public Method generic(Collection<GenericDeclaration> declarations){
+    public Method generic(Collection<CapturedTypeVariable> declarations) {
         this.genericDeclarations.addAll(declarations);
         return this;
     }
 
-    public List<GenericDeclaration> generics() {
+    public List<CapturedTypeVariable> generics() {
         return genericDeclarations;
     }
 
-    protected void writeType(CodeLineBuilder code){
+    protected void writeType(CodeLineBuilder code) {
         if (type != null) {
             code.append(type);
         } else {
@@ -71,15 +74,15 @@ public class Method extends CodeExpressionWithModifierAndParameters<Method> impl
     public void write(CodeLineBuilder code) {
         code.increaseDepth(1);
 
-        if(javaDoc != null){
+        if (javaDoc != null) {
             code.append(javaDoc);
         }
 
         code.append(modifier).append(" ");
 
-        if(!genericDeclarations.isEmpty()){
+        if (!genericDeclarations.isEmpty()) {
             for (int i = 0; i < genericDeclarations.size(); i++) {
-                GenericDeclaration genericDeclaration = genericDeclarations.get(i);
+                CapturedTypeVariable genericDeclaration = genericDeclarations.get(i);
                 genericDeclaration.write(code);
                 if (i < genericDeclarations.size() - 1)
                     code.append("; ");
@@ -88,7 +91,7 @@ public class Method extends CodeExpressionWithModifierAndParameters<Method> impl
 
         writeType(code);
 
-        if(name != null){
+        if (name != null) {
             code.append(" ").append(name);
         }
 

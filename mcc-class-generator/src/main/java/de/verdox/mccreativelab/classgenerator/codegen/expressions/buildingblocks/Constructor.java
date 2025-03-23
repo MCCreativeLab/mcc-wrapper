@@ -1,7 +1,11 @@
-package de.verdox.mccreativelab.classgenerator.codegen.expressions;
+package de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.JavaDocExpression;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedParameterizedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedTypeVariable;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -13,7 +17,7 @@ public class Constructor extends Method {
     }
 
     @Override
-    public Constructor generic(GenericDeclaration... declarations) {
+    public Constructor generic(CapturedTypeVariable... declarations) {
         throw new UnsupportedOperationException();
     }
 
@@ -23,7 +27,7 @@ public class Constructor extends Method {
     }
 
     @Override
-    public Constructor type(DynamicType type) {
+    public Constructor type(CapturedType<?,?> type) {
         super.type(type);
         return this;
     }
@@ -51,10 +55,17 @@ public class Constructor extends Method {
         super.parameter(parameters);
         return this;
     }
-
     @Override
     protected void writeType(CodeLineBuilder code) {
         Objects.requireNonNull(type());
-        code.append(type().getClassDescription().getClassName());
+        if(type() instanceof ClassType<?> classType){
+            code.append(classType.getClassName());
+        }
+        else if(type() instanceof CapturedParameterizedType classType){
+            code.append(classType.getRawType().getClassName());
+        }
+        else {
+            code.append(type());
+        }
     }
 }

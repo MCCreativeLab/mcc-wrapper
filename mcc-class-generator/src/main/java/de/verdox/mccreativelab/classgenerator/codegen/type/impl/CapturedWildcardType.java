@@ -1,11 +1,16 @@
 package de.verdox.mccreativelab.classgenerator.codegen.type.impl;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 
 import java.lang.reflect.WildcardType;
 import java.util.*;
 
 public class CapturedWildcardType extends CapturedType<CapturedWildcardType, WildcardType> {
+
+    public static CapturedWildcardType create() {
+        return new CapturedWildcardType();
+    }
 
     @Override
     protected CapturedWildcardType copy(boolean mutable) {
@@ -15,29 +20,53 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
         return other;
     }
 
-    private List<CapturedType<?, ?>> upperBound;
-    private List<CapturedType<?, ?>> lowerBound;
+    private List<CapturedType<?, ?>> upperBound = new LinkedList<>();
+    private List<CapturedType<?, ?>> lowerBound = new LinkedList<>();
 
     protected CapturedWildcardType(WildcardType type) {
-        super(type);
+        CAPTURED_REGISTRY.linkToRealType(type, this);
         this.upperBound = capture(type.getUpperBounds());
         this.lowerBound = capture(type.getLowerBounds());
     }
 
     protected CapturedWildcardType() {
-        super(null);
+    }
+
+    public CapturedWildcardType withUpperBounds(List<CapturedType<?, ?>> bounds, boolean clear) {
+        return mutableCopy().edit(capturedTypeVariable -> {
+            if (clear) {
+                capturedTypeVariable.upperBound.clear();
+            }
+            capturedTypeVariable.upperBound.addAll(bounds);
+        });
+    }
+
+    public CapturedWildcardType withLowerBounds(List<CapturedType<?, ?>> bounds, boolean clear) {
+        return mutableCopy().edit(capturedTypeVariable -> {
+            if (clear) {
+                capturedTypeVariable.upperBound.clear();
+            }
+            capturedTypeVariable.upperBound.addAll(bounds);
+        });
     }
 
     /**
      * Upper bounds: {@code ? extends Number}.
+     *
      * @return
      */
     public CapturedWildcardType withUpperBound(CapturedType<?, ?> capturedType) {
         return mutableCopy().edit(type -> type.upperBound.add(capturedType));
     }
 
+    @Override
+    public ClassType<?> getRawType() {
+        throw new IllegalStateException("Wildcards don't have a raw type");
+    }
+
     /**
      * Upper bounds: {@code ? extends Number}.
+     *
      * @return
      */
     public CapturedWildcardType withUpperBound(int index, CapturedType<?, ?> capturedType) {
@@ -46,6 +75,7 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
 
     /**
      * Lower bounds: {@code ? super Number}.
+     *
      * @return
      */
     public CapturedWildcardType withLowerBound(CapturedType<?, ?> capturedType) {
@@ -54,6 +84,7 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
 
     /**
      * Lower bounds: {@code ? super Number}.
+     *
      * @return
      */
     public CapturedWildcardType withLowerBound(int index, CapturedType<?, ?> capturedType) {
@@ -62,6 +93,7 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
 
     /**
      * Lower bounds: {@code ? super Number}.
+     *
      * @return
      */
     public CapturedWildcardType withNoLowerBounds() {
@@ -70,14 +102,23 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
 
     /**
      * Upper bounds: {@code ? extends Number}.
+     *
      * @return
      */
     public CapturedWildcardType withNoUpperBounds() {
         return mutableCopy().edit(type -> type.upperBound.clear());
     }
 
+    public List<CapturedType<?, ?>> getLowerBounds() {
+        return lowerBound;
+    }
+
+    public List<CapturedType<?, ?>> getUpperBounds() {
+        return upperBound;
+    }
+
     @Override
-    protected void collectTypesOnImport(Set<CapturedClassType> imports) {
+    public void collectTypesOnImport(Set<ClassType<?>> imports) {
         for (CapturedType<?, ?> capturedType : this.upperBound) {
             capturedType.collectTypesOnImport(imports);
         }
@@ -91,17 +132,11 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CapturedWildcardType that = (CapturedWildcardType) o;
-        return Objects.equals(upperBound, that.upperBound) && Objects.equals(lowerBound, that.lowerBound);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(upperBound, lowerBound);
+        return toString().equals(that.toString());
     }
 
     @Override
     public void write(CodeLineBuilder codeLineBuilder) {
-        //TODO
         codeLineBuilder.append("?");
         if (upperBound != null) {
             for (int i = 0; i < upperBound.size(); i++) {
@@ -113,6 +148,7 @@ public class CapturedWildcardType extends CapturedType<CapturedWildcardType, Wil
                 upper.write(codeLineBuilder);
                 if (i < upperBound.size() - 1) {
                     codeLineBuilder.append(", ");
+
                 }
             }
         }
