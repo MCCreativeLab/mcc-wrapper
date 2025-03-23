@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.event.block.*;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.bukkit.event.EventHandler;
@@ -7,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 
 public class BlockEvents implements Listener {
-    // without MCCBlockEvent
+    // without MCCBlockEvent, BlockPistonEvent
 
     @EventHandler
     public void handle(BlockBreakEvent event) {
@@ -80,8 +82,42 @@ public class BlockEvents implements Listener {
         if (mccBlockPhysicsEvent.isCancelled()) event.setCancelled(true);
     }
 
-// TODO: MCCBlockPistonEvent
-// TODO: MCCBlockPistonExtendEvent
-// TODO: MCCBlockPistonRetractEvent
-// TODO: MCCBlockRedstoneEvent
+    public static class BlockPistonEvents implements Listener {
+
+        @EventHandler
+        public void handle(BlockPistonExtendEvent event) {
+            MCCBlockPistonExtendEvent mccBlockPistonExtendEvent = new MCCBlockPistonExtendEvent(
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                    event.isCancelled(),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getDirection()),
+                    ReflectionUtils.readFieldFromClass(event, "length", new TypeToken<>() {}),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlocks())
+            );
+
+            if (mccBlockPistonExtendEvent.callEvent()) event.setCancelled(true);
+        }
+
+        @EventHandler
+        public void handle(BlockPistonRetractEvent event) {
+            MCCBlockPistonRetractEvent mccBlockPistonRetractEvent = new MCCBlockPistonRetractEvent(
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                    event.isCancelled(),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getDirection()),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlocks())
+            );
+
+            if (mccBlockPistonRetractEvent.callEvent()) event.setCancelled(true);
+        }
+
+        @EventHandler
+        public void handle(BlockRedstoneEvent event) {
+            MCCBlockRedstoneEvent mccBlockRedstoneEvent = new MCCBlockRedstoneEvent(
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                    event.getOldCurrent(),
+                    event.getNewCurrent()
+            );
+
+            mccBlockRedstoneEvent.callEvent();
+        }
+    }
 }

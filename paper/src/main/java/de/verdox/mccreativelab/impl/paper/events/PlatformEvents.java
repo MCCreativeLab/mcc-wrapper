@@ -56,5 +56,7 @@ public class PlatformEvents {
         pluginManager.registerEvents(new ProjectileEvents(), plugin);
         pluginManager.registerEvents(new ServerEvents(), plugin);
         pluginManager.registerEvents(new VehicleEvents(), plugin);
+        pluginManager.registerEvents(new BlockEvents(), plugin);
+        pluginManager.registerEvents(new BlockEvents.BlockPistonEvents(), plugin);
     }
 }
