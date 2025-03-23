@@ -58,5 +58,5 @@ public interface ConversionService {
         return (F) unwrap(objectToUnwrap);
     }
 
-    record ClassPair(Class<?> apiType, Class<?> nativeType) {}
+    SwapMap createSwapMap();
 }
