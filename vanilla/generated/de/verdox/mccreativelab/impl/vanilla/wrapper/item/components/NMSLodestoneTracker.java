@@ -1,29 +1,22 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
-
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import net.minecraft.core.GlobalPos;
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSLodestoneTracker;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import net.minecraft.world.item.component.LodestoneTracker;
-import java.util.Set;
-import java.util.Optional;
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.item.components.MCCLodestoneTracker;
-
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import java.util.Optional;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import net.minecraft.world.item.component.LodestoneTracker;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import java.lang.Object;
 public class NMSLodestoneTracker extends MCCHandle<LodestoneTracker> implements MCCLodestoneTracker  {
-
 	public static final MCCConverter<LodestoneTracker, NMSLodestoneTracker> CONVERTER  = converter(NMSLodestoneTracker.class, LodestoneTracker.class, NMSLodestoneTracker::new, MCCHandle::getHandle);
-
 	public NMSLodestoneTracker(LodestoneTracker handle){
 		super(handle);
 	}
-
 	public Optional<MCCLocation> getTarget(){
 		var nms = getTargetFromImpl();
-		return MCCPlatform.getInstance().getConversionService().wrap(nms, new TypeToken<Optional<MCCLocation>>() {});
+		return MCCPlatform.getInstance().getConversionService().wrap(nms, new TypeToken<Optional<MCCLocation>>(){});
 	}
 
 	private Optional<GlobalPos> getTargetFromImpl(){
@@ -31,14 +24,14 @@ public class NMSLodestoneTracker extends MCCHandle<LodestoneTracker> implements 
 	}
 
 	public MCCLodestoneTracker withTarget(Optional<MCCLocation> target){
-		var param0 = MCCPlatform.getInstance().getConversionService().unwrap(target, new TypeToken<Optional<GlobalPos>>() {});
+		var param0 = MCCPlatform.getInstance().getConversionService().unwrap(target, new TypeToken<Optional<GlobalPos>>(){});
 		var param1 = getTrackedFromImpl();
 		return new NMSLodestoneTracker(new LodestoneTracker(param0, param1));
 	}
 
 	public boolean getTracked(){
 		var nms = getTrackedFromImpl();
-		return nms;
+		return MCCPlatform.getInstance().getConversionService().wrap(nms, new TypeToken<Boolean>(){});
 	}
 
 	private boolean getTrackedFromImpl(){
@@ -47,8 +40,7 @@ public class NMSLodestoneTracker extends MCCHandle<LodestoneTracker> implements 
 
 	public MCCLodestoneTracker withTracked(boolean tracked){
 		var param0 = getTargetFromImpl();
-		var param1 = tracked;
+		var param1 = MCCPlatform.getInstance().getConversionService().unwrap(tracked, new TypeToken<Boolean>(){});
 		return new NMSLodestoneTracker(new LodestoneTracker(param0, param1));
 	}
-
 }
