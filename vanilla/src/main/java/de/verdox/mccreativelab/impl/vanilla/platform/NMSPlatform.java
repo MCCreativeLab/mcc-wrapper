@@ -17,6 +17,8 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.container.NMSPlayerI
 import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
+import de.verdox.mccreativelab.impl.vanilla.item.components.NMSConsumeEffect;
+import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentMap;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
@@ -38,13 +40,14 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
-import de.verdox.mccreativelab.wrapper.inventory.MCCMenuTypes;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
 import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.item.components.MCCConsumeEffect;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
@@ -60,6 +63,7 @@ import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -121,6 +125,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCAttribute.class, NMSAttribute.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEntityType.class, NMSEntityType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemStack.class, NMSItemStack.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDataComponentMap.class, NMSDataComponentMap.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemType.class, NMSItemType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBiome.class, NMSBiome.CONVERTER);
@@ -142,6 +147,22 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistry.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistryLookup.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCContainer.class, NMSContainer.CONVERTER);
+
+        conversionService.registerConverterForNewImplType(MCCGameEvent.class, NMSGameEvent.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCJukeboxSong.class, NMSJukeboxSong.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCLootTable.class, NMSLootTable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCPaintingVariant.class, NMSPaintingVariant.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCPoiType.class, NMSPoiType.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCPotion.class, NMSPotion.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCTrimPattern.class, NMSTrimPattern.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCVillagerProfession.class, NMSVillagerProfession.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDamageType.class, NMSDamageType.CONVERTER);
+
+        conversionService.registerConverterForNewImplType(MCCEnchantment.class, NMSEnchantment.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEnchantment.Definition.class, NMSEnchantment.NMSDefinition.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
+
+        conversionService.registerConverterForNewImplType(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -250,7 +271,6 @@ public class NMSPlatform implements MCCPlatform {
         }
 
 
-
         if (resourcePack.getUUID().equals(packID) && resourcePack.url().equals(downloadUrl)) {
             return;
         }
@@ -281,7 +301,9 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCCrafterContainerMenu.class, NMSCrafterContainerMenu.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCDispenserContainerMenu.class, NMSDispenserContainerMenu.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEnchantingTableContainerMenu.class, NMSEnchantingTableContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Furnace.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.BlastFurnace.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Smoker.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCLoomContainerMenu.class, NMSLoomContainerMenu.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCGrindstoneContainerMenu.class, NMSGrindstoneContainerMenu.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCLecternContainerMenu.class, NMSLecternContainerMenu.CONVERTER);
