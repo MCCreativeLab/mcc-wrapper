@@ -1,12 +1,9 @@
 package de.verdox.mccreativelab.wrapper.item.components;
-
-import java.util.Map;
+import java.lang.Object;
 import java.lang.String;
-
-public interface MCCBlockItemStateProperties extends MCCItemComponent  {
-
+import java.util.Map;
+public interface MCCBlockItemStateProperties  {
 	public Map<String, String> getProperties();
 
 	public MCCBlockItemStateProperties withProperties(Map<String, String> properties);
-
 }
