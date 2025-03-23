@@ -82,13 +82,19 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    private final boolean useGeneratedConverters;
 
-    public NMSPlatform() {
+    public NMSPlatform(boolean useGeneratedConverters) {
+        this.useGeneratedConverters = useGeneratedConverters;
         this.typedKeyFactory = new NMSTypedKeyFactory();
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
         this.lifecycleTrigger = new NMSLifecycleTrigger();
+    }
+
+    public NMSPlatform() {
+        this(true);
     }
 
     /**
@@ -98,12 +104,13 @@ public class NMSPlatform implements MCCPlatform {
      * @param reloadableRegistries the registry access to the reloadable resources
      */
     @VisibleForTesting
-    public NMSPlatform(RegistryAccess.Frozen fullRegistryAccess, RegistryAccess.Frozen reloadableRegistries){
+    public NMSPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
         this.typedKeyFactory = new NMSTypedKeyFactory();
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.useGeneratedConverters = true;
     }
 
     @Override
@@ -140,7 +147,9 @@ public class NMSPlatform implements MCCPlatform {
         registerContainerTypes();
         registerEnumConverters();
         registerEntityClasses();
-        GeneratedConverters.init(conversionService);
+        if (useGeneratedConverters) {
+            GeneratedConverters.init(conversionService);
+        }
     }
 
     @Override
