@@ -49,7 +49,7 @@ public class NMSEffectType extends MCCHandle<MobEffect> implements MCCEffectType
         }
         ResourceLocation resourceLocation = BuiltInRegistries.MOB_EFFECT.getKey(handle);
         Objects.requireNonNull(resourceLocation);
-        return new NMSEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.getHolder(resourceLocation).get(), duration, amplifier, ambient, particles, icon, hidden));
+        return new NMSEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.get(resourceLocation).get(), duration, amplifier, ambient, particles, icon, hidden));
     }
 
     @Override
