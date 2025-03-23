@@ -93,7 +93,8 @@ public class NMSPlatform implements MCCPlatform {
 
     /**
      * We use this constructor for testing purposes only. Our Test Suite uses a different bootstrapping mechanism that skips core parts of the server startup to make the test way faster.
-     * @param fullRegistryAccess The full registry access to the builtin and vanilla registries
+     *
+     * @param fullRegistryAccess   The full registry access to the builtin and vanilla registries
      * @param reloadableRegistries the registry access to the reloadable resources
      */
     @VisibleForTesting
