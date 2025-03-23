@@ -38,7 +38,6 @@ public class PaperPlatform extends NMSPlatform {
     private final PaperBlockHardnessSettings paperBlockHardnessSettings = new PaperBlockHardnessSettings();
     private final PaperFurnaceSettings paperFurnaceSettings = new PaperFurnaceSettings();
     private final ConversionService bukkitConversionService = new ConversionServiceImpl();
-    private final PaperLifecycleListener paperLifecycleListener = new PaperLifecycleListener();
     private PaperTaskScheduler paperTaskScheduler;
 
     public PaperPlatform() {
