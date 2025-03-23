@@ -19,6 +19,7 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
     testImplementation(project(":vanilla"))
+    testImplementation(project(":TestSuite"));
 }
 
 sourceSets {
