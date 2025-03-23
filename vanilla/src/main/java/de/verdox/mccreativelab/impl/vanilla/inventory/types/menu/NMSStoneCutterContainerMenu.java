@@ -33,7 +33,7 @@ public class NMSStoneCutterContainerMenu extends NMSContainerMenu<MCCBlockContai
 
     @Override
     public int getRecipeAmount() {
-        return handle.getNumRecipes();
+        return handle.getNumberOfVisibleRecipes();
     }
 
     @Override
