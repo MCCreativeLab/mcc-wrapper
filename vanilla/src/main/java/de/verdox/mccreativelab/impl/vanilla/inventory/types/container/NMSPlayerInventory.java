@@ -8,7 +8,8 @@ import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import net.minecraft.network.protocol.game.ClientboundSetCarriedItemPacket;
+import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket;
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +79,8 @@ public class NMSPlayerInventory extends NMSContainer implements MCCPlayerInvento
     public void setHeldItemSlot(@IntRange(from = 0, to = 8) int slot) {
         Preconditions.checkArgument(slot >= 0 && slot < Inventory.getSelectionSize(), "Slot (%s) is not between 0 and %s inclusive", slot, Inventory.getSelectionSize() - 1);
         ((Inventory) handle).selected = slot;
-        ((ServerPlayer) ((Inventory) handle).player).connection.send(new ClientboundSetCarriedItemPacket(slot));
+
+        ((ServerPlayer) ((Inventory) handle).player).connection.send(new ClientboundSetHeldSlotPacket(slot));
     }
 
     @Override

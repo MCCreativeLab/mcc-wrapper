@@ -16,15 +16,14 @@ public class SoundConverter implements MCCConverter<SoundEvent, Sound> {
     public ConversionResult<Sound> wrap(SoundEvent nativeType) {
         Sound sound = Sound.sound()
             .source(Sound.Source.MASTER)
-            .type(MCCPlatform.getInstance().getConversionService().wrap(nativeType.getLocation(), new TypeToken<Key>(){}))
+            .type(MCCPlatform.getInstance().getConversionService().wrap(nativeType.location(), new TypeToken<Key>(){}))
             .build();
         return done(sound);
     }
 
     @Override
     public ConversionResult<SoundEvent> unwrap(Sound platformImplType) {
-        Registry<SoundEvent> registry = (Registry<SoundEvent>) BuiltInRegistries.REGISTRY.get(Registries.SOUND_EVENT.location());
-        SoundEvent soundEvent = registry.get(MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.name(), new TypeToken<ResourceLocation>(){}));
+        SoundEvent soundEvent = BuiltInRegistries.SOUND_EVENT.getValue(MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.name(), new TypeToken<ResourceLocation>(){}));
         return done(soundEvent);
     }
 
