@@ -3,7 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.entity;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeMap;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;

@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.entity;
+package de.verdox.mccreativelab.wrapper.types;
 
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;

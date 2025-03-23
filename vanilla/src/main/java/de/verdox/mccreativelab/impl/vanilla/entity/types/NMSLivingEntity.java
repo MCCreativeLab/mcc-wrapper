@@ -10,7 +10,7 @@ import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
-import de.verdox.mccreativelab.wrapper.world.MCCDamageType;
+import de.verdox.mccreativelab.wrapper.types.MCCDamageType;
 import net.minecraft.world.entity.LivingEntity;
 
 public class NMSLivingEntity<T extends LivingEntity> extends NMSEntity<T> implements MCCLivingEntity {

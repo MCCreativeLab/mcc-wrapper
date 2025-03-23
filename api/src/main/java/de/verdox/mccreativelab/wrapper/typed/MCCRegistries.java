@@ -2,7 +2,7 @@ package de.verdox.mccreativelab.wrapper.typed;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;

@@ -1,7 +1,7 @@
-package de.verdox.mccreativelab.impl.vanilla.entity;
+package de.verdox.mccreativelab.impl.vanilla.types;
 
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
