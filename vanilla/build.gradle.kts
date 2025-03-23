@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("io.papermc.paperweight.userdev") version "1.7.3"
+    id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper") version "2.3.1" apply false // Adds runServer and runMojangMappedServer tasks for testing
 }
 

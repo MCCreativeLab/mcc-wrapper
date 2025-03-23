@@ -1,7 +1,7 @@
 plugins {
     id("java")
     `maven-publish`
-    id("io.papermc.paperweight.userdev") version "1.7.3"
+    id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer and runMojangMappedServer tasks for testing
     id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
@@ -44,24 +44,24 @@ tasks.register("runCodeGeneratorNoUpdate") {
 }
 
 dependencies {
-    paperweight.paperDevBundle(providers.gradleProperty("class_generator_dependency_version").get())
+    paperweight.paperDevBundle(providers.gradleProperty("class_generator_upgrade_to").get())
 
 
     compileOnly("net.kyori:adventure-api:4.17.0")
     //implementation(project(":mcc-wrapper"))
 
-    implementation(project(":api"));
-    implementation(project(":vanilla"));
-    implementation(project(":paper"));
-/*    implementation(
-        providers.gradleProperty("wrapper_group").get() + ":api:" + providers.gradleProperty("class_generator_dependency_version").get()
+
+    compileOnly(
+        providers.gradleProperty("wrapper_group")
+            .get() + ":api:" + providers.gradleProperty("class_generator_upgrade_from").get()
     )
-    implementation(
-        providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("class_generator_dependency_version").get()
-    )
-    implementation(
-        providers.gradleProperty("wrapper_group").get() + ":paper:" + providers.gradleProperty("class_generator_dependency_version").get()
-    )*/
+    /*    implementation(
+            providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("class_generator_upgrade_from").get()
+        )
+        implementation(
+            providers.gradleProperty("wrapper_group").get() + ":paper:" + providers.gradleProperty("class_generator_upgrade_from").get()
+        )*/
+
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("org.reflections:reflections:0.10.2")
     implementation("net.bytebuddy:byte-buddy:1.15.10")
