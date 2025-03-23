@@ -21,6 +21,7 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         PaperPlatform platform = (PaperPlatform) MCCPlatform.getInstance();
         platform.enableListeners(this);
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @EventHandler
