@@ -11,26 +11,6 @@ public class PlatformEvents {
 // TODO: MCCAreaEffectCloudApplyEvent
 // TODO: MCCArrowBodyCountChangeEvent
 // TODO: MCCBatToggleSleepEvent
-// TODO: MCCEntityAirChangeEvent
-// TODO: MCCEntityBreakDoorEvent
-// TODO: MCCEntityChangeBlockEvent
-// TODO: MCCEntityCombustByBlockEvent
-// TODO: MCCEntityCombustByEntityEvent
-// TODO: MCCEntityCombustEvent
-// TODO: MCCEntityDismountEvent
-// TODO: MCCEntityDropItemEvent
-// TODO: MCCEntityEnterBlockEvent
-// TODO: MCCEntityEnterLoveModeEvent
-// TODO: MCCEntityEvent
-// TODO: MCCEntityInteractEvent
-// TODO: MCCEntityMountEvent
-// TODO: MCCEntityPickupItemEvent
-// TODO: MCCEntityPlaceEvent
-// TODO: MCCEntityResurrectEvent
-// TODO: MCCEntitySpawnEvent
-// TODO: MCCEntityTeleportEvent
-// TODO: MCCEntityToggleGlideEvent
-// TODO: MCCEntityToggleSwimEvent
 // TODO: MCCExpBottleEvent
 // TODO: MCCExplosionPrimeEvent
 // TODO: MCCFireworkExplodeEvent
@@ -58,5 +38,10 @@ public class PlatformEvents {
         pluginManager.registerEvents(new VehicleEvents(), plugin);
         pluginManager.registerEvents(new BlockEvents(), plugin);
         pluginManager.registerEvents(new BlockEvents.BlockPistonEvents(), plugin);
+        pluginManager.registerEvents(new EntityEvents(), plugin);
+        pluginManager.registerEvents(new EntityEvents.EntityCombustEvents(), plugin);
+        pluginManager.registerEvents(new EntityEvents.EntityEnterEvents(), plugin);
+        pluginManager.registerEvents(new EntityEvents.EntityToggleEvents(), plugin);
+
     }
 }
