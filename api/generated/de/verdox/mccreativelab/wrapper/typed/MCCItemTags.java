@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.registry.MCCTag;
+import java.lang.Object;
 import net.kyori.adventure.key.Key;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
-
 public class MCCItemTags  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "item");
 
 	public static final MCCTag<MCCItemType> WOOL  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "wool"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -47,6 +45,8 @@ public class MCCItemTags  {
 	public static final MCCTag<MCCItemType> LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> DARK_OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "dark_oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> PALE_OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "pale_oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -96,15 +96,19 @@ public class MCCItemTags  {
 
 	public static final MCCTag<MCCItemType> FENCES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "fences"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
-	public static final MCCTag<MCCItemType> TALL_FLOWERS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "tall_flowers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
-	public static final MCCTag<MCCItemType> FLOWERS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "flowers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 	public static final MCCTag<MCCItemType> PIGLIN_REPELLENTS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "piglin_repellents"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> PIGLIN_LOVED  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "piglin_loved"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> IGNORED_BY_PIGLIN_BABIES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "ignored_by_piglin_babies"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> PIGLIN_SAFE_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "piglin_safe_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> DUPLICATES_ALLAYS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "duplicates_allays"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> BREWING_FUEL  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "brewing_fuel"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> SHULKER_BOXES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "shulker_boxes"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> MEAT  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "meat"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -147,6 +151,8 @@ public class MCCItemTags  {
 	public static final MCCTag<MCCItemType> OCELOT_FOOD  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "ocelot_food"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> PANDA_FOOD  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "panda_food"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> PANDA_EATS_FROM_GROUND  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "panda_eats_from_ground"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> PIG_FOOD  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "pig_food"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -212,7 +218,33 @@ public class MCCItemTags  {
 
 	public static final MCCTag<MCCItemType> BEACON_PAYMENT_ITEMS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "beacon_payment_items"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
+	public static final MCCTag<MCCItemType> WOODEN_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "wooden_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
 	public static final MCCTag<MCCItemType> STONE_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "stone_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> IRON_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "iron_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> GOLD_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "gold_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> DIAMOND_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "diamond_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> NETHERITE_TOOL_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "netherite_tool_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_LEATHER_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_leather_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_CHAIN_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_chain_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_IRON_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_iron_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_GOLD_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_gold_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_DIAMOND_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_diamond_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_NETHERITE_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_netherite_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_TURTLE_HELMET  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_turtle_helmet"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> REPAIRS_WOLF_ARMOR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "repairs_wolf_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> STONE_CRAFTING_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "stone_crafting_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -244,8 +276,6 @@ public class MCCItemTags  {
 
 	public static final MCCTag<MCCItemType> TRIM_MATERIALS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "trim_materials"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
-	public static final MCCTag<MCCItemType> TRIM_TEMPLATES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "trim_templates"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 	public static final MCCTag<MCCItemType> DECORATED_POT_SHERDS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "decorated_pot_sherds"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> DECORATED_POT_INGREDIENTS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "decorated_pot_ingredients"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -264,7 +294,23 @@ public class MCCItemTags  {
 
 	public static final MCCTag<MCCItemType> VILLAGER_PLANTABLE_SEEDS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "villager_plantable_seeds"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
+	public static final MCCTag<MCCItemType> VILLAGER_PICKS_UP  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "villager_picks_up"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
 	public static final MCCTag<MCCItemType> DYEABLE  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "dyeable"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> FURNACE_MINECART_FUEL  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "furnace_minecart_fuel"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> BUNDLES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "bundles"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> SKELETON_PREFERRED_WEAPONS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "skeleton_preferred_weapons"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> DROWNED_PREFERRED_WEAPONS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "drowned_preferred_weapons"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> PIGLIN_PREFERRED_WEAPONS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "piglin_preferred_weapons"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> PILLAGER_PREFERRED_WEAPONS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "pillager_preferred_weapons"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> WITHER_SKELETON_DISLIKED_WEAPONS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "wither_skeleton_disliked_weapons"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCItemType> FOOT_ARMOR_ENCHANTABLE  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "enchantable/foot_armor"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -304,4 +350,7 @@ public class MCCItemTags  {
 
 	public static final MCCTag<MCCItemType> MACE_ENCHANTABLE  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "enchantable/mace"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
+	public static final MCCTag<MCCItemType> MAP_INVISIBILITY_EQUIPMENT  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "map_invisibility_equipment"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCItemType> GAZE_DISGUISE_EQUIPMENT  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "gaze_disguise_equipment"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 }

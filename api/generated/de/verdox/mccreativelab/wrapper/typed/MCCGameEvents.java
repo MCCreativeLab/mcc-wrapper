@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.types.MCCGameEvent;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.types.MCCGameEvent;
+import java.lang.Object;
 import net.kyori.adventure.key.Key;
-
 public class MCCGameEvents  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "game_event");
 
 	public static final MCCReference<MCCGameEvent> BLOCK_ACTIVATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "block_activate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCGameEvent>(){}).getAsReference();
@@ -129,5 +127,4 @@ public class MCCGameEvents  {
 	public static final MCCReference<MCCGameEvent> RESONATE_14  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resonate_14"), VANILLA_REGISTRY_KEY, new TypeToken<MCCGameEvent>(){}).getAsReference();
 
 	public static final MCCReference<MCCGameEvent> RESONATE_15  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resonate_15"), VANILLA_REGISTRY_KEY, new TypeToken<MCCGameEvent>(){}).getAsReference();
-
 }

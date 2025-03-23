@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import com.google.common.reflect.TypeToken;
+import java.lang.Object;
 import net.kyori.adventure.key.Key;
-
 public class MCCEffects  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "mob_effect");
 
 	public static final MCCReference<MCCEffectType> MOVEMENT_SPEED  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "speed"), VANILLA_REGISTRY_KEY, new TypeToken<MCCEffectType>(){}).getAsReference();
@@ -87,5 +85,4 @@ public class MCCEffects  {
 	public static final MCCReference<MCCEffectType> OOZING  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "oozing"), VANILLA_REGISTRY_KEY, new TypeToken<MCCEffectType>(){}).getAsReference();
 
 	public static final MCCReference<MCCEffectType> INFESTED  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "infested"), VANILLA_REGISTRY_KEY, new TypeToken<MCCEffectType>(){}).getAsReference();
-
 }

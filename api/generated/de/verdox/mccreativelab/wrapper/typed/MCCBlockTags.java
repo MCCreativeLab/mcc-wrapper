@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCTag;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.registry.MCCTag;
+import java.lang.Object;
 import net.kyori.adventure.key.Key;
-
+import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 public class MCCBlockTags  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "block");
 
 	public static final MCCTag<MCCBlockType> WOOL  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "wool"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -53,6 +51,8 @@ public class MCCBlockTags  {
 	public static final MCCTag<MCCBlockType> LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> DARK_OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "dark_oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCBlockType> PALE_OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "pale_oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> OAK_LOGS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "oak_logs"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -102,9 +102,9 @@ public class MCCBlockTags  {
 
 	public static final MCCTag<MCCBlockType> FENCES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "fences"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
-	public static final MCCTag<MCCBlockType> TALL_FLOWERS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "tall_flowers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 	public static final MCCTag<MCCBlockType> FLOWERS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "flowers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCBlockType> BEE_ATTRACTIVE  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "bee_attractive"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> PIGLIN_REPELLENTS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "piglin_repellents"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -135,6 +135,8 @@ public class MCCBlockTags  {
 	public static final MCCTag<MCCBlockType> CONCRETE_POWDER  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "concrete_powder"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> COMPLETES_FIND_TREE_TUTORIAL  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "completes_find_tree_tutorial"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTag<MCCBlockType> SHULKER_BOXES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "shulker_boxes"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> FLOWER_POTS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "flower_pots"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -201,8 +203,6 @@ public class MCCBlockTags  {
 	public static final MCCTag<MCCBlockType> CLIMBABLE  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "climbable"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> FALL_DAMAGE_RESETTING  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "fall_damage_resetting"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
-	public static final MCCTag<MCCBlockType> SHULKER_BOXES  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "shulker_boxes"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> HOGLIN_REPELLENTS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "hoglin_repellents"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -338,6 +338,8 @@ public class MCCBlockTags  {
 
 	public static final MCCTag<MCCBlockType> FROGS_SPAWNABLE_ON  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "frogs_spawnable_on"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
+	public static final MCCTag<MCCBlockType> BATS_SPAWNABLE_ON  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "bats_spawnable_on"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
 	public static final MCCTag<MCCBlockType> AZALEA_GROWS_ON  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "azalea_grows_on"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> CONVERTABLE_TO_MUD  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "convertable_to_mud"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -377,5 +379,4 @@ public class MCCBlockTags  {
 	public static final MCCTag<MCCBlockType> DOES_NOT_BLOCK_HOPPERS  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "does_not_block_hoppers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTag<MCCBlockType> AIR  = MCCPlatform.getInstance().getTypedKeyFactory().createTag(Key.key("minecraft", "air"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 }

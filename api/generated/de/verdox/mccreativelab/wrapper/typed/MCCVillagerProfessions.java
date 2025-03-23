@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.types.MCCVillagerProfession;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+import de.verdox.mccreativelab.wrapper.types.MCCVillagerProfession;
 import net.kyori.adventure.key.Key;
-
 public class MCCVillagerProfessions  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "villager_profession");
 
 	public static final MCCReference<MCCVillagerProfession> NONE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "none"), VANILLA_REGISTRY_KEY, new TypeToken<MCCVillagerProfession>(){}).getAsReference();
@@ -39,5 +37,4 @@ public class MCCVillagerProfessions  {
 	public static final MCCReference<MCCVillagerProfession> TOOLSMITH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "toolsmith"), VANILLA_REGISTRY_KEY, new TypeToken<MCCVillagerProfession>(){}).getAsReference();
 
 	public static final MCCReference<MCCVillagerProfession> WEAPONSMITH  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "weaponsmith"), VANILLA_REGISTRY_KEY, new TypeToken<MCCVillagerProfession>(){}).getAsReference();
-
 }
