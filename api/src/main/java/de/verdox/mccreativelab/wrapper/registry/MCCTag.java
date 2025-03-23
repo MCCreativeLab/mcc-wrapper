@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.registry;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Keyed;
 
 /**

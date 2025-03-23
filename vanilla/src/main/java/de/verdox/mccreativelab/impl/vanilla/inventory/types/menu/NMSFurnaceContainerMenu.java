@@ -10,6 +10,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCFurnaceContainerM
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractFurnaceMenu;
