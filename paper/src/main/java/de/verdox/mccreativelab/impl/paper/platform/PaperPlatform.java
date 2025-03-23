@@ -2,7 +2,6 @@ package de.verdox.mccreativelab.impl.paper.platform;
 
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockHardnessSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockSoundSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperFurnaceSettings;
@@ -10,6 +9,7 @@ import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.entity.types.PaperPlayer;
 import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
+import de.verdox.mccreativelab.impl.paper.platform.converter.ComponentConverter;
 import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -18,7 +18,6 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
-import io.papermc.paper.adventure.PaperAdventure;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -50,27 +49,7 @@ public class PaperPlatform extends NMSPlatform {
 
         BukkitAdapter.init();
         conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
-        conversionService.registerConverterForNewImplType(Component.class, new MCCConverter<net.minecraft.network.chat.Component, Component>() {
-            @Override
-            public ConversionResult<Component> wrap(net.minecraft.network.chat.Component nativeType) {
-                return done(PaperAdventure.asAdventure(nativeType));
-            }
-
-            @Override
-            public ConversionResult<net.minecraft.network.chat.Component> unwrap(Component platformImplType) {
-                return done(PaperAdventure.asVanilla(platformImplType));
-            }
-
-            @Override
-            public Class<Component> apiImplementationClass() {
-                return Component.class;
-            }
-
-            @Override
-            public Class<net.minecraft.network.chat.Component> nativeMinecraftType() {
-                return net.minecraft.network.chat.Component.class;
-            }
-        });
+        conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
 
         LOGGER.info("Paper Platform initialized");
     }
