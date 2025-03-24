@@ -51,43 +51,8 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    @MCCReflective
-    public void breakBlockNaturally(@NotNull MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-        boolean result = false;
-        BlockPos blockPos = new BlockPos(mccBlock.getLocation().blockX(), mccBlock.getLocation().blockY(), mccBlock.getLocation().blockZ());
-        BlockState nmsBlockState = getHandle().getBlockState(blockPos);
-        if (!mccBlock.getBlockType().equals(MCCBlocks.AIR) && (tool == null || !mccBlock.getBlockState().requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(mccBlock.getBlockState()))) {
+    public void breakBlockNaturally(MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
 
-            mccBlock.dropBlockLoot(null, conversionService.unwrap(tool));
-            if (triggerEffect) {
-                if (mccBlock.getBlockType().equals(MCCBlocks.FIRE)) {
-                    getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.SOUND_EXTINGUISH_FIRE, blockPos, 0);
-                } else {
-                    //TODO Customize
-                    getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, net.minecraft.world.level.block.Block.getId(nmsBlockState));
-                }
-            }
-            if (dropExperience) {
-                //TODO
-                //block.popExperience(this.world.getMinecraftWorld(), this.position, block.getExpDrop(iblockdata, this.world.getMinecraftWorld(), this.position, nmsItem, true));
-            }
-
-            result = true;
-        }
-
-
-        boolean destroyed = getHandle().removeBlock(blockPos, false);
-        if (destroyed) {
-            nmsBlockState.getBlock().destroy(getHandle(), blockPos, nmsBlockState);
-        }
-        if (result) {
-            // special cases
-            if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.IceBlock iceBlock) {
-                iceBlock.afterDestroy(getHandle(), blockPos, conversionService.unwrap(tool));
-            } else if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.TurtleEggBlock turtleEggBlock) {
-                invokeMethodInHandle("decreaseEggs", blockPos, nmsBlockState); // TODO: should do turtleEggBlock.decreaseEggs(getHandle(), blockPos, nmsBlockState); (check this)
-            }
-        }
     }
 
     @Override
@@ -147,17 +112,17 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(int x, int z) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(x, z));
+        return null;
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(MCCLocation location) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(location.getChunkX(), location.getChunkZ()));
+        return null;
     }
 
     @Override
     public UUID getUUID() {
-        return handle.getLevel().uuid;
+        return null;
     }
 
     @Override

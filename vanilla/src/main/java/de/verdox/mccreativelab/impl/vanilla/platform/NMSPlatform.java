@@ -113,7 +113,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEntityType.class, NMSEntityType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemStack.class, NMSItemStack.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemType.class, NMSItemType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
+        // TODO: is this correct? conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBiome.class, NMSBiome.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEffectType.class, NMSEffectType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEffect.class, NMSEffect.CONVERTER);

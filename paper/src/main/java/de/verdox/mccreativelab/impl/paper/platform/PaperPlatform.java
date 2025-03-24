@@ -11,6 +11,7 @@ import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.paper.platform.converter.ComponentConverter;
 import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
+import de.verdox.mccreativelab.impl.paper.world.PaperWorld;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
@@ -18,6 +19,7 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
+import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -46,7 +48,7 @@ public class PaperPlatform extends NMSPlatform {
         //BukkitToMCCConverters.init();
 
         conversionService.registerConverterForNewImplType(MCCPlayer.class, PaperPlayer.CONVERTER);
-
+        conversionService.registerConverterForNewImplType(MCCWorld.class, PaperWorld.CONVERTER);
         BukkitAdapter.init();
         conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
         conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
