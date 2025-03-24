@@ -1,15 +1,10 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
-import de.verdox.mccreativelab.wrapper.event.entity.MCCEntityCombustByBlockEvent;
-import de.verdox.mccreativelab.wrapper.event.entity.MCCEntityToggleGlideEvent;
-import de.verdox.mccreativelab.wrapper.event.entity.MCCEntityToggleSwimEvent;
+import de.verdox.mccreativelab.wrapper.event.entity.*;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityCombustByBlockEvent;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
+import org.bukkit.event.entity.*;
 
 public class EntityEvents implements Listener {
 
@@ -42,24 +37,171 @@ public class EntityEvents implements Listener {
         }
     }
 
-// TODO: MCCEntityAirChangeEvent
-// TODO: MCCEntityBreakDoorEvent
-// TODO: MCCEntityChangeBlockEvent
-// TODO: MCCEntityDismountEvent
-// TODO: MCCEntityDropItemEvent
+    @EventHandler
+    public void handle(EntityDismountEvent event) {
+        MCCEntityDismountEvent mccEntityDismountEvent = new MCCEntityDismountEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getDismounted()),
+                event.isCancellable()
+        );
 
-    public static class EntityEnterEvents implements Listener {
-        // TODO: MCCEntityEnterBlockEvent
-        // TODO: MCCEntityEnterLoveModeEvent
+        if (mccEntityDismountEvent.callEvent()) event.setCancelled(true);
     }
 
-// TODO: MCCEntityInteractEvent
-// TODO: MCCEntityMountEvent
-// TODO: MCCEntityPickupItemEvent
-// TODO: MCCEntityPlaceEvent
-// TODO: MCCEntityResurrectEvent
-// TODO: MCCEntitySpawnEvent
-// TODO: MCCEntityTeleportEvent
+    @EventHandler
+    public void handle(EntityDropItemEvent event) {
+        MCCEntityDropItemEvent mccEntityDropItemEvent = new MCCEntityDropItemEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getItemDrop()),
+                event.isCancelled()
+        );
+
+        if (mccEntityDropItemEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityAirChangeEvent event) {
+        MCCEntityAirChangeEvent mccEntityAirChangeEvent = new MCCEntityAirChangeEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.getAmount(),
+                event.isCancelled()
+        );
+
+        if (mccEntityAirChangeEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityBreakDoorEvent event) {
+        MCCEntityBreakDoorEvent mccEntityBreakDoorEvent = new MCCEntityBreakDoorEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getTo())
+        );
+
+        if (mccEntityBreakDoorEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityChangeBlockEvent event) {
+        MCCEntityChangeBlockEvent mccEntityChangeBlockEvent = new MCCEntityChangeBlockEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getTo())
+        );
+
+        if (mccEntityChangeBlockEvent.callEvent()) event.setCancelled(true);
+    }
+
+    public static class EntityEnterEvents implements Listener {
+
+        @EventHandler
+        public void handle(EntityEnterBlockEvent event) {
+            MCCEntityEnterBlockEvent mccEntityEnterBlockEvent = new MCCEntityEnterBlockEvent(
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                    event.isCancelled()
+            );
+
+            if (mccEntityEnterBlockEvent.callEvent()) event.setCancelled(true);
+        }
+
+        @EventHandler
+        public void handle(EntityEnterLoveModeEvent event) {
+            MCCEntityEnterLoveModeEvent mccEntityEnterLoveModeEvent = new MCCEntityEnterLoveModeEvent(
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                    event.isCancelled(),
+                    MCCPlatform.getInstance().getConversionService().wrap(event.getHumanEntity()),
+                    event.getTicksInLove()
+            );
+
+            if (mccEntityEnterLoveModeEvent.callEvent()) event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void handle(EntityInteractEvent event) {
+        MCCEntityInteractEvent mccEntityInteractEvent = new MCCEntityInteractEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                event.isCancelled()
+        );
+
+        if (mccEntityInteractEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityMountEvent event) {
+        MCCEntityMountEvent mccEntityMountEvent = new MCCEntityMountEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getMount())
+        );
+
+        if (mccEntityMountEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityPickupItemEvent event) {
+        MCCEntityPickupItemEvent mccEntityPickupItemEvent = new MCCEntityPickupItemEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getItem()),
+                event.isCancelled(),
+                event.getRemaining()
+        );
+
+        if (mccEntityPickupItemEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityPlaceEvent event) {
+        MCCEntityPlaceEvent mccEntityPlaceEvent = new MCCEntityPlaceEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getBlockFace()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getHand())
+        );
+
+        if (mccEntityPlaceEvent.callEvent()) event.setCancelled(true);
+    }
+
+
+    @EventHandler
+    public void handle(EntityResurrectEvent event) {
+        MCCEntityResurrectEvent mccEntityResurrectEvent = new MCCEntityResurrectEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getHand())
+        );
+
+        if (mccEntityResurrectEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntitySpawnEvent event) {
+        MCCEntitySpawnEvent mccEntitySpawnEvent = new MCCEntitySpawnEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled()
+        );
+
+        if (mccEntitySpawnEvent.callEvent()) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void handle(EntityTeleportEvent event) {
+        MCCEntityTeleportEvent mccEntityTeleportEvent = new MCCEntityTeleportEvent(
+                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+                event.isCancelled(),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getFrom()),
+                MCCPlatform.getInstance().getConversionService().wrap(event.getTo())
+        );
+
+        if (mccEntityTeleportEvent.callEvent()) event.setCancelled(true);
+    }
 
     public static class EntityToggleEvents implements Listener {
 
