@@ -2,11 +2,13 @@ package de.verdox.mccreativelab.classgenerator.codegen;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.CodeExpression;
-import de.verdox.mccreativelab.classgenerator.codegen.expressions.Parameter;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.Parameter;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CodeLineBuilder {
     private final ClassBuilder classBuilder;
@@ -82,17 +84,49 @@ public class CodeLineBuilder {
         return this;
     }
 
-    public CodeLineBuilder append(DynamicType dynamicType) {
-        return append(dynamicType.asCodeExpression(getClassBuilder()));
+    public CodeLineBuilder append(CapturedType<?, ?> dynamicType) {
+        if (dynamicType.getRawType().getClassName() == null || dynamicType.getRawType().getPackageName() == null) {
+            Logger.getLogger(CodeLineBuilder.class.getSimpleName()).warning("Trying to append a class that has either no name or no package name: " + dynamicType);
+            return this;
+        }
+        dynamicType.write(this);
+        return this;
     }
 
-    public CodeLineBuilder append(DynamicType dynamicType, boolean insideGeneric) {
-        return append(dynamicType.asCodeExpression(getClassBuilder(), insideGeneric));
+    public CodeLineBuilder append(CapturedType<?, ?> dynamicType, boolean insideGeneric) {
+        if (dynamicType.getRawType().isPrimitive() && insideGeneric) {
+            if (dynamicType.getRawType().equals(ClassType.from(boolean.class))) {
+                append(ClassType.from(Boolean.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(char.class))) {
+                append(ClassType.from(Character.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(byte.class))) {
+                append(ClassType.from(Byte.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(short.class))) {
+                append(ClassType.from(Short.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(int.class))) {
+                append(ClassType.from(Integer.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(long.class))) {
+                append(ClassType.from(Long.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(float.class))) {
+                append(ClassType.from(Float.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(double.class))) {
+                append(ClassType.from(Double.class));
+            } else if (dynamicType.getRawType().equals(ClassType.from(void.class))) {
+                append(ClassType.from(Void.class));
+            }
+        } else {
+            dynamicType.write(this);
+        }
+        return this;
     }
 
-    public CodeLineBuilder appendTypeToken(DynamicType dynamicType) {
-        getClassBuilder().includeImport(DynamicType.of(TypeToken.class, false));
-        return append("new TypeToken<").append(dynamicType.asCodeExpression(getClassBuilder())).append(">(){}");
+    public CodeLineBuilder appendTypeToken(CapturedType<?, ?> dynamicType) {
+        getClassBuilder().includeImport(ClassType.from(TypeToken.class));
+
+        append("new TypeToken<");
+        append(dynamicType, true);
+        append(">(){}");
+        return this;
     }
 
     public CodeLineBuilder increaseDepth(int increase) {
@@ -105,11 +139,14 @@ public class CodeLineBuilder {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (CodeLine line : lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            CodeLine line = lines.get(i);
             if (line.depth > 0)
                 stringBuilder.append("\t".repeat(line.depth));
             stringBuilder.append(line.content);
-            stringBuilder.append("\n");
+            if (i < lines.size() - 1) {
+                stringBuilder.append("\n");
+            }
         }
         return stringBuilder.toString();
     }

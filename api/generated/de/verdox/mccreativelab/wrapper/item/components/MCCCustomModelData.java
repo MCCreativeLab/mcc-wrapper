@@ -1,10 +1,25 @@
 package de.verdox.mccreativelab.wrapper.item.components;
+import java.lang.Integer;
+import java.lang.Float;
+import java.util.List;
 
+import java.lang.String;
+import java.lang.Boolean;
 
 public interface MCCCustomModelData extends MCCItemComponent  {
+	public List<Float> getFloats();
 
-	public int getValue();
+	public MCCCustomModelData withFloats(List<Float> floats);
 
-	public MCCCustomModelData withValue(int value);
+	public List<Boolean> getFlags();
 
+	public MCCCustomModelData withFlags(List<Boolean> flags);
+
+	public List<String> getStrings();
+
+	public MCCCustomModelData withStrings(List<String> strings);
+
+	public List<Integer> getColors();
+
+	public MCCCustomModelData withColors(List<Integer> colors);
 }

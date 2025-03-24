@@ -202,7 +202,7 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
                 return;
         }
 
-        Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.PLAYER_BLOCK_INTERACTION_RANGE).getValue());
+        Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getValue());
 
         MCCBlock block = BukkitAdapter.wrap(bukkitTargetBlock, new TypeToken<>() {});
         MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});

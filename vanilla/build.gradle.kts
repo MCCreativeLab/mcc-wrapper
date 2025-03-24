@@ -16,13 +16,15 @@ dependencies {
     @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$mcVersion:2024.11.17@zip")
+        parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
     })
 
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
+    testImplementation(project(":paper"))
+    testImplementation(project(":TestSuite"))
 }
 
 sourceSets {

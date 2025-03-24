@@ -3,19 +3,17 @@ package de.verdox.mccreativelab.classgenerator;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedParameterizedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.CodeExpression;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import de.verdox.mccreativelab.classgenerator.conversion.MCCConverterGenerator;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
+import de.verdox.mccreativelab.classgenerator.conversion.*;
 import de.verdox.mccreativelab.classgenerator.wrapper.WrappedClass;
 import de.verdox.mccreativelab.classgenerator.wrapper.WrappedClassRegistry;
 import de.verdox.mccreativelab.classgenerator.wrapper.WrapperInterfaceGenerator;
-import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
-import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentType;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCItemComponent;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -37,16 +35,17 @@ import net.minecraft.world.entity.animal.FrogVariant;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.entity.decoration.PaintingVariants;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimMaterials;
-import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraft.world.item.armortrim.TrimPatterns;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.*;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.*;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
+import net.minecraft.world.item.equipment.trim.TrimPatterns;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
@@ -55,6 +54,7 @@ import net.minecraft.world.level.block.entity.DecoratedPotPatterns;
 import net.minecraft.world.level.block.entity.PotDecorations;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.saveddata.maps.MapId;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.apache.commons.lang3.function.TriFunction;
@@ -77,13 +77,19 @@ public class ClassGenerator {
     //TODO: BlockItemKeys -> Create a class that contains all BlockItems
 
     public static final Logger LOGGER = Logger.getLogger(ClassGenerator.class.getName());
-    public static final File API_GENERATION_DIR = new File("../../api/generated/");
-    public static final File VANILLA_GENERATION_DIR = new File("../../vanilla/generated/");
+
+    public static final File API_MODULE_GENERATION_DIR = new File("../../api/generated/");
+    public static final File VANILLA_MODULE_GENERATION_DIR = new File("../../vanilla/generated/");
+    public static final File CLASS_GENERATOR_MODULE_GENERATION_DIR = new File("../generated/");
+
+
+    public static final File API_GENERATION_DIR = CLASS_GENERATOR_MODULE_GENERATION_DIR;
+    public static final File VANILLA_GENERATION_DIR = CLASS_GENERATOR_MODULE_GENERATION_DIR;
     public static final List<String> EXCLUDED_PACKAGES = List.of("java.");
     ;
 
     private static final List<Class<?>> excludedTypes = List.of(
-            AdventureModePredicate.class,
+/*            AdventureModePredicate.class,
             Unit.class,
             WritableBookContent.class,
             WrittenBookContent.class,
@@ -95,7 +101,7 @@ public class ClassGenerator {
             CustomData.class,
             ItemEnchantments.class,
             ChargedProjectiles.class,
-            ItemContainerContents.class,
+            ItemContainerContents.class,*/
             Function.class,
             BiFunction.class,
             TriFunction.class,
@@ -110,18 +116,13 @@ public class ClassGenerator {
     public static void run() {
         LOGGER.info("Running class generator");
         try {
-            MCCPlatform.INSTANCE.setup(new PaperPlatform(), MCCPlatform::init);
             generateMCCItemComponentWrapper();
             createItemComponentConverters();
             generateMenuTypesClass();
             generateTypedKeys();
-            generateEventClasses();
-            //converterGenerator.buildConverterInterface(GENERATION_DIR);
-            //converterGenerator.buildWrapperAdapters(GENERATION_DIR);
+            //generateEventClasses();
             MCCConverterGenerator.createGeneratedConvertersClass(VANILLA_GENERATION_DIR);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -132,15 +133,46 @@ public class ClassGenerator {
     }
 
     private static void generateMCCItemComponentWrapper() throws IOException {
-        File parentDir = API_GENERATION_DIR;
         try {
-            FileUtils.deleteDirectory(parentDir);
+            FileUtils.deleteDirectory(API_GENERATION_DIR);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        WrapperInterfaceGenerator generator = new WrapperInterfaceGenerator(API_GENERATION_DIR, VANILLA_GENERATION_DIR, "MCC", "", "NMS", excludedTypes, EXCLUDED_PACKAGES);
 
-        Class<?> dataComponentClass = DataComponents.class;
+        generateDataComponentWrapper(generator, Unbreakable.class);
+        generateDataComponentWrapper(generator, ItemLore.class);
+        //generateDataComponentWrapper(generator, ItemEnchantments.class);
+        //generateDataComponentWrapper(generator, ItemAttributeModifiers.class);
+        generateDataComponentWrapper(generator, CustomModelData.class);
+        generateDataComponentWrapper(generator, Unit.class);
+        generateDataComponentWrapper(generator, FoodProperties.class);
+        //generateDataComponentWrapper(generator, Consumable.class);
+        generateDataComponentWrapper(generator, UseRemainder.class);
+        generateDataComponentWrapper(generator, UseCooldown.class);
+        //generateDataComponentWrapper(generator, DamageResistant.class);
+        generateDataComponentWrapper(generator, Tool.class);
+        generateDataComponentWrapper(generator, Enchantable.class);
+        //generateDataComponentWrapper(generator, Equippable.class);
+        generateDataComponentWrapper(generator, Repairable.class);
+        //generateDataComponentWrapper(generator, DeathProtection.class);
+        generateDataComponentWrapper(generator, DyedItemColor.class);
+        generateDataComponentWrapper(generator, MapItemColor.class);
+        generateDataComponentWrapper(generator, MapId.class);
+        //generateDataComponentWrapper(generator, MapDecorations.class);
+        generateDataComponentWrapper(generator, MapPostProcessing.class);
+        generateDataComponentWrapper(generator, ChargedProjectiles.class);
+        //generateDataComponentWrapper(generator, BundleContents.class);
+        //generateDataComponentWrapper(generator, PotionContents.class);
+        generateDataComponentWrapper(generator, SuspiciousStewEffects.class);
+        generateDataComponentWrapper(generator, JukeboxPlayable.class);
+        generateDataComponentWrapper(generator, LodestoneTracker.class);
+        //generateDataComponentWrapper(generator, ItemContainerContents.class);
+        generateDataComponentWrapper(generator, BlockItemStateProperties.class);
+        //generateDataComponentWrapper(generator, SeededContainerLoot.class);
+
+/*        Class<?> dataComponentClass = DataComponents.class;
         LOGGER.info("Generating wrapper classes for DataComponents in " + dataComponentClass + " to " + parentDir.getAbsolutePath());
 
 
@@ -158,28 +190,29 @@ public class ClassGenerator {
             }
             Type[] typeArguments = parameterizedType.getActualTypeArguments();
 
-            DynamicType fieldType = DynamicType.of(MCCDataComponentType.class);
-
             if (typeArguments.length > 0) {
                 if (typeArguments[0] instanceof Class<?> componentType) {
-                    if (NMSMapper.isSwapped(componentType) && !NMSMapper.getSwap(componentType).getClassDescription().getPackageName().contains("de.verdox.mccreativelab")) {
+                    if (NMSMapper.isSwapped(componentType) && !NMSMapper.swap(ClassType.from(componentType)).getPackageName().contains("de.verdox.mccreativelab")) {
                         continue;
                     }
 
 
                     if (!excludedTypes.contains(componentType)) {
-                        generator.generateWrapper(componentType, "de.verdox.mccreativelab.wrapper.item.components", "de.verdox.mccreativelab.impl.vanilla.wrapper.item.components", DynamicType.of(MCCItemComponent.class), true);
-                        DynamicType generic = DynamicType.of(field.getGenericType(), false).getGenericTypes().get(0);
-                        fieldType = fieldType.withAddedGeneric(generic);
+                        generator.generateWrapper(componentType, "de.verdox.mccreativelab.wrapper.item.components", "de.verdox.mccreativelab.impl.vanilla.wrapper.item.components", ClassType.from(MCCItemComponent.class), true);
                     }
                 }
             }
-        }
+        }*/
         /*                classBuilder.writeClassFile(parentDir);*/
     }
 
-    private static void generateMenuTypesClass() throws IOException {
+    private static void generateDataComponentWrapper(WrapperInterfaceGenerator generator, Class<?> nmsClass) {
+        if (!excludedTypes.contains(nmsClass)) {
+            generator.generateWrapper(nmsClass, "de.verdox.mccreativelab.wrapper.item.components", "de.verdox.mccreativelab.impl.vanilla.wrapper.item.components", ClassType.from(MCCItemComponent.class), true);
+        }
+    }
 
+    private static void generateMenuTypesClass() throws IOException {
         ClassBuilder classBuilder = new ClassBuilder();
         classBuilder.withPackage("de.verdox.mccreativelab.wrapper.inventory");
         classBuilder.withHeader("public", ClassBuilder.ClassHeader.INTERFACE, "MCCMenuTypes", "");
@@ -212,17 +245,15 @@ public class ClassGenerator {
                 }
             }
 
-            classBuilder.includeImport(DynamicType.of(parameterizedType.getActualTypeArguments()[0]));
-            classBuilder.withField("public static final", DynamicType.of(MCCMenuType.class).withAddedGeneric(DynamicType.of(parameterizedType.getActualTypeArguments()[0])), fieldName, "new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, \"" + keyValue + "\"), " + containerSize + ")");
+
+            classBuilder.includeImport(NMSMapper.swap(CapturedParameterizedType.from(parameterizedType).getTypeArguments().get(0)));
+            classBuilder.withField("public static final", CapturedParameterizedType.from(MCCMenuType.class).withExplicitType(NMSMapper.swap(CapturedParameterizedType.from(parameterizedType).getTypeArguments().get(0))), fieldName, "new MCCMenuType<>(Key.key(Key.MINECRAFT_NAMESPACE, \"" + keyValue + "\"), " + containerSize + ")");
         }
-        classBuilder.includeImport(DynamicType.of(Key.class));
+        classBuilder.includeImport(CapturedParameterizedType.from(Key.class));
         classBuilder.writeClassFile(API_GENERATION_DIR);
     }
 
     private static void generateTypedKeys() throws IOException, IllegalAccessException {
-        String wrapperPackage = "de.verdox.mccreativelab.wrapper.";
-        String implPackage = "de.verdox.mccreativelab.impl.vanilla.";
-
         WrapperInterfaceGenerator generator = new WrapperInterfaceGenerator(API_GENERATION_DIR, VANILLA_GENERATION_DIR, "MCC", "", "NMS", excludedTypes, EXCLUDED_PACKAGES);
         TypedKeyCollectionBuilder typedKeyCollectionBuilder = new TypedKeyCollectionBuilder(API_GENERATION_DIR, VANILLA_GENERATION_DIR, "MCC", "", excludedTypes, List.of());
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Attributes.class, new TypeToken<>() {}, Registries.ATTRIBUTE, "de.verdox.mccreativelab.wrapper.typed", "MCCAttributes");
@@ -239,26 +270,26 @@ public class ClassGenerator {
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Items.class, new TypeToken<>() {}, Registries.ITEM, "de.verdox.mccreativelab.wrapper.typed", "MCCItems");
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(DataComponents.class, new TypeToken<>() {}, Registries.DATA_COMPONENT_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCDataComponentTypes");
 
-        generator.generateWrapper(FrogVariant.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(FrogVariant.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(FrogVariant.class, new TypeToken<>() {}, Registries.FROG_VARIANT, "de.verdox.mccreativelab.wrapper.typed", "MCCFrogVariants");
 
-        generator.generateWrapper(GameEvent.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(GameEvent.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(GameEvent.class, new TypeToken<>() {}, Registries.GAME_EVENT, "de.verdox.mccreativelab.wrapper.typed", "MCCGameEvents");
 
-        generator.generateWrapper(Instrument.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(Instrument.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Instrument.class, new TypeToken<>() {}, Registries.INSTRUMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCInstruments");
 
-        generator.generateWrapper(JukeboxSong.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(JukeboxSong.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(JukeboxSongs.class, new TypeToken<>() {}, Registries.JUKEBOX_SONG, "de.verdox.mccreativelab.wrapper.typed", "MCCJukeboxSongs");
 
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(EntityType.class, new TypeToken<>() {}, Registries.ENTITY_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCEntityTypes");
 
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(MemoryModuleType.class, new TypeToken<>() {}, Registries.MEMORY_MODULE_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCMemoryModuleTypes");
 
-        generator.generateWrapper(PaintingVariant.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(PaintingVariant.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(PaintingVariants.class, new TypeToken<>() {}, Registries.PAINTING_VARIANT, "de.verdox.mccreativelab.wrapper.typed", "MCCPaintingVariants");
 
-        generator.generateWrapper(PoiType.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(PoiType.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(PoiTypes.class, new TypeToken<>() {}, Registries.POINT_OF_INTEREST_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCPoiTypes");
 
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(Potions.class, new TypeToken<>() {}, Registries.POTION, "de.verdox.mccreativelab.wrapper.typed", "MCCPotions");
@@ -269,23 +300,20 @@ public class ClassGenerator {
 
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(StructureType.class, new TypeToken<>() {}, Registries.STRUCTURE_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCStructureTypes");
 
-        generator.generateWrapper(VillagerProfession.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(VillagerProfession.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VillagerProfession.class, new TypeToken<>() {}, Registries.VILLAGER_PROFESSION, "de.verdox.mccreativelab.wrapper.typed", "MCCVillagerProfessions");
 
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(VillagerType.class, new TypeToken<>() {}, Registries.VILLAGER_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCVillagerTypes");
 
-        generator.generateWrapper(DecoratedPotPattern.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(DecoratedPotPattern.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(DecoratedPotPatterns.class, new TypeToken<>() {}, Registries.DECORATED_POT_PATTERN, "de.verdox.mccreativelab.wrapper.typed", "MCCDecoratedPotPatterns");
-
-        generator.generateWrapper(ArmorMaterial.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
-        typedKeyCollectionBuilder.generateForPlatformGroupingClass(ArmorMaterials.class, new TypeToken<>() {}, Registries.ARMOR_MATERIAL, "de.verdox.mccreativelab.wrapper.typed", "MCCArmorMaterials");
 
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Biomes.class, new TypeToken<>() {}, Registries.BIOME, "de.verdox.mccreativelab.wrapper.typed", "MCCBiomes");
 
-        generator.generateWrapper(DimensionType.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(DimensionType.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(DimensionTypes.class, new TypeToken<>() {}, Registries.DIMENSION_TYPE, "de.verdox.mccreativelab.wrapper.typed", "MCCDimensionTypes");
 
-        generator.generateWrapper(Enchantment.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(Enchantment.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(Enchantments.class, new TypeToken<>() {}, Registries.ENCHANTMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCEnchantments");
 
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaAdventureAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCAdventureAdvancements");
@@ -294,34 +322,36 @@ public class ClassGenerator {
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaNetherAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCNetherAdvancements");
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(VanillaTheEndAdvancements.class, new TypeToken<>() {}, Registries.ADVANCEMENT, "de.verdox.mccreativelab.wrapper.typed", "MCCEndAdvancements");
 
-        generator.generateWrapper(TrimMaterial.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+
+        //generator.generateWrapper(TrimMaterial.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(TrimMaterials.class, new TypeToken<>() {}, Registries.TRIM_MATERIAL, "de.verdox.mccreativelab.wrapper.typed", "MCCTrimMaterials");
 
-        generator.generateWrapper(TrimPattern.class, wrapperPackage + "types", implPackage + "types", DynamicType.of(MCCWrapped.class), false);
+        //generator.generateWrapper(TrimPattern.class, wrapperPackage + "types", implPackage + "types", ClassType.from(MCCWrapped.class), false);
         typedKeyCollectionBuilder.generateForPlatformGroupingClass(TrimPatterns.class, new TypeToken<>() {}, Registries.TRIM_PATTERN, "de.verdox.mccreativelab.wrapper.typed", "MCCTrimPatterns");
         //typedKeyCollectionBuilder.generateForPlatformGroupingClass(BuiltInLootTables.class, ResourceKey.class, Registries.LOOT_TABLE,"de.verdox.mccreativelab.wrapper.typed", "MCCLootTables", converterGenerator);
     }
 
     public static void createItemComponentConverters() throws IOException {
-
-        new MCCConverterGenerator(API_GENERATION_DIR, VANILLA_GENERATION_DIR, "DataComponentTypeConverter", "de.verdox.mccreativelab.impl.vanilla.platform.converter", DynamicType.of(DataComponentType.class, false), DynamicType.of(NMSDataComponentType.class, false), new MCCConverterGenerator.WrappingMethodBuilder() {
+        new MCCConverterGenerator(API_GENERATION_DIR, VANILLA_GENERATION_DIR, "DataComponentTypeConverter", "de.verdox.mccreativelab.impl.vanilla.platform.converter", CapturedParameterizedType.from(DataComponentType.class), CapturedParameterizedType.from(ClassType.create("NMSDataComponentType", "de.verdox.mccreativelab.impl.vanilla.item.components")), new MCCConverterGenerator.WrappingMethodBuilder() {
             @Override
-            public void wrapFunction(AbstractClassGenerator abstractClassGenerator, String parameterName, DynamicType nativeType, DynamicType typeToWrapInto, CodeLineBuilder codeLineBuilder) {
+            public void wrapFunction(AbstractClassGenerator abstractClassGenerator, String parameterName, CapturedParameterizedType nativeType, CapturedParameterizedType typeToWrapInto, CodeLineBuilder codeLineBuilder) {
                 for (Field declaredField : DataComponents.class.getDeclaredFields()) {
+
                     if (!Modifier.isFinal(declaredField.getModifiers()) && !Modifier.isPublic(declaredField.getModifiers()) && !Modifier.isStatic(declaredField.getModifiers()))
                         continue;
                     if (!(declaredField.getGenericType() instanceof ParameterizedType parameterizedType))
                         continue;
+                    CapturedParameterizedType capturedParameterizedType = CapturedParameterizedType.from(parameterizedType);
 
-                    DynamicType componentNativeType = DynamicType.of(parameterizedType.getActualTypeArguments()[0], false);
-                    DynamicType swappedComponentType = DynamicType.of(parameterizedType.getActualTypeArguments()[0], true);
+                    CapturedType<?, ?> componentNativeType = capturedParameterizedType.getTypeArguments().get(0);
+                    CapturedType<?, ?> swappedComponentType = NMSMapper.swap(capturedParameterizedType.getTypeArguments().get(0));
                     if (abstractClassGenerator.isForbiddenType(componentNativeType))
                         continue;
                     CodeExpression defaultInstantiation = CodeExpression.create().with("null");
                     if (NMSMapper.isSwapped(componentNativeType)) {
                         WrappedClass wrappedClass = WrappedClassRegistry.INSTANCE.getWrappingInformationByWrappedClass(componentNativeType.getRawType());
                         if (wrappedClass != null && wrappedClass.implementation() != null) {
-                            defaultInstantiation = CodeExpression.create().with("() -> new ").with(DynamicType.of(wrappedClass.implementation(), false)).with("(null)");
+                            defaultInstantiation = CodeExpression.create().with("() -> new ").with(wrappedClass.implementation()).with("(null)");
                             codeLineBuilder.getClassBuilder().includeImport(wrappedClass.implementation());
                         }
                     }
@@ -329,7 +359,7 @@ public class ClassGenerator {
 
                     codeLineBuilder.getClassBuilder().includeImport(componentNativeType);
                     codeLineBuilder.getClassBuilder().includeImport(swappedComponentType);
-                    codeLineBuilder.getClassBuilder().includeImport(DynamicType.of(DataComponents.class));
+                    codeLineBuilder.getClassBuilder().includeImport(CapturedType.from(DataComponents.class));
 
                     codeLineBuilder.append("if(").append(parameterName).append(".equals(DataComponents." + declaredField.getName()).appendAndNewLine(")) {");
                     codeLineBuilder.increaseDepth(1);
@@ -342,7 +372,7 @@ public class ClassGenerator {
             }
 
             @Override
-            public void unwrapFunction(AbstractClassGenerator abstractClassGenerator, String parameterName, DynamicType apiType, DynamicType nativeTypeToUnwrapTo, CodeLineBuilder codeLineBuilder) {
+            public void unwrapFunction(AbstractClassGenerator abstractClassGenerator, String parameterName, CapturedParameterizedType apiType, CapturedParameterizedType nativeTypeToUnwrapTo, CodeLineBuilder codeLineBuilder) {
                 codeLineBuilder.append("return done((DataComponentType) platformImplType.getHandle());");
             }
         }, excludedTypes, EXCLUDED_PACKAGES).create();

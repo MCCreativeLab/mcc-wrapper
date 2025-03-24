@@ -1,8 +1,9 @@
 package de.verdox.mccreativelab.classgenerator.codegen.expressions;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.StandardValuesForTypes;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
 
 import java.lang.reflect.Parameter;
 
@@ -17,15 +18,15 @@ public record ReflectiveFieldGetter(String variableName, Class<?> classToReflect
     @Override
     public void write(CodeLineBuilder codeLineBuilder) {
 
-        codeLineBuilder.appendAndNewLine(DynamicType.of(parameter.getParameterizedType(), false)+" "+variableName+";");
+        codeLineBuilder.appendAndNewLine(CapturedType.from(parameter.getParameterizedType())+" "+variableName+";");
         codeLineBuilder.append("if(handle==null) return ");
-        codeLineBuilder.append(DynamicType.of(parameter.getParameterizedType(), false).getDefaultValueAsString());
+        codeLineBuilder.append(StandardValuesForTypes.getDefaultValueForType(parameter.getType()));
         codeLineBuilder.appendAndNewLine(";");
         codeLineBuilder.appendAndNewLine("try {");
         codeLineBuilder.increaseDepth(+1);
-        codeLineBuilder.append("Field nmsField = ").append(new ClassDescription(classToReflect).getTypeName()).append(".class").append(".getDeclaredField(\"").append(parameter.getName()).appendAndNewLine("\");");
+        codeLineBuilder.append("Field nmsField = ").append(ClassType.from(classToReflect).getFullClassName()).append(".class").append(".getDeclaredField(\"").append(parameter.getName()).appendAndNewLine("\");");
         codeLineBuilder.appendAndNewLine("nmsField.setAccessible(true);");
-        codeLineBuilder.appendAndNewLine(variableName+" = (" + DynamicType.of(parameter.getParameterizedType(), false) + ") nmsField.get(handle);");
+        codeLineBuilder.appendAndNewLine(variableName+" = (" + CapturedType.from(parameter.getParameterizedType()) + ") nmsField.get(handle);");
         codeLineBuilder.increaseDepth(-1);
         codeLineBuilder.appendAndNewLine("} catch (Throwable e) { throw new RuntimeException(e); }");
     }

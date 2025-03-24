@@ -1,21 +1,19 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
-
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.item.components.MCCMapItemColor;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.item.component.MapItemColor;
-
+import java.lang.Object;
 public class NMSMapItemColor extends MCCHandle<MapItemColor> implements MCCMapItemColor  {
-
 	public static final MCCConverter<MapItemColor, NMSMapItemColor> CONVERTER  = converter(NMSMapItemColor.class, MapItemColor.class, NMSMapItemColor::new, MCCHandle::getHandle);
-
 	public NMSMapItemColor(MapItemColor handle){
 		super(handle);
 	}
-
 	public int getRgb(){
 		var nms = getRgbFromImpl();
-		return nms;
+		return MCCPlatform.getInstance().getConversionService().wrap(nms, new TypeToken<Integer>(){});
 	}
 
 	private int getRgbFromImpl(){
@@ -23,8 +21,7 @@ public class NMSMapItemColor extends MCCHandle<MapItemColor> implements MCCMapIt
 	}
 
 	public MCCMapItemColor withRgb(int rgb){
-		var param0 = rgb;
+		var param0 = MCCPlatform.getInstance().getConversionService().unwrap(rgb, new TypeToken<Integer>(){});
 		return new NMSMapItemColor(new MapItemColor(param0));
 	}
-
 }

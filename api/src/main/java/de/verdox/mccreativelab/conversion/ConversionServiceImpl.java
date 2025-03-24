@@ -144,6 +144,11 @@ public class ConversionServiceImpl implements ConversionService {
     }
 
     @Override
+    public SwapMap createSwapMap() {
+        return conversionCache.createNativeToApiSwapMap();
+    }
+
+    @Override
     public String toString() {
         return "ConversionServiceImpl{" +
                 "conversionCache=" + conversionCache +

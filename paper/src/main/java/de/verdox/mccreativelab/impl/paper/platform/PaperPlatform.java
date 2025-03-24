@@ -22,6 +22,8 @@ import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.RegistryAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +41,14 @@ public class PaperPlatform extends NMSPlatform {
 
     public PaperPlatform() {
         LOGGER.info("Setting up Paper Platform");
+    }
+
+    public PaperPlatform(boolean useGeneratedConverters) {
+        super(useGeneratedConverters);
+    }
+
+    public PaperPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
+        super(fullRegistryAccess, reloadableRegistries);
     }
 
     @Override

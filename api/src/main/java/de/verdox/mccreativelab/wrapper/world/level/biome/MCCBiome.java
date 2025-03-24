@@ -24,10 +24,11 @@ public interface MCCBiome extends MCCDataDriven {
      * Gets the precipitation type of the biome
      *
      * @param pos the position to check the precipitation at
+     * @param seaLevel the sea level to check the precipitation at
      *
      * @return the precipitation type
      */
-    Precipitation getPrecipitationAt(MCCBlockPos pos);
+    Precipitation getPrecipitationAt(MCCBlockPos pos, int seaLevel);
 
     /**
      * Gets the base temperature of the biome

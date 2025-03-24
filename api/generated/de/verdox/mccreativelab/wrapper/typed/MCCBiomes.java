@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
+import java.lang.Object;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.kyori.adventure.key.Key;
-
 public class MCCBiomes  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "worldgen/biome");
 
 	public static final MCCTypedKey<MCCBiome> THE_VOID  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "the_void"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -33,6 +31,8 @@ public class MCCBiomes  {
 	public static final MCCTypedKey<MCCBiome> BIRCH_FOREST  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "birch_forest"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTypedKey<MCCBiome> DARK_FOREST  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_forest"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
+
+	public static final MCCTypedKey<MCCBiome> PALE_GARDEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_garden"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTypedKey<MCCBiome> OLD_GROWTH_BIRCH_FOREST  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "old_growth_birch_forest"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
@@ -137,5 +137,4 @@ public class MCCBiomes  {
 	public static final MCCTypedKey<MCCBiome> SMALL_END_ISLANDS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "small_end_islands"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTypedKey<MCCBiome> END_BARRENS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "end_barrens"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 }

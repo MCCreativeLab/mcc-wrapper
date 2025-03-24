@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.types.MCCPaintingVariant;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import com.google.common.reflect.TypeToken;
+import java.lang.Object;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.kyori.adventure.key.Key;
-
 public class MCCPaintingVariants  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "painting_variant");
 
 	public static final MCCTypedKey<MCCPaintingVariant> KEBAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "kebab"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -109,5 +107,4 @@ public class MCCPaintingVariants  {
 	public static final MCCTypedKey<MCCPaintingVariant> SUNFLOWERS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "sunflowers"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTypedKey<MCCPaintingVariant> TIDES  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "tides"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 }

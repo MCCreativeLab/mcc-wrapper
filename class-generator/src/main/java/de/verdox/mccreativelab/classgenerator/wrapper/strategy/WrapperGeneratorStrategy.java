@@ -3,9 +3,14 @@ package de.verdox.mccreativelab.classgenerator.wrapper.strategy;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.classgenerator.NMSMapper;
 import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.StandardValuesForTypes;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.Method;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.Parameter;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedParameterizedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.*;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
 import de.verdox.mccreativelab.classgenerator.util.FieldNameUtil;
+
 import de.verdox.mccreativelab.classgenerator.wrapper.WrapperInterfaceGenerator;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.jetbrains.annotations.Nullable;
@@ -38,12 +43,12 @@ public interface WrapperGeneratorStrategy {
 
     default void createGetterAndSetter(WrapperInterfaceGenerator wrapperInterfaceGenerator, Class<?> nmsClass, ClassBuilder interfaceBuilder, ClassBuilder implBuilder, boolean withSetters) {
         List<ParameterOrRecord> parameters = collectParametersForGettersAndSetters(nmsClass);
-        implBuilder.includeImport(DynamicType.of(MCCPlatform.class));
-        implBuilder.includeImport(DynamicType.of(TypeToken.class));
-        implBuilder.includeImport(DynamicType.of(List.class));
-        implBuilder.includeImport(DynamicType.of(ArrayList.class));
-        implBuilder.includeImport(DynamicType.of(Set.class));
-        implBuilder.includeImport(DynamicType.of(HashSet.class));
+        implBuilder.includeImport(CapturedType.from(MCCPlatform.class));
+        implBuilder.includeImport(CapturedType.from(TypeToken.class));
+/*        implBuilder.includeImport(CapturedType.from(List.class));
+        implBuilder.includeImport(CapturedType.from(ArrayList.class));
+        implBuilder.includeImport(CapturedType.from(Set.class));
+        implBuilder.includeImport(CapturedType.from(HashSet.class));*/
 
         //TODO: Create a private utility function to gather those information
         Map<ParameterOrRecord, String> parameterToGetter = new HashMap<>();
@@ -56,15 +61,16 @@ public interface WrapperGeneratorStrategy {
                 parameterToGetter.put(parameter, apiGetterMethodName);
         }
 
-        DynamicType interfaceType = DynamicType.of(interfaceBuilder.getClassDescription());
+        CapturedParameterizedType interfaceType = CapturedParameterizedType.from(interfaceBuilder.asCapturedClassType());
 
         for (ParameterOrRecord parameter : parameters) {
             boolean isParameterSwapped = NMSMapper.isSwapped(parameter.getGenericType());
 
-            DynamicType parameterTypeSwapped = DynamicType.of(parameter.getGenericType());
-            DynamicType parameterTypeNotSwapped = DynamicType.of(parameter.getGenericType(), false);
+            CapturedType<?, ?> parameterTypeSwapped = CapturedType.swap(parameter.getGenericType());
+            CapturedType<?, ?> parameterTypeNotSwapped = CapturedType.from(parameter.getGenericType());
 
-            CodeExpression notSwappedStandardValue = parameterTypeNotSwapped.getDefaultValueAsString();
+            //TODO: Class where we collect standard values for types
+            CodeExpression notSwappedStandardValue = StandardValuesForTypes.getDefaultValueForType(parameter.getType());
 
 
             String apiGetterMethodName = getApiGetterMethodName(parameter);
@@ -88,8 +94,7 @@ public interface WrapperGeneratorStrategy {
                                     .parameter(new Parameter(parameterTypeSwapped, parameter.getName()))
                     );
                 }
-            }
-            else {
+            } else {
                 //TODO: Append TODO into generated code so we know there are setters / getters missing
             }
 
@@ -130,7 +135,7 @@ public interface WrapperGeneratorStrategy {
                         new Method()
                                 .modifier("private")
                                 .name(nmsGetterMethodName)
-                                .type(DynamicType.of(parameter.getGenericType(), false))
+                                .type(CapturedType.from(parameter.getGenericType()))
                                 .code(code -> {
                                     if (nmsClass.isRecord()) {
                                         code.append("return handle == null ? ");
@@ -195,12 +200,12 @@ public interface WrapperGeneratorStrategy {
         return fieldOfParameter;
     }
 
-    private static CodeExpression createApiToImplExpression(String variableToConvert, DynamicType api, DynamicType impl) {
-        return CodeExpression.create().with("MCCPlatform.getInstance().getConversionService().unwrap(").with(variableToConvert).with(", new TypeToken<").with(impl, true).with(">() {})");
+    private static CodeExpression createApiToImplExpression(String variableToConvert, CapturedType<?, ?> api, CapturedType<?, ?> impl) {
+        return CodeExpression.create().with("MCCPlatform.getInstance().getConversionService().unwrap(").with(variableToConvert).with(", ").withTypeToken(impl).with(")");
     }
 
-    private static CodeExpression createImplToApiExpression(String variableToConvert, DynamicType impl, DynamicType api) {
-        return CodeExpression.create().with("MCCPlatform.getInstance().getConversionService().wrap(").with(variableToConvert).with(", new TypeToken<").with(api, true).with(">() {})");
+    private static CodeExpression createImplToApiExpression(String variableToConvert, CapturedType<?, ?> impl, CapturedType<?, ?> api) {
+        return CodeExpression.create().with("MCCPlatform.getInstance().getConversionService().wrap(").with(variableToConvert).with(", ").withTypeToken(api).with(")");
     }
 
     default @Nullable java.lang.reflect.Constructor<?> findConstructorWithMostNumberOfArguments(Class<?> nmsClass) {
@@ -252,6 +257,10 @@ public interface WrapperGeneratorStrategy {
 
         public Type getGenericType() {
             return parameter != null ? parameter.getParameterizedType() : recordComponent.getGenericType();
+        }
+
+        public Class<?> getType() {
+            return parameter != null ? parameter.getType() : recordComponent.getType();
         }
     }
 }

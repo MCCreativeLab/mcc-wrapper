@@ -16,25 +16,26 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         PaperPlatform platform = (PaperPlatform) MCCPlatform.getInstance();
         platform.enableListeners(this);
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @EventHandler
-    public void startup(ServerLoadEvent e){
-        if(e.getType().equals(ServerLoadEvent.LoadType.STARTUP)){
+    public void startup(ServerLoadEvent e) {
+        if (e.getType().equals(ServerLoadEvent.LoadType.STARTUP)) {
             MCCPlatform.getInstance().triggerLifecycleEvent(MCCPlatform.Lifecycle.SERVER_STARTUP_COMPLETE);
         }
     }
 
     @EventHandler
-    public void afterLastWorldWasLoaded(WorldInitEvent e){
-        if(Bukkit.getWorlds().getFirst().equals(e.getWorld())){
+    public void afterLastWorldWasLoaded(WorldInitEvent e) {
+        if (Bukkit.getWorlds().getFirst().equals(e.getWorld())) {
             MCCPlatform.getInstance().triggerLifecycleEvent(MCCPlatform.Lifecycle.BEFORE_WORLD_LOAD);
         }
     }
 
     @EventHandler
-    public void afterLastWorldWasLoaded(WorldLoadEvent e){
-        if(Bukkit.getWorlds().getLast().equals(e.getWorld())){
+    public void afterLastWorldWasLoaded(WorldLoadEvent e) {
+        if (Bukkit.getWorlds().getLast().equals(e.getWorld())) {
             MCCPlatform.getInstance().triggerLifecycleEvent(MCCPlatform.Lifecycle.AFTER_WORLD_LOAD);
         }
     }

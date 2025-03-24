@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.wrapper.typed;
-
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import com.google.common.reflect.TypeToken;
+import java.lang.Object;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
 import net.kyori.adventure.key.Key;
-
 public class MCCPoiTypes  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "point_of_interest_type");
 
 	public static final MCCTypedKey<MCCPoiType> ARMORER  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "armorer"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
@@ -49,5 +47,4 @@ public class MCCPoiTypes  {
 	public static final MCCTypedKey<MCCPoiType> LODESTONE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "lodestone"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
 
 	public static final MCCTypedKey<MCCPoiType> LIGHTNING_ROD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "lightning_rod"), VANILLA_REGISTRY_KEY, new TypeToken<>(){});
-
 }

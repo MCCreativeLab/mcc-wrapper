@@ -36,11 +36,11 @@ public class NMSRegistriesTest extends TestBase {
             ResourceKey<F> resourceKey = MCCPlatform.getInstance().getConversionService().unwrap(exampleElement, new TypeToken<>() {
             });
             Registry<F> nativeRegistry = getNativeRegistry();
-            return nativeRegistry.getOrThrow(resourceKey);
+            return nativeRegistry.getOrThrow(resourceKey).value();
         }
 
         private Registry<F> getNativeRegistry() {
-            Registry<F> mccRegistry = (Registry<F>) BuiltInRegistries.REGISTRY.get(nativeRegistryKey().location());
+            Registry<F> mccRegistry = (Registry<F>) BuiltInRegistries.REGISTRY.get(nativeRegistryKey().location()).get().value();
             Assertions.assertNotNull(mccRegistry);
             return mccRegistry;
         }
@@ -106,8 +106,8 @@ public class NMSRegistriesTest extends TestBase {
 
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
-        A actual = testEntry.getRegistry().get(testEntry.exampleElement());
-        Assertions.assertEquals(nativeRegistry.get(resourceKey), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        A actual = testEntry.getRegistry().getOrThrow(testEntry.exampleElement());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
@@ -120,7 +120,7 @@ public class NMSRegistriesTest extends TestBase {
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
         A actual = testEntry.getRegistry().get(testEntry.exampleElement().key());
-        Assertions.assertEquals(nativeRegistry.get(resourceKey.location()), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
@@ -159,7 +159,7 @@ public class NMSRegistriesTest extends TestBase {
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
 
         A actual = testEntry.getRegistry().getOrThrow(testEntry.exampleElement());
-        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
+        Assertions.assertEquals(nativeRegistry.getOrThrow(resourceKey).value(), MCCPlatform.getInstance().getConversionService().unwrap(actual), testEntry.toString());
     }
 
     @ParameterizedTest
@@ -248,7 +248,7 @@ public class NMSRegistriesTest extends TestBase {
         Optional<Holder<F>> unwrappedActual = MCCPlatform.getInstance().getConversionService().unwrap(actual, new TypeToken<>() {
         });
 
-        Optional<Holder.Reference<F>> nativeOptionalHolder = nativeRegistry.getHolder(MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement().key(), new TypeToken<ResourceLocation>(){}));
+        Optional<Holder.Reference<F>> nativeOptionalHolder = nativeRegistry.get(MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement().key(), new TypeToken<ResourceLocation>(){}));
 
         Assertions.assertEquals(nativeOptionalHolder, unwrappedActual);
     }
@@ -268,7 +268,7 @@ public class NMSRegistriesTest extends TestBase {
         Optional<Holder<F>> unwrappedActual = MCCPlatform.getInstance().getConversionService().unwrap(actual, new TypeToken<>() {
         });
 
-        Optional<Holder.Reference<F>> nativeOptionalHolder = nativeRegistry.getHolder(MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement(), new TypeToken<ResourceKey<F>>(){}));
+        Optional<Holder.Reference<F>> nativeOptionalHolder = nativeRegistry.get(MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement(), new TypeToken<ResourceKey<F>>(){}));
 
         Assertions.assertEquals(nativeOptionalHolder, unwrappedActual);
     }

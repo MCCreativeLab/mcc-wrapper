@@ -11,8 +11,10 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -111,7 +113,7 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
     }
 
     @Override
-    public Optional<MCCReferenceSet<T>> getTag(MCCTag<T> tag) {
+    public Optional<MCCReferenceSet<T>> getTagValues(MCCTag<T> tag) {
         TagKey<R> tagKey = conversionService.unwrap(tag);
         Optional<HolderSet.Named<R>> holderSet = handle.get(tagKey);
         return conversionService.wrap(holderSet);
@@ -122,6 +124,16 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
         TagKey<R> tagKey = conversionService.unwrap(tag);
         HolderSet.Named<R> holderSet = handle.getOrThrow(tagKey);
         return conversionService.wrap(holderSet);
+    }
+
+    @Override
+    public Iterable<MCCReference<T>> iterate(MCCTag<T> tag) {
+        return new Iterable<>() {
+            @Override
+            public @NotNull Iterator<MCCReference<T>> iterator() {
+                return getOrCreateTag(tag).iterator();
+            }
+        };
     }
 
     @Override

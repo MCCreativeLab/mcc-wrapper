@@ -5,5 +5,5 @@ load: STARTUP
 bootstrapper: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPluginLoader
 loader: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPluginLoader
 
-version: 1.21.1-R0.1-SNAPSHOT
-api-version: 1.21.1
+version: 1.21.4-R0.1-SNAPSHOT
+api-version: 1.21.4

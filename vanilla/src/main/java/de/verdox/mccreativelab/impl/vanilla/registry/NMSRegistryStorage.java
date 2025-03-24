@@ -40,13 +40,13 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     }
 
     @VisibleForTesting
-    public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, RegistryAccess.Frozen reloadableRegistries) {
+    public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
         this(() -> fullRegistryAccess, () -> reloadableRegistries);
     }
 
-    public NMSRegistryStorage(Supplier<RegistryAccess.Frozen> fullRegistryAccess, Supplier<RegistryAccess.Frozen> reloadableRegistries) {
+    public NMSRegistryStorage(Supplier<RegistryAccess.Frozen> fullRegistryAccess, Supplier<HolderGetter.Provider> reloadableRegistries) {
         this.fullRegistryAccess = fullRegistryAccess;
-        this.reloadableRegistries = reloadableRegistries;
+        this.reloadableRegistries = () -> (RegistryAccess.Frozen) reloadableRegistries.get();
     }
 
     @Override
@@ -93,13 +93,13 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
 
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
 
-        Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.get().registry(registryResourceKey);
+        Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.get().lookup(registryResourceKey);
 
         if (optionalFoundRegistry.isEmpty()) {
-            optionalFoundRegistry = reloadableRegistries.get().registry(registryResourceKey);
+            optionalFoundRegistry = (Optional<Registry<Object>>) reloadableRegistries.get().lookup(registryResourceKey);
         }
 
-        return optionalFoundRegistry.<MCCRegistry<T>>map(objects -> new NMSRegistryLookup<>(objects.asLookup())).orElse(null);
+        return optionalFoundRegistry.<MCCRegistry<T>>map(NMSRegistryLookup::new).orElse(null);
     }
 
     @Override

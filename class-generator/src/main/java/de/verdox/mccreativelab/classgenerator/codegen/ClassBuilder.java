@@ -1,11 +1,16 @@
 package de.verdox.mccreativelab.classgenerator.codegen;
 
 import de.verdox.mccreativelab.classgenerator.codegen.expressions.*;
-import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.expressions.buildingblocks.*;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedParameterizedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedTypeVariable;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.MutableClassType;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.tools.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,12 +19,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClassBuilder implements JavaDocElement<ClassBuilder> {
+public class ClassBuilder extends MutableClassType implements JavaDocElement<ClassBuilder> {
     public static final Logger LOGGER = Logger.getLogger(ClassBuilder.class.getName());
-    private String packageName;
     private String classModifier;
-    private ClassHeader classHeader;
-    private String className;
+    private ClassHeader classHeader = ClassHeader.CLASS;
     private String classSuffix;
     private final List<Method> methods = new LinkedList<>();
     private final List<Constructor> constructors = new LinkedList<>();
@@ -27,47 +30,59 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
     private final List<Field> fields = new LinkedList<>();
     private final List<EnumEntry> enumEntries = new LinkedList<>();
     private final Set<ClassBuilder> includedClasses = new HashSet<>();
-    private final List<DynamicType> implementsList = new LinkedList<>();
-    private final List<DynamicType> extendsList = new LinkedList<>();
-    private final List<GenericDeclaration> genericDeclarations = new LinkedList<>();
-    private final Map<String, DynamicType> uniqueNames = new HashMap<>();
+    private final Map<String, CapturedType<?, ?>> uniqueNames = new HashMap<>();
     private boolean isInnerClass;
     private ClassBuilder parent;
     private int depth = 0;
     private JavaDocExpression javaDoc;
+
+    public ClassBuilder() {
+        super(null, null);
+    }
 
     public ClassBuilder withPackage(String packageName) {
         this.packageName = packageName;
         return this;
     }
 
-    public ClassDescription getClassDescription() {
-        return new ClassDescription(this);
-    }
-
-    public void markAsInnerClass(ClassBuilder parent) {
-        this.parent = parent;
-        isInnerClass = true;
-        this.depth = parent.depth + 1;
-    }
-
-    public ClassBuilder withField(String modifier, DynamicType type, String fieldName, String initValue, DynamicType... genericTypes) {
-        return withField(modifier, type, fieldName, CodeExpression.create().with(initValue), genericTypes);
-    }
-
-    public ClassBuilder withField(String modifier, DynamicType type, String fieldName, CodeExpression initValue, DynamicType... genericTypes) {
-        Field field = new Field(modifier, type, fieldName, initValue, genericTypes);
-        LOGGER.log(Level.FINER, "Including field " + field);
-        fields.add(field);
-
-        includeImport(type);
-        for (DynamicType genericType : genericTypes)
-            includeImport(genericType);
+    public ClassType<?> asCapturedClassType() {
         return this;
     }
 
-    public ClassBuilder withClassGeneric(String genericName, @Nullable DynamicType genericType) {
-        genericDeclarations.add(new GenericDeclaration(genericName, genericType));
+    public void markAsInnerClass(ClassBuilder parent) {
+        if (this.equals(parent)) {
+            throw new IllegalArgumentException("Classes cannot be their declaring parent");
+        }
+        Objects.requireNonNull(getClassName(), "Class has no name yet.");
+        Objects.requireNonNull(getPackageName(), "Class has no package yet.");
+        this.parent = parent;
+        isInnerClass = true;
+        this.depth = parent.depth + 1;
+        this.declaringClass = CapturedParameterizedType.from(parent);
+    }
+
+    @Deprecated
+    public ClassBuilder withField(String modifier, CapturedType<?, ?> type, String fieldName, CodeExpression initValue) {
+        Field field = new Field(modifier, fieldName, type).withInitValue(initValue);
+        return withField(field);
+    }
+
+    @Deprecated
+    public ClassBuilder withField(String modifier, CapturedType<?, ?> type, String fieldName, String initValue) {
+        Field field = new Field(modifier, fieldName, type).withInitValue(initValue);
+        return withField(field);
+    }
+
+    public ClassBuilder withField(Field field) {
+        LOGGER.log(Level.FINER, "Including field " + field);
+        fields.add(field);
+
+        includeImport(field.getType());
+        return this;
+    }
+
+    public ClassBuilder withClassGeneric(CapturedTypeVariable genericType) {
+        withTypeVariable(genericType);
         return this;
     }
 
@@ -89,7 +104,7 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         stringBuilder.append("(");
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
-            stringBuilder.append(parameter.type());
+            stringBuilder.append(parameter.getType());
             if (i < parameters.length - 1)
                 stringBuilder.append(", ");
         }
@@ -99,29 +114,18 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         return this;
     }
 
-    public ClassBuilder implementsClasses(DynamicType... dynamicTypes) {
-        if (this.getClassDescription().isInterface())
-            throw new IllegalStateException(this + " cannot implement any class because it is an interface");
-        for (DynamicType dynamicType : dynamicTypes) {
-            if (!dynamicType.getClassDescription().isInterface())
-                throw new IllegalArgumentException(dynamicType + " is not an interface");
-            if (!implementsList.contains(dynamicType)) {
-                includeImport(dynamicType);
-                implementsList.add(dynamicType);
-            }
+    public ClassBuilder implementsClasses(CapturedParameterizedType... classTypes) {
+        withNoInterfaces();
+        for (CapturedParameterizedType classType : classTypes) {
+            includeImport(classType);
+            withInterface(classType.getRawType());
         }
         return this;
     }
 
-    public ClassBuilder extendsClasses(DynamicType... dynamicTypes) {
-        for (DynamicType dynamicType : dynamicTypes) {
-            if (dynamicType.getClassDescription().isInterface() && !this.getClassDescription().isInterface())
-                throw new IllegalArgumentException(this + " is not an interface so it cannot extend the interface " + dynamicType);
-            if (!extendsList.contains(dynamicType)) {
-                includeImport(dynamicType);
-                extendsList.add(dynamicType);
-            }
-        }
+    public ClassBuilder withSuperType(CapturedParameterizedType classType) {
+        includeImport(classType);
+        withSuperClass(classType);
         return this;
     }
 
@@ -137,56 +141,73 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         if (method.type() != null) {
             includeImport(method.type());
         }
-        for (Parameter parameter : method.parameters())
-            includeImport(parameter.type());
+        for (Parameter parameter : method.parameters()) {
+            includeImport(parameter.getType());
+        }
         return this;
     }
 
     public ClassBuilder withConstructor(Constructor constructor) {
         LOGGER.log(Level.FINER, "Including constructor constructor " + constructor);
-        constructor.type(DynamicType.of(getClassDescription(), false));
+        constructor.type(CapturedParameterizedType.from(asCapturedClassType()));
         constructors.add(constructor);
 
         for (Parameter parameter : constructor.parameters())
-            includeImport(parameter.type());
+            includeImport(parameter.getType());
         return this;
     }
 
     public ClassBuilder includeInnerClass(ClassBuilder classBuilder) {
+        if (this.equals(classBuilder)) {
+            throw new IllegalArgumentException("A class builder cannot be its own declaring parent");
+        }
         classBuilder.markAsInnerClass(this);
         includedClasses.add(classBuilder);
         return this;
     }
 
-    public ClassBuilder removeInnerClass(ClassBuilder classBuilder) {
-        classBuilder.markAsInnerClass(this);
-        includedClasses.remove(classBuilder);
-        return this;
-    }
-
-    public ClassBuilder includeImport(ClassDescription importedClassOrPackage) {
-        return includeImport(DynamicType.of(importedClassOrPackage));
-    }
-
-    public ClassBuilder includeImport(DynamicType dynamicType) {
-        Objects.requireNonNull(dynamicType);
-        if (Objects.equals(packageName, dynamicType.getClassDescription().getPackageName()))
-            return this;
-        if (this.isInnerClass && this.parent != null) {
-            this.parent.includeImport(dynamicType);
+    public ClassBuilder includeImport(CapturedType<?, ?> capturedType) {
+        Objects.requireNonNull(capturedType);
+        if (capturedType.getRawType().getPackageName() == null || capturedType.getRawType().getClassName() == null) {
             return this;
         }
 
-        //TODO: If a class with the same name but different package is imported while there already exists a class with that name -> We need to notify the Classbuilder to write the types with package in front
+        if (this.isInnerClass && this.parent != null) {
+            this.parent.includeImport(capturedType);
+            return this;
+        }
 
-        LOGGER.log(Level.FINER, "Including import " + dynamicType);
-        for (ClassDescription importedClass : dynamicType.getImportedClasses())
-            imports.add(new Import(importedClass));
+        if (capturedType.getRawType().getPackageName().equals(packageName)) {
+            return this;
+        }
+
+        if (capturedType.getRawType().getDeclaringClass() != null) {
+            return includeImport(capturedType.getRawType().getDeclaringClass());
+        }
+
+
+        //LOGGER.log(Level.INFO, "Including import " + capturedType.getRawType().getPackageName() + "." + capturedType.getRawType().getFullClassName() + " (" + capturedType.getClass() + ")");
+
+        Set<ClassType<?>> typesToImport = new HashSet<>();
+        capturedType.collectTypesOnImport(typesToImport);
+
+        //TODO: If a class with the same name but different package is imported while there already exists a class with that name -> We need to notify the Classbuilder to write the types with package in front
+        for (ClassType<?> classType : typesToImport) {
+            if (classType.getDeclaringClass() != null) {
+                includeImport(classType.getDeclaringClass());
+                continue;
+            }
+            if (imports.contains(new Import(classType))) {
+                continue;
+            }
+            imports.add(new Import(classType));
+            LOGGER.log(Level.FINE, "Including import: " + classType.getRawType().getPackageName() + "." + classType.getRawType().getFullClassName() + " (" + classType.getClassName() + ", " + classType.hashCode() + ")");
+        }
         return this;
     }
 
     public ClassBuilder includeImport(Type type) {
-        return includeImport(DynamicType.of(type));
+        return includeImport(CapturedType.from(type));
     }
 
     public void buildClassFileString(StringBuilder code) {
@@ -221,16 +242,23 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
 
         CodeLineBuilder classTitleBuilder = buildClassTitle();
 
-
         CodeLineBuilder importBuilder = new CodeLineBuilder(this, depth);
-        for (Import anImport : imports) {
-            if (anImport.classDescription() == null) {
-                continue;
+        if (!isInnerClass && parent == null) {
+            for (Import anImport : imports) {
+                if (anImport.classDescription() == null) {
+                    continue;
+                }
+                if (anImport.classDescription().isPrimitive()) {
+                    continue;
+                }
+                if (anImport.classDescription().equals(this.asCapturedClassType())) {
+                    continue;
+                }
+                if (anImport.classDescription().getDeclaringClass() != null) {
+                    continue;
+                }
+                anImport.write(importBuilder);
             }
-            if (anImport.classDescription().isPrimitiveType()) {
-                continue;
-            }
-            anImport.write(importBuilder);
         }
 
         CodeLineBuilder packageBuilder = new CodeLineBuilder(this, depth);
@@ -277,38 +305,31 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
 
 
         classTitleBuilder.append(" ");
-        if (!genericDeclarations.isEmpty()) {
+        if (!getTypeVariables().isEmpty()) {
             classTitleBuilder.append("<");
-            for (int i = 0; i < genericDeclarations.size(); i++) {
-                GenericDeclaration genericDeclaration = genericDeclarations.get(i);
-
-                if (genericDeclaration.type() != null) {
-                    classTitleBuilder.append(genericDeclaration.name() + " extends " + genericDeclaration.type());
-                } else {
-                    classTitleBuilder.append(genericDeclaration.name());
-                }
-                if (i < genericDeclarations.size() - 1)
-                    classTitleBuilder.append(", ");
+            for (CapturedTypeVariable typeVariable : getTypeVariables()) {
+                typeVariable.write(classTitleBuilder);
             }
             classTitleBuilder.append(">");
             classTitleBuilder.append(" ");
         }
-        if (!extendsList.isEmpty()) {
+
+        if (getSuperClass() != null && ClassHeader.CLASS.equals(classHeader)) {
             classTitleBuilder.append("extends ");
-            for (int i = 0; i < extendsList.size(); i++) {
-                DynamicType extendedType = extendsList.get(i);
-                classTitleBuilder.append(extendedType);
-                if (i < extendsList.size() - 1)
-                    classTitleBuilder.append(", ");
-            }
+            classTitleBuilder.append(getSuperClass());
             classTitleBuilder.append(" ");
         }
-        if (!implementsList.isEmpty()) {
-            classTitleBuilder.append("implements ");
-            for (int i = 0; i < implementsList.size(); i++) {
-                DynamicType implementedType = implementsList.get(i);
+
+        if (!getInterfaces().isEmpty()) {
+            if (ClassHeader.INTERFACE.equals(classHeader)) {
+                classTitleBuilder.append("extends ");
+            } else {
+                classTitleBuilder.append("implements ");
+            }
+            for (int i = 0; i < getInterfaces().size(); i++) {
+                CapturedParameterizedType implementedType = getInterfaces().get(i);
                 classTitleBuilder.append(implementedType);
-                if (i < implementsList.size() - 1)
+                if (i < getInterfaces().size() - 1)
                     classTitleBuilder.append(", ");
             }
             classTitleBuilder.append(" ");
@@ -321,47 +342,77 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         return classTitleBuilder;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        buildClassFileString(stringBuilder);
-        return stringBuilder.toString();
-    }
-
     public void writeClassFile(String fileName) throws IOException {
         writeClassFile(new File(fileName));
     }
 
     public void writeClassFile(File sourceDir) throws IOException {
+        Objects.requireNonNull(className, "No class name specified");
+        Objects.requireNonNull(packageName, "No package name specified for " + className);
         File file = new File(sourceDir.getPath() + "/" + packageName.replace(".", "/") + "/" + className + ".java");
         file.getParentFile().mkdirs();
         try (FileWriter writer = new FileWriter(file)) {
             StringBuilder code = new StringBuilder();
             buildClassFileString(code);
             writer.write(code.toString());
+/*            boolean couldCompile = compileJavaFile(file.getAbsolutePath());
             LOGGER.log(Level.FINER, "Created java file " + file);
+            if (!couldCompile) {
+                LOGGER.warning("Created a java file that does not compile: " + file);
+            }*/
         }
     }
 
-    private void logType(DynamicType type) {
-        if (!uniqueNames.containsKey(type.getTypeName())) {
-            uniqueNames.put(type.getTypeName(), type);
-        }
-        for (DynamicType genericType : type.getGenericTypes()) {
-            logType(genericType);
-        }
+    @Override
+    protected ClassType<Void> copy(boolean mutable) {
+        ClassBuilder classBuilder = new ClassBuilder();
+        classBuilder.packageName = this.packageName;
+        classBuilder.classModifier = this.classModifier;
+        classBuilder.classHeader = this.classHeader;
+        classBuilder.className = this.className;
+        classBuilder.classSuffix = this.classSuffix;
+        classBuilder.methods.addAll(this.methods);
+        classBuilder.constructors.addAll(this.constructors);
+        classBuilder.fields.addAll(this.fields);
+        classBuilder.enumEntries.addAll(this.enumEntries);
+        classBuilder.includedClasses.addAll(this.includedClasses);
+        classBuilder.uniqueNames.putAll(this.uniqueNames);
+        classBuilder.isInnerClass = this.isInnerClass;
+        classBuilder.parent = this.parent;
+        classBuilder.depth = this.depth;
+        classBuilder.javaDoc = this.javaDoc;
+
+        classBuilder.declaringClass = copyType(ClassType::getDeclaringClass, mutable);
+        classBuilder.superClass = copyType(ClassType::getSuperClass, mutable);
+        classBuilder.typeVariables = copyCollection(ClassType::getTypeVariables, mutable);
+        classBuilder.interfaces = copyCollection(ClassType::getInterfaces, mutable);
+
+        classBuilder.isSynthetic = this.isSynthetic;
+        classBuilder.isPrimitive = this.isPrimitive;
+        classBuilder.isEnum = this.isEnum;
+        classBuilder.isRecord = this.isRecord;
+        classBuilder.isAnonymous = this.isAnonymous;
+        classBuilder.isArray = this.isArray;
+        classBuilder.isInterface = this.isInterface;
+        return this;
     }
 
     /**
      * @param type Checks if this types name was written anywhere in the class builder. If no it returns true. Else the class builder wants it to be written with full package name
      * @return true if the type was already written in the class, and it's the same type.
      */
-    public boolean canWriteSimpleName(DynamicType type) {
-        logType(type);
-        boolean canWriteSimple = uniqueNames.containsKey(type.getTypeName()) && uniqueNames.get(type.getTypeName()).compareWithoutGenerics(type);
-        if (!canWriteSimple)
-            imports.remove(new Import(type.getClassDescription()));
+    public boolean canWriteSimpleName(ClassType<?> type) {
+        boolean canWriteSimple = uniqueNames.containsKey(type.getFullClassName()) && uniqueNames.get(type.getFullClassName()).getRawType().getPackageName().equals(type.getPackageName());
+        if (canWriteSimple) {
+            //imports.remove(new Import(type));
+        }
         return canWriteSimple;
+    }
+
+    public void logUniqueName(ClassType<?> type) {
+        if (!uniqueNames.containsKey(type.getFullClassName())) {
+            uniqueNames.put(type.getFullClassName(), type);
+        }
     }
 
     @Override
@@ -393,20 +444,12 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         }
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
     public String getClassModifier() {
         return classModifier;
     }
 
     public ClassHeader getClassHeader() {
         return classHeader;
-    }
-
-    public String getClassName() {
-        return className;
     }
 
     public String getClassSuffix() {
@@ -441,6 +484,21 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
         return isInnerClass;
     }
 
+    @Override
+    public boolean isEnum() {
+        return getClassHeader().equals(ClassHeader.ENUM);
+    }
+
+    @Override
+    public boolean isInterface() {
+        return getClassHeader().equals(ClassHeader.INTERFACE);
+    }
+
+    @Override
+    public boolean isRecord() {
+        return getClassHeader().equals(ClassHeader.RECORD);
+    }
+
     public ClassBuilder getParent() {
         return parent;
     }
@@ -456,5 +514,53 @@ public class ClassBuilder implements JavaDocElement<ClassBuilder> {
     @Override
     public int hashCode() {
         return Objects.hash(packageName, classModifier, classHeader, className, classSuffix, parent);
+    }
+
+    private static boolean compileJavaFile(String filePath) {
+        // Erstellen eines JavaCompiler-Objekts
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+
+        if (compiler == null) {
+            System.out.println("Kein Java-Compiler gefunden. Stellen Sie sicher, dass JDK installiert ist.");
+            return false;
+        }
+
+        // Standarddiagnose-Sammler für Compiler-Ausgabe
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+
+        // Dateimanager für die Eingabedatei
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
+
+        try {
+            // Datei in ein JavaFileObject konvertieren
+            Iterable<? extends JavaFileObject> compilationUnits =
+                    fileManager.getJavaFileObjectsFromStrings(java.util.Collections.singletonList(filePath));
+
+            // Kompilation starten
+            JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, null, null, compilationUnits);
+
+            boolean success = task.call();
+
+            // Diagnosen ausgeben, falls vorhanden
+            for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+                System.out.println(diagnostic.getKind() + ": " + diagnostic.getMessage(null));
+            }
+
+            return success;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                fileManager.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected ClassType<Void> createImmutableClone() {
+        return this;
     }
 }

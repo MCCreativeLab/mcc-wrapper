@@ -20,8 +20,8 @@ import net.kyori.adventure.pointer.Pointers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.storage.ServerLevelData;
@@ -90,7 +90,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         Entity entity = conversionService.unwrap(constructedEntity);
 
         if (entity instanceof Mob) {
-            ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.COMMAND, null);
+            ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.COMMAND, null);
         }
 
         this.getHandle().addFreshEntity(entity);
@@ -130,12 +130,12 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public int getMaxBuildHeight() {
-        return handle.getMaxBuildHeight();
+        return handle.getMaxY();
     }
 
     @Override
     public int getMinBuildHeight() {
-        return handle.getMinBuildHeight();
+        return handle.getMinY();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;

@@ -23,7 +23,7 @@ public class NMSReferenceSetTests extends TestBase {
         MCCTag<MCCBlockType> tag = MCCPlatform.getInstance().getTypedKeyFactory().createTag(elementKey, registryKey, new TypeToken<>() {});
         MCCReferenceSet<MCCBlockType> referenceSet = MCCRegistries.BLOCK_REGISTRY.get().getOrCreateTag(tag);
 
-        HolderSet<Block> holderSet = BuiltInRegistries.BLOCK.getTag(MCCPlatform.getInstance().getConversionService().unwrap(tag, new TypeToken<>() {})).get();
+        HolderSet<Block> holderSet = (HolderSet<Block>) BuiltInRegistries.BLOCK.getTagOrEmpty(MCCPlatform.getInstance().getConversionService().unwrap(tag, new TypeToken<>() {}));
         MCCReferenceSet<MCCBlockType> references = new NMSReferenceSet<>(holderSet);
 
         Assertions.assertEquals(holderSet, MCCPlatform.getInstance().getConversionService().unwrap(references, HolderSet.class));

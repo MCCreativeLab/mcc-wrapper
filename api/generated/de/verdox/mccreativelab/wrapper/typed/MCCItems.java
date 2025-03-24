@@ -5,9 +5,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
-
 public class MCCItems  {
-
 	public static final Key VANILLA_REGISTRY_KEY  = Key.key("minecraft", "item");
 
 	public static final MCCReference<MCCItemType> AIR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "air"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -96,6 +94,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_PLANKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_planks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_PLANKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_planks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_PLANKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_planks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_PLANKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_planks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -119,6 +119,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_SAPLING  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_sapling"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_SAPLING  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_sapling"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_SAPLING  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_sapling"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_PROPAGULE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_propagule"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -286,6 +288,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> CHERRY_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> DARK_OAK_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -314,6 +318,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> STRIPPED_DARK_OAK_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_dark_oak_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> STRIPPED_PALE_OAK_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_pale_oak_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> STRIPPED_MANGROVE_LOG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_mangrove_log"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> STRIPPED_CRIMSON_STEM  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_crimson_stem"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -334,6 +340,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> STRIPPED_DARK_OAK_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_dark_oak_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> STRIPPED_PALE_OAK_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_pale_oak_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> STRIPPED_MANGROVE_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_mangrove_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> STRIPPED_CRIMSON_HYPHAE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stripped_crimson_hyphae"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -353,6 +361,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> ACACIA_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "acacia_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> CHERRY_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_WOOD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_wood"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -375,6 +385,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_LEAVES  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_leaves"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_LEAVES  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_leaves"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_LEAVES  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_leaves"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_LEAVES  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_leaves"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -448,6 +460,10 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DANDELION  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dandelion"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> OPEN_EYEBLOSSOM  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "open_eyeblossom"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> CLOSED_EYEBLOSSOM  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "closed_eyeblossom"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> POPPY  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "poppy"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BLUE_ORCHID  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "blue_orchid"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -500,11 +516,17 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> KELP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "kelp"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
-	public static final MCCReference<MCCItemType> MOSS_CARPET  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "moss_carpet"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
-
 	public static final MCCReference<MCCItemType> PINK_PETALS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pink_petals"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> MOSS_CARPET  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "moss_carpet"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MOSS_BLOCK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "moss_block"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_MOSS_CARPET  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_moss_carpet"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_HANGING_MOSS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_hanging_moss"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_MOSS_BLOCK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_moss_block"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> HANGING_ROOTS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "hanging_roots"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -527,6 +549,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_SLAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_slab"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_SLAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_slab"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_SLAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_slab"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_SLAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_slab"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -608,6 +632,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> SPAWNER  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "spawner"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> CREAKING_HEART  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "creaking_heart"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> CHEST  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "chest"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> CRAFTING_TABLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "crafting_table"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -645,6 +671,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_FENCE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_fence"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_FENCE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_fence"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_FENCE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_fence"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_FENCE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_fence"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -732,6 +760,20 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> GLOW_LICHEN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "glow_lichen"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> RESIN_CLUMP  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_clump"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BLOCK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_block"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BRICKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_bricks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BRICK_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_brick_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BRICK_SLAB  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_brick_slab"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BRICK_WALL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_brick_wall"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> CHISELED_RESIN_BRICKS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "chiseled_resin_bricks"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> BRICK_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "brick_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> STONE_BRICK_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "stone_brick_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -789,6 +831,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_STAIRS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_stairs"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -1392,6 +1436,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_BUTTON  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_button"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_BUTTON  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_button"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_BUTTON  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_button"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_BUTTON  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_button"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1422,6 +1468,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_PRESSURE_PLATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_pressure_plate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_PRESSURE_PLATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_pressure_plate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_PRESSURE_PLATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_pressure_plate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_PRESSURE_PLATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_pressure_plate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1445,6 +1493,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_DOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_door"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_DOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_door"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_DOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_door"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_DOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_door"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -1486,6 +1536,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_TRAPDOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_trapdoor"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_TRAPDOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_trapdoor"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_TRAPDOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_trapdoor"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_TRAPDOOR  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_trapdoor"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1524,6 +1576,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_FENCE_GATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_fence_gate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_FENCE_GATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_fence_gate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_FENCE_GATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_fence_gate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_FENCE_GATE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_fence_gate"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1556,6 +1610,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> WARPED_FUNGUS_ON_A_STICK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "warped_fungus_on_a_stick"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PHANTOM_MEMBRANE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "phantom_membrane"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> ELYTRA  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "elytra"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> OAK_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "oak_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1585,6 +1641,10 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> DARK_OAK_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_CHEST_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_chest_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_CHEST_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_chest_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_BOAT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_boat"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -1796,6 +1856,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> DARK_OAK_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> PALE_OAK_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> MANGROVE_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BAMBOO_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bamboo_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -1817,6 +1879,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> CHERRY_HANGING_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cherry_hanging_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> DARK_OAK_HANGING_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "dark_oak_hanging_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PALE_OAK_HANGING_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pale_oak_hanging_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MANGROVE_HANGING_SIGN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mangrove_hanging_sign"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -1871,6 +1935,38 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> RECOVERY_COMPASS  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "recovery_compass"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> WHITE_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "white_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> ORANGE_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "orange_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> MAGENTA_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "magenta_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> LIGHT_BLUE_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "light_blue_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> YELLOW_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "yellow_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> LIME_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "lime_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PINK_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "pink_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> GRAY_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "gray_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> LIGHT_GRAY_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "light_gray_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> CYAN_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "cyan_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> PURPLE_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "purple_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> BLUE_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "blue_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> BROWN_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "brown_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> GREEN_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "green_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RED_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "red_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> BLACK_BUNDLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "black_bundle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> FISHING_ROD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "fishing_rod"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -2006,9 +2102,9 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> NETHER_WART  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "nether_wart"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
-	public static final MCCReference<MCCItemType> POTION  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "potion"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
-
 	public static final MCCReference<MCCItemType> GLASS_BOTTLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "glass_bottle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> POTION  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "potion"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> SPIDER_EYE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "spider_eye"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -2178,6 +2274,8 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> ZOGLIN_SPAWN_EGG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "zoglin_spawn_egg"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
+	public static final MCCReference<MCCItemType> CREAKING_SPAWN_EGG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "creaking_spawn_egg"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
 	public static final MCCReference<MCCItemType> ZOMBIE_SPAWN_EGG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "zombie_spawn_egg"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> ZOMBIE_HORSE_SPAWN_EGG  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "zombie_horse_spawn_egg"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -2195,6 +2293,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> WRITABLE_BOOK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "writable_book"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> WRITTEN_BOOK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "written_book"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> BREEZE_ROD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "breeze_rod"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> MACE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "mace"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -2241,6 +2341,8 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> ENCHANTED_BOOK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "enchanted_book"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> NETHER_BRICK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "nether_brick"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> RESIN_BRICK  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "resin_brick"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> PRISMARINE_SHARD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "prismarine_shard"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -2388,8 +2490,6 @@ public class MCCItems  {
 
 	public static final MCCReference<MCCItemType> TRIDENT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "trident"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
-	public static final MCCReference<MCCItemType> PHANTOM_MEMBRANE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "phantom_membrane"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
-
 	public static final MCCReference<MCCItemType> NAUTILUS_SHELL  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "nautilus_shell"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> HEART_OF_THE_SEA  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "heart_of_the_sea"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
@@ -2415,6 +2515,10 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> FLOW_BANNER_PATTERN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "flow_banner_pattern"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> GUSTER_BANNER_PATTERN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "guster_banner_pattern"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> FIELD_MASONED_BANNER_PATTERN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "field_masoned_banner_pattern"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
+
+	public static final MCCReference<MCCItemType> BORDURE_INDENTED_BANNER_PATTERN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bordure_indented_banner_pattern"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> GOAT_HORN  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "goat_horn"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
@@ -2673,7 +2777,4 @@ public class MCCItems  {
 	public static final MCCReference<MCCItemType> VAULT  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "vault"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
 
 	public static final MCCReference<MCCItemType> OMINOUS_BOTTLE  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "ominous_bottle"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
-
-	public static final MCCReference<MCCItemType> BREEZE_ROD  = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "breeze_rod"), VANILLA_REGISTRY_KEY, new TypeToken<MCCItemType>(){}).getAsReference();
-
 }

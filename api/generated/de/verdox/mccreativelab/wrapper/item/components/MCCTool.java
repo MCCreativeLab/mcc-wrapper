@@ -1,18 +1,18 @@
 package de.verdox.mccreativelab.wrapper.item.components;
-
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import java.lang.Float;
+import java.util.Optional;
+import java.util.List;
 import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
 
-import java.util.List;
-import java.util.Optional;
+import java.lang.Boolean;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 
-public interface MCCTool extends MCCItemComponent  {
-
+public interface MCCTool extends MCCItemComponent {
 	public MCCTool.Rule createRule();
 
-	public List<de.verdox.mccreativelab.wrapper.item.components.MCCTool.Rule> getRules();
+	public List<MCCTool.Rule> getRules();
 
-	public MCCTool withRules(List<de.verdox.mccreativelab.wrapper.item.components.MCCTool.Rule> rules);
+	public MCCTool withRules(List<MCCTool.Rule> rules);
 
 	public float getDefaultMiningSpeed();
 
@@ -22,10 +22,8 @@ public interface MCCTool extends MCCItemComponent  {
 
 	public MCCTool withDamagePerBlock(int damagePerBlock);
 
-
 	public static interface Rule  {
-	
-		public MCCReferenceSet<MCCBlockType> getBlocks();
+			public MCCReferenceSet<MCCBlockType> getBlocks();
 	
 		public MCCTool.Rule withBlocks(MCCReferenceSet<MCCBlockType> blocks);
 	
@@ -36,6 +34,4 @@ public interface MCCTool extends MCCItemComponent  {
 		public Optional<Boolean> getCorrectForDrops();
 	
 		public MCCTool.Rule withCorrectForDrops(Optional<Boolean> correctForDrops);
-	
-	}
-}
+		}}

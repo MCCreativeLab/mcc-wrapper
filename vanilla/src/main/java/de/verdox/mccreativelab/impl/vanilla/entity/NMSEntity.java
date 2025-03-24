@@ -14,6 +14,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.portal.DimensionTransition;
@@ -64,9 +65,10 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
         if (!getLocation().world().equals(location.world())) {
             CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-            handle.changeDimension(new DimensionTransition(conversionService.unwrap(location.world(), new TypeToken<>() {}), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
+            // TODO: Needs another PR
+            /*            handle.teleport(new TeleportTransition(conversionService.unwrap(location.world(), ServerLevel.class), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
                 done.complete(this);
-            }));
+            }));*/
             return done;
         } else {
             handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());

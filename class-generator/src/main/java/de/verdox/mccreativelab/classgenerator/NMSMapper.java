@@ -1,47 +1,108 @@
 package de.verdox.mccreativelab.classgenerator;
 
-import de.verdox.mccreativelab.classgenerator.codegen.type.ClassDescription;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.*;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.MutableClassType;
+import de.verdox.mccreativelab.conversion.SwapMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
-import net.minecraft.core.GlobalPos;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
+import java.io.File;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class NMSMapper {
     public static final Logger LOGGER = Logger.getLogger(NMSMapper.class.getSimpleName());
+    private static final String swapCacheVersion = "1.21.1-R0.1-SNAPSHOT";
+    private static final SwapMap swapMap = SwapMap.loadFromFile(new File("../../versionSwapMaps/" + swapCacheVersion + "/swap_map.json"));
 
-    private static final Map<DynamicType, ClassSwap> SWAP_MAP = new HashMap<>();
+    private static final Map<ClassType<?>, ClassSwap> SWAP_MAP = new HashMap<>();
 
-    public static void register(Type from, Type to, boolean allowsGenerics) {
-        register(DynamicType.of(from, false), DynamicType.of(to, false), allowsGenerics);
+    static {
+        swapMap.getNativeToApiClasses().forEach((description, description2) -> {
+            //LOGGER.info("Adding swap from " + description + " to " + description2 + " to swap map");
+
+
+            Class<?> foundClass = findClass(description);
+            if (foundClass == null) {
+                LOGGER.warning("Could not find " + description.packageName() + "." + description.className() + " via reflection");
+                return;
+            }
+
+            SWAP_MAP.put(ClassType.from(foundClass), new ClassSwap(from(description2)));
+        });
     }
 
-    public static void register(Type from, Type to) {
+    private static MutableClassType from(SwapMap.Description description) {
+        if (description == null) {
+            return null;
+        }
+        MutableClassType mutableClassType = MutableClassType.create(description.className(), description.packageName());
+        if (description.declaringClass() != null) {
+            mutableClassType.setDeclaringClass(CapturedParameterizedType.from(from(description.declaringClass())));
+        }
+        return mutableClassType;
+    }
+
+    private static Class<?> findClass(SwapMap.Description description) {
+        // Initialisierung der Reflections-Bibliothek
+
+        List<ClassLoader> classLoadersList = new LinkedList<>();
+        classLoadersList.add(ClasspathHelper.contextClassLoader());
+        classLoadersList.add(ClasspathHelper.staticClassLoader());
+
+        FilterBuilder filterBuilder = new FilterBuilder();
+        filterBuilder.includePackage(description.packageName());
+
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setScanners(new SubTypesScanner(false /* don't exclude Object.class */), Scanners.Resources)
+                .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
+                .filterInputsBy(filterBuilder));
+
+        // Alle Klassen im Paket suchen
+        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
+        allClasses.addAll(reflections.getSubTypesOf(Record.class));
+        // Nach der gewünschten Klasse filtern
+        for (Class<?> clazz : allClasses) {
+            if (clazz.getSimpleName().equals(description.className())) {
+                return clazz;
+            }
+        }
+        return null;
+    }
+
+    public static void register(ClassType<?> from, ClassType<?> to) {
         if (from == null || to == null) {
             return;
         }
-        register(DynamicType.of(from, false), DynamicType.of(to, false), false);
+        ClassSwap classSwap = new ClassSwap(to);
+        SWAP_MAP.put(from, classSwap);
     }
 
-    public static void register(DynamicType from, DynamicType to, boolean allowsGenerics) {
-        if (SWAP_MAP.containsKey(from)) {
-            //LOGGER.warning("The type " + from.getClassDescription() + " already has a mapping");
-            return;
-        }
-        ClassSwap classSwap = new ClassSwap(to, allowsGenerics);
-        SWAP_MAP.put(from, classSwap);
-        //LOGGER.warning("Registered mapping from " + from.getClassDescription()+ " to " + to.getClassDescription());
+    public static void register(Class<?> from, ClassType<?> to) {
+        register(ClassType.from(from), to);
+    }
+
+    public static void register(ClassType<?> from, Class<?> to) {
+        register(from, ClassType.from(to));
+    }
+
+    public static void register(Class<?> from, Class<?> to) {
+        register(ClassType.from(from), ClassType.from(to));
     }
 
     static {
@@ -54,85 +115,50 @@ public class NMSMapper {
         // NMS to MCC
         register(GlobalPos.class, MCCLocation.class);
         register(ItemLike.class, MCCItemStack.class);
-        register(DataComponentType.class, MCCDataComponentType.class, true);
+        register(DataComponentType.class, MCCDataComponentType.class);
 
         // NMS to java
-        register(Void.class, new ClassDescription(void.class));
+        register(Void.class, ClassType.from(void.class));
         //register(NonNullList.class, List.class, true);
         //register(IntList.class, IntList.class, true);
     }
 
-/*    public static void useSwapCacheFromPlatform() {
-        for (ConversionService.ClassPair classPair : MCCPlatform.getInstance().getConversionService().getAllKnownClassPairs()) {
-            register(classPair.nativeType(), classPair.apiType());
-        }
-    }*/
-
     public static boolean isSwapped(Type type) {
-        return isSwapped(DynamicType.of(type, false));
+        return isSwapped(CapturedType.from(type));
     }
 
-    public static boolean isSwapped(DynamicType type) {
-        if (getSwap(type) != null)
-            return true;
-        for (DynamicType genericType : type.getGenericTypes()) {
-            if (isSwapped(genericType))
-                return true;
-        }
-        return false;
+    public static boolean isSwapped(CapturedType<?, ?> type) {
+        return swap(type) != null;
     }
 
-    @Nullable
-    public static DynamicType getSwap(Type type) {
-        DynamicType typeToCompare = DynamicType.of(type, false);
-        return getSwap(typeToCompare);
+    public record ClassSwap(ClassType<?> newType) {
+
     }
 
-    public static DynamicType getSwap(DynamicType type) {
-        DynamicType swappedType = null;
-
-        if (type.getRawType() != null) {
-            swappedType = type;
-            Class<?> swapClass = MCCPlatform.getInstance().getConversionService().wrapClassTypeOrNull(type.getRawType());
-            if (swapClass != null) {
-                swappedType = swappedType.withRawType(DynamicType.of(swapClass, false));
+    public static <T extends CapturedType<?, ?>> T swap(T typeToSwap) {
+        if (typeToSwap instanceof ClassType<?> classType) {
+            if (!SWAP_MAP.containsKey(classType)) {
+                return typeToSwap;
             }
-            else {
-                swappedType = null;
-            }
+            return (T) SWAP_MAP.get(classType).newType();
+        } else if (typeToSwap instanceof CapturedParameterizedType capturedParameterizedType) {
+            ClassType<?> swappedRawType = swap(capturedParameterizedType.getRawType());
+            return (T) CapturedParameterizedType.from(swappedRawType)
+                    .withOwner(swap(capturedParameterizedType.getOwner()))
+                    .withExplicitTypes(swap(capturedParameterizedType.getTypeArguments()), true);
+        } else if (typeToSwap instanceof CapturedTypeVariable capturedTypeVariable) {
+            return (T) CapturedTypeVariable.create(capturedTypeVariable.getName())
+                    .withUpperBounds(swap(capturedTypeVariable.getUpperBounds()), true);
+        } else if (typeToSwap instanceof CapturedWildcardType capturedWildcardType) {
+            return (T) CapturedWildcardType.create()
+                    .withUpperBounds(swap(capturedWildcardType.getUpperBounds()), true)
+                    .withLowerBounds(swap(capturedWildcardType.getLowerBounds()), true);
         }
 
-        if (swappedType == null) {
-            for (Map.Entry<DynamicType, ClassSwap> dynamicTypeClassSwapEntry : SWAP_MAP.entrySet()) {
-                DynamicType key = dynamicTypeClassSwapEntry.getKey();
-
-                if (key.compareWithoutGenerics(type)) {
-                    ClassSwap classSwap = dynamicTypeClassSwapEntry.getValue();
-
-                    // If we want to ignore generics we erase them and swap with the blank class
-/*                if (!classSwap.allowsGenerics()) {
-                    return classSwap.newType();
-                }*/
-                    swappedType = type;
-                    swappedType = swappedType.withRawType(classSwap.newType);
-
-                }
-            }
-        }
-
-        for (DynamicType genericType : type.getGenericTypes()) {
-            DynamicType swappedGeneric = getSwap(genericType);
-            if (swappedGeneric != null) {
-                if (swappedType == null)
-                    swappedType = type;
-                swappedType = swappedType.withSwappedGeneric(genericType, swappedGeneric);
-            }
-        }
-
-        return swappedType;
+        return typeToSwap;
     }
 
-    public record ClassSwap(DynamicType newType, boolean allowsGenerics) {
-
+    public static <T extends CapturedType<?, ?>> List<T> swap(List<T> listToSwap) {
+        return listToSwap.stream().map(NMSMapper::swap).toList();
     }
 }

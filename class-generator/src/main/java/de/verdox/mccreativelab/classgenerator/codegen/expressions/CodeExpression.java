@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.classgenerator.codegen.expressions;
 
 import de.verdox.mccreativelab.classgenerator.codegen.CodeLineBuilder;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.DynamicType;
+import de.verdox.mccreativelab.classgenerator.codegen.type.impl.CapturedType;
 
 public interface CodeExpression {
     void write(CodeLineBuilder codeLineBuilder);
@@ -14,11 +14,15 @@ public interface CodeExpression {
         return new ChainedExpression(this, new StringExpression(blankCode));
     }
 
-    default CodeExpression with(DynamicType dynamicType) {
+    default CodeExpression with(CapturedType<?,?> dynamicType) {
         return new ChainedExpression(this, codeLineBuilder -> codeLineBuilder.append(dynamicType));
     }
 
-    default CodeExpression with(DynamicType dynamicType, boolean insideGeneric) {
+    default CodeExpression withTypeToken(CapturedType<?,?> dynamicType) {
+        return new ChainedExpression(this, codeLineBuilder -> codeLineBuilder.appendTypeToken(dynamicType));
+    }
+
+    default CodeExpression with(CapturedType<?,?> dynamicType, boolean insideGeneric) {
         return new ChainedExpression(this, codeLineBuilder -> codeLineBuilder.append(dynamicType, insideGeneric));
     }
 

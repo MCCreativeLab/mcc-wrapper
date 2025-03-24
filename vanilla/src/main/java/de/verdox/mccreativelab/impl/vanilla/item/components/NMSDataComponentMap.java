@@ -1,6 +1,8 @@
 package de.verdox.mccreativelab.impl.vanilla.item.components;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
@@ -8,6 +10,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +20,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements MCCDataComponentMap {
+    public static final MCCConverter<DataComponentMap, NMSDataComponentMap> CONVERTER = converter(NMSDataComponentMap.class, DataComponentMap.class, NMSDataComponentMap::new, MCCHandle::getHandle);
+
     public NMSDataComponentMap(DataComponentMap handle) {
         super(handle);
     }
