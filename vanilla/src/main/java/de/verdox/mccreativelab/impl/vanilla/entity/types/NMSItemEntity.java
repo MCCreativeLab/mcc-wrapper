@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.entity.types;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -48,12 +49,14 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
     }
 
     @Override
+    @MCCReflective
     public short getHealth() {
         int health = readFieldFromHandle("health", new TypeToken<>() {});
         return (short) health;
     }
 
     @Override
+    @MCCReflective
     public void setHealth(short health) {
         writeFieldInHandle("health", (int) health);
     }
@@ -64,17 +67,20 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
     }
 
     @Override
+    @MCCReflective
     public void setAge(short age) {
         writeFieldInHandle("age", (int) age);
     }
 
     @Override
+    @MCCReflective
     public short getPickupDelay() {
         int pickupDelay = readFieldFromHandle("pickupDelay", new TypeToken<>() {});
         return (short) pickupDelay;
     }
 
     @Override
+    @MCCReflective
     public void setPickupDelay(short pickupDelay) {
         writeFieldInHandle("pickupDelay", (int) pickupDelay);
     }

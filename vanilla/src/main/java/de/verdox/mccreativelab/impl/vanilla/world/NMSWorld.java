@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.world;
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
@@ -50,6 +51,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
+    @MCCReflective
     public void breakBlockNaturally(@NotNull MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
         boolean result = false;
         BlockPos blockPos = new BlockPos(mccBlock.getLocation().blockX(), mccBlock.getLocation().blockY(), mccBlock.getLocation().blockZ());

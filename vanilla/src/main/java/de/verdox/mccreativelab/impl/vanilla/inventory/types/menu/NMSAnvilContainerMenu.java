@@ -45,6 +45,7 @@ public class NMSAnvilContainerMenu extends NMSContainerMenu<MCCBlockContainerSou
     }
 
     @Override
+    @MCCReflective
     public void setRepairCost(int cost) {
         readFieldFromHandle("cost", new TypeToken<DataSlot>() {}).set(cost);
     }
