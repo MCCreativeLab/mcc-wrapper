@@ -18,6 +18,6 @@ public class ServerEvents implements Listener {
                 event.getMaxPlayers()
         );
 
-        event.callEvent();
+        mccServerListPingEvent.callEvent();
     }
 }
