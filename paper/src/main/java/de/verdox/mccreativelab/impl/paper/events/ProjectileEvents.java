@@ -10,7 +10,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 public class ProjectileEvents implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ProjectileHitEvent event) {
         MCCProjectileHitEvent mccProjectileHitEvent = new MCCProjectileHitEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -23,7 +23,7 @@ public class ProjectileEvents implements Listener {
         if (mccProjectileHitEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ProjectileLaunchEvent event) {
         // TODO: duplicate: public MCCProjectileLaunchEvent(MCCEntity entity, boolean canceled, boolean cancelled){
         MCCProjectileLaunchEvent mccProjectileLaunchEvent = new MCCProjectileLaunchEvent(

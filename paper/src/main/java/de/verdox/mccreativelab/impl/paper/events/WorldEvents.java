@@ -12,7 +12,7 @@ import org.bukkit.event.world.*;
 public class WorldEvents implements Listener {
     // without MCCWorldEvent
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(WorldInitEvent event) {
         MCCWorldInitEvent mccWorldInitEvent = new MCCWorldInitEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld())
@@ -20,7 +20,7 @@ public class WorldEvents implements Listener {
         mccWorldInitEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(WorldLoadEvent event) {
         MCCWorldLoadEvent mccWorldLoadEvent = new MCCWorldLoadEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld())
@@ -28,7 +28,7 @@ public class WorldEvents implements Listener {
         mccWorldLoadEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(WorldSaveEvent event) {
         MCCWorldSaveEvent mccWorldSaveEvent = new MCCWorldSaveEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld())
@@ -36,7 +36,7 @@ public class WorldEvents implements Listener {
         mccWorldSaveEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(WorldUnloadEvent event) {
         MCCWorldUnloadEvent mccWorldUnloadEvent = new MCCWorldUnloadEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld()),

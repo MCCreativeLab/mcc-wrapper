@@ -12,7 +12,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 
 public class ItemEvents implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ItemDespawnEvent event) {
         MCCItemDespawnEvent mccItemDespawnEvent = new MCCItemDespawnEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -23,7 +23,7 @@ public class ItemEvents implements Listener {
         if (mccItemDespawnEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ItemMergeEvent event) {
         MCCItemMergeEvent mccItemMergeEvent = new MCCItemMergeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -34,7 +34,7 @@ public class ItemEvents implements Listener {
         if (mccItemMergeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ItemSpawnEvent event) {
         MCCItemSpawnEvent mccItemSpawnEvent = new MCCItemSpawnEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),

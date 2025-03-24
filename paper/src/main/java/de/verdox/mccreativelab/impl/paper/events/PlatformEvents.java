@@ -44,7 +44,7 @@ public class PlatformEvents implements Listener {
         pluginManager.registerEvents(new EntityEvents.EntityToggleEvents(), plugin);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(FluidLevelChangeEvent event) {
         MCCFluidLevelChangeEvent mccFluidLevelChangeEvent = new MCCFluidLevelChangeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -55,7 +55,7 @@ public class PlatformEvents implements Listener {
         if (mccFluidLevelChangeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(LeavesDecayEvent event) {
         MCCLeavesDecayEvent mccLeavesDecayEvent = new MCCLeavesDecayEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -65,7 +65,7 @@ public class PlatformEvents implements Listener {
         if (mccLeavesDecayEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(SculkBloomEvent event) {
         MCCSculkBloomEvent mccSculkBloomEvent = new MCCSculkBloomEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -76,7 +76,7 @@ public class PlatformEvents implements Listener {
         if (mccSculkBloomEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(AreaEffectCloudApplyEvent event) {
         MCCAreaEffectCloudApplyEvent mccAreaEffectCloudApplyEvent = new MCCAreaEffectCloudApplyEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -87,7 +87,7 @@ public class PlatformEvents implements Listener {
         if (mccAreaEffectCloudApplyEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ArrowBodyCountChangeEvent event) {
         MCCArrowBodyCountChangeEvent mccArrowBodyCountChangeEvent = new MCCArrowBodyCountChangeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -100,7 +100,7 @@ public class PlatformEvents implements Listener {
         if (mccArrowBodyCountChangeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BatToggleSleepEvent event) {
         MCCBatToggleSleepEvent mccBatToggleSleepEvent = new MCCBatToggleSleepEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -111,7 +111,7 @@ public class PlatformEvents implements Listener {
         if (mccBatToggleSleepEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ExpBottleEvent event) {
         MCCExpBottleEvent mccExpBottleEvent = new MCCExpBottleEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -126,7 +126,7 @@ public class PlatformEvents implements Listener {
         if (mccExpBottleEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ExplosionPrimeEvent event) {
         MCCExplosionPrimeEvent mccExplosionPrimeEvent = new MCCExplosionPrimeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -138,7 +138,7 @@ public class PlatformEvents implements Listener {
         if (mccExplosionPrimeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(FireworkExplodeEvent event) {
         MCCFireworkExplodeEvent mccFireworkExplodeEvent = new MCCFireworkExplodeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -148,7 +148,7 @@ public class PlatformEvents implements Listener {
         if (mccFireworkExplodeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(HorseJumpEvent event) {
         MCCHorseJumpEvent mccHorseJumpEvent = new MCCHorseJumpEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -159,7 +159,7 @@ public class PlatformEvents implements Listener {
         if (mccHorseJumpEvent.callEvent()) ReflectionUtils.writeFieldInClass(event, "cancelled", true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(PigZombieAngerEvent event) {
         MCCPigZombieAngerEvent mccPigZombieAngerEvent = new MCCPigZombieAngerEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -171,7 +171,7 @@ public class PlatformEvents implements Listener {
         if (mccPigZombieAngerEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(PlayerLeashEntityEvent event) {
         MCCPlayerLeashEntityEvent mccPlayerLeashEntityEvent = new MCCPlayerLeashEntityEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getLeashHolder()),
@@ -184,7 +184,7 @@ public class PlatformEvents implements Listener {
         if (mccPlayerLeashEntityEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(PotionSplashEvent event) {
         MCCPotionSplashEvent mccPotionSplashEvent = new MCCPotionSplashEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -199,7 +199,7 @@ public class PlatformEvents implements Listener {
         if (mccPotionSplashEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(SheepRegrowWoolEvent event) {
         MCCSheepRegrowWoolEvent mccSheepRegrowWoolEvent = new MCCSheepRegrowWoolEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -209,7 +209,7 @@ public class PlatformEvents implements Listener {
         if (mccSheepRegrowWoolEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(SlimeSplitEvent event) {
         MCCSlimeSplitEvent mccSlimeSplitEvent = new MCCSlimeSplitEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -220,7 +220,7 @@ public class PlatformEvents implements Listener {
         if (mccSlimeSplitEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(StriderTemperatureChangeEvent event) {
         MCCStriderTemperatureChangeEvent mccStriderTemperatureChangeEvent = new MCCStriderTemperatureChangeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
@@ -231,7 +231,7 @@ public class PlatformEvents implements Listener {
         if (mccStriderTemperatureChangeEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(HangingEvent event) {
         MCCHangingEvent mccHangingEvent = new MCCHangingEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getEntity())
@@ -240,7 +240,7 @@ public class PlatformEvents implements Listener {
         mccHangingEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(FurnaceExtractEvent event) {
         MCCFurnaceExtractEvent mccFurnaceExtractEvent = new MCCFurnaceExtractEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -253,7 +253,7 @@ public class PlatformEvents implements Listener {
         mccFurnaceExtractEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(WeatherEvent event) {
         MCCWeatherEvent mccWeatherEvent = new MCCWeatherEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld())
@@ -262,7 +262,7 @@ public class PlatformEvents implements Listener {
         mccWeatherEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(SpawnChangeEvent event) {
         MCCSpawnChangeEvent mccSpawnChangeEvent = new MCCSpawnChangeEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getWorld()),

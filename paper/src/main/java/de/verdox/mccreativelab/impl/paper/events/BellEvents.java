@@ -10,7 +10,7 @@ import org.bukkit.event.block.BellRingEvent;
 
 public class BellEvents implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BellResonateEvent event) {
         MCCBellResonateEvent mccBellResonateEvent = new MCCBellResonateEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -20,7 +20,7 @@ public class BellEvents implements Listener {
         mccBellResonateEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BellRingEvent event) {
         MCCBellRingEvent mccBellRingEvent = new MCCBellRingEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),

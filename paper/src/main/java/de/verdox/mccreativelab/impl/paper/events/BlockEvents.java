@@ -11,7 +11,7 @@ import org.bukkit.event.block.*;
 public class BlockEvents implements Listener {
     // without MCCBlockEvent, BlockPistonEvent
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockBreakEvent event) {
         MCCBlockBreakEvent mccBlockBreakEvent = new MCCBlockBreakEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -24,7 +24,7 @@ public class BlockEvents implements Listener {
         if (mccBlockBreakEvent.isCancelled()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockBurnEvent event) {
         MCCBlockBurnEvent mccBlockBurnEvent = new MCCBlockBurnEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -35,7 +35,7 @@ public class BlockEvents implements Listener {
         if (mccBlockBurnEvent.isCancelled()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockCanBuildEvent event) {
         MCCBlockCanBuildEvent mccBlockCanBuildEvent = new MCCBlockCanBuildEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -48,7 +48,7 @@ public class BlockEvents implements Listener {
         mccBlockCanBuildEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockExpEvent event) {
         MCCBlockExpEvent mccBlockExpEvent = new MCCBlockExpEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -58,7 +58,7 @@ public class BlockEvents implements Listener {
         mccBlockExpEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockFromToEvent event) {
         MCCBlockFromToEvent mccBlockFromToEvent = new MCCBlockFromToEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -70,7 +70,7 @@ public class BlockEvents implements Listener {
         if (mccBlockFromToEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(BlockPhysicsEvent event) {
         MCCBlockPhysicsEvent mccBlockPhysicsEvent = new MCCBlockPhysicsEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -84,7 +84,7 @@ public class BlockEvents implements Listener {
 
     public static class BlockPistonEvents implements Listener {
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void handle(BlockPistonExtendEvent event) {
             MCCBlockPistonExtendEvent mccBlockPistonExtendEvent = new MCCBlockPistonExtendEvent(
                     MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -97,7 +97,7 @@ public class BlockEvents implements Listener {
             if (mccBlockPistonExtendEvent.callEvent()) event.setCancelled(true);
         }
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void handle(BlockPistonRetractEvent event) {
             MCCBlockPistonRetractEvent mccBlockPistonRetractEvent = new MCCBlockPistonRetractEvent(
                     MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),
@@ -109,7 +109,7 @@ public class BlockEvents implements Listener {
             if (mccBlockPistonRetractEvent.callEvent()) event.setCancelled(true);
         }
 
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void handle(BlockRedstoneEvent event) {
             MCCBlockRedstoneEvent mccBlockRedstoneEvent = new MCCBlockRedstoneEvent(
                     MCCPlatform.getInstance().getConversionService().wrap(event.getBlock()),

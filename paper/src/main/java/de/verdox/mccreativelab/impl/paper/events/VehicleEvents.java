@@ -11,7 +11,7 @@ import org.bukkit.event.vehicle.*;
 public class VehicleEvents implements Listener {
     // without MCCVehicleEvent
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleBlockCollisionEvent event) {
         MCCVehicleCollisionEvent mccVehicleCollisionEvent = new MCCVehicleCollisionEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle())
@@ -20,7 +20,7 @@ public class VehicleEvents implements Listener {
         mccVehicleCollisionEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleCreateEvent event) {
         MCCVehicleCreateEvent mccVehicleCreateEvent = new MCCVehicleCreateEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -30,7 +30,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleCreateEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleDamageEvent event) {
         MCCVehicleDamageEvent mccVehicleDamageEvent = new MCCVehicleDamageEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -42,7 +42,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleDamageEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleDestroyEvent event) {
         MCCVehicleDestroyEvent mccVehicleDestroyEvent = new MCCVehicleDestroyEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -53,7 +53,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleDestroyEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleEnterEvent event) {
         MCCVehicleEnterEvent mccVehicleEnterEvent = new MCCVehicleEnterEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -64,7 +64,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleEnterEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleEntityCollisionEvent event) {
         MCCVehicleEntityCollisionEvent mccVehicleEntityCollisionEvent = new MCCVehicleEntityCollisionEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -77,7 +77,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleEntityCollisionEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleExitEvent event) {
         MCCVehicleExitEvent mccVehicleExitEvent = new MCCVehicleExitEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -89,7 +89,7 @@ public class VehicleEvents implements Listener {
         if (mccVehicleExitEvent.callEvent()) event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleMoveEvent event) {
         MCCVehicleMoveEvent mccVehicleMoveEvent = new MCCVehicleMoveEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle()),
@@ -100,7 +100,7 @@ public class VehicleEvents implements Listener {
         mccVehicleMoveEvent.callEvent();
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(VehicleUpdateEvent event) {
         MCCVehicleUpdateEvent mccVehicleUpdateEvent = new MCCVehicleUpdateEvent(
                 MCCPlatform.getInstance().getConversionService().wrap(event.getVehicle())

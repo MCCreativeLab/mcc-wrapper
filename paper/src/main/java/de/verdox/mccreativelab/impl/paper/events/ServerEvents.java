@@ -8,7 +8,7 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class ServerEvents implements Listener {
     // without MCCServerEvent
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void handle(ServerListPingEvent event) {
         MCCServerListPingEvent mccServerListPingEvent = new MCCServerListPingEvent(
                 event.getHostname(),
