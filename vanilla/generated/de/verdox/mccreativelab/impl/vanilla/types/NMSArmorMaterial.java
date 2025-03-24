@@ -1,27 +1,24 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import net.minecraft.resources.ResourceLocation;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Field;
-import java.lang.Integer;
-import java.util.function.Supplier;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.crafting.Ingredient;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSArmorMaterial;
-import java.util.List;
-import net.minecraft.world.item.ArmorMaterial;
+import de.verdox.mccreativelab.wrapper.types.MCCArmorMaterial;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
-import de.verdox.mccreativelab.wrapper.types.MCCArmorMaterial;
-import java.lang.String;
-import net.kyori.adventure.key.Key;
+import java.util.function.Supplier;
 
 public class NMSArmorMaterial extends MCCHandle<ArmorMaterial> implements MCCArmorMaterial  {
 

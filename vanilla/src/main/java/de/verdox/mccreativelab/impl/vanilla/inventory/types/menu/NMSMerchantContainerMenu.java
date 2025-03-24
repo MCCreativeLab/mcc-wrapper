@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCMerchantRecipe;
@@ -102,9 +103,10 @@ public class NMSMerchantContainerMenu extends NMSContainerMenu<MCCEntityContaine
     }
 
     @Override
+    @MCCReflective
     public int getSelectedRecipeIndex() {
         MerchantContainer merchantContainer = (MerchantContainer) readContainerDataFromField("tradeContainer");
-        return merchantContainer.selectionHint;
+        return readFieldFromHandle(merchantContainer, "selectionHint", new TypeToken<>() {}); // TODO: check if this returns "return merchantContainer.selectionHint;"
     }
 
     @Override

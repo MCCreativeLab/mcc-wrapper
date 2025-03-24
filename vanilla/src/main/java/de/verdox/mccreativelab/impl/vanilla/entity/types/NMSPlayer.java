@@ -26,13 +26,9 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket;
 import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import org.bukkit.inventory.MainHand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -66,25 +62,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityProperty<Long, MCCPlayer> getTimeProperty() {
-        return new MCCEntityProperty<>() {
-            @Override
-            public @Nullable Long get() {
-                return getServerPlayer().getPlayerTime();
-            }
-
-            @Override
-            public void set(@Nullable Long newValue) {
-                Objects.requireNonNull(newValue);
-                getServerPlayer().timeOffset = newValue;
-                getServerPlayer().relativeTime = false;
-            }
-
-            @Override
-            public void sync() {
-                getServerPlayer().timeOffset = 0;
-                getServerPlayer().relativeTime = false;
-            }
-        };
+        throw new OperationNotPossibleOnNMS(); // TODO: implement
     }
 
     @Override
@@ -99,24 +77,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty() {
-        return new MCCEntityProperty<>() {
-            @Override
-            public @Nullable MCCItemStack get() {
-                return MCCPlatform.getInstance().getConversionService().wrap(getServerPlayer().containerMenu.getCarried(), new TypeToken<>() {});
-            }
-
-            @Override
-            public void set(@Nullable MCCItemStack newValue) {
-                ItemStack stack = MCCPlatform.getInstance().getConversionService().unwrap(newValue, new TypeToken<>() {});
-                getServerPlayer().containerMenu.setCarried(stack);
-                getServerPlayer().containerMenu.broadcastCarriedItem();
-            }
-
-            @Override
-            public void sync() {
-
-            }
-        };
+        throw  new OperationNotPossibleOnNMS(); // TODO: implement
     }
 
     @Override
@@ -222,12 +183,13 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     }
 
     private String getLocale() {
-        final String locale = getServerPlayer().language;
+        final String locale = getServerPlayer().clientInformation().language();
         return locale != null ? locale : "en_us";
     }
 
-    private MainHand getMainHand() {
-        return this.getHandle().getMainArm() == HumanoidArm.LEFT ? MainHand.LEFT : MainHand.RIGHT;
+    // TODO: check if this casts correctly
+    private MCCClientOption.MainHand getMainHand() {
+        return this.getHandle().getMainArm() == HumanoidArm.LEFT ? MCCClientOption.MainHand.LEFT : MCCClientOption.MainHand.RIGHT;
     }
 
 
@@ -237,7 +199,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public net.kyori.adventure.pointer.Pointers pointers() {
-        var locale = Objects.requireNonNullElse(net.kyori.adventure.translation.Translator.parseLocale(getServerPlayer().language), java.util.Locale.US); // Paper
+        var locale = Objects.requireNonNullElse(net.kyori.adventure.translation.Translator.parseLocale(getServerPlayer().clientInformation().language()), java.util.Locale.US); // Paper
         if (this.adventurePointer == null) {
             this.adventurePointer = net.kyori.adventure.pointer.Pointers.builder()
                     .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)

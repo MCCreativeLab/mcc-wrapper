@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.block;
 
-import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
 
 /**
  *  Represents events with a source block and a destination block, currently

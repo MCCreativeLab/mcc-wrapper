@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.entity.ai;
 
-import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.NOT_SYNCED)
 public interface MCCMemoryModuleType<T> extends MCCWrapped {

@@ -48,9 +48,11 @@ public class NMSEffect extends MCCHandle<MobEffectInstance> implements MCCEffect
 
     @Override
     public @Nullable MCCEffect getHiddenEffect() {
-        if (handle.hiddenEffect == null) {
+        MobEffectInstance hiddenEffect = readFieldFromHandle("hiddenEffect", new TypeToken<>() {});
+
+        if (hiddenEffect == null) {
             return null;
         }
-        return new NMSEffect(handle.hiddenEffect);
+        return new NMSEffect(hiddenEffect);
     }
 }

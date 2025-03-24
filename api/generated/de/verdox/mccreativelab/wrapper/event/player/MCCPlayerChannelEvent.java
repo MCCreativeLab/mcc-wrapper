@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import java.lang.String;
 
 /**
  *  This event is called after a player registers or unregisters a new plugin

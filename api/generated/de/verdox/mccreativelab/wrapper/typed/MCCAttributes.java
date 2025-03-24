@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
 
 public class MCCAttributes  {

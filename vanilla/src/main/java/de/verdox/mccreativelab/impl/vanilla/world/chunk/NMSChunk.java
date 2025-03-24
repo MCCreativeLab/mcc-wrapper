@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.world.chunk;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -23,8 +24,9 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
+    @MCCReflective
     public boolean isLoaded() {
-        return handle.loaded;
+        return readFieldFromHandle("loaded", new TypeToken<Boolean>() {});
     }
 
     @Override
@@ -34,12 +36,12 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
 
     @Override
     public int getX() {
-        return handle.locX;
+        return handle.getPos().x;
     }
 
     @Override
     public int getZ() {
-        return handle.locZ;
+        return handle.getPos().z;
     }
 
     @Override

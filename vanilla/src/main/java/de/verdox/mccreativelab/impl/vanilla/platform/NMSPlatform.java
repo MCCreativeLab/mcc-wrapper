@@ -23,6 +23,7 @@ import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -37,7 +38,6 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
-import de.verdox.mccreativelab.wrapper.inventory.MCCMenuTypes;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
@@ -59,17 +59,13 @@ import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,7 +113,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEntityType.class, NMSEntityType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemStack.class, NMSItemStack.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemType.class, NMSItemType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
+        // TODO: is this correct? conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBiome.class, NMSBiome.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEffectType.class, NMSEffectType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEffect.class, NMSEffect.CONVERTER);
@@ -162,18 +158,21 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public int getPublicTick() {
-        return MinecraftServer.currentTick;
+        return getServer().getTickCount(); // TODO: check if this replaces return MinecraftServer.currentTick;
     }
 
     @Override
     public MCCServerProperties getServerProperties() {
-        DedicatedServer dedicatedServer = (DedicatedServer) MinecraftServer.getServer();
-        return new MCCServerProperties(dedicatedServer.getProperties().properties, () -> dedicatedServer.settings.forceSave());
+        DedicatedServer dedicatedServer = (DedicatedServer) getServer();
+        return new MCCServerProperties(
+                ReflectionUtils.readFieldFromClass(dedicatedServer.getProperties(), "properties", new TypeToken<>() {}),
+                () -> ReflectionUtils.readFieldFromClass(dedicatedServer, "settings", new TypeToken<DedicatedServerSettings>() {}).forceSave()
+        );
     }
 
     @Override
     public void shutdown() {
-        MinecraftServer.getServer().halt(false);
+        getServer().halt(false);
     }
 
     @Override
@@ -210,7 +209,7 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public @NotNull List<MCCWorld> getWorlds() {
         List<MCCWorld> worlds = new LinkedList<>();
-        MinecraftServer.getServer().getAllLevels().forEach(serverLevel -> {
+        getServer().getAllLevels().forEach(serverLevel -> {
             worlds.add(getConversionService().wrap(serverLevel, new TypeToken<>() {}));
         });
         return worlds;
@@ -218,12 +217,12 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @Nullable MCCPlayer getOnlinePlayer(@NotNull UUID uuid) {
-        return conversionService.wrap(MinecraftServer.getServer().getPlayerList().getPlayer(uuid));
+        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid));
     }
 
     @Override
     public @NotNull List<MCCPlayer> getOnlinePlayers() {
-        return MinecraftServer.getServer().getPlayerList().getPlayers().stream().map(serverPlayer -> getConversionService().wrap(serverPlayer, new TypeToken<MCCPlayer>() {})).toList();
+        return getServer().getPlayerList().getPlayers().stream().map(serverPlayer -> getConversionService().wrap(serverPlayer, new TypeToken<MCCPlayer>() {})).toList();
     }
 
     @Override
@@ -265,6 +264,10 @@ public class NMSPlatform implements MCCPlatform {
         shutdown();
     }
 
+    public MinecraftServer getServer() {
+        return null;
+    }
+
     private void registerMenuTypes() {
         conversionService.registerConverterForNewImplType(MCCAnvilContainerMenu.class, NMSAnvilContainerMenu.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBeaconContainerMenu.class, NMSBeaconContainerMenu.CONVERTER);
@@ -286,11 +289,11 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
     }
 
-    private void registerEntityClasses(){
+    private void registerEntityClasses() {
         conversionService.registerConverterForNewImplType(MCCEntity.class, NMSEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemEntity.class, NMSItemEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER);
+        // conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER); TODO
     }
 
     private void registerContainerTypes() {

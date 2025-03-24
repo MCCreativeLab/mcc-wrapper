@@ -1,16 +1,15 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSPoiType;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import java.util.Set;
-import net.minecraft.world.level.block.state.BlockState;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import com.google.common.reflect.TypeToken;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Set;
 
 public class NMSPoiType extends MCCHandle<PoiType> implements MCCPoiType  {
 

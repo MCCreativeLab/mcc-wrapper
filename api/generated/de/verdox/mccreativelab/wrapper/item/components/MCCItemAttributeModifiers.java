@@ -1,11 +1,11 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
-import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
+import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
+import de.verdox.mccreativelab.wrapper.registry.MCCReference;
+
+import java.util.List;
 
 public interface MCCItemAttributeModifiers extends MCCItemComponent  {
 

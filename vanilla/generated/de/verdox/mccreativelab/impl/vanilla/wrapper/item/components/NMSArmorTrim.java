@@ -1,21 +1,19 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.item.components.MCCArmorTrim;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Field;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSArmorTrim;
-import java.util.List;
-import net.minecraft.core.Holder;
 import de.verdox.mccreativelab.wrapper.types.MCCTrimMaterial;
-import net.minecraft.world.item.armortrim.ArmorTrim;
 import de.verdox.mccreativelab.wrapper.types.MCCTrimPattern;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.armortrim.ArmorTrim;
+import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimPattern;
+
+import java.lang.reflect.Field;
 
 public class NMSArmorTrim extends MCCHandle<ArmorTrim> implements MCCArmorTrim  {
 

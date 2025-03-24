@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.block;
 
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 
 /**
  *  Called when the fluid level of a block changes due to changes in adjacent

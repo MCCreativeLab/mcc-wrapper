@@ -1,8 +1,6 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
 import java.util.Map;
-import java.lang.String;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapDecorations;
 
 public interface MCCMapDecorations extends MCCItemComponent  {
 

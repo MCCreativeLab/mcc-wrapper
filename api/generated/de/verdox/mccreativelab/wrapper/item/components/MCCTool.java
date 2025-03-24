@@ -1,12 +1,10 @@
 package de.verdox.mccreativelab.wrapper.item.components;
 
-import java.lang.Float;
-import java.util.List;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import java.util.Optional;
-import java.lang.Boolean;
 import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
-import de.verdox.mccreativelab.wrapper.item.components.MCCTool;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface MCCTool extends MCCItemComponent  {
 

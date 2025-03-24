@@ -9,9 +9,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 

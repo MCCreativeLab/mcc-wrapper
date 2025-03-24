@@ -1,14 +1,10 @@
 package de.verdox.mccreativelab.wrapper.item;
 
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
 import net.kyori.adventure.text.Component;
-
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Represents a minecraft item stack

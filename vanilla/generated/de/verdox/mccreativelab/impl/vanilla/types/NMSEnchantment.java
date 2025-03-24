@@ -1,24 +1,23 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
-import net.minecraft.world.item.enchantment.Enchantment;
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import net.minecraft.core.HolderSet;
-import net.minecraft.world.item.Item;
-import net.minecraft.core.component.DataComponentMap;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
+import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
+import net.kyori.adventure.text.Component;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+
 import java.lang.reflect.Field;
 import java.util.List;
-import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
-import net.kyori.adventure.text.Component;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSEnchantment;
 import java.util.Optional;
-import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
-import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 
 public class NMSEnchantment extends MCCHandle<Enchantment> implements de.verdox.mccreativelab.wrapper.types.MCCEnchantment  {
 

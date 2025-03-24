@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.server;
 
-import java.net.InetAddress;
 import net.kyori.adventure.text.Component;
-import java.lang.String;
+
+import java.net.InetAddress;
 
 /**
  *  Called when a server list ping is coming in. Displayed players can be

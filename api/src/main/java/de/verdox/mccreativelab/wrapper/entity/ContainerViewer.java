@@ -1,9 +1,8 @@
 package de.verdox.mccreativelab.wrapper.entity;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainerCloseReason;
-import net.kyori.adventure.text.Component;
+import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
 import org.jetbrains.annotations.Nullable;
 
 /**

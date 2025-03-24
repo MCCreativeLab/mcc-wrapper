@@ -1,10 +1,8 @@
 package de.verdox.mccreativelab.wrapper.entity;
 
-import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunkSection;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 

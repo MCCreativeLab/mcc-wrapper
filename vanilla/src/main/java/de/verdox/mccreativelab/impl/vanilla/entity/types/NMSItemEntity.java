@@ -1,7 +1,9 @@
 package de.verdox.mccreativelab.impl.vanilla.entity.types;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -18,22 +20,22 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public UUID getOwner() {
-        return handle.target;
+        return readFieldFromHandle("target", new TypeToken<>() {});
     }
 
     @Override
     public void setOwner(UUID owner) {
-        handle.target = owner;
+        handle.setTarget(owner);
     }
 
     @Override
     public UUID getThrower() {
-        return handle.thrower;
+        return readFieldFromHandle("thrower", new TypeToken<>() {});
     }
 
     @Override
     public void setThrower(UUID thrower) {
-        handle.thrower = thrower;
+        writeFieldInHandle("thrower", thrower);
     }
 
     @Override
@@ -47,32 +49,39 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
     }
 
     @Override
+    @MCCReflective
     public short getHealth() {
-        return (short) handle.health;
+        int health = readFieldFromHandle("health", new TypeToken<>() {});
+        return (short) health;
     }
 
     @Override
+    @MCCReflective
     public void setHealth(short health) {
-        handle.health = health;
+        writeFieldInHandle("health", (int) health);
     }
 
     @Override
     public short getAge() {
-        return (short) handle.age;
+        return (short) handle.getAge();
     }
 
     @Override
+    @MCCReflective
     public void setAge(short age) {
-        handle.age = age;
+        writeFieldInHandle("age", (int) age);
     }
 
     @Override
+    @MCCReflective
     public short getPickupDelay() {
-        return (short) handle.pickupDelay;
+        int pickupDelay = readFieldFromHandle("pickupDelay", new TypeToken<>() {});
+        return (short) pickupDelay;
     }
 
     @Override
+    @MCCReflective
     public void setPickupDelay(short pickupDelay) {
-        handle.pickupDelay = pickupDelay;
+        writeFieldInHandle("pickupDelay", (int) pickupDelay);
     }
 }

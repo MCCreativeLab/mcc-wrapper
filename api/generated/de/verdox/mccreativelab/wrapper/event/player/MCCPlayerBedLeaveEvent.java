@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
-import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 
 /**
  *  This event is fired when the player is leaving a bed.

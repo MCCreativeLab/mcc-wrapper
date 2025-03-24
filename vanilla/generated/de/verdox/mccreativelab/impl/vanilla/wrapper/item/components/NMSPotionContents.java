@@ -1,20 +1,18 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import net.minecraft.world.item.alchemy.PotionContents;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
+import de.verdox.mccreativelab.wrapper.item.components.MCCPotionContents;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSPotionContents;
-import java.util.Set;
-import net.minecraft.world.effect.MobEffectInstance;
-import de.verdox.mccreativelab.wrapper.item.components.MCCPotionContents;
-import com.google.common.reflect.TypeToken;
-import java.lang.Integer;
-import net.minecraft.world.item.alchemy.Potion;
-import java.util.List;
 import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+
+import java.util.List;
 import java.util.Optional;
 
 public class NMSPotionContents extends MCCHandle<PotionContents> implements MCCPotionContents  {

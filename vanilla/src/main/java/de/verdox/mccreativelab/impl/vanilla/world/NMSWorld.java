@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.world;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -11,26 +12,19 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.TempData;
-import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
-import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import org.bukkit.craftbukkit.block.CraftBlock;
-import org.bukkit.craftbukkit.entity.CraftItem;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import net.minecraft.world.level.storage.ServerLevelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,46 +44,12 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public String getName() {
-        return handle.serverLevelData.getLevelName();
+        return readFieldFromHandle("serverLevelData", new TypeToken<ServerLevelData>() {}).getLevelName();
     }
 
     @Override
-    public void breakBlockNaturally(@NotNull MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-        boolean result = false;
-        BlockPos blockPos = new BlockPos(mccBlock.getLocation().blockX(), mccBlock.getLocation().blockY(), mccBlock.getLocation().blockZ());
-        BlockState nmsBlockState = getHandle().getBlockState(blockPos);
-        if (!mccBlock.getBlockType().equals(MCCBlocks.AIR) && (tool == null || !mccBlock.getBlockState().requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(mccBlock.getBlockState()))) {
+    public void breakBlockNaturally(MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
 
-            mccBlock.dropBlockLoot(null, conversionService.unwrap(tool));
-            if (triggerEffect) {
-                if (mccBlock.getBlockType().equals(MCCBlocks.FIRE)) {
-                    getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.SOUND_EXTINGUISH_FIRE, blockPos, 0);
-                } else {
-                    //TODO Customize
-                    getHandle().levelEvent(net.minecraft.world.level.block.LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, net.minecraft.world.level.block.Block.getId(nmsBlockState));
-                }
-            }
-            if (dropExperience) {
-                //TODO
-                //block.popExperience(this.world.getMinecraftWorld(), this.position, block.getExpDrop(iblockdata, this.world.getMinecraftWorld(), this.position, nmsItem, true));
-            }
-
-            result = true;
-        }
-
-
-        boolean destroyed = getHandle().removeBlock(blockPos, false);
-        if (destroyed) {
-            nmsBlockState.getBlock().destroy(getHandle(), blockPos, nmsBlockState);
-        }
-        if (result) {
-            // special cases
-            if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.IceBlock iceBlock) {
-                iceBlock.afterDestroy(getHandle(), blockPos, conversionService.unwrap(tool));
-            } else if (nmsBlockState.getBlock() instanceof net.minecraft.world.level.block.TurtleEggBlock turtleEggBlock) {
-                turtleEggBlock.decreaseEggs(getHandle(), blockPos, nmsBlockState);
-            }
-        }
     }
 
     @Override
@@ -110,12 +70,12 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
         ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
-        entity.pickupDelay = 10;
+        entity.setPickUpDelay(10);
         MCCItemEntity mccEntity = conversionService.wrap(entity);
         if (dropCallback != null) {
             dropCallback.accept(mccEntity);
         }
-        getHandle().addFreshEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        getHandle().addFreshEntity(entity);
         return mccEntity;
     }
 
@@ -149,17 +109,17 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(int x, int z) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(x, z));
+        return null;
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(MCCLocation location) {
-        return conversionService.wrap(handle.getChunkIfLoadedImmediately(location.getChunkX(), location.getChunkZ()));
+        return null;
     }
 
     @Override
     public UUID getUUID() {
-        return handle.getLevel().uuid;
+        return null;
     }
 
     @Override
@@ -180,7 +140,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @NotNull Key key() {
-        return conversionService.wrap(handle.getTypeKey().location());
+        return conversionService.wrap(handle.dimension().location());
     }
 
     @Override

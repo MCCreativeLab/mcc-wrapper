@@ -1,7 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.platform.factory;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.impl.vanilla.registry.NMSRegistry;
 import de.verdox.mccreativelab.impl.vanilla.registry.NMSTag;
 import de.verdox.mccreativelab.impl.vanilla.registry.NMSTypedKey;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -10,7 +9,6 @@ import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

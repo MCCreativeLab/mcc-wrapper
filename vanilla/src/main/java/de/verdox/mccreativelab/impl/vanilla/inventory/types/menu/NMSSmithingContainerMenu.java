@@ -9,7 +9,6 @@ import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCSmithingContainer
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.SmithingMenu;
-import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 public class NMSSmithingContainerMenu extends NMSContainerMenu<MCCBlockContainerSource, SmithingMenu, MCCResultContainer> implements MCCSmithingContainerMenu {

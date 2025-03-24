@@ -1,19 +1,16 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCMapDecorations;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Set;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSMapDecorations;
-import com.google.common.reflect.TypeToken;
-import java.util.List;
 import net.minecraft.core.Holder;
-import java.util.Map;
-import net.minecraft.world.level.saveddata.maps.MapDecorationType;
-import java.lang.String;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapDecorations;
 import net.minecraft.world.item.component.MapDecorations;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+
+import java.util.Map;
 
 public class NMSMapDecorations extends MCCHandle<MapDecorations> implements MCCMapDecorations  {
 

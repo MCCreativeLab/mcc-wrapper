@@ -4,8 +4,6 @@ import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.craftbukkit.CraftRegistry;
 import org.junit.jupiter.api.BeforeAll;
 
 public class TestBase {

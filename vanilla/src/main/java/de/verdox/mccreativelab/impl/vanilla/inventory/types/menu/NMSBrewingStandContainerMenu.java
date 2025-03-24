@@ -1,13 +1,16 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCBlockContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCBrewingStandContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.BrewingStandMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 import org.jetbrains.annotations.Range;
 
@@ -41,14 +44,15 @@ public class NMSBrewingStandContainerMenu extends NMSContainerMenu<MCCBlockConta
     }
 
     @Override
+    @MCCReflective
     public void setRecipeBrewTime(@Range(from = 1, to = Integer.MAX_VALUE) int recipeBrewTime) {
         Preconditions.checkArgument(recipeBrewTime > 0, "recipeBrewTime must be positive");
-        this.getHandle().brewingStandData.set(2, recipeBrewTime);
+        readFieldFromHandle("brewingStandData", new TypeToken<ContainerData>() {}).set(2, recipeBrewTime);
     }
 
     @Override
     public int getRecipeBrewTime() {
-        return this.getHandle().brewingStandData.get(2);
+        return readFieldFromHandle("brewingStandData", new TypeToken<ContainerData>() {}).get(2);
     }
 
     @Override

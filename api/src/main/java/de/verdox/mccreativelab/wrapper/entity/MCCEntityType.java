@@ -1,11 +1,11 @@
 package de.verdox.mccreativelab.wrapper.entity;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
-import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.vserializer.generic.Serializer;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;

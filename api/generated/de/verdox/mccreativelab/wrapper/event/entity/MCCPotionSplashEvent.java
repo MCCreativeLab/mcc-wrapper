@@ -1,10 +1,10 @@
 package de.verdox.mccreativelab.wrapper.event.entity;
 
-import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
-import java.lang.Double;
-import java.util.Map;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockFace;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
+import java.util.Map;
 
 /**
  *  Called when a splash potion hits an area

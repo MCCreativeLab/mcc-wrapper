@@ -2,9 +2,7 @@ package de.verdox.mccreativelab.conversion.converter;
 
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class OptionalConverter implements MCCConverter<Optional, Optional> {
 

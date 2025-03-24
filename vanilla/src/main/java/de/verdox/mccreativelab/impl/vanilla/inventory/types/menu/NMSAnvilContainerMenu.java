@@ -1,14 +1,17 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSResultContainer;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCBlockContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCResultContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCAnvilContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.DataSlot;
 import org.jetbrains.annotations.Nullable;
 
 public class NMSAnvilContainerMenu extends NMSContainerMenu<MCCBlockContainerSource, AnvilMenu, MCCResultContainer> implements MCCAnvilContainerMenu {
@@ -19,28 +22,32 @@ public class NMSAnvilContainerMenu extends NMSContainerMenu<MCCBlockContainerSou
     }
 
     @Override
+    @MCCReflective
     public @Nullable String getTextFieldText() {
-        return getHandle().itemName;
+        return readFieldFromHandle("itemName", new TypeToken<>() {});
     }
 
     @Override
+    @MCCReflective
     public int getRepairItemCountCost() {
-        return getHandle().repairItemCountCost;
+        return readFieldFromHandle("repairItemCountCost", new TypeToken<>() {});
     }
 
     @Override
     public int getRepairCost() {
-        return getHandle().cost.get();
+        return getHandle().getCost();
     }
 
     @Override
+    @MCCReflective
     public void setRepairItemCountCost(int amount) {
-        getHandle().repairItemCountCost = amount;
+        writeFieldInHandle("repairItemCountCost", amount); // TODO: check if this does getHandle().repairItemCountCost = amount;
     }
 
     @Override
+    @MCCReflective
     public void setRepairCost(int cost) {
-        getHandle().cost.set(cost);
+        readFieldFromHandle("cost", new TypeToken<DataSlot>() {}).set(cost);
     }
 
     @Override

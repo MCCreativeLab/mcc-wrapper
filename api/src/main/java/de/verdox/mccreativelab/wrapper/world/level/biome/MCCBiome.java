@@ -1,9 +1,9 @@
 package de.verdox.mccreativelab.wrapper.world.level.biome;
 
 import de.verdox.mccreativelab.wrapper.MCCDataDriven;
-import de.verdox.mccreativelab.wrapper.world.MCCBlockPos;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.sounds.MCCMusic;
+import de.verdox.mccreativelab.wrapper.world.MCCBlockPos;
 import net.kyori.adventure.sound.Sound;
 
 import java.util.Optional;

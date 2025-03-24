@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.wrapper.platform;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -10,18 +9,14 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
-import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
-import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
 /**

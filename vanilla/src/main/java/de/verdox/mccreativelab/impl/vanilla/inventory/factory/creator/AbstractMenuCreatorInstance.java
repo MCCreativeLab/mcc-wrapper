@@ -33,7 +33,7 @@ public abstract class AbstractMenuCreatorInstance<F extends MCCContainerMenu<?, 
         try {
             return MCCPlatform.getInstance().getConversionService().wrap(serverPlayer.containerMenu);
         }
-        catch (Throwable e){
+        catch (Throwable e) {
             e.printStackTrace();
             return null;
         }

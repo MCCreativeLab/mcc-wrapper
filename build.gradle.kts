@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.7.3"
     id("xyz.jpenilla.run-paper") version "2.3.1" apply false // Adds runServer and runMojangMappedServer tasks for testing
+    id("fabric-loom") version "1.9-SNAPSHOT" apply false
 }
 
 repositories {

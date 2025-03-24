@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.event.player;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+
 import java.util.Set;
-import java.lang.String;
 
 /**
  *  This event is called whenever a player runs a command (by placing a slash

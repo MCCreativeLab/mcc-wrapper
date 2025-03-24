@@ -1,19 +1,16 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.item.components.MCCResolvableProfile;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import com.mojang.authlib.GameProfile;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
-import java.util.UUID;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSResolvableProfile;
-import java.util.List;
+import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCResolvableProfile;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.world.item.component.ResolvableProfile;
+
 import java.util.Optional;
-import java.lang.String;
+import java.util.UUID;
 
 public class NMSResolvableProfile extends MCCHandle<ResolvableProfile> implements MCCResolvableProfile  {
 

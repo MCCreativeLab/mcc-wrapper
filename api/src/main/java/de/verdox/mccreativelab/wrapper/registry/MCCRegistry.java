@@ -2,10 +2,8 @@ package de.verdox.mccreativelab.wrapper.registry;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import net.kyori.adventure.key.Key;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;

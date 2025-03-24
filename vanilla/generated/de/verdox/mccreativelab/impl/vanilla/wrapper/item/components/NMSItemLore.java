@@ -1,15 +1,14 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import net.minecraft.world.item.component.ItemLore;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import net.kyori.adventure.text.Component;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemLore;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSItemLore;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCItemLore;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import net.kyori.adventure.text.Component;
+import net.minecraft.world.item.component.ItemLore;
+
+import java.util.List;
 
 public class NMSItemLore extends MCCHandle<ItemLore> implements MCCItemLore  {
 

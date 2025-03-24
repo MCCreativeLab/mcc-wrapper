@@ -2,13 +2,13 @@ package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.MCCEnchantmentOffer;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCBlockContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCEnchantingTableContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.inventory.EnchantmentMenu;
-import org.bukkit.enchantments.EnchantmentOffer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +25,9 @@ public class NMSEnchantingTableContainerMenu extends NMSContainerMenu<MCCBlockCo
     }
 
     @Override
+    @MCCReflective
     public void setEnchantmentSeed(int seed) {
-        handle.setEnchantmentSeed(seed);
+        writeFieldInHandle("enchantmentSeed", seed); // TODO: Check if this is correct
     }
 
     @Override

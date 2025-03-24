@@ -1,23 +1,20 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSTrimMaterial;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import net.minecraft.world.item.Item;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import java.util.List;
-import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorMaterial;
+import de.verdox.mccreativelab.wrapper.types.MCCArmorMaterial;
 import de.verdox.mccreativelab.wrapper.types.MCCTrimMaterial;
 import net.kyori.adventure.text.Component;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.armortrim.TrimMaterial;
+
 import java.util.Map;
-import de.verdox.mccreativelab.wrapper.types.MCCArmorMaterial;
-import java.lang.String;
-import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 
 public class NMSTrimMaterial extends MCCHandle<TrimMaterial> implements MCCTrimMaterial  {
 

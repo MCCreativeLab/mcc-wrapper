@@ -1,17 +1,15 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCLodestoneTracker;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import net.minecraft.core.GlobalPos;
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSLodestoneTracker;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import net.minecraft.world.item.component.LodestoneTracker;
-import java.util.Set;
+
 import java.util.Optional;
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.item.components.MCCLodestoneTracker;
 
 public class NMSLodestoneTracker extends MCCHandle<LodestoneTracker> implements MCCLodestoneTracker  {
 

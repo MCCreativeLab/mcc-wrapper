@@ -13,11 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
 
     @Override
-    public void onLoad() {
-
-    }
-
-    @Override
     public void onEnable() {
         PaperPlatform platform = (PaperPlatform) MCCPlatform.getInstance();
         platform.enableListeners(this);

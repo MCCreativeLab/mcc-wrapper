@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
-import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -14,7 +13,9 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +63,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
         handle.stopRiding();
 
         if (!getLocation().world().equals(location.world())) {
-            Preconditions.checkState(!handle.generation, "Cannot teleport entity to an other world during world generation");
             CompletableFuture<MCCEntity> done = new CompletableFuture<>();
             handle.changeDimension(new DimensionTransition(conversionService.unwrap(location.world(), new TypeToken<>() {}), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
                 done.complete(this);
@@ -77,7 +77,7 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public MCCLocation getLocation() {
-        return new MCCLocation(conversionService.wrap(handle.level(), new TypeToken<>() {}), handle.position().x(), handle.position().y(), handle.position().z(), handle.getBukkitYaw(), handle.getXRot());
+        return new MCCLocation(conversionService.wrap(handle.level(), new TypeToken<>() {}), handle.position().x(), handle.position().y(), handle.position().z(), handle.getYRot(), handle.getXRot());
     }
 
     @Override
@@ -133,7 +133,7 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public boolean isInBubbleColumn() {
-        return handle.isInBubbleColumn();
+        return invokeMethodInHandle("isInBubbleColumn");
     }
 
     @Override
@@ -218,7 +218,9 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     @Override
     public boolean isTicking() {
-        return handle.isTicking();
+        return ((ServerChunkCache) getHandle().level().getChunkSource()).isPositionTicking(
+                ChunkPos.asLong(net.minecraft.util.Mth.floor(getHandle().getX()) >> 4, net.minecraft.util.Mth.floor(getHandle().getZ()) >> 4)
+        );
     }
 
     @Override

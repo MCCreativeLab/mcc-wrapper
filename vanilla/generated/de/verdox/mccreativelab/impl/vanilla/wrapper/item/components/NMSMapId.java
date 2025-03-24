@@ -1,13 +1,8 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSMapId;
-import java.util.Set;
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.item.components.MCCMapId;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.level.saveddata.maps.MapId;
 
 public class NMSMapId extends MCCHandle<MapId> implements MCCMapId  {

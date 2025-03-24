@@ -1,16 +1,13 @@
 package de.verdox.mccreativelab.impl.vanilla.wrapper.item.components;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.item.components.MCCBlockItemStateProperties;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSBlockItemStateProperties;
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import java.util.Map;
-import java.util.Set;
 import com.google.common.reflect.TypeToken;
-import java.lang.String;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.item.components.MCCBlockItemStateProperties;
+import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.world.item.component.BlockItemStateProperties;
+
+import java.util.Map;
 
 public class NMSBlockItemStateProperties extends MCCHandle<BlockItemStateProperties> implements MCCBlockItemStateProperties  {
 

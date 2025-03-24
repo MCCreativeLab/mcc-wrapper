@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.conversion;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
 

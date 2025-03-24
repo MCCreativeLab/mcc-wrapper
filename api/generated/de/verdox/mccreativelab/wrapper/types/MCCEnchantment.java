@@ -1,13 +1,13 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
-import net.kyori.adventure.text.Component;
-import java.util.Optional;
-import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
-import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
+import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
+import net.kyori.adventure.text.Component;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface MCCEnchantment extends MCCWrapped  {
 

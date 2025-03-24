@@ -1,28 +1,6 @@
 package de.verdox.mccreativelab.conversion;
 
 import de.verdox.mccreativelab.TestBase;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
-import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
-import de.verdox.mccreativelab.impl.vanilla.platform.converter.ResourceLocationConverter;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import net.kyori.adventure.key.Key;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.StonecutterBlock;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 public class OldConverterTests extends TestBase {
 /*

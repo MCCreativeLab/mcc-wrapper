@@ -1,8 +1,9 @@
 package de.verdox.mccreativelab.wrapper.types;
 
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import java.util.Set;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
+
+import java.util.Set;
 
 public interface MCCPoiType extends MCCWrapped  {
 

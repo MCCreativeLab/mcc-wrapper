@@ -1,38 +1,14 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
-import de.verdox.mccreativelab.wrapper.item.components.MCCFoodProperties;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.item.components.MCCCustomModelData;
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapId;
-import java.lang.Integer;
-import de.verdox.mccreativelab.wrapper.item.components.MCCTool;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapItemColor;
-import de.verdox.mccreativelab.wrapper.item.components.MCCRarity;
-import de.verdox.mccreativelab.wrapper.item.components.MCCLockCode;
-import de.verdox.mccreativelab.wrapper.item.components.MCCSeededContainerLoot;
-import net.kyori.adventure.text.Component;
-import java.lang.Boolean;
-import de.verdox.mccreativelab.wrapper.item.components.MCCFireworkExplosion;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDyedItemColor;
-import de.verdox.mccreativelab.wrapper.item.components.MCCBlockItemStateProperties;
-import de.verdox.mccreativelab.wrapper.item.components.MCCSuspiciousStewEffects;
-import de.verdox.mccreativelab.wrapper.item.components.MCCResolvableProfile;
-import de.verdox.mccreativelab.wrapper.item.components.MCCJukeboxPlayable;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
+import de.verdox.mccreativelab.wrapper.item.components.*;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.item.components.MCCArmorTrim;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemAttributeModifiers;
 import de.verdox.mccreativelab.wrapper.types.MCCInstrument;
-import de.verdox.mccreativelab.wrapper.item.components.MCCItemLore;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDyeColor;
-import de.verdox.mccreativelab.wrapper.item.components.MCCPotionContents;
-import de.verdox.mccreativelab.wrapper.item.components.MCCLodestoneTracker;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapPostProcessing;
-import java.util.List;
-import de.verdox.mccreativelab.wrapper.item.components.MCCUnbreakable;
-import de.verdox.mccreativelab.wrapper.item.components.MCCMapDecorations;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+
+import java.util.List;
 
 public class MCCDataComponentTypes  {
 

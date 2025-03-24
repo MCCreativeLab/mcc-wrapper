@@ -3,27 +3,28 @@ package de.verdox.mccreativelab.impl.vanilla.registry;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import net.kyori.adventure.key.Key;
-import net.minecraft.core.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderOwner;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.crafting.RecipeManager;
-import org.bukkit.craftbukkit.CraftServer;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -35,7 +36,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     private boolean frozen;
 
     public NMSRegistryStorage() {
-        this(() -> MinecraftServer.getServer().registries().compositeAccess(), () -> MinecraftServer.getServer().reloadableRegistries().get());
+        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().get());
     }
 
     @VisibleForTesting

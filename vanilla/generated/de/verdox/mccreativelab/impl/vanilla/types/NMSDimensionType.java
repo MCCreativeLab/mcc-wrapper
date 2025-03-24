@@ -1,22 +1,20 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
-import net.minecraft.resources.ResourceLocation;
+import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
-import java.util.Set;
-import net.minecraft.world.level.dimension.DimensionType;
-import com.google.common.reflect.TypeToken;
-import net.minecraft.tags.TagKey;
-import java.util.OptionalLong;
-import java.util.List;
-import net.minecraft.util.valueproviders.IntProvider;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import net.minecraft.world.level.block.Block;
 import de.verdox.mccreativelab.wrapper.types.MCCDimensionType;
-import de.verdox.mccreativelab.impl.vanilla.types.NMSDimensionType;
 import net.kyori.adventure.key.Key;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.dimension.DimensionType;
+
+import java.util.OptionalLong;
 
 public class NMSDimensionType extends MCCHandle<DimensionType> implements MCCDimensionType  {
 
