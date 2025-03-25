@@ -5,42 +5,35 @@ import de.verdox.mccreativelab.wrapper.event.entity.MCCItemMergeEvent;
 import de.verdox.mccreativelab.wrapper.event.entity.MCCItemSpawnEvent;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 
-public class ItemEvents implements Listener {
+public class ItemEvents extends EventBase {
 
     @EventHandler(ignoreCancelled = true)
     public void handle(ItemDespawnEvent event) {
-        MCCItemDespawnEvent mccItemDespawnEvent = new MCCItemDespawnEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+        callEvent(event, new MCCItemDespawnEvent(
+                wrap(event.getEntity()),
                 event.isCancelled(),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getLocation())
-        );
-
-        if (mccItemDespawnEvent.callEvent()) event.setCancelled(true);
+                wrap(event.getLocation())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(ItemMergeEvent event) {
-        MCCItemMergeEvent mccItemMergeEvent = new MCCItemMergeEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+        callEvent(event, new MCCItemMergeEvent(
+                wrap(event.getEntity()),
                 event.isCancelled(),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getTarget())
-        );
-
-        if (mccItemMergeEvent.callEvent()) event.setCancelled(true);
+                wrap(event.getTarget())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(ItemSpawnEvent event) {
-        MCCItemSpawnEvent mccItemSpawnEvent = new MCCItemSpawnEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity()),
+        callEvent(event, new MCCItemSpawnEvent(
+                wrap(event.getEntity()),
                 event.isCancelled()
-        );
-
-        if (mccItemSpawnEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 }

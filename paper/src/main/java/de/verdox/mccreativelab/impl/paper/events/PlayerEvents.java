@@ -3,259 +3,210 @@ package de.verdox.mccreativelab.impl.paper.events;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.event.player.*;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
 import java.util.Set;
 
-public class PlayerEvents implements Listener {
-
-    // Without MCCPlayerEvent
+public class PlayerEvents extends EventBase {
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerAttemptPickupItemEvent event) {
-        MCCPlayerAttemptPickupItemEvent mccPlayerAttemptPickupItemEvent = new MCCPlayerAttemptPickupItemEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getItem()),
+        callEvent(event, new MCCPlayerAttemptPickupItemEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getItem()),
                 event.getRemaining(),
                 event.getFlyAtPlayer(),
                 event.isCancelled()
-        );
-
-        if (mccPlayerAttemptPickupItemEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerBedLeaveEvent event) {
-        MCCPlayerBedLeaveEvent mccPlayerBedLeaveEvent = new MCCPlayerBedLeaveEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getBed()),
+        callEvent(event, new MCCPlayerBedLeaveEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getBed()),
                 ReflectionUtils.readFieldFromClass(event, "setBedSpawn", new TypeToken<>() {}),
                 event.isCancelled()
-        );
-
-        if (mccPlayerBedLeaveEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerChangedWorldEvent event) {
-        MCCPlayerChangedWorldEvent mccPlayerChangedWorldEvent = new MCCPlayerChangedWorldEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getFrom())
-        );
-
-        mccPlayerChangedWorldEvent.callEvent();
+        callEvent(event, new MCCPlayerChangedWorldEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getFrom())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerChannelEvent event) {
-        MCCPlayerChannelEvent mccPlayerChannelEvent = new MCCPlayerChannelEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerChannelEvent(
+                wrap(event.getPlayer()),
                 event.getChannel()
-        );
-
-        mccPlayerChannelEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerCommandPreprocessEvent event) {
-        MCCPlayerCommandPreprocessEvent mccPlayerCommandPreprocessEvent = new MCCPlayerCommandPreprocessEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerCommandPreprocessEvent(
+                wrap(event.getPlayer()),
                 event.isCancelled(),
                 event.getMessage(),
-                MCCPlatform.getInstance().getConversionService().wrap(ReflectionUtils.readFieldFromClass(event, "recipients", new TypeToken<Set<Player>>() {}))
-        );
-
-        if (mccPlayerCommandPreprocessEvent.callEvent()) event.setCancelled(true);
+                wrap(ReflectionUtils.readFieldFromClass(event, "recipients", new TypeToken<Set<Player>>() {}))
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerCommandSendEvent event) {
-        MCCPlayerCommandSendEvent mccPlayerCommandSendEvent = new MCCPlayerCommandSendEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerCommandSendEvent(
+                wrap(event.getPlayer()),
                 event.getCommands()
-        );
-
-        mccPlayerCommandSendEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerDropItemEvent event) {
-        MCCPlayerDropItemEvent mccPlayerDropItemEvent = new MCCPlayerDropItemEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getItemDrop()),
+        callEvent(event, new MCCPlayerDropItemEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getItemDrop()),
                 event.isCancelled()
-        );
-
-        if (mccPlayerDropItemEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerEggThrowEvent event) {
-        MCCPlayerEggThrowEvent mccPlayerEggThrowEvent = new MCCPlayerEggThrowEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEgg()),
+        callEvent(event, new MCCPlayerEggThrowEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getEgg()),
                 event.isHatching(),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getHatchingType()),
+                wrap(event.getHatchingType()),
                 event.getNumHatches()
-        );
-
-        mccPlayerEggThrowEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerExpChangeEvent event) {
-        MCCPlayerExpChangeEvent mccPlayerExpChangeEvent = new MCCPlayerExpChangeEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getSource()),
+        callEvent(event, new MCCPlayerExpChangeEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getSource()),
                 event.getAmount()
-        );
-
-        mccPlayerExpChangeEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerHideEntityEvent event) {
-        MCCPlayerHideEntityEvent mccPlayerHideEntityEvent = new MCCPlayerHideEntityEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity())
-        );
-
-        mccPlayerHideEntityEvent.callEvent();
+        callEvent(event, new MCCPlayerHideEntityEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getEntity())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerInteractEntityEvent event) {
-        MCCPlayerInteractEntityEvent mccPlayerInteractAtEntityEvent = new MCCPlayerInteractEntityEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getRightClicked()),
+        callEvent(event, new MCCPlayerInteractEntityEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getRightClicked()),
                 event.isCancelled(),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getHand())
-        );
-
-        if (mccPlayerInteractAtEntityEvent.callEvent()) event.setCancelled(true);
+                wrap(event.getHand())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerItemHeldEvent event) {
-        MCCPlayerItemHeldEvent mccPlayerItemHeldEvent = new MCCPlayerItemHeldEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerItemHeldEvent(
+                wrap(event.getPlayer()),
                 event.isCancelled(),
                 event.getPreviousSlot(),
                 event.getNewSlot()
-        );
-
-        if (mccPlayerItemHeldEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerJoinEvent event) {
-        MCCPlayerJoinEvent mccPlayerJoinEvent = new MCCPlayerJoinEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerJoinEvent(
+                wrap(event.getPlayer()),
                 event.joinMessage()
-        );
-
-        mccPlayerJoinEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerLevelChangeEvent event) {
-        MCCPlayerLevelChangeEvent mccPlayerLevelChangeEvent = new MCCPlayerLevelChangeEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerLevelChangeEvent(
+                wrap(event.getPlayer()),
                 event.getOldLevel(),
                 event.getNewLevel()
-        );
-
-        mccPlayerLevelChangeEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerLocaleChangeEvent event) {
-        MCCPlayerLocaleChangeEvent mccPlayerLocaleChangeEvent = new MCCPlayerLocaleChangeEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerLocaleChangeEvent(
+                wrap(event.getPlayer()),
                 event.locale().toString(),
                 event.locale()
-
-        );
-
-        mccPlayerLocaleChangeEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerMoveEvent event) {
-        MCCPlayerMoveEvent mccPlayerMoveEvent = new MCCPlayerMoveEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerMoveEvent(
+                wrap(event.getPlayer()),
                 event.isCancelled(),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getFrom()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getTo())
-        );
-
-        if (mccPlayerMoveEvent.callEvent()) event.setCancelled(true);
+                wrap(event.getFrom()),
+                wrap(event.getTo())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerRegisterChannelEvent event) {
-        MCCPlayerRegisterChannelEvent mccPlayerRegisterChannelEvent = new MCCPlayerRegisterChannelEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerRegisterChannelEvent(
+                wrap(event.getPlayer()),
                 event.getChannel()
-        );
-
-        mccPlayerRegisterChannelEvent.callEvent();
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerShowEntityEvent event) {
-        MCCPlayerShowEntityEvent mccPlayerShowEntityEvent = new MCCPlayerShowEntityEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
-                MCCPlatform.getInstance().getConversionService().wrap(event.getEntity())
-        );
-
-        mccPlayerShowEntityEvent.callEvent();
+        callEvent(event, new MCCPlayerShowEntityEvent(
+                wrap(event.getPlayer()),
+                wrap(event.getEntity())
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerToggleFlightEvent event) {
-        MCCPlayerToggleFlightEvent mccPlayerToggleFlightEvent = new MCCPlayerToggleFlightEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerToggleFlightEvent(
+                wrap(event.getPlayer()),
                 event.isFlying(),
                 event.isCancelled()
-        );
-
-        if (mccPlayerToggleFlightEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerToggleSneakEvent event) {
-        MCCPlayerToggleSneakEvent mccPlayerToggleSneakEvent = new MCCPlayerToggleSneakEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerToggleSneakEvent(
+                wrap(event.getPlayer()),
                 event.isSneaking(),
                 event.isCancelled()
-        );
-
-        if (mccPlayerToggleSneakEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerToggleSprintEvent event) {
-        MCCPlayerToggleSprintEvent mccPlayerToggleSprintEvent = new MCCPlayerToggleSprintEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerToggleSprintEvent(
+                wrap(event.getPlayer()),
                 event.isSprinting(),
                 event.isCancelled()
-        );
-
-        if (mccPlayerToggleSprintEvent.callEvent()) event.setCancelled(true);
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerUnregisterChannelEvent event) {
-        MCCPlayerUnregisterChannelEvent mccPlayerUnregisterChannelEvent = new MCCPlayerUnregisterChannelEvent(
-                MCCPlatform.getInstance().getConversionService().wrap(event.getPlayer()),
+        callEvent(event, new MCCPlayerUnregisterChannelEvent(
+                wrap(event.getPlayer()),
                 event.getChannel()
-        );
-
-        mccPlayerUnregisterChannelEvent.callEvent();
+        ));
     }
 }
