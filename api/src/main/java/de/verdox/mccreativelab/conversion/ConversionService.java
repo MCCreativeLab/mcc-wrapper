@@ -57,6 +57,4 @@ public interface ConversionService {
     default <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
         return (F) unwrap(objectToUnwrap);
     }
-
-    SwapMap createSwapMap();
 }

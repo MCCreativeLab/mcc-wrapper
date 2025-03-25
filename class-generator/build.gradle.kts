@@ -49,12 +49,7 @@ dependencies {
 
     compileOnly("net.kyori:adventure-api:4.17.0")
     //implementation(project(":mcc-wrapper"))
-
-
-    compileOnly(
-        providers.gradleProperty("wrapper_group")
-            .get() + ":api:" + providers.gradleProperty("class_generator_upgrade_from").get()
-    )
+    implementation(project(":api"))
     /*    implementation(
             providers.gradleProperty("wrapper_group").get() + ":vanilla:" + providers.gradleProperty("class_generator_upgrade_from").get()
         )
