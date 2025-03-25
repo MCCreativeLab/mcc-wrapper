@@ -1,10 +1,7 @@
 package de.verdox.mccreativelab.classgenerator;
 
-import de.verdox.mccreativelab.classgenerator.codegen.ClassBuilder;
 import de.verdox.mccreativelab.classgenerator.codegen.type.impl.*;
 import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.ClassType;
-import de.verdox.mccreativelab.classgenerator.codegen.type.impl.clazz.MutableClassType;
-import de.verdox.mccreativelab.conversion.SwapMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
@@ -13,77 +10,16 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.ItemLike;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.logging.Logger;
 
 public class NMSMapper {
     public static final Logger LOGGER = Logger.getLogger(NMSMapper.class.getSimpleName());
-    private static final String swapCacheVersion = "1.21.1-R0.1-SNAPSHOT";
-    private static final SwapMap swapMap = SwapMap.loadFromFile(new File("../../versionSwapMaps/" + swapCacheVersion + "/swap_map.json"));
+
 
     private static final Map<ClassType<?>, ClassSwap> SWAP_MAP = new HashMap<>();
-
-    static {
-        swapMap.getNativeToApiClasses().forEach((description, description2) -> {
-            //LOGGER.info("Adding swap from " + description + " to " + description2 + " to swap map");
-
-
-            Class<?> foundClass = findClass(description);
-            if (foundClass == null) {
-                LOGGER.warning("Could not find " + description.packageName() + "." + description.className() + " via reflection");
-                return;
-            }
-
-            SWAP_MAP.put(ClassType.from(foundClass), new ClassSwap(from(description2)));
-        });
-    }
-
-    private static MutableClassType from(SwapMap.Description description) {
-        if (description == null) {
-            return null;
-        }
-        MutableClassType mutableClassType = MutableClassType.create(description.className(), description.packageName());
-        if (description.declaringClass() != null) {
-            mutableClassType.setDeclaringClass(CapturedParameterizedType.from(from(description.declaringClass())));
-        }
-        return mutableClassType;
-    }
-
-    private static Class<?> findClass(SwapMap.Description description) {
-        // Initialisierung der Reflections-Bibliothek
-
-        List<ClassLoader> classLoadersList = new LinkedList<>();
-        classLoadersList.add(ClasspathHelper.contextClassLoader());
-        classLoadersList.add(ClasspathHelper.staticClassLoader());
-
-        FilterBuilder filterBuilder = new FilterBuilder();
-        filterBuilder.includePackage(description.packageName());
-
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setScanners(new SubTypesScanner(false /* don't exclude Object.class */), Scanners.Resources)
-                .setUrls(ClasspathHelper.forClassLoader(classLoadersList.toArray(new ClassLoader[0])))
-                .filterInputsBy(filterBuilder));
-
-        // Alle Klassen im Paket suchen
-        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
-        allClasses.addAll(reflections.getSubTypesOf(Record.class));
-        // Nach der gewünschten Klasse filtern
-        for (Class<?> clazz : allClasses) {
-            if (clazz.getSimpleName().equals(description.className())) {
-                return clazz;
-            }
-        }
-        return null;
-    }
 
     public static void register(ClassType<?> from, ClassType<?> to) {
         if (from == null || to == null) {

@@ -116,12 +116,12 @@ public class ClassGenerator {
     public static void run() {
         LOGGER.info("Running class generator");
         try {
-            generateMCCItemComponentWrapper();
-            createItemComponentConverters();
             generateMenuTypesClass();
             generateTypedKeys();
+            //generateMCCItemComponentWrapper();
+            //createItemComponentConverters();
             //generateEventClasses();
-            MCCConverterGenerator.createGeneratedConvertersClass(VANILLA_GENERATION_DIR);
+            //MCCConverterGenerator.createGeneratedConvertersClass(VANILLA_GENERATION_DIR);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
