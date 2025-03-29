@@ -25,6 +25,7 @@ public interface MCCContainerMenu<T extends MCCContainerSource, C extends MCCCon
      *
      * @param component the new title of the inventory
      */
+    @MCCLogic
     void setTitle(Component component);
 
     /**
@@ -32,6 +33,7 @@ public interface MCCContainerMenu<T extends MCCContainerSource, C extends MCCCon
      *
      * @return the title
      */
+    @MCCLogic
     Component getTitle();
 
     /**
