@@ -18,6 +18,8 @@ import net.minecraft.world.inventory.AbstractFurnaceMenu;
 import net.minecraft.world.inventory.BlastFurnaceMenu;
 import net.minecraft.world.inventory.FurnaceMenu;
 import net.minecraft.world.inventory.SmokerMenu;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +39,7 @@ public abstract class NMSFurnaceContainerMenu<T extends AbstractFurnaceMenu> ext
     public boolean canSmelt(@Nullable MCCItemStack stack) {
         ServerLevel mainWorld = MCCPlatform.getInstance().getConversionService().unwrap(MCCPlatform.getInstance().getWorlds().get(0), new TypeToken<ServerLevel>() {});
         Container container = conversionService.unwrap(getContainer());
-        return stack != null && !stack.getType().isEmpty() && mainWorld.recipeAccess().getRecipeFor(((AbstractFurnaceBlockEntity) container).recipeType, new net.minecraft.world.item.crafting.SingleRecipeInput(MCCPlatform.getInstance().getConversionService().unwrap(stack, new TypeToken<>() {})), mainWorld).isPresent();
+        return stack != null && !stack.getType().isEmpty() && mainWorld.recipeAccess().getRecipeFor(getRecipeType(), new net.minecraft.world.item.crafting.SingleRecipeInput(MCCPlatform.getInstance().getConversionService().unwrap(stack, new TypeToken<>() {})), mainWorld).isPresent();
     }
 
     @Override
@@ -77,11 +79,18 @@ public abstract class NMSFurnaceContainerMenu<T extends AbstractFurnaceMenu> ext
         return conversionService.wrap(readContainerFromField("container"));
     }
 
+    protected abstract RecipeType<? extends AbstractCookingRecipe> getRecipeType();
+
     public static class Furnace extends NMSFurnaceContainerMenu<FurnaceMenu> {
         public static final MCCConverter<FurnaceMenu, Furnace> CONVERTER = converter(Furnace.class, FurnaceMenu.class, Furnace::new, MCCHandle::getHandle);
 
         public Furnace(FurnaceMenu furnaceMenu) {
             super(furnaceMenu);
+        }
+
+        @Override
+        protected RecipeType<? extends AbstractCookingRecipe> getRecipeType() {
+            return RecipeType.SMELTING;
         }
     }
 
@@ -91,6 +100,11 @@ public abstract class NMSFurnaceContainerMenu<T extends AbstractFurnaceMenu> ext
         public Smoker(SmokerMenu furnaceMenu) {
             super(furnaceMenu);
         }
+
+        @Override
+        protected RecipeType<? extends AbstractCookingRecipe> getRecipeType() {
+            return RecipeType.SMOKING;
+        }
     }
 
     public static class BlastFurnace extends NMSFurnaceContainerMenu<BlastFurnaceMenu> {
@@ -98,6 +112,11 @@ public abstract class NMSFurnaceContainerMenu<T extends AbstractFurnaceMenu> ext
 
         public BlastFurnace(BlastFurnaceMenu furnaceMenu) {
             super(furnaceMenu);
+        }
+
+        @Override
+        protected RecipeType<? extends AbstractCookingRecipe> getRecipeType() {
+            return RecipeType.BLASTING;
         }
     }
 }
