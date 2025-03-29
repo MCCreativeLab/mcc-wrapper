@@ -33,7 +33,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     private boolean frozen;
 
     public NMSRegistryStorage() {
-        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().get());
+        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().lookup());
     }
 
     @VisibleForTesting
