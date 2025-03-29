@@ -10,10 +10,7 @@ import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import net.kyori.adventure.key.Key;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderOwner;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +33,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     private boolean frozen;
 
     public NMSRegistryStorage() {
-        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().get());
+        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().lookup());
     }
 
     @VisibleForTesting
