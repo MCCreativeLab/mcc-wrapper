@@ -2,6 +2,8 @@ package de.verdox.mccreativelab.impl.vanilla.world.level.biome;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.sounds.MCCMusic;
@@ -60,9 +62,10 @@ public class NMSBiome extends MCCHandle<Biome> implements MCCBiome {
     }
 
     @Override
+    @MCCReflective
     public TemperatureModifier getTemperatureModifier() {
-        final Biome.TemperatureModifier temperatureModifier = getHandle().climateSettings.temperatureModifier();
-        return MCCBiome.TemperatureModifier.valueOf(temperatureModifier.name());
+        var climateSettings = ReflectionUtils.readFieldFromClass(getHandle(), "climateSettings", new TypeToken<>() {});
+        return MCCBiome.TemperatureModifier.valueOf(ReflectionUtils.readFieldFromClass(climateSettings, "temperatureModifier", new TypeToken<Biome.TemperatureModifier>() {}).name());
     }
 
     @Override
