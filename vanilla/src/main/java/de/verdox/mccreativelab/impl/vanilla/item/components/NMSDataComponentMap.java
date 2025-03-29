@@ -2,7 +2,6 @@ package de.verdox.mccreativelab.impl.vanilla.item.components;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
@@ -10,7 +9,6 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.TypedDataComponent;
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,26 +26,26 @@ public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements 
 
     @Override
     public <R, T extends MCCDataComponentType<R>> MCCDataComponentMap edit(T dataComponentType, Consumer<MCCDataComponentEditor<R, T>> editor) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
+        NMSDataComponentEditor<R,T> nmsItemComponentEditor = new NMSDataComponentEditor<>(handle, dataComponentType);
         editor.accept(nmsItemComponentEditor);
         return this;
     }
 
     @Override
     public <R, T extends MCCDataComponentType<R>> R editAndGet(T dataComponentType, Function<MCCDataComponentEditor<R, T>, R> editor) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
+        NMSDataComponentEditor<R,T> nmsItemComponentEditor = new NMSDataComponentEditor<>(handle, dataComponentType);
         return editor.apply(nmsItemComponentEditor);
     }
 
     @Override
     public <R, T extends MCCDataComponentType<R>> @Nullable R get(T dataComponentType) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
+        NMSDataComponentEditor<R,T> nmsItemComponentEditor = new NMSDataComponentEditor<>(handle, dataComponentType);
         return nmsItemComponentEditor.get();
     }
 
     @Override
     public <R, T extends MCCDataComponentType<R>> void set(T dataComponentType, @Nullable R value) {
-        NMSMCCDataComponentEditor<R,T> nmsItemComponentEditor = new NMSMCCDataComponentEditor<>(handle, dataComponentType);
+        NMSDataComponentEditor<R,T> nmsItemComponentEditor = new NMSDataComponentEditor<>(handle, dataComponentType);
         nmsItemComponentEditor.set(value);
     }
 

@@ -17,8 +17,7 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.container.NMSPlayerI
 import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
-import de.verdox.mccreativelab.impl.vanilla.item.components.NMSConsumeEffect;
-import de.verdox.mccreativelab.impl.vanilla.item.components.NMSDataComponentMap;
+import de.verdox.mccreativelab.impl.vanilla.item.components.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
@@ -47,8 +46,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.menu.*;
 import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
-import de.verdox.mccreativelab.wrapper.item.components.MCCConsumeEffect;
-import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
+import de.verdox.mccreativelab.wrapper.item.components.*;
 import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
@@ -170,6 +168,7 @@ public class NMSPlatform implements MCCPlatform {
         registerContainerTypes();
         registerEnumConverters();
         registerEntityClasses();
+        registerItemComponentConverters();
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
@@ -340,5 +339,28 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
         conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
         conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
+    }
+
+    private void registerItemComponentConverters() {
+        conversionService.registerConverterForNewImplType(MCCDyedItemColor.class, NMSDyedItemColor.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCTool.class, NMSTool.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCUnbreakable.class, NMSUnbreakable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCMapId.class, NMSMapId.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCRepairable.class, NMSRepairable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCCustomModelData.class, NMSCustomModelData.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCLodestoneTracker.class, NMSLodestoneTracker.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCTool.Rule.class, NMSTool.NMSRule.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCUseRemainder.class, NMSUseRemainder.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCJukeboxPlayable.class, NMSJukeboxPlayable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.class, NMSSuspiciousStewEffects.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEnchantable.class, NMSEnchantable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCMapItemColor.class, NMSMapItemColor.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCItemLore.class, NMSItemLore.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.Entry.class, NMSSuspiciousStewEffects.NMSEntry.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCUseCooldown.class, NMSUseCooldown.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockItemStateProperties.class, NMSBlockItemStateProperties.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDataComponentType.class, new DataComponentTypeConverter());
     }
 }
