@@ -87,8 +87,6 @@ public class MCCDataComponentTypes {
 
     //public static final MCCReference<MCCDataComponentType<MCCMapDecorations>> MAP_DECORATIONS = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "map_decorations"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCMapDecorations>>() {}).getAsReference();
 
-    public static final MCCReference<MCCDataComponentType<MCCMapPostProcessing>> MAP_POST_PROCESSING = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "map_post_processing"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCMapPostProcessing>>() {}).getAsReference();
-
     public static final MCCReference<MCCDataComponentType<MCCChargedProjectiles>> CHARGED_PROJECTILES = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "charged_projectiles"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCChargedProjectiles>>() {}).getAsReference();
 
     //public static final MCCReference<MCCDataComponentType<BundleContents>> BUNDLE_CONTENTS = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "bundle_contents"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<BundleContents>>() {}).getAsReference();
