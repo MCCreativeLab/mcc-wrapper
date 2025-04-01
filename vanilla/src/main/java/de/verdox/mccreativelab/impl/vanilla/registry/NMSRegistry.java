@@ -9,6 +9,7 @@ import net.kyori.adventure.key.Key;
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,12 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegistry<T> {
-    public static final MCCConverter<Registry, NMSRegistry> CONVERTER = converter(NMSRegistry.class, Registry.class, NMSRegistry::new, registry -> (Registry) registry.getHandle());
+    public static final MCCConverter<Registry, NMSRegistry> CONVERTER = converter(NMSRegistry.class, Registry.class, registry -> {
+        if(registry.equals(BuiltInRegistries.REGISTRY)) {
+            return new NMSRootRegistry(registry);
+        }
+        return new NMSRegistry(registry);
+    }, registry -> (Registry) registry.getHandle());
     private final ConversionService conversionService;
 
     public NMSRegistry(Registry<R> handle) {
