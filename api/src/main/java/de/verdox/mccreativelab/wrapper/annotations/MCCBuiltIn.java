@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.wrapper.annotations;
 
 /**
- * Specifies that this type of minecraft element is hard coded into the game.
+ * Indicates that this type of minecraft element is hard coded into the game.
  */
 public @interface MCCBuiltIn {
     /**
@@ -32,6 +32,8 @@ public @interface MCCBuiltIn {
         /**
          * Fully synced. This element is always sent to the player.
          * Elements do not automatically count as synced if the client knows them at the same time as the server, but they never exchange them (e.g. BlockSoundGroups).
+         * If elements are synced this means that we cannot add new elements to the server without creating an incompatibility between client and server.
+         * Thus, other strategies must be implemented to overcome this problem. These strategies differ based on the element.
          */
         SYNCED,
         /**
