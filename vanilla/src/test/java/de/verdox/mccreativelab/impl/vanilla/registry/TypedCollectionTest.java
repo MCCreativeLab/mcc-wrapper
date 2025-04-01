@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
@@ -17,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TypedCollectionTest extends TestBase {
+public class TypedCollectionTest extends NMSTestBase {
     private static final List<MCCReference<?>> collectedReferences = new LinkedList<>();
     private static final List<MCCTag<?>> collectedTags = new LinkedList<>();
     private static final List<MCCTypedKey<?>> collectedTypedKeys = new LinkedList<>();
@@ -109,6 +110,6 @@ public class TypedCollectionTest extends TestBase {
     @ParameterizedTest
     @MethodSource("provideTypedKeys")
     void testKeyGetAsReferenceNoThrows(MCCTypedKey<?> reference) {
-        Assertions.assertDoesNotThrow(reference::getAsReference);
+        Assertions.assertDoesNotThrow(reference::getAsReference, "An exception was thrown while testing for " + reference);
     }
 }

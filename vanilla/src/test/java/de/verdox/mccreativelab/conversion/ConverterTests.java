@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.conversion;
 
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ConverterTests extends TestBase {
+public class ConverterTests extends NMSTestBase {
 
     private record TestEntry<A, T extends A, F>(Class<A> apiType, @Nullable MCCConverter<F, T> converter, T implObject,
                                                 F nativeObject, boolean shouldRegister) {

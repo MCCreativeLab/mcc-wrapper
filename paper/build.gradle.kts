@@ -11,15 +11,15 @@ repositories {
 
 dependencies {
     implementation(project(":api"))
-    implementation(project(":vanilla"))
+    implementation(project(":vanilla", "default"))
     implementation("net.bytebuddy:byte-buddy:1.15.10")
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
-    testImplementation(project(":vanilla"))
-    testImplementation(project(":TestSuite"));
+    testImplementation(project(":vanilla", "default"))
+    testImplementation(project(":TestSuite"))
 }
 
 sourceSets {

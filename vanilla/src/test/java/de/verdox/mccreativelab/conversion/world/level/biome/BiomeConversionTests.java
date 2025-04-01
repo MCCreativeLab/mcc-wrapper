@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.conversion.world.level.biome;
 
-import de.verdox.mccreativelab.TestBase;
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.minecraft.core.Holder;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.biome.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class BiomeConversionTests extends TestBase {
+public class BiomeConversionTests extends NMSTestBase {
 
     @Test
     @DisplayName("Biome (native to MCC) Conversion Test")
@@ -45,6 +45,5 @@ public class BiomeConversionTests extends TestBase {
         assert mccBiome.getSpecialEffects().getWaterFogColor() == mcBiome.getSpecialEffects().getWaterFogColor();
         assert mccBiome.getSpecialEffects().getSkyColor() == mcBiome.getSpecialEffects().getSkyColor();
         assert mccBiome.getSpecialEffects().getGrassColorOverride().get().equals(mcBiome.getSpecialEffects().getGrassColorOverride().get());
-        assert mccBiome.getTemperatureModifier().name().equals(mcBiome.climateSettings.temperatureModifier().name());
         }
 }

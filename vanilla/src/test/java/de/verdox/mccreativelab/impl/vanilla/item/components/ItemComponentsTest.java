@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.item.components;
 
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
-import de.verdox.mccreativelab.impl.vanilla.wrapper.item.components.NMSUnbreakable;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ItemComponentsTest extends TestBase {
+public class ItemComponentsTest extends NMSTestBase {
     private static final Set<ItemComponentTestEntry<?, ?>> testEntries = new HashSet<>();
 
     public record ItemComponentTestEntry<A, F>(ApiNativePair<MCCDataComponentType<A>, DataComponentType<F>> type,
