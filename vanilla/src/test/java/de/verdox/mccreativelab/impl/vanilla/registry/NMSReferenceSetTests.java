@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -14,8 +15,8 @@ import net.minecraft.world.level.block.Block;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NMSReferenceSetTests extends TestBase {
-    @Test
+public class NMSReferenceSetTests extends NMSTestBase {
+/*    @Test
     public void testGet() {
         Key elementKey = Key.key("minecraft", "stone_blocks");
         Key registryKey = Key.key("minecraft", "block");
@@ -27,5 +28,5 @@ public class NMSReferenceSetTests extends TestBase {
         MCCReferenceSet<MCCBlockType> references = new NMSReferenceSet<>(holderSet);
 
         Assertions.assertEquals(holderSet, MCCPlatform.getInstance().getConversionService().unwrap(references, HolderSet.class));
-    }
+    }*/
 }

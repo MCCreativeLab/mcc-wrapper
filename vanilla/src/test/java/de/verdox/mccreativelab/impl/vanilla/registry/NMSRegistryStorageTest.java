@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Key;
@@ -17,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class NMSRegistryStorageTest extends TestBase {
+public class NMSRegistryStorageTest extends NMSTestBase {
     private static final Set<Key> REGISTRY_KEYS = new HashSet<>();
 
     @BeforeAll

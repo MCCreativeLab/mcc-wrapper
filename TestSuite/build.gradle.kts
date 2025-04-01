@@ -15,8 +15,6 @@ dependencies {
     runtimeOnly(platform("org.junit:junit-bom:5.10.0"))
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
     compileOnly(project(":api"))
-    compileOnly(project(":vanilla"))
-    compileOnly(project(":paper"))
 }
 
 tasks.test {

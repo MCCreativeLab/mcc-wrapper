@@ -1,12 +1,12 @@
 package de.verdox.mccreativelab;
 
-import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Key;
 import net.minecraft.world.flag.FeatureFlags;
-import org.junit.jupiter.api.BeforeAll;
 
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class TestBase {
     private static final Set<Key> EXCLUDED_REGISTRY_KEYS = Set.of(
@@ -15,11 +15,12 @@ public class TestBase {
             Key.key("minecraft", "advancement")
     );
 
-    @BeforeAll
-    public static void bootstrap() {
+    public static void bootstrap(Supplier<MCCPlatform> supplier) {
+        Objects.requireNonNull(supplier);
         if (!MCCPlatform.INSTANCE.isSetup()) {
             RegistryHelper.setup(FeatureFlags.REGISTRY.allFlags());
-            MCCPlatform.INSTANCE.setup(new PaperPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()), MCCPlatform::init);
+            //MCCPlatform mccPlatform = new PaperPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup());
+            MCCPlatform.INSTANCE.setup(supplier.get(), MCCPlatform::init);
             MCCPlatform.getInstance().getRegistryStorage().freezeCustomRegistries();
         }
     }

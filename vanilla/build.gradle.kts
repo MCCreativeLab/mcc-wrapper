@@ -23,7 +23,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
-    testImplementation(project(":paper"))
     testImplementation(project(":TestSuite"))
 }
 
@@ -42,6 +41,10 @@ tasks.test {
     archiveClassifier.set("") // Entfernt den "dev"-Classifier
 }*/
 
+artifacts {
+    add("default", tasks.jar)
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
@@ -50,6 +53,11 @@ publishing {
                 version = providers.gradleProperty("version").get() // Nur für die Veröffentlichung bereinigen
                 artifactId = "vanilla"
                 from(components["java"])
+
+
+                artifact(tasks.named("jar")) {
+                    classifier = "dev"
+                }
 
                 //artifact(tasks.named("reobfJar"))
                 licenses {

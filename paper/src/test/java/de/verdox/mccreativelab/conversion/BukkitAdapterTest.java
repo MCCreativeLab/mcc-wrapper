@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.conversion;
 
-import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
@@ -33,7 +32,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class BukkitAdapterTest extends TestBase {
+public class BukkitAdapterTest extends PaperTestBase {
 
     public record TestEntry<F, B, A>(F nativeObject, B expectedBukkitObject, Class<A> apiType) {
     }

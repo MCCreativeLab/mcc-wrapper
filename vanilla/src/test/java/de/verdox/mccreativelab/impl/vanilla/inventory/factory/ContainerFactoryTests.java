@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory;
 
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuTypes;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class ContainerFactoryTests extends TestBase {
+public class ContainerFactoryTests extends NMSTestBase {
     private static final Set<MCCMenuType<?>> menuTypes = new HashSet<>();
 
     @BeforeAll

@@ -1,14 +1,18 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.TestBase;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import de.verdox.mccreativelab.wrapper.inventory.MCCMenuTypes;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
+import de.verdox.mccreativelab.wrapper.typed.MCCPaintingVariants;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
+import de.verdox.mccreativelab.wrapper.types.MCCInstrument;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -18,6 +22,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -27,7 +32,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class NMSRegistriesTest extends TestBase {
+public class NMSRegistriesTest extends NMSTestBase {
 
     public record TestEntry<A, F>(Class<A> apiType, MCCTypedKey<MCCRegistry<A>> mccRegistry,
                                   ResourceKey<Registry<F>> nativeRegistryKey, MCCTypedKey<A> exampleElement) {
@@ -271,5 +276,15 @@ public class NMSRegistriesTest extends TestBase {
         Optional<Holder.Reference<F>> nativeOptionalHolder = nativeRegistry.get(MCCPlatform.getInstance().getConversionService().unwrap(testEntry.exampleElement(), new TypeToken<ResourceKey<F>>(){}));
 
         Assertions.assertEquals(nativeOptionalHolder, unwrappedActual);
+    }
+
+    @Test
+    public void testBuiltinRegistryAccess() {
+        Assertions.assertDoesNotThrow(() -> MCCRegistries.MENU_REGISTRY.getAsReference().get().getReference(MCCMenuTypes.ANVIL).get());
+    }
+
+    @Test
+    public void testDataDrivenRegistryAccess() {
+        Assertions.assertDoesNotThrow(() -> MCCRegistries.PAINTING_VARIANT_REGISTRY.getAsReference().get().getReference(MCCPaintingVariants.ALBAN).get());
     }
 }
