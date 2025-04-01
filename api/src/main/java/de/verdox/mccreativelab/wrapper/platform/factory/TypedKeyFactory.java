@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.wrapper.registry.MCCReferenceSet;
 import de.verdox.mccreativelab.wrapper.registry.MCCTag;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +16,16 @@ import java.util.stream.Collectors;
  * Used to create typed keys
  */
 public interface TypedKeyFactory {
+    @NotNull Key REGISTRY_OF_REGISTRIES = Key.key("minecraft", "root");
+
+    default <T> MCCTypedKey<T> getRegistryKey(String registryKey, TypeToken<T> type){
+        return getKey(Key.key("minecraft", registryKey), REGISTRY_OF_REGISTRIES, type);
+    }
+
+    default <T> MCCTypedKey<T> getRegistryKey(String registryKey){
+        return getKey(Key.key("minecraft", registryKey), REGISTRY_OF_REGISTRIES);
+    }
+
     /**
      * Creates a typed key for a specific type
      *
