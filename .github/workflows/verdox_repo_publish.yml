@@ -39,9 +39,3 @@ jobs:
 
       - name: Publish paper package
         run: ./gradlew paper:publish
-
-      - name: Run mcc-class-generator tests
-        run: ./gradlew mcc-class-generator:test
-
-      - name: Publish mcc-class-generator package
-        run: ./gradlew mcc-class-generator:publish
