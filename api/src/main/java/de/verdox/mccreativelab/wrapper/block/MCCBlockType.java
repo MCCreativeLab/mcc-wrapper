@@ -57,7 +57,7 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      */
     MCCBlockState getDefaultState();
 
-    default int getIndexOfState(MCCBlockState mccBlockState){
+    default int getIndexOfState(MCCBlockState mccBlockState) {
         return getAllBlockStates().indexOf(mccBlockState);
     }
 
@@ -121,7 +121,9 @@ public interface MCCBlockType extends MCCKeyedWrapper {
     // - Light Level
 
     @Override
-    default Key getRegistryKey(){
+    default Key getRegistryKey() {
         return MCCRegistries.BLOCK_REGISTRY.key();
     }
+
+    MCCBlockProperties getBlockProperties();
 }
