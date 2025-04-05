@@ -4,6 +4,11 @@ import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 public class NMSLifecycleTrigger implements MCCLifecycleTrigger {
+    private final NMSPlatform platform;
+
+    public NMSLifecycleTrigger(NMSPlatform platform) {
+        this.platform = platform;
+    }
 
     @Override
     public void bootstrap() {
@@ -23,6 +28,7 @@ public class NMSLifecycleTrigger implements MCCLifecycleTrigger {
 
     @Override
     public void onServerStartupComplete() {
+        platform.getResourcePackManager().buildPack();
         LOGGER.info("Platform startup complete");
     }
 }

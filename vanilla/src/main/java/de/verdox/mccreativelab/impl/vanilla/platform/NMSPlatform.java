@@ -4,13 +4,13 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
-import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSPlayer;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainer;
 import de.verdox.mccreativelab.impl.vanilla.inventory.factory.NMSContainerFactory;
 import de.verdox.mccreativelab.impl.vanilla.inventory.types.container.NMSPlayerInventory;
@@ -18,13 +18,15 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
+import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
+import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.types.*;
-import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
+import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
@@ -76,6 +78,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -87,6 +90,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
     private final boolean useGeneratedConverters;
+    private final ResourcePackManager resourcePackManager = new ResourcePackManager();
 
     public NMSPlatform(boolean useGeneratedConverters) {
         this.useGeneratedConverters = useGeneratedConverters;
@@ -94,7 +98,7 @@ public class NMSPlatform implements MCCPlatform {
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
-        this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.lifecycleTrigger = new NMSLifecycleTrigger(this);
     }
 
     public NMSPlatform() {
@@ -113,7 +117,7 @@ public class NMSPlatform implements MCCPlatform {
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
-        this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.useGeneratedConverters = true;
     }
 
@@ -172,6 +176,12 @@ public class NMSPlatform implements MCCPlatform {
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
+
+        try {
+            getResourcePackManager().init(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -225,8 +235,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @NotNull MCCTaskManager getTaskManager() {
-        //TODO
-        return null;
+        throw new OperationNotPossibleOnNMS();
     }
 
     @Override
@@ -362,5 +371,13 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCDataComponentType.class, new DataComponentTypeConverter());
+    }
+
+    public ResourcePackManager getResourcePackManager() {
+        return resourcePackManager;
+    }
+
+    public GeneratorPlatformHelper constructPackGeneratorHelper(CustomResourcePack customResourcePack) {
+        return new VanillaGeneratorHelper(customResourcePack);
     }
 }
