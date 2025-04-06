@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class PaperPlatform extends NMSPlatform {
@@ -71,7 +72,7 @@ public class PaperPlatform extends NMSPlatform {
 
     @Override
     public MinecraftServer getServer() {
-        return MinecraftServer.getServer();
+        return Objects.requireNonNull(MinecraftServer.getServer(), "The Minecraft server is not initialized at this point.");
     }
 
     public void enableListeners(JavaPlugin javaPlugin) {
