@@ -70,7 +70,22 @@ public class OpenRegistry<T> implements MCCCustomRegistry<T> {
 
     @Override
     public Optional<MCCReference<T>> getReference(Key key) {
-        return getTypedKey(registry.get(key)).map(MCCTypedKey::getAsReference);
+        T value = get(key);
+        if (value == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new MCCReference<T>() {
+            @Override
+            public Optional<MCCTypedKey<T>> unwrapKey() {
+                return getTypedKey(value);
+            }
+
+            @Override
+            public T get() {
+                return value;
+            }
+        });
     }
 
     @Override
