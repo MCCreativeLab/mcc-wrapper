@@ -62,6 +62,11 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     }
 
     @Override
+    public boolean deleteCustomMinecraftRegistry(Key key) {
+        return CUSTOM_REGISTRIES.remove(key) != null;
+    }
+
+    @Override
     @MCCReflective
     public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key) {
         if (frozen) {

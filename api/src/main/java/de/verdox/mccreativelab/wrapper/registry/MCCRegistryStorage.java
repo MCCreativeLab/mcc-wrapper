@@ -21,6 +21,13 @@ public interface MCCRegistryStorage {
     <T> MCCRegistry<T> getMinecraftRegistry(Key registryKey, TypeToken<T> type);
 
     /**
+     * Deletes a minecraft registry that was not created by mojang.
+     * @param key the registry key
+     * @return true when it was deleted
+     */
+    boolean deleteCustomMinecraftRegistry(Key key);
+
+    /**
      * Creates a new minecraft registry with a specified key
      * @return the new registry
      * @param <T> the generic type
