@@ -7,10 +7,7 @@ import com.mojang.serialization.Lifecycle;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
-import de.verdox.mccreativelab.wrapper.registry.OpenRegistry;
+import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,12 +15,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -100,12 +99,51 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
-        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
-        ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
         OpenRegistry<T> openRegistry = new OpenRegistry<>();
         CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
-        Holder<OpenRegistry<T>> holder = new OpenRegistryHolder<>(openRegistry, registryLocation, registryKey);
-        return MCCPlatform.getInstance().getConversionService().wrap(holder);
+
+        AtomicReference<MCCReference<OpenRegistry<T>>> reference = new AtomicReference<>();
+        AtomicReference<MCCTypedKey<OpenRegistry<T>>> typedKey = new AtomicReference<>();
+
+        typedKey.set(new MCCTypedKey<>() {
+            @Override
+            public @Nullable OpenRegistry<T> get() {
+                return openRegistry;
+            }
+
+            @Override
+            public Key getRegistryKey() {
+                return key;
+            }
+
+            @Override
+            public MCCReference<OpenRegistry<T>> getAsReference() {
+                return reference.get();
+            }
+
+            @Override
+            public Optional<MCCReference<OpenRegistry<T>>> getAsOptionalReference() {
+                return Optional.ofNullable(reference.get());
+            }
+
+            @Override
+            public @NotNull Key key() {
+                return key;
+            }
+        });
+
+        reference.set(new MCCReference<>() {
+            @Override
+            public Optional<MCCTypedKey<OpenRegistry<T>>> unwrapKey() {
+                return Optional.ofNullable(typedKey.get());
+            }
+
+            @Override
+            public OpenRegistry<T> get() {
+                return openRegistry;
+            }
+        });
+        return reference.get();
     }
 
     @Override
@@ -142,75 +180,6 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     public void freezeCustomRegistries() {
         frozen = true;
         CUSTOM_REGISTRIES.values().forEach(DelayedFreezingRegistry::delayedFreeze);
-    }
-
-    private record OpenRegistryHolder<T>(OpenRegistry<T> openRegistry,
-                                         ResourceLocation registryLocation,
-                                         ResourceKey<? extends Registry<T>> registryKey
-                                         ) implements Holder<OpenRegistry<T>> {
-
-        @Override
-        public OpenRegistry<T> value() {
-            return openRegistry;
-        }
-
-        @Override
-        public boolean isBound() {
-            return true;
-        }
-
-        @Override
-        public boolean is(ResourceLocation id) {
-            return registryLocation.equals(id);
-        }
-
-        @Override
-        public boolean is(ResourceKey<OpenRegistry<T>> key) {
-            return key.equals(registryKey);
-        }
-
-        @Override
-        public boolean is(Predicate<ResourceKey<OpenRegistry<T>>> predicate) {
-            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
-            return predicate.test(cast);
-        }
-
-        @Override
-        public boolean is(Holder<OpenRegistry<T>> entry) {
-            return openRegistry.equals(entry.value()) && entry.is(registryLocation);
-        }
-
-        @Override
-        public Kind kind() {
-            return Kind.REFERENCE;
-        }
-
-        @Override
-        public Either<ResourceKey<OpenRegistry<T>>, OpenRegistry<T>> unwrap() {
-            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
-            return Either.left(cast);
-        }
-
-        @Override
-        public Optional<ResourceKey<OpenRegistry<T>>> unwrapKey() {
-            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
-            return Optional.of(cast);
-        }
-
-        @Override
-        public boolean is(TagKey<OpenRegistry<T>> tag) {
-            return false;
-        }
-
-        @Override
-        public Stream<TagKey<OpenRegistry<T>>> tags() {
-            return Stream.empty();
-        }
-
-        @Override
-        public boolean canSerializeIn(HolderOwner<OpenRegistry<T>> owner) {
-            return true;
-        }
     }
 
     private record DelayedFreezingRegistryHolder<T>(DelayedFreezingRegistry<T> mappedRegistry,
