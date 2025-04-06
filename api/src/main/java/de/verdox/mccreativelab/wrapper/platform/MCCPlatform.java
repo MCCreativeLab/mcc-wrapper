@@ -170,4 +170,11 @@ public interface MCCPlatform {
             this.lifecycleFunction = lifecycleFunction;
         }
     }
+
+    /**
+     * Returns the game factory used to inject custom types into the platform
+     *
+     * @return the game factory
+     */
+    MCCGameFactory getGameFactory();
 }
