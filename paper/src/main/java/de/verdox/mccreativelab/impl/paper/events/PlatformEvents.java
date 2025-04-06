@@ -200,12 +200,13 @@ public class PlatformEvents extends EventBase {
         ));
     }
 
-    @EventHandler(ignoreCancelled = true)
+    //TODO Has no Handler -> Reference child events
+/*    @EventHandler(ignoreCancelled = true)
     public void handle(HangingEvent event) {
         callEvent(event, new MCCHangingEvent(
                 wrap(event.getEntity())
         ));
-    }
+    }*/
 
     @EventHandler(ignoreCancelled = true)
     public void handle(FurnaceExtractEvent event) {
@@ -218,12 +219,15 @@ public class PlatformEvents extends EventBase {
         ));
     }
 
+    //TODO Has no Handler -> Reference child events
+/*
     @EventHandler(ignoreCancelled = true)
     public void handle(WeatherEvent event) {
         callEvent(event, new MCCWeatherEvent(
                 wrap(event.getWorld())
         ));
     }
+*/
 
     @EventHandler(ignoreCancelled = true)
     public void handle(SpawnChangeEvent event) {

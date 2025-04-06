@@ -1,14 +1,13 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.registry.MCCReference;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
-import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
+import de.verdox.mccreativelab.wrapper.registry.*;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,18 +15,21 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class NMSRegistryStorage implements MCCRegistryStorage {
     private final Map<Key, DelayedFreezingRegistry<?>> CUSTOM_REGISTRIES = new HashMap<>();
+    private final Map<Key, OpenRegistry<?>> CUSTOM_OPEN_REGISTRIES = new HashMap<>();
     private final Supplier<RegistryAccess.Frozen> fullRegistryAccess;
     private final Supplier<RegistryAccess.Frozen> reloadableRegistries;
     private boolean frozen;
@@ -56,6 +58,16 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     }
 
     @Override
+    public <T> MCCRegistry<T> getMinecraftRegistry(Key registryKey, TypeToken<T> type) {
+        return getMinecraftRegistry(registryKey);
+    }
+
+    @Override
+    public boolean deleteCustomMinecraftRegistry(Key key) {
+        return CUSTOM_REGISTRIES.remove(key) != null;
+    }
+
+    @Override
     @MCCReflective
     public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key) {
         if (frozen) {
@@ -64,7 +76,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         if (key.namespace().equals("minecraft")) {
             throw new IllegalStateException("The minecraft namespace is reserved for minecraft registries only. Please use another namespace");
         }
-        if (CUSTOM_REGISTRIES.containsKey(key)) {
+        if (CUSTOM_REGISTRIES.containsKey(key) || CUSTOM_OPEN_REGISTRIES.containsKey(key)) {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
@@ -78,6 +90,67 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         return MCCPlatform.getInstance().getConversionService().wrap(holder);
     }
 
+    @Override
+    public <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key) {
+        if (key.namespace().equals("minecraft")) {
+            throw new IllegalStateException("The minecraft namespace is reserved for minecraft registries only. Please use another namespace");
+        }
+        if (CUSTOM_REGISTRIES.containsKey(key) || CUSTOM_OPEN_REGISTRIES.containsKey(key)) {
+            throw new IllegalStateException("A registry with the key " + key + " does already exist.");
+        }
+
+        OpenRegistry<T> openRegistry = new OpenRegistry<>();
+        CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
+
+        AtomicReference<MCCReference<OpenRegistry<T>>> reference = new AtomicReference<>();
+        AtomicReference<MCCTypedKey<OpenRegistry<T>>> typedKey = new AtomicReference<>();
+
+        typedKey.set(new MCCTypedKey<>() {
+            @Override
+            public @Nullable OpenRegistry<T> get() {
+                return openRegistry;
+            }
+
+            @Override
+            public Key getRegistryKey() {
+                return key;
+            }
+
+            @Override
+            public MCCReference<OpenRegistry<T>> getAsReference() {
+                return reference.get();
+            }
+
+            @Override
+            public Optional<MCCReference<OpenRegistry<T>>> getAsOptionalReference() {
+                return Optional.ofNullable(reference.get());
+            }
+
+            @Override
+            public @NotNull Key key() {
+                return key;
+            }
+        });
+
+        reference.set(new MCCReference<>() {
+            @Override
+            public Optional<MCCTypedKey<OpenRegistry<T>>> unwrapKey() {
+                return Optional.ofNullable(typedKey.get());
+            }
+
+            @Override
+            public OpenRegistry<T> get() {
+                return openRegistry;
+            }
+        });
+        return reference.get();
+    }
+
+    @Override
+    public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type) {
+        return createMinecraftRegistry(key);
+    }
+
     @Nullable
     private <T> MCCRegistry<T> searchForRegistry(Key registryKey) {
         if (registryKey.equals(Key.key("minecraft", "root"))) {
@@ -86,6 +159,10 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
 
         if (CUSTOM_REGISTRIES.containsKey(registryKey)) {
             return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
+        }
+
+        if (CUSTOM_OPEN_REGISTRIES.containsKey(registryKey)) {
+            return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey));
         }
 
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
