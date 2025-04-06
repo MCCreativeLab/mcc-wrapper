@@ -14,12 +14,12 @@ public class ConversionServiceImpl implements ConversionService {
     private final ConversionCache<MCCConverter<?, ?>> conversionCache = new ConversionCache<>();
 
     public ConversionServiceImpl() {
-        registerConverterForNewImplType(Optional.class, new OptionalConverter());
-        registerConverterForNewImplType(List.class, new CollectionConverter<>(ArrayList::new, List.class));
+        registerConverterForNewImplType(Optional.class, new OptionalConverter(this));
+        registerConverterForNewImplType(List.class, new CollectionConverter<>(this, ArrayList::new, List.class));
 
-        registerConverterForNewImplType(Set.class, new CollectionConverter<>(HashSet::new, Set.class));
-        registerConverterForNewImplType(Map.class, new MapConverter<>(HashMap::new, Map.class));
-        registerConverterForNewImplType(Map.Entry.class, new MapEntryConverter());
+        registerConverterForNewImplType(Set.class, new CollectionConverter<>(this, HashSet::new, Set.class));
+        registerConverterForNewImplType(Map.class, new MapConverter<>(this, HashMap::new, Map.class));
+        registerConverterForNewImplType(Map.Entry.class, new MapEntryConverter(this));
     }
 
     @Override
