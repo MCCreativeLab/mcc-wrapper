@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
@@ -56,6 +57,11 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     }
 
     @Override
+    public <T> MCCRegistry<T> getMinecraftRegistry(Key registryKey, TypeToken<T> type) {
+        return getMinecraftRegistry(registryKey);
+    }
+
+    @Override
     @MCCReflective
     public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key) {
         if (frozen) {
@@ -76,6 +82,11 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         Holder<DelayedFreezingRegistry<T>> holder = new DelayedFreezingRegistryHolder<>(mappedRegistry, registryLocation, registryKey);
 
         return MCCPlatform.getInstance().getConversionService().wrap(holder);
+    }
+
+    @Override
+    public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type) {
+        return createMinecraftRegistry(key);
     }
 
     @Nullable
