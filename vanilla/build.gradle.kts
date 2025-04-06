@@ -4,7 +4,6 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     maven("https://maven.parchmentmc.org")
 }
 
