@@ -21,6 +21,12 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
         platform = (PaperPlatform) MCCPlatform.getInstance();
         GeneratorPlatformHelper.INSTANCE.setup(platform.getResourcePackManager().getHelper(), platformHelper -> {
         });
+        try {
+            platform.getResourcePackManager().init(platform);
+            platform.getResourcePackManager().getResourcePack().initialize();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (platform.getResourcePackManager().getHelper() instanceof PaperGeneratorHelper helper) {
             helper.setJavaPlugin(this);
         }
