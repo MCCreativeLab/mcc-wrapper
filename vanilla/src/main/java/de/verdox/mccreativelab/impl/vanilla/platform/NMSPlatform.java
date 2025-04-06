@@ -103,7 +103,7 @@ public class NMSPlatform implements MCCPlatform {
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
-        this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.nmsGameFactory = constructGameFactory();
     }
 
@@ -123,7 +123,7 @@ public class NMSPlatform implements MCCPlatform {
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
-        this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.nmsGameFactory = constructGameFactory();
         this.useGeneratedConverters = true;
     }
