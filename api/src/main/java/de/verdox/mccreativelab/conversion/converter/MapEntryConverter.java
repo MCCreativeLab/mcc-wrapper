@@ -5,7 +5,14 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapEntryConverter implements MCCConverter<Map.Entry, Map.Entry> {
+/**
+ * Used to convert map entries. Same logic as {@link MapConverter}
+ */
+public class MapEntryConverter extends ContainerConverter<Map.Entry, Map.Entry> {
+    public MapEntryConverter(ConversionService conversionService) {
+        super(conversionService);
+    }
+
     @Override
     public ConversionResult<Map.Entry> wrap(Map.Entry nativeType) {
         Object wrappedKey = MCCPlatform.getInstance().getConversionService().wrap(nativeType.getKey());

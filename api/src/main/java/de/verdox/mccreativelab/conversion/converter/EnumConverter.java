@@ -1,5 +1,10 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+/**
+ * Used to convert between two enum types that share the same constants (same name)
+ * @param <F> the native type
+ * @param <A> the api type
+ */
 public class EnumConverter<F extends Enum<F>, A extends Enum<A>> implements MCCConverter<F, A> {
     private final Class<F> nativeEnum;
     private final Class<A> apiEnum;

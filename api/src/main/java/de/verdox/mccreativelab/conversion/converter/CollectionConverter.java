@@ -5,7 +5,12 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-public class CollectionConverter <C extends Collection, T extends C> implements MCCConverter<C, C> {
+/**
+ * A converter used for collections. The converter will try to iterate through the collection and apply its logic to every element of the collection. It will always create a new collection with a provided constructor method.
+ * @param <C> the generic collection type
+ * @param <T> the specific collection type
+ */
+public class CollectionConverter <C extends Collection, T extends C> extends ContainerConverter<C, C> {
     private final Supplier<T> constructor;
     private final Class<C> collectionType;
 

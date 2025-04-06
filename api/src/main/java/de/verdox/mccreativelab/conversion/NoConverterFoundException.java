@@ -1,5 +1,8 @@
 package de.verdox.mccreativelab.conversion;
 
+/**
+ * Is thrown when no converter was found
+ */
 public class NoConverterFoundException extends RuntimeException {
     public NoConverterFoundException() {
     }

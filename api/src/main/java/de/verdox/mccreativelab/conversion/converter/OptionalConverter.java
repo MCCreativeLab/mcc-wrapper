@@ -4,7 +4,13 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 import java.util.Optional;
 
-public class OptionalConverter implements MCCConverter<Optional, Optional> {
+/**
+ * Converts optionals. It unwraps an optional and tries to convert its value.
+ */
+public class OptionalConverter extends ContainerConverter<Optional, Optional> {
+    public OptionalConverter(ConversionService conversionService) {
+        super(conversionService);
+    }
 
     @Override
     public ConversionResult<Optional> wrap(Optional nativeType) {
