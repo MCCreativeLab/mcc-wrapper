@@ -4,10 +4,12 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.custom.MCCGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockProperties;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
+import de.verdox.mccreativelab.impl.vanilla.custom.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
@@ -88,6 +90,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    protected final MCCGameFactory nmsGameFactory;
     private final boolean useGeneratedConverters;
 
     public NMSPlatform(boolean useGeneratedConverters) {
@@ -97,6 +100,7 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
         this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.nmsGameFactory = constructGameFactory();
     }
 
     public NMSPlatform() {
@@ -116,6 +120,7 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger();
+        this.nmsGameFactory = constructGameFactory();
         this.useGeneratedConverters = true;
     }
 
@@ -222,6 +227,11 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
+    public MCCGameFactory getGameFactory() {
+        return nmsGameFactory;
+    }
+
+    @Override
     public @NotNull MCCContainerFactory getContainerFactory() {
         return containerFactory;
     }
@@ -301,6 +311,14 @@ public class NMSPlatform implements MCCPlatform {
 
     public MinecraftServer getServer() {
         return null;
+    }
+
+    /**
+     * Can be overridden by a platform to inject its own game factory
+     * @return a new game factory
+     */
+    protected MCCGameFactory constructGameFactory() {
+        return new NMSGameFactory(this);
     }
 
     private void registerMenuTypes() {
