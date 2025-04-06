@@ -10,6 +10,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
+import de.verdox.mccreativelab.wrapper.registry.OpenRegistry;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
 
 public class NMSRegistryStorage implements MCCRegistryStorage {
     private final Map<Key, DelayedFreezingRegistry<?>> CUSTOM_REGISTRIES = new HashMap<>();
+    private final Map<Key, OpenRegistry<?>> CUSTOM_OPEN_REGISTRIES = new HashMap<>();
     private final Supplier<RegistryAccess.Frozen> fullRegistryAccess;
     private final Supplier<RegistryAccess.Frozen> reloadableRegistries;
     private boolean frozen;
@@ -75,7 +77,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         if (key.namespace().equals("minecraft")) {
             throw new IllegalStateException("The minecraft namespace is reserved for minecraft registries only. Please use another namespace");
         }
-        if (CUSTOM_REGISTRIES.containsKey(key)) {
+        if (CUSTOM_REGISTRIES.containsKey(key) || CUSTOM_OPEN_REGISTRIES.containsKey(key)) {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
@@ -86,6 +88,23 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
 
         Holder<DelayedFreezingRegistry<T>> holder = new DelayedFreezingRegistryHolder<>(mappedRegistry, registryLocation, registryKey);
 
+        return MCCPlatform.getInstance().getConversionService().wrap(holder);
+    }
+
+    @Override
+    public <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key) {
+        if (key.namespace().equals("minecraft")) {
+            throw new IllegalStateException("The minecraft namespace is reserved for minecraft registries only. Please use another namespace");
+        }
+        if (CUSTOM_REGISTRIES.containsKey(key) || CUSTOM_OPEN_REGISTRIES.containsKey(key)) {
+            throw new IllegalStateException("A registry with the key " + key + " does already exist.");
+        }
+
+        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
+        ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
+        OpenRegistry<T> openRegistry = new OpenRegistry<>();
+        CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
+        Holder<OpenRegistry<T>> holder = new OpenRegistryHolder<>(openRegistry, registryLocation, registryKey);
         return MCCPlatform.getInstance().getConversionService().wrap(holder);
     }
 
@@ -104,6 +123,10 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
         }
 
+        if (CUSTOM_OPEN_REGISTRIES.containsKey(registryKey)) {
+            return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey));
+        }
+
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
 
         Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.get().lookup(registryResourceKey);
@@ -119,6 +142,75 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     public void freezeCustomRegistries() {
         frozen = true;
         CUSTOM_REGISTRIES.values().forEach(DelayedFreezingRegistry::delayedFreeze);
+    }
+
+    private record OpenRegistryHolder<T>(OpenRegistry<T> openRegistry,
+                                         ResourceLocation registryLocation,
+                                         ResourceKey<? extends Registry<T>> registryKey
+                                         ) implements Holder<OpenRegistry<T>> {
+
+        @Override
+        public OpenRegistry<T> value() {
+            return openRegistry;
+        }
+
+        @Override
+        public boolean isBound() {
+            return true;
+        }
+
+        @Override
+        public boolean is(ResourceLocation id) {
+            return registryLocation.equals(id);
+        }
+
+        @Override
+        public boolean is(ResourceKey<OpenRegistry<T>> key) {
+            return key.equals(registryKey);
+        }
+
+        @Override
+        public boolean is(Predicate<ResourceKey<OpenRegistry<T>>> predicate) {
+            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
+            return predicate.test(cast);
+        }
+
+        @Override
+        public boolean is(Holder<OpenRegistry<T>> entry) {
+            return openRegistry.equals(entry.value()) && entry.is(registryLocation);
+        }
+
+        @Override
+        public Kind kind() {
+            return Kind.REFERENCE;
+        }
+
+        @Override
+        public Either<ResourceKey<OpenRegistry<T>>, OpenRegistry<T>> unwrap() {
+            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
+            return Either.left(cast);
+        }
+
+        @Override
+        public Optional<ResourceKey<OpenRegistry<T>>> unwrapKey() {
+            ResourceKey<OpenRegistry<T>> cast = (ResourceKey<OpenRegistry<T>>) registryKey;
+            return Optional.of(cast);
+        }
+
+        @Override
+        public boolean is(TagKey<OpenRegistry<T>> tag) {
+            return false;
+        }
+
+        @Override
+        public Stream<TagKey<OpenRegistry<T>>> tags() {
+            return Stream.empty();
+        }
+
+        @Override
+        public boolean canSerializeIn(HolderOwner<OpenRegistry<T>> owner) {
+            return true;
+        }
     }
 
     private record DelayedFreezingRegistryHolder<T>(DelayedFreezingRegistry<T> mappedRegistry,

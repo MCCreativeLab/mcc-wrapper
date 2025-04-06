@@ -35,6 +35,13 @@ public interface MCCRegistryStorage {
     <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key);
 
     /**
+     * Creates a new open registry with a specified key
+     * @return the new registry
+     * @param <T> the generic type
+     */
+    <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key);
+
+    /**
      * Creates a new minecraft registry with a specified key
      * @return the new registry
      * @param <T> the generic type
