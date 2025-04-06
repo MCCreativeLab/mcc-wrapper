@@ -176,12 +176,6 @@ public class NMSPlatform implements MCCPlatform {
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
-
-        try {
-            getResourcePackManager().init(this);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
