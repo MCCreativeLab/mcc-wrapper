@@ -12,6 +12,8 @@ import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+
 public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
 
     private PaperPlatform platform;
