@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 
 @MCCCustomType
 public abstract class MCCCustomBlockType implements MCCBlockType {
@@ -28,7 +29,7 @@ public abstract class MCCCustomBlockType implements MCCBlockType {
 
     public abstract boolean dropFromExplosion(Explosion explosion);
 
-    public abstract void handlePrecipitation(MCCBlockState state, MCCLocation location, Biome.Precipitation precipitation);
+    public abstract void handlePrecipitation(MCCBlockState state, MCCLocation location, MCCBiome.Precipitation precipitation);
 
     public abstract void stepOn(MCCLocation location, MCCBlockState state, Entity entity);
 

@@ -22,7 +22,6 @@ public class BlockMixin {
             StateDefinition.Builder<Block, BlockState> builder,
             Function<Block, BlockState> defaultStateSupplier,
             StateDefinition.Factory<Block, BlockState> stateFunction) {
-        //TODO: Inject Proxy Object to intercept method calls
-        return builder.create(defaultStateSupplier, BlockState::new);
+        return builder.create(defaultStateSupplier, ProxyBlockState::new);
     }
 }
