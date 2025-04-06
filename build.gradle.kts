@@ -16,8 +16,8 @@ subprojects {
     apply(plugin = "java")
 
     repositories {
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
         maven {
             name = "Verdox Reposilite"
             url = uri("https://repo.verdox.de/snapshots")

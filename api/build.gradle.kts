@@ -3,7 +3,6 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
     maven("https://repo2.acrylicstyle.xyz/")
 }
 
