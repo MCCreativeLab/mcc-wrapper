@@ -1,7 +1,11 @@
 package de.verdox.mccreativelab.impl.vanilla.block;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -10,5 +14,77 @@ public class NMSBlockProperties extends MCCHandle<BlockBehaviour.Properties> imp
 
     public NMSBlockProperties(BlockBehaviour.Properties handle) {
         super(handle);
+    }
+
+    @Override
+    @MCCReflective
+    public boolean isRandomlyTicking() {
+        return ReflectionUtils.readFieldFromClass(handle, "isRandomlyTicking", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public boolean requiresCorrectToolForDrops() {
+        return ReflectionUtils.readFieldFromClass(handle, "requiresCorrectToolForDrops", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public float getBlockHardness() {
+        return ReflectionUtils.readFieldFromClass(handle, "destroyTime", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public NoteBlockInstrument instrument() {
+        return ReflectionUtils.readFieldFromClass(handle, "instrument", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public MCCBlockSoundGroup soundType() {
+        return ReflectionUtils.readFieldFromClass(handle, "soundType", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public float explosionResistance() {
+        return ReflectionUtils.readFieldFromClass(handle, "explosionResistance", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public float friction() {
+        return ReflectionUtils.readFieldFromClass(handle, "friction", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public float speedFactor() {
+        return ReflectionUtils.readFieldFromClass(handle, "speedFactor", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public float jumpFactor() {
+        return ReflectionUtils.readFieldFromClass(handle, "jumpFactor", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public boolean ignitedByLava() {
+        return ReflectionUtils.readFieldFromClass(handle, "ignitedByLava", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public boolean replaceable() {
+        return ReflectionUtils.readFieldFromClass(handle, "replaceable", new TypeToken<>() {});
+    }
+
+    @Override
+    @MCCReflective
+    public PushReaction pushReaction() {
+        return ReflectionUtils.readFieldFromClass(handle, "pushReaction", new TypeToken<>() {});
     }
 }
