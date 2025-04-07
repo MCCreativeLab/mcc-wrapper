@@ -125,5 +125,10 @@ public interface MCCBlockType extends MCCKeyedWrapper {
         return MCCRegistries.BLOCK_REGISTRY.key();
     }
 
+    /**
+     * Returns the properties of this block
+     *
+     * @return the block properties
+     */
     MCCBlockProperties getBlockProperties();
 }
