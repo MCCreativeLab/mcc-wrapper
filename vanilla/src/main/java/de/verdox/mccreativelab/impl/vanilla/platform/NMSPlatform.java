@@ -5,9 +5,12 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
+import de.verdox.mccreativelab.custom.MCCGameFactory;
+import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockProperties;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
+import de.verdox.mccreativelab.impl.vanilla.custom.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
@@ -28,6 +31,7 @@ import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -89,6 +93,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    protected final MCCGameFactory nmsGameFactory;
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
 
@@ -99,6 +104,7 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
+        this.nmsGameFactory = constructGameFactory();
     }
 
     public NMSPlatform() {
@@ -118,11 +124,13 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
+        this.nmsGameFactory = constructGameFactory();
         this.useGeneratedConverters = true;
     }
 
     @Override
     public void init() {
+        conversionService.registerConverterForNewImplType(MCCBlockProperties.class, NMSBlockProperties.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockState.class, NMSBlockState.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockType.class, NMSBlockType.CONVERTER);
@@ -223,6 +231,11 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
+    public MCCGameFactory getGameFactory() {
+        return nmsGameFactory;
+    }
+
+    @Override
     public @NotNull MCCContainerFactory getContainerFactory() {
         return containerFactory;
     }
@@ -301,6 +314,14 @@ public class NMSPlatform implements MCCPlatform {
 
     public MinecraftServer getServer() {
         return null;
+    }
+
+    /**
+     * Can be overridden by a platform to inject its own game factory
+     * @return a new game factory
+     */
+    protected MCCGameFactory constructGameFactory() {
+        return new NMSGameFactory(this);
     }
 
     private void registerMenuTypes() {
