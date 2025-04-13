@@ -6,6 +6,8 @@ import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
+import de.verdox.mccreativelab.wrapper.misc.MCCNoteBlockInstrument;
+import de.verdox.mccreativelab.wrapper.misc.MCCPushReaction;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -36,7 +38,7 @@ public class NMSBlockProperties extends MCCHandle<BlockBehaviour.Properties> imp
 
     @Override
     @MCCReflective
-    public NoteBlockInstrument instrument() {
+    public MCCNoteBlockInstrument instrument() {
         return ReflectionUtils.readFieldFromClass(handle, "instrument", new TypeToken<>() {});
     }
 
@@ -84,7 +86,7 @@ public class NMSBlockProperties extends MCCHandle<BlockBehaviour.Properties> imp
 
     @Override
     @MCCReflective
-    public PushReaction pushReaction() {
+    public MCCPushReaction pushReaction() {
         return ReflectionUtils.readFieldFromClass(handle, "pushReaction", new TypeToken<>() {});
     }
 }
