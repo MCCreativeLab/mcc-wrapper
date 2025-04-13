@@ -54,7 +54,7 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
         if (stack == this) {
             return true;
         }
-        if(!(stack instanceof NMSItemStack that)){
+        if (!(stack instanceof NMSItemStack that)) {
             return false;
         }
         if (this.handle == that.handle) {
