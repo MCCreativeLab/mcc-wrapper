@@ -34,36 +34,6 @@ public class NMSBlockType extends MCCHandle<Block> implements MCCBlockType {
     }
 
     @Override
-    public MCCBlockSoundGroup getSoundGroup() {
-        return new NMSBlockSoundGroup(handle.defaultBlockState().getSoundType());
-    }
-
-    @Override
-    public float getExplosionResistance() {
-        return handle.getExplosionResistance();
-    }
-
-    @Override
-    public float getHardness() {
-        return handle.defaultDestroyTime();
-    }
-
-    @Override
-    public float getFriction() {
-        return handle.getFriction();
-    }
-
-    @Override
-    public float getJumpFactor() {
-        return handle.getJumpFactor();
-    }
-
-    @Override
-    public float getSpeedFactor() {
-        return handle.getSpeedFactor();
-    }
-
-    @Override
     public MCCBlockProperties getBlockProperties() {
         return conversionService.wrap(handle.properties());
     }
