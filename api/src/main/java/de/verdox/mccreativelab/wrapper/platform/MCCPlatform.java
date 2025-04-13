@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.platform;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.custom.MCCGameFactory;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
@@ -178,4 +179,10 @@ public interface MCCPlatform {
      * @return the game factory
      */
     MCCGameFactory getGameFactory();
+
+    /**
+     * Returns the block state property factory
+     * @return the factory
+     */
+    MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
 }
