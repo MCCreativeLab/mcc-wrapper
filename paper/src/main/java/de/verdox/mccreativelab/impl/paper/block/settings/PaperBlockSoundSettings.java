@@ -41,7 +41,7 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
     @Override
     public MCCBlockSoundGroup getSoundGroup(MCCBlockType mccBlockType) {
 
-        MCCBlockSoundGroup standard = mccBlockType.getSoundGroup();
+        MCCBlockSoundGroup standard = mccBlockType.getBlockProperties().soundType();
         if (swapped.containsKey(standard)) {
             standard = swapped.get(standard);
         }

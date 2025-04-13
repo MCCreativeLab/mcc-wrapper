@@ -51,7 +51,7 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
 
     @Override
     public float getHardness(MCCBlockType mccBlockType) {
-        return customHardnessMap.getOrDefault(mccBlockType, mccBlockType.getHardness());
+        return customHardnessMap.getOrDefault(mccBlockType, mccBlockType.getBlockProperties().getBlockHardness());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
         if (!mccBlockType.isVanilla()) {
             return true;
         }
-        return getHardness(mccBlockType) != mccBlockType.getHardness();
+        return getHardness(mccBlockType) != mccBlockType.getBlockProperties().getBlockHardness();
     }
 
     @Override
@@ -297,7 +297,7 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
 
     private static float getDestroySpeed(MCCPlayer player, MCCBlock mccBlock) {
         MCCItemStack hand = player.getInventory().getItemInMainHand();
-        float destroySpeed = mccBlock.getBlockState().getDestroySpeed(player, hand, true);
+        float destroySpeed = mccBlock.getBlockState().getBlockHardness(player, hand, true);
 
         // Haste effect
         if (player.hasActiveEffect(MCCEffects.DIG_SPEED.get()))
