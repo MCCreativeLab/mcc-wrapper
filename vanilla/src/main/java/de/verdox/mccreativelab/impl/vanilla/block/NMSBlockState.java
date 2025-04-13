@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.block;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -99,7 +100,20 @@ public class NMSBlockState extends MCCHandle<BlockState> implements MCCBlockStat
     }
 
     @Override
-    public @NotNull Key key() {
-        return getBlockType().key();
+    public <T extends Comparable<T>> boolean hasProperty(MCCBlockStateProperty<T> property) {
+        return handle.hasProperty(conversionService.unwrap(property));
+    }
+
+    @Override
+    public <T extends Comparable<T>> T getValue(MCCBlockStateProperty<T> property) {
+        if (!hasProperty(property)) {
+            return null;
+        }
+        return handle.getValue(conversionService.unwrap(property));
+    }
+
+    @Override
+    public <T extends Comparable<T>> MCCBlockState newState(MCCBlockStateProperty<T> property, T value) {
+        return conversionService.wrap(handle.trySetValue(conversionService.unwrap(property), conversionService.unwrap(value)));
     }
 }
