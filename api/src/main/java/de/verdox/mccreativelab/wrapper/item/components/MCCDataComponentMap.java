@@ -47,6 +47,13 @@ public interface MCCDataComponentMap extends Iterable<MCCDataComponentType<?>> {
      */
     <R, T extends MCCDataComponentType<R>> void set(T dataComponentType, @Nullable R value);
 
+    default <R, T extends MCCDataComponentType<R>> void copyFrom(T dataComponentType, MCCDataComponentMap other) {
+        if(!other.has(dataComponentType)) {
+            return;
+        }
+        set(dataComponentType, other.get(dataComponentType));
+    }
+
     boolean has(MCCDataComponentType<?> type);
 
     /**
