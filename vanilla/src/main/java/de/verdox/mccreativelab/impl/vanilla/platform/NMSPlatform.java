@@ -25,6 +25,7 @@ import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
 import de.verdox.mccreativelab.impl.vanilla.misc.NMSBlockHitResult;
 import de.verdox.mccreativelab.impl.vanilla.misc.NMSHitResult;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSRandomSource;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
@@ -42,8 +43,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
-import de.verdox.mccreativelab.wrapper.misc.MCCBlockHitResult;
-import de.verdox.mccreativelab.wrapper.misc.MCCDirection;
+import de.verdox.mccreativelab.wrapper.misc.*;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
@@ -60,8 +60,6 @@ import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.*;
-import de.verdox.mccreativelab.wrapper.misc.MCCHitResult;
-import de.verdox.mccreativelab.wrapper.misc.MCCHitType;
 import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
@@ -90,6 +88,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -197,6 +197,7 @@ public class NMSPlatform implements MCCPlatform {
 
         conversionService.registerConverterForNewImplType(MCCHitResult.class, NMSHitResult.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockHitResult.class, NMSBlockHitResult.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCRandomSource.class, NMSRandomSource.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -393,6 +394,8 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCInteractionHand.class, new EnumConverter<>(InteractionHand.class, MCCInteractionHand.class));
         conversionService.registerConverterForNewImplType(MCCDirection.class, new EnumConverter<>(Direction.class, MCCDirection.class));
         conversionService.registerConverterForNewImplType(MCCHitType.class, new EnumConverter<>(HitResult.Type.class, MCCHitType.class));
+        conversionService.registerConverterForNewImplType(MCCStateMirror.class, new EnumConverter<>(Mirror.class, MCCStateMirror.class));
+        conversionService.registerConverterForNewImplType(MCCStateRotation.class, new EnumConverter<>(Rotation.class, MCCStateRotation.class));
     }
 
     private void registerItemComponentConverters() {
