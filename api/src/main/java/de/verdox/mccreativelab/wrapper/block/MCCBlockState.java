@@ -58,7 +58,12 @@ public interface MCCBlockState extends MCCKeyedWrapper {
         return !requiresCorrectToolForDrops() || nmsItem.isCorrectToolForDrops(this);
     }
 
-    float getBlockHardness(MCCPlayer player, MCCItemStack mccItemStack, boolean considerEnchants);
+    /**
+     * This method is only used by {@link de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings} to determine the block break speed of a player.
+     * @param player the player
+     * @return the block hardness
+     */
+    float getBlockHardness(MCCPlayer player);
 
     /**
      * Returns all drops of this block as if it was broken by an entity.
