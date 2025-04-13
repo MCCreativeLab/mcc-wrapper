@@ -26,6 +26,7 @@ import de.verdox.mccreativelab.impl.vanilla.item.components.*;
 import de.verdox.mccreativelab.impl.vanilla.misc.NMSBlockHitResult;
 import de.verdox.mccreativelab.impl.vanilla.misc.NMSHitResult;
 import de.verdox.mccreativelab.impl.vanilla.misc.NMSRandomSource;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSUseOnContext;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
@@ -198,6 +199,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCHitResult.class, NMSHitResult.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockHitResult.class, NMSBlockHitResult.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCRandomSource.class, NMSRandomSource.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCUseOnContext.class, NMSUseOnContext.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
