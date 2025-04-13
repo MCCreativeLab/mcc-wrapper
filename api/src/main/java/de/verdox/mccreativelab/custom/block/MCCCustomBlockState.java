@@ -1,44 +1,83 @@
 package de.verdox.mccreativelab.custom.block;
 
 import de.verdox.mccreativelab.custom.annotation.MCCCustomType;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCProjectileEntity;
+import de.verdox.mccreativelab.wrapper.inventory.MCCMenuProvider;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.misc.MCCBlockHitResult;
+import de.verdox.mccreativelab.wrapper.misc.MCCRandomSource;
+import de.verdox.mccreativelab.wrapper.misc.MCCStateMirror;
+import de.verdox.mccreativelab.wrapper.misc.MCCStateRotation;
+import de.verdox.mccreativelab.wrapper.world.MCCInteractionResult;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.Map;
 
 @MCCCustomType
-public interface MCCCustomBlockState extends MCCBlockState {
+public final class MCCCustomBlockState implements MCCBlockState {
+    private final MCCCustomBlockType parent;
+    private final Reference2ObjectArrayMap<MCCBlockStateProperty<?>, Comparable<?>> properties;
+    final NeighbourStates neighbourStates = new NeighbourStates();
+
+    MCCCustomBlockState(MCCCustomBlockType parent, Reference2ObjectArrayMap<MCCBlockStateProperty<?>, Comparable<?>> properties) {
+        this.parent = parent;
+        this.properties = properties;
+    }
+
     /**
      * Returns the custom block type associated with this block state
      *
      * @return the block type
      */
     @Override
-    @NotNull MCCCustomBlockType getBlockType();
+    @NotNull
+    public MCCCustomBlockType getBlockType() {
+        return parent;
+    }
+
+    @Override
+    public String toBlockDataString() {
+        return "";
+    }
+
+    @Override
+    public float getBlockHardness(MCCPlayer player) {
+        return getBlockType().getBlockHardness(player);
+    }
+
+    @Override
+    public @NotNull List<MCCItemStack> getDrops(@NotNull MCCLocation mccLocation, @Nullable MCCEntity entity, @Nullable MCCItemStack tool) {
+        return getBlockType().getDrops(this, mccLocation, entity, tool);
+    }
 
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed blockstate.
      *
-     * @param rotation
-     * @return
+     * @param rotation the rotation
+     * @return the rotated state
      */
-    default MCCBlockState rotate(Rotation rotation) {
+    public MCCBlockState rotate(MCCStateRotation rotation) {
         return getBlockType().rotate(this, rotation);
     }
 
     /**
      * Returns the blockstate with the given mirror of the passed blockstate. If inapplicable, returns the passed blockstate.
      *
-     * @param mirror
-     * @return
+     * @param mirror the mirror
+     * @return the mirrored state
      */
-    default MCCBlockState mirror(Mirror mirror) {
+    public MCCBlockState mirror(MCCStateMirror mirror) {
         return getBlockType().mirror(this, mirror);
     }
 
@@ -48,8 +87,8 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location of the block
      * @return the hardness
      */
-    default float getBlockHardness(MCCLocation location) {
-        return getBlockType().getBlockProperties().getBlockHardness();
+    public float getBlockHardness(MCCLocation location) {
+        return getBlockType().getBlockHardness(location);
     }
 
     /**
@@ -59,7 +98,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location of the block
      * @return the hardness
      */
-    default float getBlockHardness(MCCPlayer player, MCCLocation location) {
+    public float getBlockHardness(MCCPlayer player, MCCLocation location) {
         return getBlockType().getBlockHardness(this, player, location);
     }
 
@@ -70,7 +109,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param oldState      The old block state that was there before
      * @param movedByPiston whether the new block was moved by a piston
      */
-    default void onPlace(MCCLocation location, MCCBlockState oldState, boolean movedByPiston) {
+    public void onPlace(MCCLocation location, MCCBlockState oldState, boolean movedByPiston) {
         getBlockType().onPlace(location, oldState, movedByPiston);
     }
 
@@ -81,7 +120,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param newState      The new block state that replaces the current state
      * @param movedByPiston whether the old block was moved by a piston
      */
-    default void onRemove(MCCLocation location, MCCBlockState newState, boolean movedByPiston) {
+    public void onRemove(MCCLocation location, MCCBlockState newState, boolean movedByPiston) {
         getBlockType().onRemove(location, newState, movedByPiston);
     }
 
@@ -91,7 +130,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location of the block
      * @param random   the random source
      */
-    default void tick(MCCLocation location, RandomSource random) {
+    public void tick(MCCLocation location, MCCRandomSource random) {
         getBlockType().tick(this, location, random);
     }
 
@@ -102,7 +141,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param hit        how the block state was hit
      * @param projectile the projectile
      */
-    default void onProjectileHit(MCCLocation location, BlockHitResult hit, MCCProjectile projectile) {
+    public void onProjectileHit(MCCLocation location, MCCBlockHitResult hit, MCCProjectileEntity projectile) {
         getBlockType().onProjectileHit(this, location, hit, projectile);
     }
 
@@ -112,11 +151,17 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location of the block
      * @param random   the random source
      */
-    default void randomTick(MCCLocation location, RandomSource random) {
+    public void randomTick(MCCLocation location, MCCRandomSource random) {
         getBlockType().randomTick(this, location, random);
     }
 
-    default MenuProvider getMenuProvider(MCCLocation location) {
+    /**
+     * Returns a menu provider of the state at the specified location
+     * @param location the location
+     * @return the menu provider
+     */
+    @Nullable
+    public MCCMenuProvider<?> getMenuProvider(MCCLocation location) {
         return getBlockType().getMenuProvider(this, location);
     }
 
@@ -126,7 +171,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location of the block
      * @param entity   the entity
      */
-    default void entityInside(MCCLocation location, MCCEntity entity) {
+    public void entityInside(MCCLocation location, MCCEntity entity) {
         getBlockType().entityInside(this, location, entity);
     }
 
@@ -137,11 +182,16 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param stack          the tool used to break the block
      * @param dropExperience whether experience should be dropped
      */
-    default void spawnAfterBreak(MCCLocation location, MCCItemStack stack, boolean dropExperience) {
+    public void spawnAfterBreak(MCCLocation location, MCCItemStack stack, boolean dropExperience) {
         getBlockType().spawnAfterBreak(this, location, stack, dropExperience);
     }
 
-    default void attack(MCCLocation location, MCCPlayer player) {
+    /**
+     * Called when the player starts digging the block
+     * @param location the location
+     * @param player the player
+     */
+    public void attack(MCCLocation location, MCCPlayer player) {
         getBlockType().attack(this, location, player);
     }
 
@@ -151,7 +201,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param location the location
      * @return true if it can persist
      */
-    default boolean canSurvive(MCCLocation location) {
+    public boolean canSurvive(MCCLocation location) {
         return getBlockType().canSurvive(this, location);
     }
 
@@ -160,7 +210,7 @@ public interface MCCCustomBlockState extends MCCBlockState {
      *
      * @return true if the block state is randomly ticking
      */
-    default boolean isRandomlyTicking() {
+    public boolean isRandomlyTicking() {
         return getBlockType().getBlockProperties().isRandomlyTicking();
     }
 
@@ -170,12 +220,8 @@ public interface MCCCustomBlockState extends MCCBlockState {
      *
      * @return true if it requires a tool for drops
      */
-    default boolean requiresCorrectToolForDrops() {
+    public boolean requiresCorrectToolForDrops() {
         return getBlockType().getBlockProperties().requiresCorrectToolForDrops();
-    }
-
-    default List<MCCItemStack> getDrops(LootParams.Builder lootParams) {
-        return getBlockType().getDrops(this, lootParams);
     }
 
     /**
@@ -188,8 +234,8 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param hitResult how the block was interacted with
      * @return the interaction result
      */
-    default InteractionResult useItemOn(MCCItemStack stack, MCCWorld level, MCCPlayer player, InteractionHand hand, BlockHitResult hitResult) {
-        return getBlockType().useItemOn(stack, this, level, hitResult.getBlockPos(), player, hand, hitResult);
+    public MCCInteractionResult useItemOn(MCCItemStack stack, MCCWorld level, MCCPlayer player, MCCInteractionHand hand, MCCBlockHitResult hitResult) {
+        return getBlockType().useItemOn(stack, this, new MCCLocation(level, hitResult.getBlockPos()), player, hand, hitResult);
     }
 
     /**
@@ -201,16 +247,79 @@ public interface MCCCustomBlockState extends MCCBlockState {
      * @param hitResult how the block was interacted with
      * @return the interaction result
      */
-    default InteractionResult useWithoutItem(MCCWorld level, MCCPlayer player, BlockHitResult hitResult) {
-        return getBlockType().useWithoutItem(this, level, hitResult.getBlockPos(), player, hitResult);
+    public MCCInteractionResult useWithoutItem(MCCWorld level, MCCPlayer player, MCCBlockHitResult hitResult) {
+        return getBlockType().useWithoutItem(this, new MCCLocation(level, hitResult.getBlockPos()), player, hitResult);
     }
 
-    /**
-     * Returns the note block instrument of this block state
-     *
-     * @return the note block instrument
-     */
-    default NoteBlockInstrument instrument() {
-        return getBlockType().getBlockProperties().instrument();
+    public void handlePrecipitation(MCCLocation mccLocation, MCCBiome.Precipitation precipitation) {
+        getBlockType().handlePrecipitation(this, mccLocation, precipitation);
+    }
+
+    public void stepOn(MCCLocation mccLocation, MCCEntity entity) {
+        getBlockType().stepOn(this, mccLocation, entity);
+    }
+
+    @Override
+    public <T extends Comparable<T>> boolean hasProperty(MCCBlockStateProperty<T> property) {
+        return this.properties.containsKey(property);
+    }
+
+    @Override
+    public final boolean isVanilla() {
+        return false;
+    }
+
+    @Override
+    public <T extends Comparable<T>> T getValue(MCCBlockStateProperty<T> property) {
+        Comparable<?> comparable = this.properties.get(property);
+        if (comparable == null) {
+            throw new IllegalArgumentException("Cannot get property " + property + " as it does not exist in " + this);
+        } else {
+            return (T) comparable;
+        }
+    }
+
+    @Override
+    public <T extends Comparable<T>> MCCBlockState newState(MCCBlockStateProperty<T> property, T value) {
+        Comparable<?> comparable = this.properties.get(property);
+        if (comparable == null) {
+            throw new IllegalArgumentException("Cannot set property " + property + " as it does not exist in " + this);
+        } else {
+            if (comparable.equals(value)) {
+                return this;
+            } else {
+                int i = property.getInternalIndex((T) value);
+                if (i < 0) {
+                    throw new IllegalArgumentException("Cannot set property " + property + " to " + value + " on " + this + ", it is not an allowed value");
+                } else {
+                    return this.neighbourStates.neighbours.get(property)[i];
+                }
+            }
+        }
+    }
+
+    class NeighbourStates {
+        private Map<MCCBlockStateProperty<?>, MCCCustomBlockState[]> neighbours;
+
+        public void populateNeighbours(Map<Map<MCCBlockStateProperty<?>, Comparable<?>>, MCCCustomBlockState> possibleStateMap) {
+            if (this.neighbours != null) {
+                throw new IllegalStateException();
+            } else {
+                Map<MCCBlockStateProperty<?>, MCCCustomBlockState[]> map = new Reference2ObjectArrayMap<>(properties.size());
+
+                for (Map.Entry<MCCBlockStateProperty<?>, Comparable<?>> entry : properties.entrySet()) {
+                    MCCBlockStateProperty<?> property = entry.getKey();
+                    map.put(property, (MCCCustomBlockState[]) property.getPossibleValues().map(comparable -> possibleStateMap.get(this.makeNeighbourValues(property, comparable))).toArray());
+                }
+
+                this.neighbours = map;
+            }
+        }
+
+        private Map<MCCBlockStateProperty<?>, Comparable<?>> makeNeighbourValues(MCCBlockStateProperty<?> property, Comparable<?> value) {
+            Map<MCCBlockStateProperty<?>, Comparable<?>> map = new Reference2ObjectArrayMap<>(properties);
+            map.put(property, value);
+            return map;
+        }
     }
 }

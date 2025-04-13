@@ -7,6 +7,9 @@ import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuProvider;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.misc.MCCRandomSource;
+import de.verdox.mccreativelab.wrapper.misc.MCCStateMirror;
+import de.verdox.mccreativelab.wrapper.misc.MCCStateRotation;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
@@ -21,10 +24,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,7 +42,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class ProxyBlockState extends BlockState implements GameProxy {
 
@@ -87,7 +90,7 @@ public class ProxyBlockState extends BlockState implements GameProxy {
                 super::tick,
                 param(level, MCCWorld.class),
                 param(pos),
-                param(random, RandomSource.class),
+                param(random, MCCRandomSource.class),
                 (world, blockPos, randomSource) -> getProxy().tick(new MCCLocation(world, blockPos.getX(), blockPos.getY(), blockPos.getZ()), randomSource)
         );
     }
@@ -98,7 +101,7 @@ public class ProxyBlockState extends BlockState implements GameProxy {
                 super::randomTick,
                 param(level, MCCWorld.class),
                 param(pos),
-                param(random, RandomSource.class),
+                param(random, MCCRandomSource.class),
                 (world, blockPos, randomSource) -> getProxy().randomTick(new MCCLocation(world, blockPos.getX(), blockPos.getY(), blockPos.getZ()), randomSource)
         );
     }
@@ -116,12 +119,23 @@ public class ProxyBlockState extends BlockState implements GameProxy {
     }
 
     @Override
+    public BlockState mirror(Mirror mirror) {
+        return proxy(
+                super::mirror,
+                param(mirror, MCCStateMirror.class),
+                (mccMirror) -> {
+                    return getProxy().mirror(mccMirror);
+                }
+        );
+    }
+
+    @Override
     public BlockState rotate(Rotation rotation) {
         return proxy(
                 super::rotate,
-                param(rotation),
+                param(rotation, MCCStateRotation.class),
                 (mccRotation) -> {
-                    return getProxy().rotate(90);
+                    return getProxy().rotate(mccRotation);
                 }
         );
     }
@@ -206,7 +220,7 @@ public class ProxyBlockState extends BlockState implements GameProxy {
     @Override
     public @Nullable MenuProvider getMenuProvider(Level level, BlockPos pos) {
         MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()));
-        if(menuProvider == null) {
+        if (menuProvider == null) {
             return null;
         }
         return new MenuProvider() {
@@ -220,6 +234,14 @@ public class ProxyBlockState extends BlockState implements GameProxy {
                 return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player), menuProvider.getTitle()));
             }
         };
+    }
+
+    public void handlePrecipitation(Level level, BlockPos pos, Biome.Precipitation precipitation) {
+        getProxy().handlePrecipitation(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(precipitation));
+    }
+
+    public void stepOn(Level level, BlockPos pos, Entity entity) {
+        getProxy().stepOn(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(entity));
     }
 
     @Override
@@ -237,8 +259,10 @@ public class ProxyBlockState extends BlockState implements GameProxy {
 
     @Override
     public NoteBlockInstrument instrument() {
-        //TODO
-        return super.instrument();
+        return proxy(
+                super::instrument,
+                () -> getProxy().getBlockType().getBlockProperties().instrument()
+        );
     }
 
     @Override
