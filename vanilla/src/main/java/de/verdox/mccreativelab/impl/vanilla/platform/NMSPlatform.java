@@ -23,6 +23,8 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSBlockHitResult;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSHitResult;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
@@ -40,6 +42,8 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.misc.MCCBlockHitResult;
+import de.verdox.mccreativelab.wrapper.misc.MCCDirection;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
@@ -56,6 +60,8 @@ import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.*;
+import de.verdox.mccreativelab.wrapper.misc.MCCHitResult;
+import de.verdox.mccreativelab.wrapper.misc.MCCHitType;
 import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
@@ -72,6 +78,7 @@ import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
@@ -83,6 +90,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -186,6 +194,9 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
 
         conversionService.registerConverterForNewImplType(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
+
+        conversionService.registerConverterForNewImplType(MCCHitResult.class, NMSHitResult.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockHitResult.class, NMSBlockHitResult.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -380,6 +391,8 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
         conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
         conversionService.registerConverterForNewImplType(MCCInteractionHand.class, new EnumConverter<>(InteractionHand.class, MCCInteractionHand.class));
+        conversionService.registerConverterForNewImplType(MCCDirection.class, new EnumConverter<>(Direction.class, MCCDirection.class));
+        conversionService.registerConverterForNewImplType(MCCHitType.class, new EnumConverter<>(HitResult.Type.class, MCCHitType.class));
     }
 
     private void registerItemComponentConverters() {
