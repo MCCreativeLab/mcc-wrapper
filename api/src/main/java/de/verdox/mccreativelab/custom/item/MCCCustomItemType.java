@@ -2,7 +2,7 @@ package de.verdox.mccreativelab.custom.item;
 
 import de.verdox.mccreativelab.custom.MCCGameFactory;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import de.verdox.mccreativelab.wrapper.block.interaction.MCCUseOnContext;
+import de.verdox.mccreativelab.wrapper.misc.MCCUseOnContext;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
@@ -23,8 +23,6 @@ public abstract class MCCCustomItemType implements MCCItemType {
     public MCCCustomItemType(MCCDataComponentMap standardComponents) {
         this.standardComponents = standardComponents;
     }
-
-    //TODO: ItemStack calls the methods on getItem(). For every method we need a proxy
 
     public MCCInteractionResult useOn(MCCUseOnContext context) {
         return MCCInteractionResult.PASS;
