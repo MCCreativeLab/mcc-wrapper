@@ -51,6 +51,16 @@ public interface MCCAttributeMap {
     double getValue(MCCReference<MCCAttribute> attribute);
 
     /**
+     * Returns the final value of the attribute but ignores the provided modifiers
+     * @param attribute the attribute
+     * @param attributeModifiers the ignored modifiers
+     * @return the value
+     */
+    default double getValueWithoutModifiers(MCCReference<MCCAttribute> attribute, MCCAttributeModifier... attributeModifiers) {
+        return getAttributeInstance(attribute).getValueWithoutModifiers(attributeModifiers);
+    }
+
+    /**
      * Gets the base value of a particular attribute
      *
      * @param attribute the attribute
