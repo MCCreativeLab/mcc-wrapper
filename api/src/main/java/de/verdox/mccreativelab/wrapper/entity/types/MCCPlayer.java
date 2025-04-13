@@ -122,4 +122,10 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     boolean breakBlock(MCCBlock block);
 
     <T> T getClientOption(MCCClientOption<T> type);
+
+    /**
+     * @param state the state to drop
+     * @return whether the player has the correct tool for drops of the state
+     */
+    boolean hasCorrectToolForDrops(MCCBlockState state);
 }
