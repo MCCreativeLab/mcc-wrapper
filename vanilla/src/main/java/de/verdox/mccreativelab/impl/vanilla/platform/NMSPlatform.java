@@ -11,6 +11,7 @@ import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.custom.NMSGameFactory;
+import de.verdox.mccreativelab.impl.vanilla.custom.converter.MCCCustomBlockStateConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
@@ -131,6 +132,7 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public void init() {
         conversionService.registerConverterForNewImplType(MCCBlockProperties.class, NMSBlockProperties.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockState.class, new MCCCustomBlockStateConverter());
         conversionService.registerConverterForNewImplType(MCCBlockState.class, NMSBlockState.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockType.class, NMSBlockType.CONVERTER);
