@@ -62,13 +62,6 @@ public interface MCCBlockType extends MCCKeyedWrapper {
     }
 
     /**
-     * Returns the sound group of this block type
-     *
-     * @return the sound group
-     */
-    MCCBlockSoundGroup getSoundGroup();
-
-    /**
      * Gets the drops of a block state at a location.
      *
      * @param blockState             the block state
@@ -80,41 +73,6 @@ public interface MCCBlockType extends MCCKeyedWrapper {
     default List<MCCItemStack> getDrops(MCCBlockState blockState, @NotNull MCCLocation mccLocation, @Nullable MCCEntity entityBreakingTheBlock, @Nullable MCCItemStack tool) {
         return blockState.getDrops(mccLocation, entityBreakingTheBlock, tool);
     }
-
-    /**
-     * Returns the explosion resistance of this block type
-     *
-     * @return the explosion resistance
-     */
-    float getExplosionResistance();
-
-    /**
-     * Returns the hardness of this block type
-     *
-     * @return the hardness
-     */
-    float getHardness();
-
-    /**
-     * Returns the friction of this block type
-     *
-     * @return the friction
-     */
-    float getFriction();
-
-    /**
-     * Returns the jump factor of this block type
-     *
-     * @return the jump factor
-     */
-    float getJumpFactor();
-
-    /**
-     * Returns the speed factor of this block type
-     *
-     * @return the speed factor
-     */
-    float getSpeedFactor();
 
     //TODO: 
     // - Piston Push Reaction
