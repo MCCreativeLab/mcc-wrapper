@@ -91,6 +91,8 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -398,6 +400,8 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCHitType.class, new EnumConverter<>(HitResult.Type.class, MCCHitType.class));
         conversionService.registerConverterForNewImplType(MCCStateMirror.class, new EnumConverter<>(Mirror.class, MCCStateMirror.class));
         conversionService.registerConverterForNewImplType(MCCStateRotation.class, new EnumConverter<>(Rotation.class, MCCStateRotation.class));
+        conversionService.registerConverterForNewImplType(MCCNoteBlockInstrument.class, new EnumConverter<>(NoteBlockInstrument.class, MCCNoteBlockInstrument.class));
+        conversionService.registerConverterForNewImplType(MCCPushReaction.class, new EnumConverter<>(PushReaction.class, MCCPushReaction.class));
     }
 
     private void registerItemComponentConverters() {
