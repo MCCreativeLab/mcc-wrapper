@@ -4,12 +4,13 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.custom.MCCGameFactory;
-import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockProperties;
-import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
-import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
-import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
+import de.verdox.mccreativelab.impl.vanilla.block.*;
+import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
+import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
 import de.verdox.mccreativelab.impl.vanilla.custom.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.custom.converter.MCCCustomBlockStateConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
@@ -41,6 +42,7 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
+import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
@@ -64,6 +66,7 @@ import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.world.MCCDifficulty;
+import de.verdox.mccreativelab.wrapper.world.MCCInteractionResult;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
@@ -76,6 +79,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.level.GameType;
@@ -83,7 +87,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -95,6 +98,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
     protected final MCCGameFactory nmsGameFactory;
+    protected final MCCBlockStatePropertyFactory nmsBlockStatePropertyFactory;
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
 
@@ -105,6 +109,7 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
+        this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory(this);
         this.nmsGameFactory = constructGameFactory();
     }
 
@@ -126,11 +131,14 @@ public class NMSPlatform implements MCCPlatform {
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.nmsGameFactory = constructGameFactory();
+        this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory(this);
         this.useGeneratedConverters = true;
     }
 
     @Override
     public void init() {
+        conversionService.registerConverterForNewImplType(MCCBlockStateProperty.class, NMSBlockStateProperty.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCBlockStateProperty.Value.class, NMSBlockStateProperty.Value.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockProperties.class, NMSBlockProperties.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCBlockState.class, new MCCCustomBlockStateConverter());
         conversionService.registerConverterForNewImplType(MCCBlockState.class, NMSBlockState.CONVERTER);
@@ -149,6 +157,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCChunk.class, NMSChunk.CONVERTER);
 
+        conversionService.registerConverterForNewImplType(MCCInteractionResult.class, new InteractionResultConverter());
         conversionService.registerConverterForNewImplType(Key.class, new ResourceLocationConverter());
         conversionService.registerConverterForNewImplType(Sound.class, new SoundConverter());
         conversionService.registerConverterForNewImplType(MCCAttributeModifier.class, new AttributeModifierConverter());
@@ -235,6 +244,11 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public MCCGameFactory getGameFactory() {
         return nmsGameFactory;
+    }
+
+    @Override
+    public MCCBlockStatePropertyFactory getBlockStatePropertyFactory() {
+        return nmsBlockStatePropertyFactory;
     }
 
     @Override
@@ -365,6 +379,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
         conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
         conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
+        conversionService.registerConverterForNewImplType(MCCInteractionHand.class, new EnumConverter<>(InteractionHand.class, MCCInteractionHand.class));
     }
 
     private void registerItemComponentConverters() {
