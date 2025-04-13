@@ -120,6 +120,11 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      */
     void sendBlockDamage(@NotNull MCCLocation location, @Range(from = 0, to = 1) float progress, int entityId);
 
+    /**
+     * Breaks a block for a player
+     * @param block the block
+     * @return true if the block was broken
+     */
     boolean breakBlock(MCCBlock block);
 
     <T> T getClientOption(MCCClientOption<T> type);
