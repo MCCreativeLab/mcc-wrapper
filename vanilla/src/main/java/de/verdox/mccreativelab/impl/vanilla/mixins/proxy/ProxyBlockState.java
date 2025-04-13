@@ -3,16 +3,22 @@ package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
 import com.mojang.serialization.MapCodec;
 import de.verdox.mccreativelab.custom.block.MCCCustomBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
+import de.verdox.mccreativelab.wrapper.inventory.MCCMenuProvider;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -20,11 +26,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -168,17 +180,64 @@ public class ProxyBlockState extends BlockState implements GameProxy {
     }
 
     @Override
-    public void onExplosionHit(ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
-        super.onExplosionHit(level, pos, explosion, dropConsumer);
+    public List<ItemStack> getDrops(LootParams.Builder lootParams) {
+        return proxy(
+                super::getDrops,
+                param(lootParams),
+                (parameters) -> {
+                    ServerLevel world = parameters.getLevel();
+                    Vec3 origin = parameters.getParameter(LootContextParams.ORIGIN);
+                    ItemStack tool = parameters.getParameter(LootContextParams.TOOL);
+                    Entity entity = parameters.getOptionalParameter(LootContextParams.THIS_ENTITY);
+                    //TODO Add Support for block entity
+                    BlockEntity blockEntity = parameters.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+
+                    MCCWorld mccWorld = getConversionService().wrap(world);
+
+                    return getProxy().getDrops(
+                            new MCCLocation(mccWorld, origin.x(), origin.y(), origin.z()),
+                            getConversionService().wrap(entity),
+                            getConversionService().wrap(tool)
+                    );
+                }
+        );
+    }
+
+    @Override
+    public @Nullable MenuProvider getMenuProvider(Level level, BlockPos pos) {
+        MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()));
+        if(menuProvider == null) {
+            return null;
+        }
+        return new MenuProvider() {
+            @Override
+            public Component getDisplayName() {
+                return conversionService().unwrap(menuProvider.getTitle());
+            }
+
+            @Override
+            public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player), menuProvider.getTitle()));
+            }
+        };
     }
 
     @Override
     public void entityInside(Level level, BlockPos pos, Entity entity) {
-        super.entityInside(level, pos, entity);
+        proxy(
+                super::entityInside,
+                param(level, MCCWorld.class),
+                param(pos),
+                param(entity, MCCEntity.class),
+                (world, blockPos, mccEntity) -> {
+                    getProxy().entityInside(new MCCLocation(world, blockPos.getX(), blockPos.getY(), blockPos.getZ()), mccEntity);
+                }
+        );
     }
 
     @Override
     public NoteBlockInstrument instrument() {
+        //TODO
         return super.instrument();
     }
 
