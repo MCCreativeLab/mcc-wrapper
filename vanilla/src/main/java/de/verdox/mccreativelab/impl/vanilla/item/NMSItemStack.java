@@ -17,6 +17,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Optional;
+
 public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
     public static final MCCConverter<ItemStack, NMSItemStack> CONVERTER = converter(NMSItemStack.class, ItemStack.class, NMSItemStack::new, MCCHandle::getHandle);
 
@@ -95,7 +97,9 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
 
     @Override
     public MCCItemType getType() {
-        return new NMSItemType(this.handle.getItem());
+        Optional<MCCItemType> customType = MCCPlatform.getInstance().getGameFactory().extract(this).map(customItemType -> customItemType);
+        return customType.orElseGet(() -> new NMSItemType(this.handle.getItem()));
+
     }
 
     @Override
