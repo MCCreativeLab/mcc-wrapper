@@ -18,7 +18,7 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
     })
-
+    testImplementation("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("version").get())
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
