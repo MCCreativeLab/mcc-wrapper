@@ -62,7 +62,7 @@ public class BlockEvents extends EventBase {
     public void handle(BlockPhysicsEvent event) {
         callEvent(event, new MCCBlockPhysicsEvent(
                 wrap(event.getBlock()),
-                wrap(event.getChangedType()),
+                wrap(event.getChangedBlockData()),
                 wrap(event.getSourceBlock()),
                 event.isCancelled()
         ));
