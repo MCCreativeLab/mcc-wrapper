@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
+import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
@@ -122,4 +123,33 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     boolean breakBlock(MCCBlock block);
 
     <T> T getClientOption(MCCClientOption<T> type);
+
+
+    /**
+     * Adds the item stack from the provided inventory at the provided slot into the player's inventory
+     * @param container the container
+     * @param slot the slot
+     */
+    default void addItemOrDropFromSlot(MCCContainer container, int slot) {
+        if (container.getSize() <= slot) {
+            return;
+        }
+        var item = container.getItem(slot);
+        if (item == null || item.isEmpty()) {
+            return;
+        }
+
+        addItemOrDrop(item);
+        container.setItem(slot, null);
+    }
+
+    /**
+     * Adds the provided item stack to the player's inventory or drops it on the ground
+     * @param stack the item stack
+     */
+    default void addItemOrDrop(MCCItemStack stack) {
+        getInventory().addItem(stack).forEach((integer, mccItemStack) -> {
+            getLocation().world().dropItemNaturally(getLocation(), mccItemStack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
+        });
+    }
 }
