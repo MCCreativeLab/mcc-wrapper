@@ -10,6 +10,7 @@ repositories {
 dependencies {
     val mcVersion = providers.gradleProperty("mcversion").get()
     compileOnly(project(":api"))
+    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
     minecraft("com.mojang:minecraft:$mcVersion")
     @Suppress("UnstableApiUsage")
