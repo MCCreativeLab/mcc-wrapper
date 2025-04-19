@@ -7,42 +7,50 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public record MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) implements MCCWrapped {
+public record MCCLocation(MCCWorld world, MCCPos pos, float yaw, float pitch) implements MCCWrapped {
 
     public static final int CHUNK_X_LENGTH = 16;
     public static final int SECTION_Y_LENGTH = 16;
     public static final int CHUNK_Z_LENGTH = 16;
 
+    public MCCLocation(MCCWorld world, MCCPos pos) {
+        this(world, pos, 0, 0);
+    }
+
     public MCCLocation(MCCWorld world, double x, double y, double z) {
-        this(world, x, y, z, 0, 0);
+        this(world, new MCCPos(x, y, z), 0, 0);
+    }
+
+    public MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) {
+        this(world, new MCCPos(x, y, z), yaw, pitch);
     }
 
     public MCCLocation above() {
-        return new MCCLocation(this.world(), this.x(), this.y() + 1, this.z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x(), this.pos().y() + 1, this.pos().z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation below() {
-        return new MCCLocation(this.world(), this.x(), this.y() - 1, this.z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x(), this.pos().y() - 1, this.pos().z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation add(double x, double y, double z) {
-        return new MCCLocation(this.world(), this.x() + x, this.y() + y, this.z() + z, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x() + x, this.pos().y() + y, this.pos().z() + z, this.yaw(), this.pitch());
     }
 
     public MCCLocation left() {
-        return new MCCLocation(this.world(), this.x() - 1, this.y(), this.z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x() - 1, this.pos().y(), this.pos().z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation right() {
-        return new MCCLocation(this.world(), this.x() + 1, this.y(), this.z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x() + 1, this.pos().y(), this.pos().z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation forward() {
-        return new MCCLocation(this.world(), this.x(), this.y(), this.z() + 1, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x(), this.pos().y(), this.pos().z() + 1, this.yaw(), this.pitch());
     }
 
     public MCCLocation backward() {
-        return new MCCLocation(this.world(), this.x(), this.y(), this.z() - 1, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.pos().x(), this.pos().y(), this.pos().z() - 1, this.yaw(), this.pitch());
     }
 
     public CompletableFuture<MCCBlock> getBlock() {
@@ -54,7 +62,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return world().getBlockAt(this).getNow(null);
     }
 
-    public static int toChunkBlockLocalX(int globalX){
+    public static int toChunkBlockLocalX(int globalX) {
         return Math.floorMod(globalX, CHUNK_X_LENGTH);
     }
 
@@ -62,7 +70,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return toChunkBlockLocalX(blockX());
     }
 
-    public static int toChunkBlockLocalY(int globalY){
+    public static int toChunkBlockLocalY(int globalY) {
         return Math.floorMod(globalY, SECTION_Y_LENGTH);
     }
 
@@ -70,7 +78,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return toChunkBlockLocalY(blockY());
     }
 
-    public static int toChunkBlockLocalZ(int globalZ){
+    public static int toChunkBlockLocalZ(int globalZ) {
         return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
     }
 
@@ -95,15 +103,15 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
     }
 
     public int blockX() {
-        return (int) x();
+        return (int) this.pos().x();
     }
 
     public int blockY() {
-        return (int) y();
+        return (int) this.pos().y();
     }
 
     public int blockZ() {
-        return (int) z();
+        return (int) this.pos().z();
     }
 
     public double distanceSquared(@NotNull MCCLocation o) {
@@ -115,7 +123,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
             throw new IllegalArgumentException("Cannot measure distance between " + world().getName() + " and " + o.world().getName());
         }
 
-        return square(x - o.x) + square(y - o.y) + square(z - o.z);
+        return square(this.pos().x() - o.pos().x()) + square(this.pos().y() - o.pos().y()) + square(this.pos().z() - o.pos().z());
     }
 
     /**
@@ -124,9 +132,9 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
      * @throws IllegalArgumentException if any component is not finite
      */
     public void checkFinite() throws IllegalArgumentException {
-        checkFinite(x, "x not finite");
-        checkFinite(y, "y not finite");
-        checkFinite(z, "z not finite");
+        checkFinite(this.pos().x(), "x not finite");
+        checkFinite(this.pos().y(), "y not finite");
+        checkFinite(this.pos().z(), "z not finite");
         checkFinite(pitch, "pitch not finite");
         checkFinite(yaw, "yaw not finite");
     }

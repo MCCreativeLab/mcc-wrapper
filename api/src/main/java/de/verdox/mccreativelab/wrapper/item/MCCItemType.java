@@ -34,7 +34,13 @@ public interface MCCItemType extends MCCKeyedWrapper {
     boolean isEmpty();
 
     @Override
-    default Key getRegistryKey(){
+    default Key getRegistryKey() {
         return MCCRegistries.ITEM_REGISTRY.key();
+    }
+
+    @Override
+    @NotNull
+    default Key key() {
+        return MCCRegistries.ITEM_REGISTRY.get().getKey(this);
     }
 }
