@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.ClientboundResourcePackPopPacket;
 import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
+import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -176,6 +177,21 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     @Override
     public @Nullable MCCContainerMenu<?, ?> getCurrentlyViewedInventory() {
         return conversionService.wrap(handle.containerMenu);
+    }
+
+    @Override
+    public MCCItemStack getCursorItem() {
+        return conversionService.wrap(this.getHandle().containerMenu.getCarried());
+    }
+
+    @Override
+    public void setCursorItem(@Nullable MCCItemStack cursorItem) {
+        ItemStack stack = conversionService.unwrap(cursorItem);
+        this.getHandle().containerMenu.setCarried(stack);
+
+        if(this.getHandle() instanceof ServerPlayer player) {
+            player.connection.send(new ClientboundSetCursorItemPacket(stack));
+        }
     }
 
     protected ServerPlayer getServerPlayer() {

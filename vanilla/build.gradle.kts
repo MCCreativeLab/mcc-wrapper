@@ -10,7 +10,7 @@ repositories {
 dependencies {
     val mcVersion = providers.gradleProperty("mcversion").get()
     compileOnly(project(":api"))
-    implementation("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("version").get())
+    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
     minecraft("com.mojang:minecraft:$mcVersion")
     @Suppress("UnstableApiUsage")
@@ -18,7 +18,6 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
     })
-
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")

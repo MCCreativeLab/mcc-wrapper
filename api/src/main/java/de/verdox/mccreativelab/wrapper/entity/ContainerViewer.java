@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainerCloseReason;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainerMenu;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -21,4 +22,15 @@ public interface ContainerViewer extends MCCWrapped {
      * @return the container or null if no container is viewed
      */
     @Nullable MCCContainerMenu<?,?> getCurrentlyViewedInventory();
+
+    /**
+     * Returns the item that is currently held in the cursor.
+     * @return the cursor item
+     */
+    MCCItemStack getCursorItem();
+
+    /**
+     * Sets the item that should be held in the cursor
+     */
+    void setCursorItem(@Nullable MCCItemStack cursorItem);
 }

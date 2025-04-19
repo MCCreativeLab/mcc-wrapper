@@ -1,15 +1,22 @@
 package de.verdox.mccreativelab.conversion.converter;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.conversion.ConversionService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapEntryConverter implements MCCConverter<Map.Entry, Map.Entry> {
+/**
+ * Used to convert map entries. Same logic as {@link MapConverter}
+ */
+public class MapEntryConverter extends ContainerConverter<Map.Entry, Map.Entry> {
+    public MapEntryConverter(ConversionService conversionService) {
+        super(conversionService);
+    }
+
     @Override
     public ConversionResult<Map.Entry> wrap(Map.Entry nativeType) {
-        Object wrappedKey = MCCPlatform.getInstance().getConversionService().wrap(nativeType.getKey());
-        Object wrappedValue = MCCPlatform.getInstance().getConversionService().wrap(nativeType.getValue());
+        Object wrappedKey = getConversionService().wrap(nativeType.getKey());
+        Object wrappedValue = getConversionService().wrap(nativeType.getValue());
         Map<Object, Object> map = new HashMap<>();
         map.put(wrappedKey, wrappedValue);
         return done(map.entrySet().stream().findAny().orElseThrow());
@@ -17,8 +24,8 @@ public class MapEntryConverter implements MCCConverter<Map.Entry, Map.Entry> {
 
     @Override
     public ConversionResult<Map.Entry> unwrap(Map.Entry platformImplType) {
-        Object unWrappedKey = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.getKey());
-        Object unWrappedValue = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType.getValue());
+        Object unWrappedKey = getConversionService().unwrap(platformImplType.getKey());
+        Object unWrappedValue = getConversionService().unwrap(platformImplType.getValue());
         Map<Object, Object> map = new HashMap<>();
         map.put(unWrappedKey, unWrappedValue);
         return done(map.entrySet().stream().findAny().orElseThrow());

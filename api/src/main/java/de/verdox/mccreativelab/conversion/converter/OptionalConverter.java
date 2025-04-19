@@ -1,10 +1,16 @@
 package de.verdox.mccreativelab.conversion.converter;
 
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.conversion.ConversionService;
 
 import java.util.Optional;
 
-public class OptionalConverter implements MCCConverter<Optional, Optional> {
+/**
+ * Converts optionals. It unwraps an optional and tries to convert its value.
+ */
+public class OptionalConverter extends ContainerConverter<Optional, Optional> {
+    public OptionalConverter(ConversionService conversionService) {
+        super(conversionService);
+    }
 
     @Override
     public ConversionResult<Optional> wrap(Optional nativeType) {
@@ -12,7 +18,7 @@ public class OptionalConverter implements MCCConverter<Optional, Optional> {
             return done(Optional.empty());
 
         Object o = nativeType.get();
-        return done(Optional.of(MCCPlatform.getInstance().getConversionService().wrap(o)));
+        return done(Optional.of(getConversionService().wrap(o)));
     }
 
     @Override
@@ -21,7 +27,7 @@ public class OptionalConverter implements MCCConverter<Optional, Optional> {
             return done(Optional.empty());
 
         Object o = platformImplType.get();
-        return done(Optional.of(MCCPlatform.getInstance().getConversionService().unwrap(o)));
+        return done(Optional.of(getConversionService().unwrap(o)));
     }
 
     @Override

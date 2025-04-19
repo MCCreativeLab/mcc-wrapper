@@ -8,8 +8,9 @@ plugins {
 dependencies {
     implementation(project(":api"))
     implementation(project(":vanilla", "default"))
+    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
+
     compileOnly("net.bytebuddy:byte-buddy:1.15.10")
-    implementation("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("version").get())
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")

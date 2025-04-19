@@ -5,10 +5,32 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import org.jetbrains.annotations.Nullable;
 
 public interface ConversionService {
+    /**
+     * Registers a new converter that converts between an impl type and a native type. The impl type implements the api type
+     * @param apiType the api type
+     * @param converter the converter
+     * @param <A> the api type
+     * @param <T> the impl type
+     * @param <F> the native type
+     */
     <A, T extends A, F> void registerConverterForNewImplType(Class<A> apiType, MCCConverter<F, T> converter);
 
+    /**
+     * Wraps a given native object into an impl object that implements a specific api type
+     * @param nativeObject the native object
+     * @return the api object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
     <F, T> T wrap(F nativeObject);
 
+    /**
+     * Wraps a given impl object into a native object
+     * @param apiObject the api object
+     * @return the native object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
     <F, T> F unwrap(T apiObject);
 
     /**
@@ -27,34 +49,85 @@ public interface ConversionService {
     <A1, A2> A2 apiTypeToOtherApiType(A1 apiType, ConversionService conversionService);
 
     /**
-     * Returns the api type a native type would be wrapped to
+     * Returns the api type a native type would be wrapped to. Throws an exception if no converter is available
+     *
+     * @param nativeType the native type
+     * @param <F>        the generic native type
+     * @param <T>        the generic api type
+     * @throws NoConverterFoundException if no converter was found
+     * @return the api type
+     */
+    <F, T> Class<T> wrapClassType(Class<F> nativeType);
+
+    /**
+     * Returns the api type a native type would be wrapped to or null if no converter was found.
      *
      * @param nativeType the native type
      * @param <F>        the generic native type
      * @param <T>        the generic api type
      * @return the api type
      */
-    <F, T> Class<T> wrapClassType(Class<F> nativeType);
-
     @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType);
 
+    /**
+     * Checks if the given native type has a converter mapping
+     * @param nativeType the native type
+     * @return true if a mapping exists
+     */
     boolean isNativeTypeKnown(Class<?> nativeType);
 
+    /**
+     * Checks if the given api type has a converter mapping
+     * @param apiType the api type
+     * @return true if a mapping exists
+     */
     boolean isApiTypeKnown(Class<?> apiType);
 
-    default <F, T> T wrap(@Nullable F objectToWrap, TypeToken<T> apiTypeToConvertTo) {
-        return (T) wrap(objectToWrap);
+    /**
+     * Wraps a given native object into an impl object that implements a specific api type
+     * @param nativeObject the native object
+     * @param apiTypeToConvertTo a type token for explicit type declaration
+     * @return the api object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    default <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
+        return (T) wrap(nativeObject);
     }
 
-    default <F, T> T wrap(@Nullable F objectToWrap, Class<T> apiTypeToConvertTo) {
-        return (T) wrap(objectToWrap);
+    /**
+     * Wraps a given native object into an impl object that implements a specific api type
+     * @param nativeObject the native object
+     * @param apiTypeToConvertTo a class for explicit type declaration
+     * @return the api object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    default <F, T> T wrap(@Nullable F nativeObject, Class<T> apiTypeToConvertTo) {
+        return (T) wrap(nativeObject);
     }
 
-    default <F, T> F unwrap(@Nullable T objectToUnwrap, TypeToken<F> nativePlatformType) {
-        return (F) unwrap(objectToUnwrap);
+    /**
+     * Wraps a given impl object into a native object
+     * @param apiObject the api object
+     * @param nativePlatformType a class for explicit type declaration
+     * @return the native object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    default <F, T> F unwrap(@Nullable T apiObject, TypeToken<F> nativePlatformType) {
+        return (F) unwrap(apiObject);
     }
 
-    default <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
-        return (F) unwrap(objectToUnwrap);
+    /**
+     * Wraps a given impl object into a native object
+     * @param apiObject the api object
+     * @param nativePlatformType a class for explicit type declaration
+     * @return the native object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    default <F, T> F unwrap(@Nullable T apiObject, Class<F> nativePlatformType) {
+        return (F) unwrap(apiObject);
     }
 }
