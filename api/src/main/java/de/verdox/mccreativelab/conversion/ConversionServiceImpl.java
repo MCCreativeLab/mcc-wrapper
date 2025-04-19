@@ -39,14 +39,27 @@ public class ConversionServiceImpl implements ConversionService {
         return result;
     }
 
+    //TODO: Add method for wrapClassTypeOrNull with explicit type declaration
+
     @Override
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
-        return (Class<T>) conversionCache.getAllVariantsForNativeType(nativeType)
+        return conversionCache.getAllVariantsForNativeType(nativeType)
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
                 .map(objectClass -> conversionCache.getApiTypeOfImplType(objectClass))
+                .filter(t -> {
+                    try {
+                        Class<T> cast = (Class<T>) t;
+                        return true;
+                    }
+                    catch (ClassCastException e){
+                        LOGGER.log(Level.WARNING, "You tried to convert a native class type "+nativeType+". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
+                        return false;
+                    }
+                })
+                .map(aClass -> (Class<T>) aClass)
                 .filter(Objects::nonNull)
                 .findAny().orElse(null);
     }
