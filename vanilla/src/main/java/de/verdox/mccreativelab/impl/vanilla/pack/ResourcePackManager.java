@@ -20,9 +20,9 @@ public class ResourcePackManager {
     private ResourcePackFileHoster resourcePackFileHoster;
 
     public boolean init(NMSPlatform nmsPlatform) throws IOException {
-        File templateFolder = new File("ressourcePack/template/");
-        File fileStorage = new File("ressourcePack/settings/");
-        File hostStorage = new File("ressourcePack/host/");
+        File templateFolder = new File("resourcePack/template/");
+        File fileStorage = new File("resourcePack/settings/");
+        File hostStorage = new File("resourcePack/host/");
 
         boolean setupComplete = true;
         if(!templateFolder.mkdirs() && !templateFolder.isDirectory()) {
