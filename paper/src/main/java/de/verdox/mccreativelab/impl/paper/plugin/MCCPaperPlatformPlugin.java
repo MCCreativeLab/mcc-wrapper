@@ -13,6 +13,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
 
@@ -27,7 +28,9 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
             platform.getResourcePackManager().init(platform);
             platform.getResourcePackManager().getResourcePack().initialize();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            getLogger().log(Level.SEVERE, "An error occurred while initializing mcc-platform", e);
+            platform.shutdown();
+            return;
         }
         if (platform.getResourcePackManager().getHelper() instanceof PaperGeneratorHelper helper) {
             helper.setJavaPlugin(this);
