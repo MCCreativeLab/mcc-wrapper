@@ -7,6 +7,7 @@ repositories {
 }
 
 dependencies {
+    implementation("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
     implementation("com.google.guava:guava:33.3.1-jre")
     compileOnly("com.mojang:authlib:3.13.56")
     implementation("org.joml:joml:1.10.8")
