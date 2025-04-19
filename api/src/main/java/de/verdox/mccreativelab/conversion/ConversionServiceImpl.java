@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.conversion;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +63,16 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
+                .filter(t -> {
+                    try {
+                        T cast = (T) t;
+                        return true;
+                    }
+                    catch (ClassCastException e){
+                        LOGGER.log(Level.WARNING, "You tried to convert a native object of type "+nativeObject.getClass()+". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
+                        return false;
+                    }
+                })
                 .findAny().orElse(null);
 
         if (result != null) {
@@ -69,7 +80,34 @@ public class ConversionServiceImpl implements ConversionService {
         }
 
         try {
+            // When the converter did not return a result we return the native object and assume that there is no converter needed. This is useful for types that are not wrapped by the api
             return (T) nativeObject;
+        } catch (ClassCastException e) {
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+        }
+    }
+
+    @Override
+    public <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
+        if (nativeObject == null) {
+            return null;
+        }
+
+        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
+                .filter(mccConverter -> apiTypeToConvertTo.getRawType().isAssignableFrom(mccConverter.apiImplementationClass()))
+                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
+                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .filter(objectConversionResult -> objectConversionResult.result().isDone())
+                .map(MCCConverter.ConversionResult::value)
+                .findAny().orElse(null);
+
+        if (result != null) {
+            return result;
+        }
+
+        try {
+            return (T) apiTypeToConvertTo.getRawType().cast(nativeObject);
         } catch (ClassCastException e) {
             throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
         }
@@ -98,27 +136,11 @@ public class ConversionServiceImpl implements ConversionService {
 
         // At this point no converter was found
         // Maybe F = T so at last we try to return it directly. If that does not work also we throw the NoConverterFoundException
-        try{
+        try {
             return (F) implementedApiObject;
-        }
-        catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new NoConverterFoundException("Could not find a converter to wrap the api type " + implementedApiObject + " (" + implementedApiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
         }
-
-
-/*        if (converter == null) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the api type " + implementedApiObject + " (" + implementedApiObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
-        }
-        MCCConverter.ConversionResult<F> result = converter.unwrap(implementedApiObject);
-        if (result.result().isDone()) {
-            try {
-                return result.value();
-            } catch (ClassCastException e) {
-                throw new IllegalStateException("The found converter for the implemented api type " + implementedApiObject.getClass() + " was able to unwrap the provided object but failed produced a ClassCastException because the native type of the converter that was used is different from what was expected", e);
-            }
-        } else {
-            throw new IllegalStateException("The found converter could not provide a valid result for the implemented api type " + implementedApiObject.getClass());
-        }*/
     }
 
     @Override
