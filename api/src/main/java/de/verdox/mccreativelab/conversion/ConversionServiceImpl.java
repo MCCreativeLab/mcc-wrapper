@@ -63,8 +63,7 @@ public class ConversionServiceImpl implements ConversionService {
 
         T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
-                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
-                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .map(mccConverter -> ((MCCConverter<F, T>) mccConverter).wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
                 .findAny().orElse(null);
