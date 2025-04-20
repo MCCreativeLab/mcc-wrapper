@@ -53,9 +53,8 @@ public class ConversionServiceImpl implements ConversionService {
                     try {
                         Class<T> cast = (Class<T>) t;
                         return true;
-                    }
-                    catch (ClassCastException e){
-                        LOGGER.log(Level.WARNING, "You tried to convert a native class type "+nativeType+". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
+                    } catch (ClassCastException e) {
+                        LOGGER.log(Level.WARNING, "You tried to convert a native class type " + nativeType + ". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
                         return false;
                     }
                 })
@@ -76,28 +75,13 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .filter(t -> {
-                    try {
-                        T cast = (T) t;
-                        return true;
-                    }
-                    catch (ClassCastException e){
-                        LOGGER.log(Level.WARNING, "You tried to convert a native object of type "+nativeObject.getClass()+". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
-                        return false;
-                    }
-                })
                 .findAny().orElse(null);
 
         if (result != null) {
             return result;
         }
-
-        try {
-            // When the converter did not return a result we return the native object and assume that there is no converter needed. This is useful for types that are not wrapped by the api
-            return (T) nativeObject;
-        } catch (ClassCastException e) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
-        }
+        // When the converter did not return a result we return the native object and assume that there is no converter needed. This is useful for types that are not wrapped by the api
+        return (T) nativeObject;
     }
 
     @Override
@@ -108,11 +92,17 @@ public class ConversionServiceImpl implements ConversionService {
 
         T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
-                .filter(mccConverter -> apiTypeToConvertTo.getRawType().isAssignableFrom(mccConverter.apiImplementationClass()))
+                .filter(mccConverter -> {
+                    Class<?> converterApiClass = mccConverter.apiImplementationClass();
+                    boolean expectedIsAssignableFromActual = apiTypeToConvertTo.getRawType().isAssignableFrom(converterApiClass);
+                    boolean actualIsAssignableFromExpected = converterApiClass.isAssignableFrom(apiTypeToConvertTo.getRawType());
+                    return expectedIsAssignableFromActual || actualIsAssignableFromExpected;
+                })
                 .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
+                .filter(wrapped -> wrapped != null && apiTypeToConvertTo.getRawType().isInstance(wrapped))
                 .findAny().orElse(null);
 
         if (result != null) {
