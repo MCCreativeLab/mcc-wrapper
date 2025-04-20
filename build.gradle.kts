@@ -8,7 +8,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-releases/")
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 subprojects {
@@ -22,7 +22,7 @@ subprojects {
             name = "Verdox Reposilite"
             url = uri("https://repo.verdox.de/snapshots")
         }
-        maven("https://papermc.io/repo/repository/maven-releases/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 
     java {
