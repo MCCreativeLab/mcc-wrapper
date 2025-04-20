@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.event.MCCEvent;
 import org.bukkit.event.Cancellable;
@@ -12,6 +13,14 @@ import org.bukkit.event.Listener;
 public class EventBase implements Listener {
     protected <F, T> T wrap(F nativeObject){
         return BukkitAdapter.wrap(nativeObject);
+    }
+
+    protected <F, T> T wrap(F nativeObject, Class<T> type){
+        return BukkitAdapter.wrap(nativeObject, type);
+    }
+
+    protected <F, T> T wrap(F nativeObject, TypeToken<T> type){
+        return BukkitAdapter.wrap(nativeObject, type);
     }
 
     protected <F, T> F unwrap(T apiObject){

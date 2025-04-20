@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.event.block.MCCFluidLevelChangeEvent;
 import de.verdox.mccreativelab.wrapper.event.block.MCCLeavesDecayEvent;
@@ -45,16 +46,16 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(FluidLevelChangeEvent event) {
         callEvent(event, new MCCFluidLevelChangeEvent(
-                wrap(event.getBlock()),
+                wrap(event.getBlock(), new TypeToken<>() {}),
                 event.isCancelled(),
-                wrap(event.getNewData())
+                wrap(event.getNewData(), new TypeToken<>() {})
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(LeavesDecayEvent event) {
         callEvent(event, new MCCLeavesDecayEvent(
-                        wrap(event.getBlock()),
+                        wrap(event.getBlock(), new TypeToken<>() {}),
                         event.isCancelled()
                 ));
     }
@@ -62,7 +63,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(SculkBloomEvent event) {
         callEvent(event, new MCCSculkBloomEvent(
-                        wrap(event.getBlock()),
+                        wrap(event.getBlock(), new TypeToken<>() {}),
                         event.isCancelled(),
                         event.getCharge()
                 ));
@@ -71,8 +72,8 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(AreaEffectCloudApplyEvent event) {
         callEvent(event, new MCCAreaEffectCloudApplyEvent(
-                wrap(event.getEntity()),
-                wrap(event.getAffectedEntities()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
+                wrap(event.getAffectedEntities(), new TypeToken<>() {}),
                 event.isCancelled()
         ));
     }
@@ -80,7 +81,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ArrowBodyCountChangeEvent event) {
         callEvent(event, new MCCArrowBodyCountChangeEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.isReset(),
                 event.getOldAmount(),
@@ -91,7 +92,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(BatToggleSleepEvent event) {
         callEvent(event, new MCCBatToggleSleepEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.isAwake()
         ));
@@ -100,10 +101,10 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ExpBottleEvent event) {
         callEvent(event, new MCCExpBottleEvent(
-                wrap(event.getEntity()),
-                wrap(event.getHitEntity()),
-                wrap(event.getHitBlock()),
-                wrap(event.getHitBlockFace()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
+                wrap(event.getHitEntity(), new TypeToken<>() {}),
+                wrap(event.getHitBlock(), new TypeToken<>() {}),
+                wrap(event.getHitBlockFace(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.getExperience(),
                 event.getShowEffect()
@@ -113,7 +114,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ExplosionPrimeEvent event) {
         callEvent(event, new MCCExplosionPrimeEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.getRadius(),
                 event.getFire()
@@ -123,7 +124,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(FireworkExplodeEvent event) {
         callEvent(event, new MCCFireworkExplodeEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled()
         ));
     }
@@ -131,7 +132,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(HorseJumpEvent event) {
         callEvent(event, new MCCHorseJumpEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.getPower()
         ));
@@ -143,41 +144,41 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(PigZombieAngerEvent event) {
         callEvent(event, new MCCPigZombieAngerEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
-                wrap(event.getTarget()),
-                wrap(event.getNewAnger())
+                wrap(event.getTarget(), new TypeToken<>() {}),
+                wrap(event.getNewAnger(), new TypeToken<>() {})
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerLeashEntityEvent event) {
         callEvent(event, new MCCPlayerLeashEntityEvent(
-                wrap(event.getLeashHolder()),
-                wrap(event.getEntity()),
+                wrap(event.getLeashHolder(), new TypeToken<>() {}),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
-                wrap(event.getPlayer()),
-                wrap(event.getHand())
+                wrap(event.getPlayer(), new TypeToken<>() {}),
+                wrap(event.getHand(), new TypeToken<>() {})
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PotionSplashEvent event) {
         callEvent(event, new MCCPotionSplashEvent(
-                wrap(event.getEntity()),
-                wrap(event.getHitEntity()),
-                wrap(event.getHitBlock()),
-                wrap(event.getHitBlockFace()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
+                wrap(event.getHitEntity(), new TypeToken<>() {}),
+                wrap(event.getHitBlock(), new TypeToken<>() {}),
+                wrap(event.getHitBlockFace(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.isCancelled(), // duplicate
-                wrap(event.getAffectedEntities())
+                wrap(event.getAffectedEntities(), new TypeToken<>() {})
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(SheepRegrowWoolEvent event) {
         callEvent(event, new MCCSheepRegrowWoolEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled()
         ));
     }
@@ -185,7 +186,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(SlimeSplitEvent event) {
         callEvent(event, new MCCSlimeSplitEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.getCount()
         ));
@@ -194,7 +195,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(StriderTemperatureChangeEvent event) {
         callEvent(event, new MCCStriderTemperatureChangeEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isShivering(),
                 event.isCancelled()
         ));
@@ -211,10 +212,10 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(FurnaceExtractEvent event) {
         callEvent(event, new MCCFurnaceExtractEvent(
-                wrap(event.getBlock()),
+                wrap(event.getBlock(), new TypeToken<>() {}),
                 event.getExpToDrop(),
-                wrap(event.getPlayer()),
-                wrap(event.getItemType()),
+                wrap(event.getPlayer(), new TypeToken<>() {}),
+                wrap(event.getItemType(), new TypeToken<>() {}),
                 event.getItemAmount()
         ));
     }
@@ -232,8 +233,8 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(SpawnChangeEvent event) {
         callEvent(event, new MCCSpawnChangeEvent(
-                wrap(event.getWorld()),
-                wrap(event.getPreviousLocation())
+                wrap(event.getWorld(), new TypeToken<>() {}),
+                wrap(event.getPreviousLocation(), new TypeToken<>() {})
         ));
     }
 }
