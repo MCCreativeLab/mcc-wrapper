@@ -105,7 +105,7 @@ public class ConversionCache<V> {
      * @return the values
      */
     @NotNull
-    public Stream<V> getAllVariantsForNativeType(Class<?> nativeType) {
+    public Stream<V> streamAllVariantsForNativeType(Class<?> nativeType) {
         List<Class<?>> foundImplTypes = nativeToImpls.get(nativeType);
         if (foundImplTypes == null) {
             return Stream.of();
@@ -121,7 +121,7 @@ public class ConversionCache<V> {
      * @return the values
      */
     @NotNull
-    public Stream<V> getAllVariantsForApiType(Class<?> apiType) {
+    public Stream<V> streamAllVariantsForApiType(Class<?> apiType) {
         List<Class<?>> foundImplTypes = apiToImpls.get(apiType);
         if (foundImplTypes == null) {
             return Stream.of();

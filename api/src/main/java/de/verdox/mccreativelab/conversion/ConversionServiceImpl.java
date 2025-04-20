@@ -44,7 +44,7 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
-        return conversionCache.getAllVariantsForNativeType(nativeType)
+        return conversionCache.streamAllVariantsForNativeType(nativeType)
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
@@ -69,7 +69,7 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
