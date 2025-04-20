@@ -98,4 +98,9 @@ public class ConversionBenchmarkTests extends TestBase {
     public void benchmarkConversionCacheWrap(BenchmarkState state) {
         MCCPlatform.getInstance().getConversionService().wrap(state.reference.getHandle());
     }
+
+    @Benchmark
+    public void benchmarkConversionCacheUnwrap(BenchmarkState state) {
+        MCCPlatform.getInstance().getConversionService().unwrap(state.reference);
+    }
 }
