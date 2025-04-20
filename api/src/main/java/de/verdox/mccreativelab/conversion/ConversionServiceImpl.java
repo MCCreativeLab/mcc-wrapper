@@ -91,7 +91,7 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
                     Class<?> converterApiClass = mccConverter.apiImplementationClass();
