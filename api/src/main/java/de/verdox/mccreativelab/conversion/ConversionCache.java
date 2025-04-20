@@ -139,6 +139,26 @@ public class ConversionCache<V> {
         return implToApi.get(implType);
     }
 
+    public TypeHierarchyMap<Class<?>> getImplToApi() {
+        return implToApi;
+    }
+
+    public TypeHierarchyMap<Class<?>> getNativeToApi() {
+        return nativeToApi;
+    }
+
+    public TypeHierarchyMap<List<Class<?>>> getApiToImpls() {
+        return apiToImpls;
+    }
+
+    public TypeHierarchyMap<List<Class<?>>> getNativeToImpls() {
+        return nativeToImpls;
+    }
+
+    public TypeHierarchyMap<V> getImplToValue() {
+        return implToValue;
+    }
+
     @Override
     public String toString() {
         return "ConversionCache{" +
