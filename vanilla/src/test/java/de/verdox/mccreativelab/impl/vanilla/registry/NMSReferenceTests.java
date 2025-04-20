@@ -24,6 +24,7 @@ public class NMSReferenceTests extends NMSTestBase {
         MCCReference<MCCBlockType> reference = key.getAsReference();
 
         Assertions.assertEquals(Blocks.STONE, MCCPlatform.getInstance().getConversionService().unwrap(reference.get(), Block.class));
+        Assertions.assertEquals(Blocks.STONE, MCCPlatform.getInstance().getConversionService().unwrap(reference.get()));
     }
 
     @Test
