@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.conversion;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -166,6 +167,11 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public boolean isApiTypeKnown(Class<?> apiType) {
         return conversionCache.knowsApiType(apiType);
+    }
+
+    @VisibleForTesting
+    public ConversionCache<MCCConverter<?, ?>> getConversionCache() {
+        return conversionCache;
     }
 
     @Override
