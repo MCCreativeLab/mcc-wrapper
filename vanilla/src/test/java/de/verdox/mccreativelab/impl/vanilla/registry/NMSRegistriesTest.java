@@ -76,6 +76,7 @@ public class NMSRegistriesTest extends NMSTestBase {
     public <A, F> void testHandleCorrect(TestEntry<A, F> testEntry) {
         Registry<F> nativeRegistry = testEntry.getNativeRegistry();
         Assertions.assertEquals(nativeRegistry, MCCPlatform.getInstance().getConversionService().unwrap(testEntry.getRegistry()));
+        Assertions.assertEquals(nativeRegistry, MCCPlatform.getInstance().getConversionService().unwrap(testEntry.getRegistry(), Registry.class));
     }
 
     @ParameterizedTest
