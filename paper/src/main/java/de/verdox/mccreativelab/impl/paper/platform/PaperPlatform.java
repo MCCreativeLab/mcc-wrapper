@@ -82,7 +82,7 @@ public class PaperPlatform extends NMSPlatform {
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
 
-        PlatformEvents.init(javaPlugin);
+        //PlatformEvents.init(javaPlugin);
     }
 
     public ConversionService getBukkitConversionService() {
