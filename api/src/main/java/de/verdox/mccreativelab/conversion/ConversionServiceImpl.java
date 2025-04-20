@@ -50,15 +50,6 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
                 .map(objectClass -> conversionCache.getApiTypeOfImplType(objectClass))
-                .filter(t -> {
-                    try {
-                        Class<T> cast = (Class<T>) t;
-                        return true;
-                    } catch (ClassCastException e) {
-                        LOGGER.log(Level.WARNING, "You tried to convert a native class type " + nativeType + ". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
-                        return false;
-                    }
-                })
                 .map(aClass -> (Class<T>) aClass)
                 .filter(Objects::nonNull)
                 .findAny().orElse(null);
