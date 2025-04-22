@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
+import de.verdox.mccreativelab.wrapper.platform.factory.ElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
@@ -158,6 +159,12 @@ public interface MCCPlatform {
     default void triggerLifecycleEvent(Lifecycle lifecycle) {
         lifecycle.lifecycleFunction.accept(getLifecycleTrigger());
     }
+
+    /**
+     * Returns an element factory that is used to create specific minecraft elements
+     * @return the element factory
+     */
+    ElementFactory getElementFactory();
 
     enum Lifecycle {
         BOOTSTRAP(MCCLifecycleTrigger::bootstrap),
