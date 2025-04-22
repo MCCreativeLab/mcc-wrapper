@@ -21,7 +21,9 @@ import de.verdox.mccreativelab.impl.vanilla.item.components.*;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
+import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSElementFactory;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
+import de.verdox.mccreativelab.impl.vanilla.platform.serialization.NMSSerializers;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.types.*;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
@@ -53,9 +55,11 @@ import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
+import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCPropertyKey;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.world.MCCDifficulty;
@@ -89,6 +93,8 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    protected final NMSElementFactory elementFactory = new NMSElementFactory();
+    protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
 
@@ -220,6 +226,16 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public MCCLifecycleTrigger getLifecycleTrigger() {
         return lifecycleTrigger;
+    }
+
+    @Override
+    public MCCElementFactory getElementFactory() {
+        return elementFactory;
+    }
+
+    @Override
+    public MCCSerializers getPlatformSerializers() {
+        return serializers;
     }
 
     @Override
