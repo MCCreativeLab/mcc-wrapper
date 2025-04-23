@@ -5,10 +5,7 @@ import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCTypedDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
-import de.verdox.vserializer.generic.SerializationContainer;
-import de.verdox.vserializer.generic.SerializationContext;
-import de.verdox.vserializer.generic.SerializationElement;
-import de.verdox.vserializer.generic.Serializer;
+import de.verdox.vserializer.generic.*;
 import net.kyori.adventure.key.Key;
 
 import java.util.logging.Level;
