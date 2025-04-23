@@ -20,6 +20,10 @@ public class OpenRegistry<T> implements MCCCustomRegistry<T> {
     private final Map<MCCTypedKey<T>, T> typedKeyToDataMapping = new HashMap<>();
     private final Key registryKey;
 
+    public Key getRegistryKey() {
+        return registryKey;
+    }
+
     public static <T> OpenRegistry<T> createUnboundRegistry(Key registryKey) {
         return new OpenRegistry<>(registryKey);
     }
