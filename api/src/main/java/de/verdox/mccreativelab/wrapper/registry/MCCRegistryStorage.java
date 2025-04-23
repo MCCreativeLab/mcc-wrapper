@@ -46,14 +46,18 @@ public interface MCCRegistryStorage {
      * @return the new registry
      * @param <T> the generic type
      */
-    <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type);
+    default <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type) {
+        return createMinecraftRegistry(key);
+    }
 
     /**
      * Creates a new open registry with a specified key
      * @return the new registry
      * @param <T> the generic type
      */
-    <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key, TypeToken<T> type);
+    default <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key, TypeToken<T> type) {
+        return createOpenRegistry(key);
+    }
 
     /**
      * Custom registries are not frozen when minecraft tries to freeze them.

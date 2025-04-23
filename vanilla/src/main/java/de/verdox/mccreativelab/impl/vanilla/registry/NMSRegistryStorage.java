@@ -151,6 +151,11 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         return createMinecraftRegistry(key);
     }
 
+    @Override
+    public <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key, TypeToken<T> type) {
+        return null;
+    }
+
     @Nullable
     private <T> MCCRegistry<T> searchForRegistry(Key registryKey) {
         if (registryKey.equals(Key.key("minecraft", "root"))) {
