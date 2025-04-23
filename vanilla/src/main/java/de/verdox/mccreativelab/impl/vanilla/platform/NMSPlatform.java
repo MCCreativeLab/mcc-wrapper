@@ -93,7 +93,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
-    protected final NMSElementFactory elementFactory = new NMSElementFactory();
+    protected final NMSElementFactory elementFactory = new NMSElementFactory(this);
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
