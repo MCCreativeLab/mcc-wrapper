@@ -9,6 +9,8 @@ repositories {
 dependencies {
     implementation("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
     implementation("com.google.guava:guava:33.3.1-jre")
+    compileOnly("net.kyori:adventure-text-serializer-gson:4.20.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.20.0")
     compileOnly("com.mojang:authlib:3.13.56")
     implementation("org.joml:joml:1.10.8")
     implementation("org.apache.commons:commons-lang3:3.17.0")

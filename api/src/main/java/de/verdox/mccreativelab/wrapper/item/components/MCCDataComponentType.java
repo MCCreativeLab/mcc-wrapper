@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.vserializer.generic.Serializer;
 
 @MCCInstantiationSource(sourceClasses = MCCDataComponentEditor.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
@@ -23,4 +24,6 @@ public interface MCCDataComponentType<T> extends MCCWrapped {
     TypeToken<?> nativeType();
 
     T createEmpty();
+
+    Serializer<T> getValueSerializer();
 }
