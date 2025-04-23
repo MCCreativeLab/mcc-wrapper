@@ -22,10 +22,10 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     @Override
     public void onLoad() {
         platform = (PaperPlatform) MCCPlatform.getInstance();
-        GeneratorPlatformHelper.INSTANCE.setup(platform.getResourcePackManager().getHelper(), platformHelper -> {
-        });
         try {
             platform.getResourcePackManager().init(platform);
+            GeneratorPlatformHelper.INSTANCE.setup(platform.getResourcePackManager().getHelper(), platformHelper -> {
+            });
             platform.getResourcePackManager().getResourcePack().initialize();
         } catch (IOException e) {
             getLogger().log(Level.SEVERE, "An error occurred while initializing mcc-platform", e);
