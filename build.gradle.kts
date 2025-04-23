@@ -33,10 +33,10 @@ subprojects {
 
     dependencies {
         compileOnly("net.kyori:adventure-api:4.17.0")
-        compileOnly("de.verdox:vserializer:+")
+        compileOnly("de.verdox:vserializer:1.2.3-SNAPSHOT")
         compileOnly("it.unimi.dsi:fastutil:8.5.15")
         implementation("com.google.guava:guava:33.3.1-jre")
-        testImplementation("de.verdox:vserializer:+")
+        testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
     }
 
     publishing {
