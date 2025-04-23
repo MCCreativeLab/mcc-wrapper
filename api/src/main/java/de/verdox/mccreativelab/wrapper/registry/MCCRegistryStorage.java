@@ -49,6 +49,13 @@ public interface MCCRegistryStorage {
     <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type);
 
     /**
+     * Creates a new open registry with a specified key
+     * @return the new registry
+     * @param <T> the generic type
+     */
+    <T> MCCReference<OpenRegistry<T>> createOpenRegistry(Key key, TypeToken<T> type);
+
+    /**
      * Custom registries are not frozen when minecraft tries to freeze them.
      * Instead, we freeze them before the worlds are loaded
      */
