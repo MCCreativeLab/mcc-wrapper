@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
@@ -153,4 +154,10 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
             getLocation().world().dropItemNaturally(getLocation(), mccItemStack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
         });
     }
+
+    /**
+     * Sets the entity to spectate. If null is provided the camera gets reset
+     * @param entityToSpectate the entity to spectate
+     */
+    void setCamera(@Nullable MCCEntity entityToSpectate) throws IllegalStateException;
 }
