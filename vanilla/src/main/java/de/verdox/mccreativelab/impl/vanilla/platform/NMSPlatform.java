@@ -144,6 +144,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCEffectType.class, NMSEffectType.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEffect.class, NMSEffect.CONVERTER);
 
+        conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, NMSAttributeInstance.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCChunk.class, NMSChunk.CONVERTER);
 
