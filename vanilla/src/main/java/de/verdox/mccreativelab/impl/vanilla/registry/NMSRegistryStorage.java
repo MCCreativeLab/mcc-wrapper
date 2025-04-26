@@ -99,7 +99,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
-        OpenRegistry<T> openRegistry = new OpenRegistry<>();
+        OpenRegistry<T> openRegistry = OpenRegistry.createUnboundRegistry(key);
         CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
 
         AtomicReference<MCCReference<OpenRegistry<T>>> reference = new AtomicReference<>();
@@ -144,11 +144,6 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             }
         });
         return reference.get();
-    }
-
-    @Override
-    public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type) {
-        return createMinecraftRegistry(key);
     }
 
     @Nullable

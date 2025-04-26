@@ -9,7 +9,7 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-releases/")
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 subprojects {
@@ -30,7 +30,7 @@ subprojects {
             name = "Verdox Reposilite"
             url = uri("https://repo.verdox.de/snapshots")
         }
-        maven("https://papermc.io/repo/repository/maven-releases/")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 
     java {
@@ -41,10 +41,10 @@ subprojects {
 
     dependencies {
         compileOnly("net.kyori:adventure-api:4.17.0")
-        compileOnly("de.verdox:vserializer:+")
+        compileOnly("de.verdox:vserializer:1.2.3-SNAPSHOT")
         compileOnly("it.unimi.dsi:fastutil:8.5.15")
         implementation("com.google.guava:guava:33.3.1-jre")
-        testImplementation("de.verdox:vserializer:+")
+        testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
 
         jmh("org.openjdk.jmh:jmh-core:1.37")
         jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
@@ -66,6 +66,7 @@ subprojects {
         include("**/*.class")  // Stelle sicher, dass nur die Klassen hinzugefügt werden
         include("META-INF/**")  // Stelle sicher, dass die META-INF-Dateien eingeschlossen sind
         exclude("**/test/**", "**/*.java") // Schließe unnötige Testdateien aus
+
     }
 
     publishing {

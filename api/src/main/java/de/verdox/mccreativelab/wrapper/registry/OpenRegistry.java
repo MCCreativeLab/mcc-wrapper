@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.wrapper.registry;
 
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +18,19 @@ public class OpenRegistry<T> implements MCCCustomRegistry<T> {
     private final Map<T, Key> dataToKeyMapping = new HashMap<>();
     private final Map<T, MCCTypedKey<T>> dataToTypedKeyMapping = new HashMap<>();
     private final Map<MCCTypedKey<T>, T> typedKeyToDataMapping = new HashMap<>();
+    private final Key registryKey;
+
+    public Key getRegistryKey() {
+        return registryKey;
+    }
+
+    public static <T> OpenRegistry<T> createUnboundRegistry(Key registryKey) {
+        return new OpenRegistry<>(registryKey);
+    }
+
+    private OpenRegistry(Key registryKey) {
+        this.registryKey = registryKey;
+    }
 
     @Override
     public @Nullable Key getKey(T value) {
@@ -129,6 +143,10 @@ public class OpenRegistry<T> implements MCCCustomRegistry<T> {
         dataToTypedKeyMapping.put(value, key);
         typedKeyToDataMapping.put(key, value);
         return getReference(value).orElseThrow(NoSuchElementException::new);
+    }
+
+    public MCCReference<T> register(Key key, T value) {
+        return register(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, this.registryKey), value);
     }
 
     public void clear() {

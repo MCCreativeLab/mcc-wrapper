@@ -18,10 +18,13 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
+import de.verdox.mccreativelab.impl.vanilla.item.equipment.NMSEquipmentAsset;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
 import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
+import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSElementFactory;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
+import de.verdox.mccreativelab.impl.vanilla.platform.serialization.NMSSerializers;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.types.*;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
@@ -49,13 +52,16 @@ import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.*;
+import de.verdox.mccreativelab.wrapper.item.equipment.MCCEquipmentAsset;
 import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
+import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCPropertyKey;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.world.MCCDifficulty;
@@ -89,6 +95,8 @@ public class NMSPlatform implements MCCPlatform {
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    protected final NMSElementFactory elementFactory = new NMSElementFactory(this);
+    protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
 
@@ -168,6 +176,8 @@ public class NMSPlatform implements MCCPlatform {
 
         conversionService.registerConverterForNewImplType(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
 
+        conversionService.registerConverterForNewImplType(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
+
         registerMenuTypes();
         registerContainerTypes();
         registerEnumConverters();
@@ -220,6 +230,16 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public MCCLifecycleTrigger getLifecycleTrigger() {
         return lifecycleTrigger;
+    }
+
+    @Override
+    public MCCElementFactory getElementFactory() {
+        return elementFactory;
+    }
+
+    @Override
+    public MCCSerializers getPlatformSerializers() {
+        return serializers;
     }
 
     @Override
@@ -357,6 +377,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCJukeboxPlayable.class, NMSJukeboxPlayable.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.class, NMSSuspiciousStewEffects.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCEnchantable.class, NMSEnchantable.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCEquippable.class, NMSEquippable.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCMapItemColor.class, NMSMapItemColor.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemLore.class, NMSItemLore.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.Entry.class, NMSSuspiciousStewEffects.NMSEntry.CONVERTER);

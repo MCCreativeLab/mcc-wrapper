@@ -7,8 +7,10 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
+import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import org.jetbrains.annotations.NotNull;
@@ -158,6 +160,18 @@ public interface MCCPlatform {
     default void triggerLifecycleEvent(Lifecycle lifecycle) {
         lifecycle.lifecycleFunction.accept(getLifecycleTrigger());
     }
+
+    /**
+     * Returns an element factory that is used to create specific minecraft elements
+     * @return the element factory
+     */
+    MCCElementFactory getElementFactory();
+
+    /**
+     * Returns an object that holds all platform serializers
+     * @return the platform serializers
+     */
+    MCCSerializers getPlatformSerializers();
 
     enum Lifecycle {
         BOOTSTRAP(MCCLifecycleTrigger::bootstrap),
