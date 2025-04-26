@@ -1,7 +1,5 @@
 package de.verdox.mccreativelab.wrapper.util;
 
-import com.google.common.reflect.TypeToken;
-
 /**
  * A helper class for immutable types that use the builder pattern to create a new state
  * @param <FIELD_TYPE> the field type
