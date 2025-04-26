@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":api"))
+    compileOnly(project(":api"))
     implementation(project(":vanilla", "default"))
     compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
