@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.item.components;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.impl.vanilla.platform.converter.DataComponentTypeConverter;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentEditor;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
@@ -80,7 +81,7 @@ public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements 
             if (pair == null) {
                 continue;
             }
-            set.add(new MCCTypedDataComponentType<>(conversionService.wrap(pair.type()), conversionService.wrap(pair.value())));
+            set.add(new MCCTypedDataComponentType<>(conversionService.wrap(dataComponentType, MCCDataComponentType.class), conversionService.wrap(pair.value())));
         }
         return set;
     }

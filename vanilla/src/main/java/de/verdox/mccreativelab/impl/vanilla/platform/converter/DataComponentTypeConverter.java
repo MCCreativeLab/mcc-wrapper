@@ -9,6 +9,8 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.serialization.DataComponentSerializers;
 import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.vserializer.generic.Serializer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.component.Unbreakable;
@@ -45,11 +47,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.component.BlockItemStateProperties;
 
 import java.lang.Integer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import de.verdox.mccreativelab.wrapper.types.MCCInstrument;
 import net.minecraft.world.item.Instrument;
 
 public class DataComponentTypeConverter implements MCCConverter<DataComponentType, NMSDataComponentType> {
+    private Logger LOGGER = Logger.getLogger(DataComponentTypeConverter.class.getSimpleName());
     //TODO:
     // - BeehiveBlockEntity.Occupant
     // - ItemContainerContents
@@ -162,6 +167,7 @@ public class DataComponentTypeConverter implements MCCConverter<DataComponentTyp
         if (nativeType.equals(DataComponents.BLOCK_STATE)) {
             return done(new NMSDataComponentType<>(nativeType, new TypeToken<BlockItemStateProperties>() {}, new TypeToken<>() {}, null, () -> createEmpty(MCCBlockItemStateProperties.class)));
         }
+        LOGGER.log(Level.WARNING, "Could not convert data component type " + BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(nativeType));
         return notDone(null);
     }
 
