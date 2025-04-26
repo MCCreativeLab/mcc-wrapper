@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.conversion;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -44,20 +45,11 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
-        return conversionCache.getAllVariantsForNativeType(nativeType)
+        return conversionCache.streamAllVariantsForNativeType(nativeType)
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
                 .map(objectClass -> conversionCache.getApiTypeOfImplType(objectClass))
-                .filter(t -> {
-                    try {
-                        Class<T> cast = (Class<T>) t;
-                        return true;
-                    } catch (ClassCastException e) {
-                        LOGGER.log(Level.WARNING, "You tried to convert a native class type " + nativeType + ". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
-                        return false;
-                    }
-                })
                 .map(aClass -> (Class<T>) aClass)
                 .filter(Objects::nonNull)
                 .findAny().orElse(null);
@@ -69,10 +61,9 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
-                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
-                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .map(mccConverter -> ((MCCConverter<F, T>) mccConverter).wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
                 .findAny().orElse(null);
@@ -90,7 +81,7 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
                     Class<?> converterApiClass = mccConverter.apiImplementationClass();
@@ -166,6 +157,11 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public boolean isApiTypeKnown(Class<?> apiType) {
         return conversionCache.knowsApiType(apiType);
+    }
+
+    @VisibleForTesting
+    public ConversionCache<MCCConverter<?, ?>> getConversionCache() {
+        return conversionCache;
     }
 
     @Override
