@@ -5,6 +5,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
 
+repositories {
+    maven("https://maven.fabricmc.net/")
+}
+
 dependencies {
     implementation(project(":api"))
     implementation(project(":vanilla", "default"))
@@ -17,6 +21,11 @@ dependencies {
     testImplementation(project(":api"))
     testImplementation(project(":vanilla", "default"))
     testImplementation(project(":TestSuite"))
+
+    // Ignite
+    compileOnly("space.vectrix.ignite:ignite-api:1.1.0")
+    compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 }
 
 sourceSets {
