@@ -12,6 +12,7 @@ import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
 import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
+import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 /**
  * The main entrance point for the MCC-Wrapper Library.
  */
-public interface MCCPlatform {
+public interface MCCPlatform extends MCCTicking {
     Logger LOGGER = Logger.getLogger(MCCPlatform.class.getSimpleName());
 
     /**

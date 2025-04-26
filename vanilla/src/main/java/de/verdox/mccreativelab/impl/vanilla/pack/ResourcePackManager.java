@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.pack;
 import de.verdox.mccreativelab.generator.AssetPath;
 import de.verdox.mccreativelab.generator.ResourcePackFileHoster;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
+import de.verdox.mccreativelab.generator.resourcepack.types.hud.renderer.HudRendererImpl;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
@@ -48,6 +49,7 @@ public class ResourcePackManager {
         this.helper = nmsPlatform.constructPackGeneratorHelper(customResourcePack);
         this.resourcePackFileHoster = new ResourcePackFileHoster(hostStorage, this.customResourcePack.getPackName());
         PlatformResourcePack.INSTANCE.setup(this.customResourcePack, rp -> {});
+        nmsPlatform.tickSignal().subscribe(tick -> ((HudRendererImpl) GeneratorPlatformHelper.INSTANCE.get().getHudRenderer()).addTickToRenderQueue(nmsPlatform.getOnlinePlayers()));
         return true;
     }
 

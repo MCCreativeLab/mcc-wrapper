@@ -17,6 +17,8 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -27,6 +29,7 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
 
     private final MCCPermissionContainer permissionContainer = new MCCPermissionContainer();
     protected Pointers adventurePointer;
+    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
 
     public NMSEntity(T handle) {
@@ -247,5 +250,10 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public MCCPermissionContainer getPermissions() {
         return permissionContainer;
+    }
+
+    @Override
+    public Flux<Long> tickSignal() {
+        return tickSink.asFlux();
     }
 }

@@ -37,6 +37,7 @@ public class MCCPaperPluginLoader implements PluginLoader {
         central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-compress:1.27.1"), (String) null));
         central.addDependency(new Dependency(new DefaultArtifact("com.google.guava:guava:33.3.1-jre"), (String) null));
         central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-lang3:3.17.0"), (String) null));
+        central.addDependency(new Dependency(new DefaultArtifact("io.projectreactor:reactor-core:3.7.5"), (String) null));
         //resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab:mcc-util:1.21.4-R0.1-SNAPSHOT"), (String)null));
         //resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab:mcc-pack-generator:1.21.4-R0.1-SNAPSHOT"), (String)null));
         classpathBuilder.addLibrary(resolver);

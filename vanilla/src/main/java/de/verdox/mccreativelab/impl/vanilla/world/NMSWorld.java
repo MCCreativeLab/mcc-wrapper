@@ -30,7 +30,10 @@ import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,6 +44,7 @@ import java.util.function.Predicate;
 public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     public static final MCCConverter<ServerLevel, NMSWorld> CONVERTER = converter(NMSWorld.class, ServerLevel.class, NMSWorld::new, MCCHandle::getHandle);
     private Pointers adventurePointer;
+    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSWorld(ServerLevel handle) {
         super(handle);
@@ -166,12 +170,19 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public boolean hasNearbyAlivePlayer(double x, double y, double z, double distance) {
-        return handle.hasNearbyAlivePlayer(x,y,z,distance);
+        return handle.hasNearbyAlivePlayer(x, y, z, distance);
     }
 
     @Override
     public @Nullable MCCPlayer getPlayer(UUID playerUUID) {
         return conversionService.wrap(handle.getPlayerByUUID(playerUUID));
+    }
+
+    @Override
+    public List<MCCEntity> getEntities() {
+        List<MCCEntity> result = new ArrayList<>();
+        handle.getAllEntities().forEach(entity -> result.add(conversionService.wrap(entity, MCCEntity.class)));
+        return List.copyOf(result);
     }
 
     @Override
@@ -199,5 +210,10 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public Key getRegistryKey() {
         return Key.key("minecraft", "dimension");
+    }
+
+    @Override
+    public Flux<Long> tickSignal() {
+        return tickSink.asFlux();
     }
 }

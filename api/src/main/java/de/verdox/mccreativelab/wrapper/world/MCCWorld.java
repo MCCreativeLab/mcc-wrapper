@@ -10,6 +10,7 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
+import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.audience.ForwardingAudience;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience {
+public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking {
 
     default CompletableFuture<MCCBlockState> getBlockDataAt(int x, int y, int z) {
         return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
@@ -286,4 +287,10 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      */
     @Nullable
     MCCPlayer getPlayer(UUID playerUUID);
+
+    /**
+     * Gets all entities that are currently loaded in this world
+     * @return all entities
+     */
+    List<MCCEntity> getEntities();
 }

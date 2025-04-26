@@ -85,6 +85,8 @@ import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +102,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
+    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSPlatform(boolean useGeneratedConverters) {
         this.useGeneratedConverters = useGeneratedConverters;
@@ -397,5 +400,10 @@ public class NMSPlatform implements MCCPlatform {
 
     public GeneratorPlatformHelper constructPackGeneratorHelper(CustomResourcePack customResourcePack) {
         return new VanillaGeneratorHelper(customResourcePack);
+    }
+
+    @Override
+    public Flux<Long> tickSignal() {
+        return tickSink.asFlux();
     }
 }
