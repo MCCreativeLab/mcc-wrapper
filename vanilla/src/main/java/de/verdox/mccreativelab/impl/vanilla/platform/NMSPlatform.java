@@ -86,7 +86,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
