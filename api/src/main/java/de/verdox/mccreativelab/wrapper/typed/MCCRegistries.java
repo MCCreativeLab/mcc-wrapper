@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.wrapper.typed;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
@@ -39,6 +40,7 @@ public interface MCCRegistries {
     MCCTypedKey<MCCRegistry<MCCAttribute>> ATTRIBUTE_REGISTRY = builtIn("attribute", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCBlockType>> BLOCK_REGISTRY = builtIn("block", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCItemType>> ITEM_REGISTRY = builtIn("item", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCEntityType<?>>> ENTITY_TYPE = builtIn("entity_type", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCDataComponentType<?>>> DATA_COMPONENT_REGISTRY = builtIn("data_component_type", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCDataComponentType<?>>> ENCHANTMENT_EFFECT_COMPONENT_TYPE_REGISTRY = builtIn("enchantment_effect_component_type", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCEffectType>> EFFECT_TYPE_REGISTRY = builtIn("mob_effect", new TypeToken<>() {});
