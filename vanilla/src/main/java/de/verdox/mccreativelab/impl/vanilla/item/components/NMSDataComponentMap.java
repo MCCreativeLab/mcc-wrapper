@@ -81,7 +81,15 @@ public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements 
             if (pair == null) {
                 continue;
             }
-            set.add(new MCCTypedDataComponentType<>(conversionService.wrap(dataComponentType, MCCDataComponentType.class), conversionService.wrap(pair.value())));
+
+            try {
+                var convertedType = conversionService.wrap(dataComponentType, MCCDataComponentType.class);
+                set.add(new MCCTypedDataComponentType<>(convertedType, conversionService.wrap(pair.value())));
+            }
+            catch (Exception e) {
+                // The converter will throw exceptions if some data component types don't have a wrapper yet.
+                // Until all are implemented correctly we just don't add them here
+            }
         }
         return set;
     }
