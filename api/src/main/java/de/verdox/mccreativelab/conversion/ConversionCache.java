@@ -3,7 +3,7 @@ package de.verdox.mccreativelab.conversion;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -50,8 +50,8 @@ public class ConversionCache<V> {
             throw new IllegalArgumentException("The impl type " + implType + " is already mapped to the value " + implToValue.get(implType) + ". However, you want to map it to " + value);
         }
 
-        apiToImpls.computeIfAbsent(apiType, aClass -> new LinkedList<>()).addFirst(implType);
-        nativeToImpls.computeIfAbsent(nativeType, aClass -> new LinkedList<>()).addFirst(implType);
+        apiToImpls.computeIfAbsent(apiType, aClass -> new ArrayList<>()).addFirst(implType);
+        nativeToImpls.computeIfAbsent(nativeType, aClass -> new ArrayList<>()).addFirst(implType);
 
 
         implToApi.put(implType, apiType);
@@ -105,7 +105,7 @@ public class ConversionCache<V> {
      * @return the values
      */
     @NotNull
-    public Stream<V> getAllVariantsForNativeType(Class<?> nativeType) {
+    public Stream<V> streamAllVariantsForNativeType(Class<?> nativeType) {
         List<Class<?>> foundImplTypes = nativeToImpls.get(nativeType);
         if (foundImplTypes == null) {
             return Stream.of();
@@ -121,7 +121,7 @@ public class ConversionCache<V> {
      * @return the values
      */
     @NotNull
-    public Stream<V> getAllVariantsForApiType(Class<?> apiType) {
+    public Stream<V> streamAllVariantsForApiType(Class<?> apiType) {
         List<Class<?>> foundImplTypes = apiToImpls.get(apiType);
         if (foundImplTypes == null) {
             return Stream.of();
@@ -137,6 +137,26 @@ public class ConversionCache<V> {
      */
     public Class<?> getApiTypeOfImplType(Class<?> implType) {
         return implToApi.get(implType);
+    }
+
+    public TypeHierarchyMap<Class<?>> getImplToApi() {
+        return implToApi;
+    }
+
+    public TypeHierarchyMap<Class<?>> getNativeToApi() {
+        return nativeToApi;
+    }
+
+    public TypeHierarchyMap<List<Class<?>>> getApiToImpls() {
+        return apiToImpls;
+    }
+
+    public TypeHierarchyMap<List<Class<?>>> getNativeToImpls() {
+        return nativeToImpls;
+    }
+
+    public TypeHierarchyMap<V> getImplToValue() {
+        return implToValue;
     }
 
     @Override

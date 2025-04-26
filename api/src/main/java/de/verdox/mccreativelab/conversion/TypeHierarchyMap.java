@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @param <V>
  */
 public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
-    private final HierarchyNode<V> root = new HierarchyNode<>(Object.class, null); // null as value is only allowed for the root node
+    private final HierarchyNode<V> root = new HierarchyNode<>(Object.class, null, null); // null as value is only allowed for the root node
 
     @Override
     public int size() {
@@ -95,24 +95,29 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
     }
 
     private static class HierarchyNode<V> implements Map<Class<?>, V> {
-        private final Class<?> type;
+        private final Class<?> typeClass;
         private V value;
 
+        private HierarchyNode<V> parent;
         private final Map<Class<?>, HierarchyNode<V>> childTypes = new ConcurrentHashMap<>();
 
-        private HierarchyNode(Class<?> type, V value) {
-            Objects.requireNonNull(type);
-            if (!type.equals(Object.class) && value == null) {
+        private final Map<Class<?>, HierarchyNode<V>> lookupCache = new ConcurrentHashMap<>();
+        private final Map<HierarchyNode<V>, Set<Class<?>>> nodesToLookupClasses = new ConcurrentHashMap<>();
+
+        private HierarchyNode(Class<?> typeClass, V value, HierarchyNode<V> parent) {
+            Objects.requireNonNull(typeClass);
+            if (!typeClass.equals(Object.class) && value == null) {
                 throw new IllegalArgumentException("Value of hierarchy node cannot be null");
             }
-            this.type = type;
+            this.typeClass = typeClass;
             this.value = value;
+            this.parent = parent;
         }
 
 
         @Override
         public int size() {
-            return childTypes.values().parallelStream().mapToInt(HierarchyNode::size).sum() + (value != null ? 1 : 0);
+            return childTypes.values().stream().mapToInt(HierarchyNode::size).sum() + (value != null ? 1 : 0);
         }
 
         @Override
@@ -120,13 +125,13 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             return value == null && childTypes.isEmpty();
         }
 
-        public boolean canFindRelative(Class<?> key) {
-            Objects.requireNonNull(key);
-            if (isEmpty() || !(key instanceof Class<?> clazz)) {
+        public boolean canFindRelative(Class<?> clazz) {
+            Objects.requireNonNull(clazz);
+            if (isEmpty()) {
                 return false;
             }
 
-            if (this.type.isAssignableFrom(clazz)) {
+            if (!this.typeClass.equals(Object.class) && this.typeClass.isAssignableFrom(clazz)) {
                 return true;
             }
 
@@ -134,7 +139,7 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 return true;
             }
 
-            return childTypes.keySet().parallelStream().filter(aClass -> aClass.isAssignableFrom(clazz)).map(childTypes::get).anyMatch(node -> node.containsKey(clazz));
+            return childTypes.keySet().stream().filter(aClass -> aClass.isAssignableFrom(clazz)).map(childTypes::get).anyMatch(node -> node.canFindRelative(clazz));
         }
 
         @Override
@@ -144,7 +149,7 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 return false;
             }
 
-            if (this.type.equals(clazz)) {
+            if (this.typeClass.equals(clazz)) {
                 return true;
             }
 
@@ -152,13 +157,13 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 return true;
             }
 
-            return childTypes.keySet().parallelStream().filter(aClass -> aClass.isAssignableFrom(clazz)).map(childTypes::get).anyMatch(node -> node.containsKey(clazz));
+            return childTypes.keySet().stream().filter(aClass -> aClass.isAssignableFrom(clazz)).map(childTypes::get).anyMatch(node -> node.containsKey(clazz));
         }
 
         @Override
         public boolean containsValue(Object value) {
             Objects.requireNonNull(value);
-            return childTypes.containsValue(value) || childTypes.values().parallelStream().anyMatch(node -> node.containsValue(value));
+            return childTypes.containsValue(value) || childTypes.values().stream().anyMatch(node -> node.containsValue(value));
         }
 
         @Override
@@ -168,22 +173,42 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 return null;
             }
 
-            if (this.type.equals(clazz)) {
+
+            // Check if the provided key directly belongs to this node
+            if (this.typeClass.equals(clazz)) {
                 return this.value;
             }
 
-            Class<?> foundAssignable = childTypes.keySet().parallelStream().filter(aClass -> aClass.isAssignableFrom(clazz)).findAny().orElse(null);
-            if (foundAssignable != null) {
-                return childTypes.get(foundAssignable).get(clazz);
-            }
-
-            // Although, containsKey and isAssignableFrom is technically the same call for classes that are equal, however it is better performance wise to first to a direct check.
-
+            // Check if there is a direct child mapping
             if (childTypes.containsKey(clazz)) {
                 return childTypes.get(clazz).value;
             }
 
-            if (this.type.isAssignableFrom(clazz)) {
+            // Has an indirect child mapping ever been found? If yes we return it here to have less computations
+            HierarchyNode<V> cached = lookupCache.get(clazz);
+            if (cached != null) {
+                // Prevent stack overflow.
+                if (cached.equals(this)) {
+                    return cached.value;
+                }
+                return cached.get(clazz);
+            }
+
+            // No direct child mapping was cached. We need to search for it now.
+            Class<?> foundAssignable = childTypes.keySet().stream()
+                    .filter(aClass -> aClass.isAssignableFrom(clazz))
+                    .findAny().orElse(null);
+
+            // If we have found one -> save it to our mapping cache
+            if (foundAssignable != null) {
+                HierarchyNode<V> resolvedNode = childTypes.get(foundAssignable);
+                cacheLookup(clazz, resolvedNode);
+                return resolvedNode.get(clazz);
+            }
+
+            // No child was found. As a consequence this node is the best we got
+            if (this.typeClass.isAssignableFrom(clazz)) {
+                cacheLookup(clazz, this);
                 return this.value;
             }
 
@@ -198,7 +223,7 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 throw new IllegalArgumentException("Cannot use Object.class as a key");
             }
 
-            if (this.type.equals(key)) {
+            if (this.typeClass.equals(key)) {
                 V oldValue = this.value;
                 this.value = value;
                 return oldValue;
@@ -208,12 +233,17 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
                 return childTypes.get(key).put(key, value);
             }
 
-            Class<?> foundAssignable = childTypes.keySet().parallelStream().filter(aClass -> aClass.isAssignableFrom(key)).findAny().orElse(null);
+            Class<?> foundAssignable = childTypes.keySet().stream().filter(aClass -> aClass.isAssignableFrom(key)).findAny().orElse(null);
             if (foundAssignable != null) {
                 return childTypes.get(foundAssignable).put(key, value);
             }
 
-            return putAndReorganize(key, value);
+            try {
+                return putAndReorganize(key, value);
+            } finally {
+                // nach erfolgreichem Hinzufügen einer neuen Node
+                clearAffectedCacheEntriesAfterInsert(key);
+            }
         }
 
 
@@ -230,10 +260,12 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
 
 
             if (childTypes.containsKey(clazz)) {
-                return childTypes.remove(clazz).value;
+                HierarchyNode<V> removed = childTypes.remove(clazz);
+                clearCacheUpwards(removed);
+                return removed.value;
             }
 
-            Class<?> foundAssignable = childTypes.keySet().parallelStream().filter(aClass -> aClass.isAssignableFrom(clazz)).findAny().orElse(null);
+            Class<?> foundAssignable = childTypes.keySet().stream().filter(aClass -> aClass.isAssignableFrom(clazz)).findAny().orElse(null);
             if (foundAssignable != null) {
                 return childTypes.get(foundAssignable).remove(key);
             }
@@ -243,21 +275,23 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
 
         @Override
         public void putAll(@NotNull Map<? extends Class<?>, ? extends V> m) {
-            m.entrySet().parallelStream().forEach(entry -> put(entry.getKey(), entry.getValue()));
+            m.entrySet().stream().forEach(entry -> put(entry.getKey(), entry.getValue()));
         }
 
         @Override
         public void clear() {
             childTypes.clear();
+            nodesToLookupClasses.clear();
+            lookupCache.clear();
         }
 
         @Override
         public @NotNull Set<Class<?>> keySet() {
             Set<Class<?>> result = new HashSet<>();
             if (this.value != null) {
-                result.add(this.type);
+                result.add(this.typeClass);
             }
-            childTypes.values().parallelStream().forEach(vHierarchyNode -> result.addAll(vHierarchyNode.keySet()));
+            childTypes.values().stream().forEach(vHierarchyNode -> result.addAll(vHierarchyNode.keySet()));
             return result;
         }
 
@@ -267,7 +301,7 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             if (this.value != null) {
                 result.add(this.value);
             }
-            childTypes.values().parallelStream().forEach(vHierarchyNode -> result.addAll(vHierarchyNode.values()));
+            childTypes.values().stream().forEach(vHierarchyNode -> result.addAll(vHierarchyNode.values()));
             return result;
         }
 
@@ -275,10 +309,10 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
         public @NotNull Set<Entry<Class<?>, V>> entrySet() {
             Map<Class<?>, V> result = new ConcurrentHashMap<>();
             if (this.value != null) {
-                result.put(this.type, this.value);
+                result.put(this.typeClass, this.value);
             }
 
-            childTypes.values().parallelStream().forEach(result::putAll);
+            childTypes.values().stream().forEach(result::putAll);
             return result.entrySet();
         }
 
@@ -287,42 +321,75 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             HierarchyNode<?> that = (HierarchyNode<?>) o;
-            return Objects.equals(type, that.type) && Objects.equals(value, that.value);
+            return Objects.equals(typeClass, that.typeClass) && Objects.equals(value, that.value);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(type, value);
-        }
-
-
-        private @Nullable V putAndReorganize(Class<?> key, V value) {
-            Map<Class<?>, HierarchyNode<V>> toReOrganize = childTypes.entrySet().parallelStream().filter(pair -> key.isAssignableFrom(pair.getKey())).collect(Collectors.toConcurrentMap(Entry::getKey, Entry::getValue));
-
-            if (!toReOrganize.isEmpty()) {
-                for (Class<?> toRemove : toReOrganize.keySet()) {
-                    childTypes.remove(toRemove);
-                }
-            }
-            // Hinzufügen des neuen Knotens
-            HierarchyNode<V> newNode = new HierarchyNode<>(key, value);
-            HierarchyNode<V> former = childTypes.put(key, newNode);
-
-            if (!toReOrganize.isEmpty()) {
-                // Umsiedeln der vorher identifizierten Knoten
-                newNode.childTypes.putAll(toReOrganize);
-            }
-
-            return former != null ? former.value : null;
+            return Objects.hash(typeClass, value);
         }
 
         @Override
         public String toString() {
             return "HierarchyNode{" +
-                "type=" + type +
-                ", value=" + value +
-                ", childTypes=" + childTypes +
-                '}';
+                    "type=" + typeClass +
+                    ", value=" + value +
+                    ", childTypes=" + childTypes +
+                    '}';
+        }
+
+        private void cacheLookup(Class<?> classToLookFor, HierarchyNode<V> foundNode) {
+            lookupCache.put(classToLookFor, foundNode);
+            nodesToLookupClasses.computeIfAbsent(foundNode, vHierarchyNode -> new HashSet<>()).add(classToLookFor);
+        }
+
+        private void clearCache(HierarchyNode<V> node) {
+            Set<Class<?>> keys = nodesToLookupClasses.remove(node);
+            if (keys != null) {
+                keys.forEach(lookupCache::remove);
+            }
+        }
+
+        private void clearCacheUpwards(HierarchyNode<V> node) {
+            HierarchyNode<V> current = node;
+            while (current != null) {
+                current.clearCache(node);
+                current = current.parent;
+            }
+        }
+
+        private void clearAffectedCacheEntriesAfterInsert(Class<?> newlyAddedClass) {
+            // A new class key was added into the hierarchy. Invalidate all caches that are related to this class since the new class might be a better fit
+            for (Map.Entry<Class<?>, HierarchyNode<V>> entry : lookupCache.entrySet()) {
+                Class<?> lookupClass = entry.getKey();
+                HierarchyNode<V> resolvedNode = entry.getValue();
+
+                if (newlyAddedClass.isAssignableFrom(lookupClass)) {
+                    // The new class might be a better fit
+                    clearCacheUpwards(resolvedNode);
+                }
+            }
+        }
+
+        private @Nullable V putAndReorganize(Class<?> key, V value) {
+            Map<Class<?>, HierarchyNode<V>> toReOrganize = childTypes.entrySet().stream().filter(pair -> key.isAssignableFrom(pair.getKey())).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+
+            toReOrganize.keySet().forEach(childTypes::remove);
+            toReOrganize.values().forEach(this::clearCacheUpwards);
+
+            // Add new node
+            HierarchyNode<V> newNode = new HierarchyNode<>(key, value, this);
+
+            if (!toReOrganize.isEmpty()) {
+                toReOrganize.forEach((aClass, vHierarchyNode) -> {
+                    vHierarchyNode.parent = newNode;
+                    newNode.childTypes.put(aClass, vHierarchyNode);
+                });
+                newNode.childTypes.putAll(toReOrganize);
+            }
+
+            HierarchyNode<V> previous = childTypes.put(key, newNode);
+            return previous != null ? previous.value : null;
         }
     }
 }

@@ -1,15 +1,14 @@
 package de.verdox.mccreativelab.impl.paper.entity.types;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSPlayer;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
+import de.verdox.mccreativelab.wrapper.util.MCCTempEntityProperty;
+import de.verdox.mccreativelab.wrapper.world.Weather;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import org.bukkit.WeatherType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -19,28 +18,6 @@ public class PaperPlayer extends NMSPlayer {
 
     public PaperPlayer(Player handle) {
         super(handle);
-    }
-
-    @Override
-    public MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty() {
-        return new MCCEntityProperty<>() {
-            @Override
-            public @Nullable MCCItemStack get() {
-                return MCCPlatform.getInstance().getConversionService().wrap(getServerPlayer().containerMenu.getCarried(), new TypeToken<>() {});
-            }
-
-            @Override
-            public void set(@Nullable MCCItemStack newValue) {
-                ItemStack stack = MCCPlatform.getInstance().getConversionService().unwrap(newValue, new TypeToken<>() {});
-                getServerPlayer().containerMenu.setCarried(stack);
-                getServerPlayer().containerMenu.broadcastCarriedItem();
-            }
-
-            @Override
-            public void sync() {
-
-            }
-        };
     }
 
     @Override
@@ -64,5 +41,49 @@ public class PaperPlayer extends NMSPlayer {
                 getServerPlayer().relativeTime = false;
             }
         };
+    }
+
+    @Override
+    public MCCEntityProperty<Weather, MCCPlayer> getWeatherProperty() {
+        return new MCCEntityProperty<>() {
+            @Override
+            public @Nullable Weather get() {
+                WeatherType weatherType = getServerPlayer().getPlayerWeather();
+                return switch (weatherType) {
+                    case DOWNFALL -> Weather.RAIN;
+                    case CLEAR -> Weather.CLEAR;
+                };
+            }
+
+            @Override
+            public void set(@Nullable Weather newValue) {
+                getServerPlayer().setPlayerWeather(newValue.equals(Weather.CLEAR) ? WeatherType.CLEAR : WeatherType.DOWNFALL, true);
+            }
+
+            @Override
+            public void sync() {
+                getServerPlayer().resetPlayerWeather();
+            }
+        };
+    }
+
+    @Override
+    public MCCEntityProperty<Boolean, MCCPlayer> getInventoryClickProperty() {
+        return new MCCTempEntityProperty<>("mcc:inventory_click_property", Boolean.class, this, true);
+    }
+
+    @Override
+    public MCCEntityProperty<Boolean, MCCPlayer> getInventoryInteractProperty() {
+        return new MCCTempEntityProperty<>("mcc:inventory_interact_property", Boolean.class, this, true);
+    }
+
+    @Override
+    public MCCEntityProperty<Boolean, MCCPlayer> getSwapHandsProperty() {
+        return new MCCTempEntityProperty<>("mcc:inventory_swap_hands", Boolean.class, this, true);
+    }
+
+    @Override
+    public MCCEntityProperty<Boolean, MCCPlayer> getInteractProperty() {
+        return new MCCTempEntityProperty<>("mcc:interact", Boolean.class, this, true);
     }
 }
