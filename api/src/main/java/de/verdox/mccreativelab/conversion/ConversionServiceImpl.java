@@ -93,7 +93,7 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .filter(wrapped -> wrapped != null && apiTypeToConvertTo.getRawType().isInstance(wrapped))
+                .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
                 .findAny().orElse(null);
 
         if (result != null) {
@@ -103,7 +103,7 @@ public class ConversionServiceImpl implements ConversionService {
         try {
             return (T) apiTypeToConvertTo.getRawType().cast(nativeObject);
         } catch (ClassCastException e) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result "+conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
         }
     }
 
