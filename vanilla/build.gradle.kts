@@ -24,6 +24,9 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
     testImplementation(project(":TestSuite"))
+    
+    compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 }
 
 sourceSets {
