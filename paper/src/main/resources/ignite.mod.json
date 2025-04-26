@@ -1,0 +1,8 @@
+{
+  "id": "mcc-wrapper",
+  "version": "1.0.0",
+  "mixins": [
+    "mcc-wrapper.mixins.json"
+  ],
+  "wideners": []
+}
