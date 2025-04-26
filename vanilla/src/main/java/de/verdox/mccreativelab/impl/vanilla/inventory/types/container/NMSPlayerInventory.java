@@ -87,7 +87,11 @@ public class NMSPlayerInventory extends NMSContainer implements MCCPlayerInvento
     public void sendFakeContents(MCCItemStack[] contents) {
         for (int i = 0; i < contents.length; i++) {
             MCCItemStack content = contents[i];
-            ((ServerPlayer) ((Inventory) handle).player).connection.send(new ClientboundSetPlayerInventoryPacket(i, conversionService.unwrap(content)));
+            ItemStack nmsStack = conversionService.unwrap(content);
+            if(nmsStack == null) {
+                nmsStack = ItemStack.EMPTY;
+            }
+            ((ServerPlayer) ((Inventory) handle).player).connection.send(new ClientboundSetPlayerInventoryPacket(i, nmsStack));
         }
     }
 
