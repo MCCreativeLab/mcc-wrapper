@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.entity.types;
 
+import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
@@ -42,6 +43,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the world time property
      */
+    @MCCLogic
     MCCEntityProperty<Long, MCCPlayer> getTimeProperty();
 
     /**
@@ -49,6 +51,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the world time property
      */
+    @MCCLogic
     MCCEntityProperty<Weather, MCCPlayer> getWeatherProperty();
 
     /**
@@ -56,6 +59,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the hide property
      */
+    @MCCLogic
     MCCEntityMultiProperty<MCCPlayer, MCCPlayer> getHideProperty();
 
     /**
@@ -63,6 +67,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the inventory click property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInventoryClickProperty();
 
     /**
@@ -70,6 +75,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the inventory interact property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInventoryInteractProperty();
 
     /**
@@ -77,6 +83,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the swap hand property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getSwapHandsProperty();
 
     /**
@@ -84,6 +91,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the interact property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInteractProperty();
 
     /**
