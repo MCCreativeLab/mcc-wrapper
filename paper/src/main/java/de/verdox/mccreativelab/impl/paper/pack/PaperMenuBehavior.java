@@ -20,6 +20,16 @@ public class PaperMenuBehavior extends MenuBehaviour implements Listener {
         HandlerList.unregisterAll(this);
     }
 
+    @Override
+    protected void capturePlayerInSpectatorMode(MCCPlayer mccPlayer) {
+        //TODO:
+    }
+
+    @Override
+    protected void freePlayerFromSpectatorMode(MCCPlayer mccPlayer) {
+        //TODO:
+    }
+
     //TODO: SwapItemEvent -> call handleHotBarScrolling
     //TODO: Player Input Event -> call handleInput
 }
