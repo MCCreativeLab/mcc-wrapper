@@ -59,13 +59,6 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     MCCEntityMultiProperty<MCCPlayer, MCCPlayer> getHideProperty();
 
     /**
-     * Represents the item on a players cursor if available. Null if the player does not have a gui open or any item on their mouse cursor.
-     *
-     * @return the hide property
-     */
-    MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty();
-
-    /**
      * Represents the ability of a player to click in any gui
      *
      * @return the inventory click property
