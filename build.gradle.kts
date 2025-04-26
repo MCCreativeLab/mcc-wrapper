@@ -46,9 +46,11 @@ subprojects {
         implementation("com.google.guava:guava:33.3.1-jre")
         compileOnly("io.projectreactor:reactor-core:3.7.5")
         testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
+        testImplementation("io.projectreactor:reactor-core:3.7.5")
 
         jmh("org.openjdk.jmh:jmh-core:1.37")
         jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+        jmh("io.projectreactor:reactor-core:3.7.5")
     }
 
     jmh {
