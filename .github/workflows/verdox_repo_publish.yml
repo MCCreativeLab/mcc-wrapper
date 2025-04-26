@@ -22,9 +22,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Compile TestSuite
-        run: ./gradlew TestSuite:compileJava
-
       - name: Run api tests
         run: ./gradlew api:test
 
