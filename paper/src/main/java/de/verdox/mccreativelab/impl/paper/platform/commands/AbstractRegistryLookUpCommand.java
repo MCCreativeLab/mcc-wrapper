@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.impl.paper.platform.commands;
 
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,10 +17,10 @@ import java.util.stream.Stream;
 
 public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
     protected final R registry;
-    private final BiConsumer<Player, T> consumeEntry;
+    private final BiConsumer<MCCPlayer, T> consumeEntry;
     private final String subCommand;
 
-    public AbstractRegistryLookUpCommand(@NotNull String name, String subCommand, R registry, BiConsumer<Player, T> consumeEntry) {
+    public AbstractRegistryLookUpCommand(@NotNull String name, String subCommand, R registry, BiConsumer<MCCPlayer, T> consumeEntry) {
         super(name);
         this.subCommand = subCommand;
         Objects.requireNonNull(registry);
@@ -28,7 +30,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
         setPermission("mccreativelab.command.registry.lookup." + getName().toLowerCase(Locale.ROOT));
     }
 
-    public AbstractRegistryLookUpCommand(@NotNull String name, R registry, BiConsumer<Player, T> consumeEntry) {
+    public AbstractRegistryLookUpCommand(@NotNull String name, R registry, BiConsumer<MCCPlayer, T> consumeEntry) {
         this(name, "get", registry, consumeEntry);
     }
 
@@ -59,7 +61,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
                         }
                     }
 
-                    consumeEntry.accept(playerToShow, entry);
+                    consumeEntry.accept(BukkitAdapter.wrap(playerToShow, MCCPlayer.class), entry);
                 } catch (Exception e) {
                     sender.sendMessage("An internal error occured while doing the registry lookup");
                     e.printStackTrace();
