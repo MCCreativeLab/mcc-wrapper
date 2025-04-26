@@ -1,7 +1,9 @@
 package de.verdox.mccreativelab.wrapper.entity.types;
 
+import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
@@ -42,6 +44,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the world time property
      */
+    @MCCLogic
     MCCEntityProperty<Long, MCCPlayer> getTimeProperty();
 
     /**
@@ -49,6 +52,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the world time property
      */
+    @MCCLogic
     MCCEntityProperty<Weather, MCCPlayer> getWeatherProperty();
 
     /**
@@ -56,20 +60,15 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the hide property
      */
+    @MCCLogic
     MCCEntityMultiProperty<MCCPlayer, MCCPlayer> getHideProperty();
-
-    /**
-     * Represents the item on a players cursor if available. Null if the player does not have a gui open or any item on their mouse cursor.
-     *
-     * @return the hide property
-     */
-    MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty();
 
     /**
      * Represents the ability of a player to click in any gui
      *
      * @return the inventory click property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInventoryClickProperty();
 
     /**
@@ -77,6 +76,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the inventory interact property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInventoryInteractProperty();
 
     /**
@@ -84,6 +84,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the swap hand property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getSwapHandsProperty();
 
     /**
@@ -91,6 +92,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      *
      * @return the interact property
      */
+    @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getInteractProperty();
 
     /**
@@ -152,4 +154,10 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
             getLocation().world().dropItemNaturally(getLocation(), mccItemStack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
         });
     }
+
+    /**
+     * Sets the entity to spectate. If null is provided the camera gets reset
+     * @param entityToSpectate the entity to spectate
+     */
+    void setCamera(@Nullable MCCEntity entityToSpectate) throws IllegalStateException;
 }

@@ -6,6 +6,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.player.client.NMSSkinParts;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
@@ -27,6 +28,7 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,12 +75,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityMultiProperty<MCCPlayer, MCCPlayer> getHideProperty() {
-        return null;
-    }
-
-    @Override
-    public MCCEntityProperty<MCCItemStack, MCCPlayer> getCursorProperty() {
-        throw  new OperationNotPossibleOnNMS(); // TODO: implement
+        throw new OperationNotPossibleOnNMS();
     }
 
     @Override
@@ -167,6 +164,11 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
             return type.getType().cast(getServerPlayer().isTextFilteringEnabled());
         }
         throw new RuntimeException("Unknown settings type");
+    }
+
+    @Override
+    public void setCamera(@Nullable MCCEntity entityToSpectate) {
+        getServerPlayer().setCamera(conversionService.unwrap(entityToSpectate, Entity.class));
     }
 
     @Override
