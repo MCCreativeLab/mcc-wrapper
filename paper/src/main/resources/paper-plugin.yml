@@ -2,7 +2,7 @@ name: MCCPaperPlatform
 main: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPlatformPlugin
 description: The paper implementation of mcc-wrapper loaded via this plugin
 load: STARTUP
-bootstrapper: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPluginLoader
+bootstrapper: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPluginBootstrapper
 loader: de.verdox.mccreativelab.impl.paper.plugin.MCCPaperPluginLoader
 
 version: 1.21.4-R0.1-SNAPSHOT
