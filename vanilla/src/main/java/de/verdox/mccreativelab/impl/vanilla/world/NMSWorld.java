@@ -93,7 +93,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public CompletableFuture<MCCEntity> summon(@NotNull MCCLocation location, @NotNull MCCEntityType mccEntityType) {
+    public <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType) {
         MCCEntity constructedEntity = mccEntityType.constructNewEntity();
         Entity entity = conversionService.unwrap(constructedEntity);
 

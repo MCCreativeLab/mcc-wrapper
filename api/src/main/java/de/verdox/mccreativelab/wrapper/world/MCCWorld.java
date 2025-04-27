@@ -167,7 +167,7 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      * @param mccEntityType the entity type
      * @return a future
      */
-    CompletableFuture<MCCEntity> summon(@NotNull MCCLocation location, @NotNull MCCEntityType mccEntityType);
+    <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType);
 
     /**
      * Gets or loads a chunk
