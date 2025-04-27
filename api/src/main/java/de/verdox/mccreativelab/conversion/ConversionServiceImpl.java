@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,12 +41,10 @@ public class ConversionServiceImpl implements ConversionService {
         return result;
     }
 
-    //TODO: Add method for wrapClassTypeOrNull with explicit type declaration
-
     @Override
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
-        return conversionCache.streamAllVariantsForNativeType(nativeType)
+        return conversionCache.streamAllDirectVariantsForNativeType(nativeType)
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
@@ -61,7 +60,17 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
+        List<MCCConverter<?, ?>> directConverters = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass()).toList();
+        List<MCCConverter<?, ?>> allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).toList();
+
+        if (directConverters.size() != allPossibleConverters.size()) {
+            LOGGER.warning("The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
+            for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+                LOGGER.warning(stackTraceElement.toString());
+            }
+        }
+
+        T result = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .map(mccConverter -> ((MCCConverter<F, T>) mccConverter).wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
@@ -103,7 +112,7 @@ public class ConversionServiceImpl implements ConversionService {
         try {
             return (T) apiTypeToConvertTo.getRawType().cast(nativeObject);
         } catch (ClassCastException e) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result "+conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result " + conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
         }
     }
 

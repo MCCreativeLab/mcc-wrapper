@@ -91,7 +91,7 @@ public class ConversionBenchmarkTests extends TestBase {
 
     @Benchmark
     public void benchmarkGetAllVariantsForNativeType(BenchmarkState state) {
-        conversionCache.streamAllVariantsForNativeType(state.reference.getHandle().getClass());
+        conversionCache.streamAllDirectVariantsForNativeType(state.reference.getHandle().getClass());
     }
 
     @Benchmark

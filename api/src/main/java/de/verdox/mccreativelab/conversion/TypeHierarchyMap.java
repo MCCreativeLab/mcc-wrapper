@@ -87,6 +87,13 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
         return root.entrySet();
     }
 
+    /**
+     * Returns all matching values for the given class, considering the full hierarchy.
+     */
+    public List<V> getAllMatching(Class<?> key) {
+        return root.getAllMatching(key);
+    }
+
     @Override
     public String toString() {
         return "TypeHierarchyMap{" +
@@ -226,15 +233,18 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             if (this.typeClass.equals(key)) {
                 V oldValue = this.value;
                 this.value = value;
+                clearAllMatchingCache();
                 return oldValue;
             }
 
             if (childTypes.containsKey(key)) {
+                clearAllMatchingCache();
                 return childTypes.get(key).put(key, value);
             }
 
             Class<?> foundAssignable = childTypes.keySet().stream().filter(aClass -> aClass.isAssignableFrom(key)).findAny().orElse(null);
             if (foundAssignable != null) {
+                clearAllMatchingCache();
                 return childTypes.get(foundAssignable).put(key, value);
             }
 
@@ -243,6 +253,7 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             } finally {
                 // nach erfolgreichem Hinzufügen einer neuen Node
                 clearAffectedCacheEntriesAfterInsert(key);
+                clearAllMatchingCache();
             }
         }
 
@@ -391,5 +402,46 @@ public class TypeHierarchyMap<V> implements Map<Class<?>, V> {
             HierarchyNode<V> previous = childTypes.put(key, newNode);
             return previous != null ? previous.value : null;
         }
+
+
+
+        private final Map<Class<?>, List<HierarchyNode<V>>> lookupAllCache = new ConcurrentHashMap<>();
+
+        public List<V> getAllMatching(Class<?> clazz) {
+            Objects.requireNonNull(clazz);
+
+            List<HierarchyNode<V>> cached = lookupAllCache.get(clazz);
+            if (cached != null) {
+                return cached.stream()
+                        .map(node -> node.value)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            }
+
+            List<HierarchyNode<V>> matches = new ArrayList<>();
+            collectAllMatching(clazz, matches);
+
+            lookupAllCache.put(clazz, matches);
+
+            return matches.stream()
+                    .map(node -> node.value)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
+        private void collectAllMatching(Class<?> clazz, List<HierarchyNode<V>> result) {
+            if (this.value != null && this.typeClass.isAssignableFrom(clazz)) {
+                result.add(this);
+            }
+            for (HierarchyNode<V> child : childTypes.values()) {
+                child.collectAllMatching(clazz, result);
+            }
+        }
+
+        private void clearAllMatchingCache() {
+            lookupAllCache.clear();
+        }
     }
+
+
 }

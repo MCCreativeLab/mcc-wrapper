@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.conversion;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -377,6 +378,86 @@ class TypeHierarchyMapTests {
         assertTrue(map.canFindRelative(Integer.class));
         assertTrue(map.canFindRelative(Number.class));
         assertFalse(map.canFindRelative(String.class));
+    }
+
+    static class Entity {}
+    static class Container extends Entity {}
+    static class MinecartChest extends Container {}
+
+    static class Vehicle {}
+    static class Car extends Vehicle {}
+
+    @Test
+    void testDirectMatch() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+
+        List<String> matches = map.getAllMatching(Entity.class);
+
+        assertEquals(1, matches.size());
+        assertTrue(matches.contains("EntityMapping"));
+    }
+
+    @Test
+    void testSubTypeMatch() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+
+        List<String> matches = map.getAllMatching(MinecartChest.class);
+
+        assertEquals(1, matches.size());
+        assertTrue(matches.contains("EntityMapping"));
+    }
+
+    @Test
+    void testMultipleMatches() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+        map.put(Container.class, "ContainerMapping");
+
+        List<String> matches = map.getAllMatching(MinecartChest.class);
+
+        assertEquals(2, matches.size());
+        assertTrue(matches.contains("EntityMapping"));
+        assertTrue(matches.contains("ContainerMapping"));
+    }
+
+    @Test
+    void testNoMatch() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+
+        List<String> matches = map.getAllMatching(Car.class);
+
+        assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    void testCacheBehavior() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+
+        List<String> matches1 = map.getAllMatching(MinecartChest.class);
+        List<String> matches2 = map.getAllMatching(MinecartChest.class);
+
+        assertSame(matches1.size(), matches2.size());
+        assertEquals(matches1, matches2);
+    }
+
+    @Test
+    void testInsertInvalidatesCache() {
+        TypeHierarchyMap<String> map = new TypeHierarchyMap<>();
+        map.put(Entity.class, "EntityMapping");
+
+        List<String> matchesBefore = map.getAllMatching(MinecartChest.class);
+        assertEquals(1, matchesBefore.size());
+
+        map.put(Container.class, "ContainerMapping");
+
+        List<String> matchesAfter = map.getAllMatching(MinecartChest.class);
+        assertEquals(2, matchesAfter.size());
+        assertTrue(matchesAfter.contains("EntityMapping"));
+        assertTrue(matchesAfter.contains("ContainerMapping"));
     }
 }
 

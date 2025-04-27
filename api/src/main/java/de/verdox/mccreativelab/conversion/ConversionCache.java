@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -25,6 +26,7 @@ public class ConversionCache<V> {
     private final TypeHierarchyMap<Class<?>> nativeToApi = new TypeHierarchyMap<>();
     // The impl values are mapped to the respective values. Normally we use converters as values
     private final TypeHierarchyMap<V> implToValue = new TypeHierarchyMap<>();
+
     /**
      * Creates a mapping between an api, an impl, and a native type with an associated value.
      *
@@ -99,18 +101,48 @@ public class ConversionCache<V> {
     }
 
     /**
-     * Returns all values that are mapped to impl types which are mapped to the given native type
+     * Returns all values that are mapped to impl types which are mapped to the given native type.
+     * This method will search for the best fit but will not return other possible matches.
+     * <p>
+     * You should ONLY use this method if you are sure that there will be only one match.
+     * If a native type extends two other native types that both have valid impl types this method might return the wrong one.
      *
      * @param nativeType the native type
      * @return the values
      */
     @NotNull
-    public Stream<V> streamAllVariantsForNativeType(Class<?> nativeType) {
+    public Stream<V> streamAllDirectVariantsForNativeType(Class<?> nativeType) {
         List<Class<?>> foundImplTypes = nativeToImpls.get(nativeType);
-        if (foundImplTypes == null) {
+        if(foundImplTypes == null) {
             return Stream.of();
         }
+        return foundImplTypes.stream().map(implToValue::get);
+    }
 
+    /**
+     * Returns all values that are mapped to impl types which are mapped to the given native type
+     *
+     * @param nativeType the native type
+     * @return the values
+     */
+    public Stream<V> streamAllVariantsForNativeType(Class<?> nativeType) {
+        List<Class<?>> foundImplTypes = nativeToImpls.getAllMatching(nativeType).stream().flatMap(Collection::stream).toList();
+        return foundImplTypes.stream().map(implToValue::get);
+    }
+
+    /**
+     * Returns all values that are mapped to impl types which are mapped to the given api type
+     * This method will search for the best fit but will not return other possible matches.
+     *
+     * @param apiType the api type
+     * @return the values
+     */
+    @NotNull
+    public Stream<V> streamAllDirectVariantsForApiType(Class<?> apiType) {
+        List<Class<?>> foundImplTypes = apiToImpls.get(apiType);
+        if(foundImplTypes == null) {
+            return Stream.of();
+        }
         return foundImplTypes.stream().map(implToValue::get);
     }
 
@@ -122,10 +154,7 @@ public class ConversionCache<V> {
      */
     @NotNull
     public Stream<V> streamAllVariantsForApiType(Class<?> apiType) {
-        List<Class<?>> foundImplTypes = apiToImpls.get(apiType);
-        if (foundImplTypes == null) {
-            return Stream.of();
-        }
+        List<Class<?>> foundImplTypes = apiToImpls.getAllMatching(apiType).stream().flatMap(Collection::stream).toList();
         return foundImplTypes.stream().map(implToValue::get);
     }
 
