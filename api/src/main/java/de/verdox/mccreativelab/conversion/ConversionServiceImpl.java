@@ -64,9 +64,9 @@ public class ConversionServiceImpl implements ConversionService {
         List<MCCConverter<?, ?>> allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).toList();
 
         if (directConverters.size() != allPossibleConverters.size()) {
-            LOGGER.warning("The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
+            LOGGER.log(Level.SEVERE, "The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
             for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-                LOGGER.warning(stackTraceElement.toString());
+                LOGGER.warning("\t"+stackTraceElement.toString());
             }
         }
 
