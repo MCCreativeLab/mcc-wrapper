@@ -30,6 +30,7 @@ public class VanillaGeneratorHelper implements GeneratorPlatformHelper {
 
     public VanillaGeneratorHelper(CustomResourcePack customResourcePack) {
         this.customResourcePack = customResourcePack;
+        this.hudRenderer.start();
     }
 
     @Override
