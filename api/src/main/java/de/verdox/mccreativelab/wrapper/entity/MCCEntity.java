@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
+import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.audience.Audience;
@@ -19,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
  * Describes an entity in a minecraft world
  */
 @MCCInstantiationSource(sourceClasses = {MCCWorld.class})
-public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible {
+public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCTicking {
     /**
      * Gets the type of this entity
      *
@@ -115,7 +116,7 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     boolean isOnGround();
 
     @Override
-    default Key getRegistryKey(){
+    default Key getRegistryKey() {
         return getType().getRegistryKey();
     }
 }

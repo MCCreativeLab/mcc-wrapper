@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  * This annotation can be ignored if you work on a platform that allows minecraft client manipulation as well (Mods).
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 public @interface MCCRequireVanillaElement {
 }

@@ -24,7 +24,6 @@ public class MCCPaperPluginLoader implements PluginLoader {
         resolver.addRepository((new RemoteRepository.Builder("verdox-repo", "default", "https://repo.verdox.de/snapshots")).build());
         resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox:vserializer:1.2.3-SNAPSHOT"), (String) null));
         resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper:api:"+version), (String) null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper:vanilla:"+version), (String) null));
 
         MavenLibraryResolver central = new MavenLibraryResolver();
         central.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
@@ -37,6 +36,7 @@ public class MCCPaperPluginLoader implements PluginLoader {
         central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-compress:1.27.1"), (String) null));
         central.addDependency(new Dependency(new DefaultArtifact("com.google.guava:guava:33.3.1-jre"), (String) null));
         central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-lang3:3.17.0"), (String) null));
+        central.addDependency(new Dependency(new DefaultArtifact("io.projectreactor:reactor-core:3.7.5"), (String) null));
         //resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab:mcc-util:1.21.4-R0.1-SNAPSHOT"), (String)null));
         //resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab:mcc-pack-generator:1.21.4-R0.1-SNAPSHOT"), (String)null));
         classpathBuilder.addLibrary(resolver);

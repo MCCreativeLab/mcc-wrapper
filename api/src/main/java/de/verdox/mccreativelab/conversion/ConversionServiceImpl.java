@@ -3,8 +3,10 @@ package de.verdox.mccreativelab.conversion;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.*;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,25 +41,14 @@ public class ConversionServiceImpl implements ConversionService {
         return result;
     }
 
-    //TODO: Add method for wrapClassTypeOrNull with explicit type declaration
-
     @Override
     public @Nullable <F, T> Class<T> wrapClassTypeOrNull(Class<F> nativeType) {
         Objects.requireNonNull(nativeType, "The provided native type cannot be null");
-        return conversionCache.getAllVariantsForNativeType(nativeType)
+        return conversionCache.streamAllDirectVariantsForNativeType(nativeType)
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeType))
                 .map(mccConverter -> (MCCConverter<Object, Object>) mccConverter)
                 .map(MCCConverter::apiImplementationClass)
                 .map(objectClass -> conversionCache.getApiTypeOfImplType(objectClass))
-                .filter(t -> {
-                    try {
-                        Class<T> cast = (Class<T>) t;
-                        return true;
-                    } catch (ClassCastException e) {
-                        LOGGER.log(Level.WARNING, "You tried to convert a native class type " + nativeType + ". However, you did not declare an explicit type to convert to. The converter could not implicitly find the right type to wrap to. Consider declaring the explicit type at the specified stack trace.", e);
-                        return false;
-                    }
-                })
                 .map(aClass -> (Class<T>) aClass)
                 .filter(Objects::nonNull)
                 .findAny().orElse(null);
@@ -69,10 +60,19 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        List<MCCConverter<?, ?>> directConverters = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass()).toList();
+        List<MCCConverter<?, ?>> allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).toList();
+
+        if (directConverters.size() != allPossibleConverters.size()) {
+            LOGGER.log(Level.SEVERE, "The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
+            for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+                LOGGER.warning("\t"+stackTraceElement.toString());
+            }
+        }
+
+        T result = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
-                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
-                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .map(mccConverter -> ((MCCConverter<F, T>) mccConverter).wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
                 .findAny().orElse(null);
@@ -90,7 +90,7 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        T result = conversionCache.getAllVariantsForNativeType(nativeObject.getClass())
+        T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
                     Class<?> converterApiClass = mccConverter.apiImplementationClass();
@@ -102,7 +102,7 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> mccConverter.wrap(nativeObject))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .filter(wrapped -> wrapped != null && apiTypeToConvertTo.getRawType().isInstance(wrapped))
+                .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
                 .findAny().orElse(null);
 
         if (result != null) {
@@ -112,7 +112,7 @@ public class ConversionServiceImpl implements ConversionService {
         try {
             return (T) apiTypeToConvertTo.getRawType().cast(nativeObject);
         } catch (ClassCastException e) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type.");
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result " + conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
         }
     }
 
@@ -166,6 +166,11 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public boolean isApiTypeKnown(Class<?> apiType) {
         return conversionCache.knowsApiType(apiType);
+    }
+
+    @VisibleForTesting
+    public ConversionCache<MCCConverter<?, ?>> getConversionCache() {
+        return conversionCache;
     }
 
     @Override

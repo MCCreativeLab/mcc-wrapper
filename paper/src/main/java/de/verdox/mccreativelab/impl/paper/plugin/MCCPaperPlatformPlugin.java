@@ -1,9 +1,19 @@
 package de.verdox.mccreativelab.impl.paper.plugin;
 
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
+import de.verdox.mccreativelab.generator.resourcepack.types.hud.renderer.HudRenderer;
 import de.verdox.mccreativelab.impl.paper.pack.PaperGeneratorHelper;
 import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
+import de.verdox.mccreativelab.impl.paper.platform.commands.RegistryLookUpCommand;
+import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
+import de.verdox.mccreativelab.platform.PlatformResourcePack;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,6 +51,21 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
         platform.enableListeners(this);
         Bukkit.getPluginManager().registerEvents(this, this);
+
+
+        Bukkit.getCommandMap().register("", new RegistryLookUpCommand<>("rpMenu", PlatformResourcePack.INSTANCE.get().getResourcePackMapper().getMenuRegistry().get(), (player, menu) -> menu.createMenuForPlayer(player)));
+        Bukkit.getCommandMap().register("", new RegistryLookUpCommand<>("rpGui", PlatformResourcePack.INSTANCE.get().getResourcePackMapper().getGuiRegistry().get(), (player, gui) -> gui.createMenuForPlayer(player)));
+        Bukkit.getCommandMap().register("", new RegistryLookUpCommand<>("rpHud", PlatformResourcePack.INSTANCE.get().getResourcePackMapper().getHudRegistry().get(), (player, hud) -> {
+            HudRenderer hudRenderer = GeneratorPlatformHelper.INSTANCE.get().getHudRenderer();
+            var active = hudRenderer.getActiveHud(player, hud);
+            if (active == null) {
+                hudRenderer.getOrStartActiveHud(player, hud);
+                player.sendMessage(Component.text("Starting hud " + hud.key() + " for player " + player.getPlayerName()));
+            } else {
+                hudRenderer.stopActiveHud(player, hud);
+                player.sendMessage(Component.text("Stopping hud " + hud.key() + " for player " + player.getPlayerName()));
+            }
+        }));
     }
 
     @EventHandler
@@ -61,6 +86,22 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void afterLastWorldWasLoaded(WorldLoadEvent e) {
         if (Bukkit.getWorlds().getLast().equals(e.getWorld())) {
             MCCPlatform.getInstance().triggerLifecycleEvent(MCCPlatform.Lifecycle.AFTER_WORLD_LOAD);
+        }
+    }
+
+    @EventHandler
+    public void onServerTick(ServerTickEndEvent e) {
+        NMSPlatform nmsPlatform = (NMSPlatform) MCCPlatform.getInstance();
+        long tick = e.getTickNumber();
+        nmsPlatform.tickSink.tryEmitNext(tick);
+
+        for (MCCWorld world : nmsPlatform.getWorlds()) {
+            for (MCCEntity entity : world.getEntities()) {
+                NMSEntity<?> nmsEntity = (NMSEntity<?>) entity;
+                nmsEntity.tickSink.tryEmitNext(tick);
+            }
+            NMSWorld nmsWorld = (NMSWorld) world;
+            nmsWorld.tickSink.tryEmitNext(tick);
         }
     }
 }

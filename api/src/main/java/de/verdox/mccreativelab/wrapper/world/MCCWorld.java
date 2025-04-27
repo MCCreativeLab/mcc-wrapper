@@ -10,6 +10,8 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
+import de.verdox.mccreativelab.wrapper.util.MCCTicking;
+import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.audience.ForwardingAudience;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +21,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience {
+public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking {
 
     default CompletableFuture<MCCBlockState> getBlockDataAt(int x, int y, int z) {
         return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
@@ -158,18 +161,54 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      */
     List<MCCPlayer> getPlayers();
 
+    /**
+     * Used to summon an entity at a specified location
+     * @param location the location
+     * @param mccEntityType the entity type
+     * @return a future
+     */
     CompletableFuture<MCCEntity> summon(@NotNull MCCLocation location, @NotNull MCCEntityType mccEntityType);
 
+    /**
+     * Gets or loads a chunk
+     * @param chunkX the chunk x coordinate
+     * @param chunkZ the chunk y coordinate
+     * @return a future
+     */
     CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ);
 
+    /**
+     * Gets or loads a chunk
+     * @param location a location that is inside the chunk
+     * @return a future
+     */
     CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location);
 
-    @Nullable MCCChunk getChunkImmediately(int x, int z);
+    /**
+     * Returns a chunk at specified coordinates if it is loaded
+     * @param chunkX the chunk x coordinate
+     * @param chunkZ the chunk y coordinate
+     * @return the chunk or null if it is not loaded
+     */
+    @Nullable MCCChunk getChunkImmediately(int chunkX, int chunkZ);
 
+    /**
+     * Returns a chunk at specified coordinates if it is loaded
+     * @param location a location that is inside the chunk
+     * @return the chunk or null if it is not loaded
+     */
     @Nullable MCCChunk getChunkImmediately(MCCLocation location);
 
+    /**
+     * Returns the uuid of the world
+     * @return the uuid
+     */
     UUID getUUID();
 
+    /**
+     * Triggers a block update at a location
+     * @param location the location
+     */
     void triggerBlockUpdate(MCCLocation location);
 
     /**
@@ -186,8 +225,72 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
      */
     int getMinBuildHeight();
 
+    /**
+     * Returns an iterable over all players as audiences
+     * @return the iterable
+     */
     @Override
     default Iterable<? extends net.kyori.adventure.audience.Audience> audiences() {
         return this.getPlayers();
     }
+
+    /**
+     * Gets the entity with the specified uuid or null if no entity has the uuid
+     * @param entityUUID the uuid
+     * @return the entity or null
+     */
+    @Nullable
+    MCCEntity get(UUID entityUUID);
+
+    /**
+     * Gets the entity with the specified id or null if no entity has the uuid
+     * @param entityId the id
+     * @return the entity or null
+     */
+    MCCEntity get(int entityId);
+
+    /**
+     * Gets all entities within the specified AABB excluding the one passed into it.
+     * @param entityToExclude the entity to exclude
+     * @param boundingBox the bounding box
+     * @param filter a filter
+     * @return all found entities
+     */
+    List<MCCEntity> getEntities(@Nullable MCCEntity entityToExclude, AxisAlignedBoundingBox boundingBox, Predicate<MCCEntity> filter);
+
+    /**
+     * Gets the nearest player at a specified location
+     * @param x the x location
+     * @param y the y location
+     * @param z the z location
+     * @param distance the distance
+     * @param filter the filter
+     * @return the found player or null
+     */
+    @Nullable
+    MCCPlayer getNearestPlayer(double x, double y, double z, double distance, Predicate<MCCPlayer> filter);
+
+    /**
+     * Checks if any alive player is nearby
+     * @param x the x location
+     * @param y the y location
+     * @param z the z location
+     * @param distance the distance
+     * @return true or false
+     */
+    boolean hasNearbyAlivePlayer(double x, double y, double z, double distance);
+
+    /**
+     * Gets a player by their uuid
+     * @param playerUUID the uuid
+     * @return the player or null if no player was found
+     */
+    @Nullable
+    MCCPlayer getPlayer(UUID playerUUID);
+
+    /**
+     * Gets all entities that are currently loaded in this world
+     * @return all entities
+     */
+    List<MCCEntity> getEntities();
 }
