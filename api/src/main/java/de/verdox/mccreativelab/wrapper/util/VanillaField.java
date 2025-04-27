@@ -6,8 +6,8 @@ package de.verdox.mccreativelab.wrapper.util;
  */
 public abstract class VanillaField<FIELD_TYPE> {
     /**
-     * Sets the vield value
-     * @param value the new value
+     * Sets the field value
+     * @param newValue the new value
      */
     public abstract void set(FIELD_TYPE newValue);
 

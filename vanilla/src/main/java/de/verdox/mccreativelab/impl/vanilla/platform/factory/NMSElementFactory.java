@@ -1,7 +1,10 @@
 package de.verdox.mccreativelab.impl.vanilla.platform.factory;
 
+import com.mojang.math.Transformation;
+import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCDisplayEntity;
 import de.verdox.mccreativelab.wrapper.item.components.*;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import net.minecraft.core.component.DataComponentMap;
@@ -47,6 +50,11 @@ public class NMSElementFactory implements MCCElementFactory {
             throw new IllegalArgumentException("Could not create an empty variant of the data component type " + componentClass.getName());
         }
         return componentClass.cast(constructors.get(componentClass).get());
+    }
+
+    @Override
+    public MCCDisplayEntity.Transformation createTransformation() {
+        return new NMSDisplayEntity.NMSTransformation(Transformation.identity());
     }
 
     private <T extends MCCItemComponent> void registerComponentConstructor(Class<T> componentClass, Supplier<T> emptyConstructor) {

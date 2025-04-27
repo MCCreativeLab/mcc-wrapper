@@ -27,24 +27,13 @@ public interface MCCDisplayEntity extends MCCEntity {
     VanillaField<Integer> interpolationDelayInTicks();
 
     /**
-     * (Required) Translation transformation. This tag corresponds to the last column in the matrix form.
+     * The transformation of the entity. This field works with copies.
+     * If you set a new value it is copied from your provided parameter.
+     * If you get the current value it is copied from the entity.
+     * <p>
+     * You cannot change an entities parameters by changing any values without saving it onto the entity!
      */
-    VanillaField<Vector3f> translation();
-
-    /**
-     * (Required) Rotates the model again. This tag corresponds to the left-singular vector matrix after the matrix singular value decomposition
-     */
-    VanillaField<Quaternionf> leftRotation();
-
-    /**
-     * (Required) Initial rotation. This tag corresponds to the right-singular vector matrix after the matrix singular value decomposition
-     */
-    VanillaField<Quaternionf> rightRotation();
-
-    /**
-     * (Required) Scale the model centered on the origin. This tag corresponds to the singular values of the matrix after singular value decomposition.
-     */
-    VanillaField<Vector3f> scale();
+    VanillaField<Transformation> transformation();
 
     /**
      * Controls if this entity should pivot to face player when rendered. It can be fixed (both vertical and horizontal angles are fixed), vertical (faces player around vertical axis), horizontal (pivots around horizontal axis), and center (pivots around center point).
@@ -55,12 +44,7 @@ public interface MCCDisplayEntity extends MCCEntity {
     /**
      * If present, overrides light values used for rendering. Omitted by default (which means rendering uses values from entity position).
      */
-    VanillaField<Integer> blockBrightness();
-
-    /**
-     * If present, overrides light values used for rendering. Omitted by default (which means rendering uses values from entity position).
-     */
-    VanillaField<Integer> skyBrightness();
+    VanillaField<BrightnessOverride> blockBrightness();
 
     /**
      * Maximum view range of the entity. When the distance is more than {@code view_range x entityDistanceScaling x 64}, the entity is not rendered.
@@ -93,11 +77,45 @@ public interface MCCDisplayEntity extends MCCEntity {
      */
     VanillaField<Integer> glowColorOverride();
 
+    interface Transformation {
+        /**
+         * (Required) Translation transformation. This tag corresponds to the last column in the matrix form.
+         */
+        VanillaField<Vector3f> translation();
+
+        /**
+         * (Required) Rotates the model again. This tag corresponds to the left-singular vector matrix after the matrix singular value decomposition
+         */
+        VanillaField<Quaternionf> leftRotation();
+
+        /**
+         * (Required) Initial rotation. This tag corresponds to the right-singular vector matrix after the matrix singular value decomposition
+         */
+        VanillaField<Quaternionf> rightRotation();
+
+        /**
+         * (Required) Scale the model centered on the origin. This tag corresponds to the singular values of the matrix after singular value decomposition.
+         */
+        VanillaField<Vector3f> scale();
+    }
+
+    record BrightnessOverride(int block, int sky) {}
+
     enum Billboard {
-        FIXED,
-        VERTICAL,
-        HORIZONTAL,
-        CENTER
+        FIXED((byte) 0),
+        VERTICAL((byte) 1),
+        HORIZONTAL((byte) 2),
+        CENTER((byte) 3),
+        ;
+        private final byte id;
+
+        Billboard(byte id) {
+            this.id = id;
+        }
+
+        public byte getId() {
+            return this.id;
+        }
     }
 
     interface Item extends MCCDisplayEntity {
@@ -113,15 +131,34 @@ public interface MCCDisplayEntity extends MCCEntity {
         VanillaField<Display> display();
 
         enum Display {
-            NONE,
-            THIRD_PERSON_LEFT_HAND,
-            THIRD_PERSON_RIGHT_HAND,
-            FIRST_PERSON_LEFT_HAND,
-            FIRST_PERSON_RIGHT_HAND,
-            HEAD,
-            GUI,
-            GROUND,
-            FIXED,
+            NONE(0),
+            THIRD_PERSON_LEFT_HAND(1),
+            THIRD_PERSON_RIGHT_HAND(2),
+            FIRST_PERSON_LEFT_HAND(3),
+            FIRST_PERSON_RIGHT_HAND(4),
+            HEAD(5),
+            GUI(6),
+            GROUND(7),
+            FIXED(8);
+
+            private final byte id;
+
+            Display(int id) {
+                this.id = (byte) id;
+            }
+
+            public byte getId() {
+                return id;
+            }
+
+            public static Display byId(byte id) {
+                for (Display value : Display.values()) {
+                    if (value.getId() == id) {
+                        return value;
+                    }
+                }
+                throw new IllegalArgumentException("No display found with id " + id);
+            }
         }
     }
 
@@ -180,7 +217,7 @@ public interface MCCDisplayEntity extends MCCEntity {
         enum Alignment {
             CENTER,
             LEFT,
-            Right,
+            RIGHT,
         }
     }
 

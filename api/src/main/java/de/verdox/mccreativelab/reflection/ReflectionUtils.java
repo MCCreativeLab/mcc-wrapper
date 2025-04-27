@@ -33,6 +33,27 @@ public class ReflectionUtils {
     }
 
     /**
+     * Read a field from a class
+     *
+     * @param clazz     Class to read from
+     * @param fieldName Field name
+     * @param type      Type of the field
+     * @param <C>       Class type
+     * @param <R>       Field type
+     * @return Field value
+     */
+    @SuppressWarnings("unchecked")
+    public static <C, R> R readStaticFieldFromClass(Class<C> clazz, String fieldName, TypeToken<R> type) {
+        try {
+            Field field = findFieldInHierarchy(clazz, fieldName);
+            field.setAccessible(true);
+            return (R) field.get(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Write a field in a class
      *
      * @param clazz     Class to write to
