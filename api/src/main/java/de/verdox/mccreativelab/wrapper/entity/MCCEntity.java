@@ -115,6 +115,13 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
 
     boolean isOnGround();
 
+    /**
+     * Changes the rotation of the entity
+     * @param yaw the yaw
+     * @param pitch the pitch
+     */
+    void setRotation(float yaw, float pitch);
+
     @Override
     default Key getRegistryKey() {
         return getType().getRegistryKey();

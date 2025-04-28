@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.impl.vanilla.util;
+package de.verdox.mccreativelab.impl.vanilla.util.field;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;

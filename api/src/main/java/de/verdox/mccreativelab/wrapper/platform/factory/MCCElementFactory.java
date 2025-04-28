@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.platform.factory;
 
+import de.verdox.mccreativelab.wrapper.entity.types.MCCDisplayEntity;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCItemComponent;
 
@@ -20,4 +21,10 @@ public interface MCCElementFactory {
      * @param <T> the generic component type
      */
     <T extends MCCItemComponent> T createEmptyComponent(Class<T> componentClass);
+
+    /**
+     * Creates an identity transformation
+     * @return the transformation
+     */
+    MCCDisplayEntity.Transformation createTransformation();
 }

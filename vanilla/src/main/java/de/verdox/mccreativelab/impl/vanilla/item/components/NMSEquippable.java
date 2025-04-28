@@ -2,7 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.item.components;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.impl.vanilla.util.DataComponentBuilderField;
+import de.verdox.mccreativelab.impl.vanilla.util.field.DataComponentBuilderField;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlot;
 import de.verdox.mccreativelab.wrapper.item.components.MCCEquippable;

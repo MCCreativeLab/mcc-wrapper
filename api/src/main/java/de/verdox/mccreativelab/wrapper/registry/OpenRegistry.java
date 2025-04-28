@@ -145,6 +145,10 @@ public class OpenRegistry<T> implements MCCCustomRegistry<T> {
         return getReference(value).orElseThrow(NoSuchElementException::new);
     }
 
+    public Stream<T> streamValues() {
+        return registry.values().stream();
+    }
+
     public MCCReference<T> register(Key key, T value) {
         return register(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, this.registryKey), value);
     }

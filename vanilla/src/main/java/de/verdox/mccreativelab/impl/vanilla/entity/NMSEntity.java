@@ -236,6 +236,17 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
+    public void setRotation(float yaw, float pitch) {
+        yaw = MCCLocation.normalizeYaw(yaw);
+        pitch = MCCLocation.normalizePitch(pitch);
+        getHandle().setYRot(yaw);
+        getHandle().setXRot(pitch);
+        getHandle().yRotO = yaw;
+        getHandle().xRotO = pitch;
+        getHandle().setYHeadRot(yaw);
+    }
+
+    @Override
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()

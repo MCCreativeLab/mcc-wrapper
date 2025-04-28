@@ -4,6 +4,7 @@ import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
@@ -28,6 +29,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     default net.kyori.adventure.identity.@NotNull Identity identity() {
         return net.kyori.adventure.identity.Identity.identity(this.getUUID());
     }
+
     /**
      * Gets the inventory of the player
      *
@@ -86,6 +88,19 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      */
     @MCCLogic
     MCCEntityProperty<Boolean, MCCPlayer> getSwapHandsProperty();
+
+    /**
+     * Represents the players game mode
+     * @return the property
+     */
+    MCCEntityProperty<MCCGameMode, MCCPlayer> getGameModeProperty();
+
+    /**
+     * Returns the previous game mode of the player
+     * @return the previous game mode
+     */
+    @Nullable
+    MCCGameMode getPreviousGameMode();
 
     /**
      * Represents the ability of a player to interact with blocks or the air

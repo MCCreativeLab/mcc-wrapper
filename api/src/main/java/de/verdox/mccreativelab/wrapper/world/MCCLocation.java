@@ -7,14 +7,79 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public record MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) implements MCCWrapped {
+public class MCCLocation extends MCCVector implements MCCWrapped {
 
     public static final int CHUNK_X_LENGTH = 16;
     public static final int SECTION_Y_LENGTH = 16;
     public static final int CHUNK_Z_LENGTH = 16;
 
+    private final MCCWorld world;
+    private final float yaw;
+    private final float pitch;
+
+    public MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) {
+        super(x, y, z);
+        this.world = world;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
     public MCCLocation(MCCWorld world, double x, double y, double z) {
         this(world, x, y, z, 0, 0);
+    }
+
+    public MCCWorld world() {
+        return world;
+    }
+
+    public float yaw() {
+        return yaw;
+    }
+
+    public float pitch() {
+        return pitch;
+    }
+
+    @Override
+    public MCCLocation withX(double x) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation withY(double y) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation withZ(double z) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation add(int x, int y, int z) {
+        return new MCCLocation(world, x() + x, y() + y, z() + z, yaw(), pitch());
+    }
+
+    @Override
+    public MCCLocation add(MCCVector vector) {
+        return new MCCLocation(world(), x() + x, y() + y, z + z(), yaw(), pitch());
+    }
+
+    @Override
+    public MCCLocation add(MCCBlockPos vector) {
+        return new MCCLocation(world(), x() + x, y() + y, z + z(), yaw(), pitch());
+    }
+
+    public MCCVector withYaw(float yaw) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
+    }
+
+    public MCCVector withPitch(float pitch) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
+    }
+
+    public MCCVector withWorld(MCCWorld world) {
+        return new MCCLocation(world, x, y, z, yaw, pitch);
     }
 
     public MCCLocation above() {
@@ -54,7 +119,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return world().getBlockAt(this).getNow(null);
     }
 
-    public static int toChunkBlockLocalX(int globalX){
+    public static int toChunkBlockLocalX(int globalX) {
         return Math.floorMod(globalX, CHUNK_X_LENGTH);
     }
 
@@ -62,7 +127,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return toChunkBlockLocalX(blockX());
     }
 
-    public static int toChunkBlockLocalY(int globalY){
+    public static int toChunkBlockLocalY(int globalY) {
         return Math.floorMod(globalY, SECTION_Y_LENGTH);
     }
 
@@ -70,7 +135,7 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
         return toChunkBlockLocalY(blockY());
     }
 
-    public static int toChunkBlockLocalZ(int globalZ){
+    public static int toChunkBlockLocalZ(int globalZ) {
         return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
     }
 
@@ -153,5 +218,40 @@ public record MCCLocation(MCCWorld world, double x, double y, double z, float ya
 
     private static boolean isFinite(float f) {
         return Math.abs(f) <= Float.MAX_VALUE;
+    }
+
+    /**
+     * Normalizes the given yaw angle to a value between <code>+/-180</code>
+     * degrees.
+     *
+     * @param yaw the yaw in degrees
+     * @return the normalized yaw in degrees
+     * @see Location#getYaw()
+     */
+    public static float normalizeYaw(float yaw) {
+        yaw %= 360.0f;
+        if (yaw >= 180.0f) {
+            yaw -= 360.0f;
+        } else if (yaw < -180.0f) {
+            yaw += 360.0f;
+        }
+        return yaw;
+    }
+
+    /**
+     * Normalizes the given pitch angle to a value between <code>+/-90</code>
+     * degrees.
+     *
+     * @param pitch the pitch in degrees
+     * @return the normalized pitch in degrees
+     * @see Location#getPitch()
+     */
+    public static float normalizePitch(float pitch) {
+        if (pitch > 90.0f) {
+            pitch = 90.0f;
+        } else if (pitch < -90.0f) {
+            pitch = -90.0f;
+        }
+        return pitch;
     }
 }

@@ -9,6 +9,7 @@ import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
+import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSMarkerEntity;
@@ -40,10 +41,7 @@ import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCMarkerEntity;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
+import de.verdox.mccreativelab.wrapper.entity.types.*;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.MCCMenuType;
@@ -79,8 +77,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -356,7 +356,18 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemEntity.class, NMSItemEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCMarkerEntity.class, NMSMarkerEntity.CONVERTER);
+        registerDisplayEntity();
         // conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER); TODO
+    }
+
+    private void registerDisplayEntity() {
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Item.class, NMSDisplayEntity.Item.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Block.class, NMSDisplayEntity.Block.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Text.class, NMSDisplayEntity.Text.CONVERTER);
+
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Transformation.class, NMSDisplayEntity.NMSTransformation.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Text.Alignment.class, new EnumConverter<>(Display.TextDisplay.Align.class, MCCDisplayEntity.Text.Alignment.class));
+        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Item.Display.class, new EnumConverter<>(ItemDisplayContext.class, MCCDisplayEntity.Item.Display.class));
     }
 
     private void registerContainerTypes() {

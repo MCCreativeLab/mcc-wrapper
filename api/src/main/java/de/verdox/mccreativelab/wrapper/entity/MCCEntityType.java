@@ -18,7 +18,7 @@ public interface MCCEntityType<T extends MCCEntity> extends MCCKeyedWrapper {
     Serializer<MCCEntityType<?>> SERIALIZER = MCCKeyedWrapper.createSerializer("entityType", new TypeToken<>() {});
 
     default CompletableFuture<T> summon(@NotNull MCCLocation location) {
-        return (CompletableFuture<T>) location.world().summon(location, this);
+        return location.world().summon(location, this);
     }
 
     MCCEntity constructNewEntity();
