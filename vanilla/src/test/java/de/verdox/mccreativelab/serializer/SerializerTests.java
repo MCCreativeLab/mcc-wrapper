@@ -2,10 +2,13 @@ package de.verdox.mccreativelab.serializer;
 
 import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
+import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
-import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
-import de.verdox.mccreativelab.wrapper.typed.MCCItems;
+import de.verdox.mccreativelab.wrapper.typed.*;
 import de.verdox.vserializer.generic.SerializationElement;
 import de.verdox.vserializer.generic.Serializer;
 import de.verdox.vserializer.json.JsonSerializerContext;
@@ -16,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,8 +41,11 @@ public class SerializerTests extends NMSTestBase {
         entry(Key.key("test", "test"), MCCSerializers.KEY);
         entry(Component.text("Test"), MCCSerializers.COMPONENT);
         entry(MCCBlocks.STONE.get(), MCCBlockType.SERIALIZER);
+        entry(MCCEffects.DIG_SPEED.get(), MCCEffectType.SERIALIZER);
+        entry(MCCEntityTypes.MARKER.get(), MCCEntityType.SERIALIZER);
         entry(MCCItems.STONE.get(), MCCItemType.SERIALIZER);
         entry(MCCItems.STONE.get().createItem(), MCCSerializers.ITEM_STACK);
+        entry(MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap().edit(MCCDataComponentTypes.REPAIR_COST.get(), editor -> editor.set(3)), MCCSerializers.DATA_COMPONENT_MAP);
     }
 
     @ParameterizedTest

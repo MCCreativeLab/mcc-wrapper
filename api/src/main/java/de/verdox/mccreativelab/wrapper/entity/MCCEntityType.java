@@ -26,6 +26,6 @@ public interface MCCEntityType<T extends MCCEntity> extends MCCKeyedWrapper {
 
     @Override
     default Key getRegistryKey() {
-        return MCCRegistries.EFFECT_TYPE_REGISTRY.key();
+        return MCCRegistries.ENTITY_TYPE.key();
     }
 }
