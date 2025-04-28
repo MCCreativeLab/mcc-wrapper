@@ -60,6 +60,16 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return new MCCLocation(world, x() + x, y() + y, z() + z, yaw(), pitch());
     }
 
+    @Override
+    public MCCLocation add(MCCVector vector) {
+        return new MCCLocation(world(), x() + x, y() + y, z + z(), yaw(), pitch());
+    }
+
+    @Override
+    public MCCLocation add(MCCBlockPos vector) {
+        return new MCCLocation(world(), x() + x, y() + y, z + z(), yaw(), pitch());
+    }
+
     public MCCVector withYaw(float yaw) {
         return new MCCLocation(world, x, y, z, yaw, pitch);
     }

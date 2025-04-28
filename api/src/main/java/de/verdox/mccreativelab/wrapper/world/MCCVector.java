@@ -21,6 +21,14 @@ public class MCCVector {
         return new MCCVector(x() + x, y() + y, z + z());
     }
 
+    public MCCVector add(MCCVector vector) {
+        return new MCCVector(x() + vector.x(), y() + vector.y(), z() + vector.z());
+    }
+
+    public MCCVector add(MCCBlockPos vector) {
+        return new MCCVector(x() + vector.x(), y() + vector.y(), z() + vector.z());
+    }
+
     public MCCVector withX(double x) {
         return new MCCVector(x, y, z);
     }
