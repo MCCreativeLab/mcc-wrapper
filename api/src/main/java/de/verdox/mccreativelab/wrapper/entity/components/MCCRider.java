@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.entity;
+package de.verdox.mccreativelab.wrapper.entity.components;
 
 import org.jetbrains.annotations.Nullable;
 

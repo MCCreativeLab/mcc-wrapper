@@ -1,6 +1,7 @@
-package de.verdox.mccreativelab.wrapper.entity;
+package de.verdox.mccreativelab.wrapper.entity.components;
 
 import com.google.common.base.Preconditions;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 
 import java.util.List;
 
