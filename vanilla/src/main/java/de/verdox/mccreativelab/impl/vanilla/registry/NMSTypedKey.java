@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -25,13 +26,13 @@ public class NMSTypedKey<T, F> extends MCCHandle<ResourceKey<F>> implements MCCT
     private final Key registryKey;
 
     public NMSTypedKey(Key key, Key registryKey) {
-        this(ResourceKey.create(ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey, ResourceLocation.class)), MCCPlatform.getInstance().getConversionService().unwrap(key, ResourceLocation.class)));
+        this(ResourceKey.create(ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(Objects.requireNonNull(registryKey, "Registry key cannot be null"), ResourceLocation.class)), MCCPlatform.getInstance().getConversionService().unwrap(Objects.requireNonNull(key, "Key cannot be null"), ResourceLocation.class)));
     }
 
     public NMSTypedKey(ResourceKey<F> resourceKey) {
         super(resourceKey);
-        this.key = conversionService.wrap(resourceKey.location());
-        this.registryKey = conversionService.wrap(resourceKey.registry());
+        this.key = conversionService.wrap(Objects.requireNonNull(resourceKey.location(), "The conversion produced no value key. This is a bug"));
+        this.registryKey = conversionService.wrap(Objects.requireNonNull(resourceKey.registry(), "The conversion produced no registry key. This is a bug"));
     }
 
     @Override

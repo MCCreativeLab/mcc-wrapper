@@ -15,6 +15,7 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,8 +76,8 @@ public interface MCCSerializers {
     static <T extends MCCKeyedWrapper> Serializer<T> KEYED_WRAPPER(String name, TypeToken<T> type) {
         return SerializerBuilder.create(name, type)
                 .constructor(
-                        new SerializableField<>("key", KEY, Keyed::key),
-                        new SerializableField<>("registry", KEY, MCCKeyedWrapper::getRegistryKey),
+                        new SerializableField<>("key", KEY, t -> Objects.requireNonNull(t.key(), "Key of type "+type.getRawType().getCanonicalName()+" cannot be null")),
+                        new SerializableField<>("registry", KEY, t -> Objects.requireNonNull(t.getRegistryKey(), "Registry key of type "+type.getRawType().getCanonicalName()+" cannot be null")),
                         (valueKey, registryKey) -> (T) MCCPlatform.getInstance().getTypedKeyFactory().getKey(valueKey, registryKey).get()
                 )
                 .build();
