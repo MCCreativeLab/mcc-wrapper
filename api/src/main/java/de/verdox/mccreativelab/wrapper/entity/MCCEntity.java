@@ -120,6 +120,11 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     boolean isOnGround();
 
     /**
+     * Marks the entity for removal
+     */
+    void remove();
+
+    /**
      * Changes the rotation of the entity
      * @param yaw the yaw
      * @param pitch the pitch

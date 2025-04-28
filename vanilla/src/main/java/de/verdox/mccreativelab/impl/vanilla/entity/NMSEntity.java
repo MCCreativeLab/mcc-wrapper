@@ -271,6 +271,11 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
+    public void remove() {
+        getHandle().remove(Entity.RemovalReason.DISCARDED);
+    }
+
+    @Override
     public void setRotation(float yaw, float pitch) {
         yaw = MCCLocation.normalizeYaw(yaw);
         pitch = MCCLocation.normalizePitch(pitch);
