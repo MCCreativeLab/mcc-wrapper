@@ -1,12 +1,13 @@
 package de.verdox.mccreativelab.wrapper.entity.types;
 
 import de.verdox.mccreativelab.wrapper.entity.*;
+import de.verdox.mccreativelab.wrapper.entity.components.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.types.MCCDamageType;
 import org.jetbrains.annotations.Nullable;
 
-public interface MCCLivingEntity extends MCCEntity {
+public interface MCCLivingEntity extends MCCEntity, MCCEffectTarget {
 
     /**
      * Represents the immunity properties of an entity
