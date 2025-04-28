@@ -1,9 +1,11 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
+import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -14,14 +16,16 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEntity {
@@ -57,24 +61,53 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
-    public CompletableFuture<MCCEntity> teleport(MCCLocation location) {
-        Objects.requireNonNull(location, "The teleport location cannot be null");
-        //TODO: Teleport Flags
+    public CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
+        Preconditions.checkArgument(location != null, "location cannot be null");
+        CompletableFuture<MCCEntity> done = new CompletableFuture<>();
         location.checkFinite();
-        handle.stopRiding();
+        Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
+        boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
+        boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
 
-        if (!getLocation().world().equals(location.world())) {
-            CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-            // TODO: Needs another PR
-            /*            handle.teleport(new TeleportTransition(conversionService.unwrap(location.world(), ServerLevel.class), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
+        boolean isWorldChange = Objects.equals(location.world(), location.world());
+
+        if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && getHandle().isVehicle() && !isWorldChange) {
+            done.complete(null);
+        } else if (!dismount && getHandle().isPassenger() && isWorldChange) {
+            done.complete(null);
+        } else if ((retainPassengers || !getHandle().isVehicle()) && !getHandle().isRemoved()) {
+            if (dismount) {
+                getHandle().stopRiding();
+            }
+
+            if (location.world() != null && !isWorldChange) {
+
+                ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
+                Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
+
+                handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), entity -> {
+                    done.complete(this);
+                }));
+            } else {
+                getHandle().moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
+                getHandle().setYHeadRot(location.yaw());
+                if (retainPassengers && getHandle().isVehicle()) {
+                    // Teleport passengers
+                    getHandle().getSelfAndPassengers().forEach(entity -> {
+                        for (Entity passenger : entity.getPassengers()) {
+                            Vec3 vec3 = getHandle().getPassengerRidingPosition(passenger);
+                            Vec3 vec32 = passenger.getVehicleAttachmentPoint(getHandle());
+                            passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
+                        }
+                    });
+                }
                 done.complete(this);
-            }));*/
-            return done;
+            }
+
         } else {
-            handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
-            handle.setYHeadRot(location.yaw());
+            done.complete(null);
         }
-        return CompletableFuture.completedFuture(this);
+        return done;
     }
 
     @Override
@@ -250,10 +283,10 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()
-                .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
-                .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
-                .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
-                .build();
+                    .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
+                    .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
+                    .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
+                    .build();
         }
         return this.adventurePointer;
     }

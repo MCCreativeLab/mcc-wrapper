@@ -55,7 +55,7 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * @param location the location
      * @return the future that is completed when the teleportation is done
      */
-    CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location);
+    CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags);
 
     MCCLocation getLocation();
 
