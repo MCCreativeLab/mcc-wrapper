@@ -219,4 +219,39 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     private static boolean isFinite(float f) {
         return Math.abs(f) <= Float.MAX_VALUE;
     }
+
+    /**
+     * Normalizes the given yaw angle to a value between <code>+/-180</code>
+     * degrees.
+     *
+     * @param yaw the yaw in degrees
+     * @return the normalized yaw in degrees
+     * @see Location#getYaw()
+     */
+    public static float normalizeYaw(float yaw) {
+        yaw %= 360.0f;
+        if (yaw >= 180.0f) {
+            yaw -= 360.0f;
+        } else if (yaw < -180.0f) {
+            yaw += 360.0f;
+        }
+        return yaw;
+    }
+
+    /**
+     * Normalizes the given pitch angle to a value between <code>+/-90</code>
+     * degrees.
+     *
+     * @param pitch the pitch in degrees
+     * @return the normalized pitch in degrees
+     * @see Location#getPitch()
+     */
+    public static float normalizePitch(float pitch) {
+        if (pitch > 90.0f) {
+            pitch = 90.0f;
+        } else if (pitch < -90.0f) {
+            pitch = -90.0f;
+        }
+        return pitch;
+    }
 }
