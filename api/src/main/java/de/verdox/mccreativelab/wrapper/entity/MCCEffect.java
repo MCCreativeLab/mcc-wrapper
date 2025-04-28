@@ -77,7 +77,7 @@ public interface MCCEffect {
         }
     }
 
-    default void apply(MCCLivingEntity mccEntity) {
-        getType().applyEffectType(mccEntity, this);
+    default boolean apply(MCCLivingEntity mccEntity) {
+        return getType().addEffect(mccEntity, this);
     }
 }

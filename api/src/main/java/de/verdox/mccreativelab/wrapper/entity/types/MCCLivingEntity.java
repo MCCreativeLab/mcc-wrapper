@@ -2,10 +2,10 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.types.MCCDamageType;
-import org.jetbrains.annotations.Nullable;
 
 public interface MCCLivingEntity extends MCCEntity {
 
@@ -31,27 +31,6 @@ public interface MCCLivingEntity extends MCCEntity {
     MCCEntityProperty<Boolean, MCCLivingEntity> getPickupItemProperty();
 
     /**
-     * Gets the active effect for a provided effect type or null if no active effect was found
-     *
-     * @param effectType the effect type
-     * @return the active effect or null
-     */
-    @Nullable
-    default MCCEffect getActiveEffect(MCCEffectType effectType) {
-        return effectType.getActiveEffect(this);
-    }
-
-    /**
-     * Checks if this entity has an active effect of the provided effect type
-     *
-     * @param effectType the effect type
-     * @return true if there is an active effect
-     */
-    default boolean hasActiveEffect(MCCEffectType effectType) {
-        return effectType.hasActiveEffect(this);
-    }
-
-    /**
      * Returns true if the entity is dead
      *
      * @return true if it is dead
@@ -65,5 +44,10 @@ public interface MCCLivingEntity extends MCCEntity {
      */
     MCCAttributeMap getAttributes();
 
-
+    /**
+     * Returns the {@link MCCEffectTarget} component
+     */
+    default MCCEffectTarget asEffectTarget() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCEffectTarget.class);
+    }
 }

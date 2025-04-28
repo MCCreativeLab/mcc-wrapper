@@ -3,9 +3,11 @@ package de.verdox.mccreativelab.wrapper.entity;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
@@ -140,12 +142,16 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     /**
      * Returns the {@link MCCRideable} component
      */
-    MCCRideable asRideable();
+    default MCCRideable asRideable() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCRideable.class);
+    }
 
     /**
      * Returns the {@link MCCRider} component
      */
-    MCCRider asRider();
+    default MCCRider asRider() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCRider.class);
+    }
 
     @Override
     default Key getRegistryKey() {

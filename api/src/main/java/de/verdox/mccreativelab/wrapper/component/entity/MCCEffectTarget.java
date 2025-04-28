@@ -30,14 +30,18 @@ public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
      * Returns whether an effect of the specified type is active on the entity
      * @param effectType the type
      */
-    boolean hasEffect(MCCReference<MCCEffectType> effectType);
+    default boolean hasEffect(MCCReference<MCCEffectType> effectType) {
+        return effectType.get().hasActiveEffect(getOwner());
+    }
 
     /**
      * Tries to add an effect of a specified type
      * @param effect the effect
      * @param cause the cause
      */
-    boolean addEffect(MCCEffect effect, @Nullable MCCEntity cause);
+    default boolean addEffect(MCCEffect effect, @Nullable MCCEntity cause) {
+        return effect.apply(getOwner());
+    }
 
     /**
      * Tries to add an effect of a specified type
@@ -49,7 +53,7 @@ public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
         MCCEffectType type = effectType.get();
         MCCEffect.Builder builder = MCCEffect.create().withType(type);
         effectBuilder.accept(builder);
-        return type.applyEffectType(getOwner(), builder.build());
+        return type.addEffect(getOwner(), builder.build());
     }
 
     /**
@@ -61,19 +65,18 @@ public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
     }
 
     /**
-     * Checks if the entity can be affected by a particular effect
-     * @param effect the effect
-     */
-    boolean canBeAffected(MCCEffect effect);
-
-    /**
      * Tries to remove an existing effect of a specified type
      * @param effectType the effect type
      */
-    boolean removeEffect(MCCReference<MCCEffectType> effectType);
+    default boolean removeEffect(MCCReference<MCCEffectType> effectType) {
+        return effectType.get().removeEffect(getOwner());
+    }
 
     /**
-     * Returns the {@link MCCEffectType} component
+     * Checks if the entity can be affected by a particular effect
+     * @param effect the effect
      */
-    MCCEffectType asEffectType();
+    default boolean canBeAffected(MCCEffect effect) {
+        return effect.getType().canBeAffected(getOwner());
+    }
 }
