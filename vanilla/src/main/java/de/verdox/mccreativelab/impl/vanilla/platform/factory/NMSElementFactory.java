@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCDisplayEntity;
 import de.verdox.mccreativelab.wrapper.item.components.*;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.PatchedDataComponentMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class NMSElementFactory implements MCCElementFactory {
 
     @Override
     public MCCDataComponentMap createEmptyDataComponentMap() {
-        return nmsPlatform.getConversionService().wrap(DataComponentMap.builder().build());
+        return nmsPlatform.getConversionService().wrap(new PatchedDataComponentMap(DataComponentMap.builder().build()));
     }
 
     @Override
