@@ -300,8 +300,8 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
         float destroySpeed = mccBlock.getBlockState().getDestroySpeed(player, hand, true);
 
         // Haste effect
-        if (player.hasActiveEffect(MCCEffects.DIG_SPEED.get()))
-            destroySpeed *= (0.2F * player.getActiveEffect(MCCEffects.DIG_SPEED.get()).getAmplifier() + 1.0F);
+        if (player.asEffectTarget().hasEffect(MCCEffects.DIG_SPEED))
+            destroySpeed *= (0.2F * player.asEffectTarget().getEffect(MCCEffects.DIG_SPEED).getAmplifier() + 1.0F);
         // water check
         if (player.isInWater() && hasEnchantmentLevel(player, MCCEnchantments.AQUA_AFFINITY.get()))
             destroySpeed /= 5.0F;

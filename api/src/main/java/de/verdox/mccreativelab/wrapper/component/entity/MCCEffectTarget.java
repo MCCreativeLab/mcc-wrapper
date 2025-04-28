@@ -43,6 +43,11 @@ public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
         return effect.apply(getOwner());
     }
 
+    @Nullable
+    default MCCEffect getEffect(MCCReference<MCCEffectType> effectType) {
+        return effectType.get().getActiveEffect(getOwner());
+    }
+
     /**
      * Tries to add an effect of a specified type
      * @param effectType the effect
@@ -54,6 +59,16 @@ public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
         MCCEffect.Builder builder = MCCEffect.create().withType(type);
         effectBuilder.accept(builder);
         return type.addEffect(getOwner(), builder.build());
+    }
+
+    /**
+     * Tries to add an effect of a specified type
+     * @param effectType the effect
+     * @param effectBuilder the effect builder
+     * @param cause the cause
+     */
+    default boolean addEffect(MCCReference<MCCEffectType> effectType, Consumer<MCCEffect.Builder> effectBuilder) {
+        return addEffect(effectType, effectBuilder, null);
     }
 
     /**
