@@ -40,11 +40,11 @@ public class SerializerTests extends NMSTestBase {
     static {
         entry(Key.key("test", "test"), MCCSerializers.KEY);
         entry(Component.text("Test"), MCCSerializers.COMPONENT);
-        entry(MCCBlocks.STONE.get(), MCCBlockType.SERIALIZER);
+        entry(MCCBlocks.BEDROCK.get(), MCCBlockType.SERIALIZER);
         entry(MCCEffects.DIG_SPEED.get(), MCCEffectType.SERIALIZER);
         entry(MCCEntityTypes.MARKER.get(), MCCEntityType.SERIALIZER);
-        entry(MCCItems.STONE.get(), MCCItemType.SERIALIZER);
-        entry(MCCItems.STONE.get().createItem(), MCCSerializers.ITEM_STACK);
+        entry(MCCItems.BEDROCK.get(), MCCItemType.SERIALIZER);
+        entry(MCCItems.BEDROCK.get().createItem(), MCCSerializers.ITEM_STACK);
         entry(MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap().edit(MCCDataComponentTypes.REPAIR_COST.get(), editor -> editor.set(3)), MCCSerializers.DATA_COMPONENT_MAP);
     }
 
