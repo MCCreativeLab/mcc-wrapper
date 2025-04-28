@@ -35,11 +35,10 @@ public class ItemStackSerializer implements Serializer<MCCItemStack> {
         SerializationContainer container = serializedElement.getAsContainer();
         int amount = 1;
         MCCDataComponentMap map = null;
-        if (!container.contains("item")) {
-            return MCCItems.STONE.get().createItem();
+        MCCItemType mccItemType = MCCItems.STONE.get();
+        if (container.contains("item")) {
+            mccItemType = itemTypeSerializer.deserialize(container.get("item"));
         }
-
-        MCCItemType mccItemType = itemTypeSerializer.deserialize(container.get("item"));
 
         if (container.contains("amount")) {
             amount = container.get("amount").getAsInt();
