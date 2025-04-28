@@ -26,6 +26,8 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
     testImplementation(project(":TestSuite"))
+    testImplementation("net.kyori:adventure-text-serializer-gson:4.20.0")
+    testImplementation("net.kyori:adventure-text-minimessage:4.20.0")
 }
 
 sourceSets {
