@@ -27,17 +27,71 @@ public class MCCVector {
         return new MCCLocation(world, x(), y(), z(), 90, 0);
     }
 
-    public MCCVector add(int x, int y, int z) {
-        return new MCCVector(x() + x, y() + y, z + z());
+    // Add operations
+    public MCCVector add(double x, double y, double z) {
+        return new MCCVector(x() + x, y() + y, z() + z);
+    }
+
+    public MCCVector add(double val) {
+        return add(val, val, val);
     }
 
     public MCCVector add(MCCVector vector) {
-        return new MCCVector(x() + vector.x(), y() + vector.y(), z() + vector.z());
+        return add(vector.x(), vector.y(), vector.z());
     }
 
     public MCCVector add(MCCBlockPos vector) {
-        return new MCCVector(x() + vector.x(), y() + vector.y(), z() + vector.z());
+        return add(vector.x(), vector.y(), vector.z());
     }
+    // Sub operations
+    public MCCVector sub(double x, double y, double z) {
+        return new MCCVector(x() - x, y() - y, z() - z);
+    }
+
+    public MCCVector sub(double val) {
+        return sub(val, val, val);
+    }
+
+    public MCCVector sub(MCCVector vector) {
+        return sub(vector.x(), vector.y(), vector.z());
+    }
+
+    public MCCVector sub(MCCBlockPos vector) {
+        return sub(vector.x(), vector.y(), vector.z());
+    }
+    // Mul operations
+    public MCCVector mul(double x, double y, double z) {
+        return new MCCVector(x() * x, y() * y, z() * z);
+    }
+
+    public MCCVector mul(double val) {
+        return mul(val, val, val);
+    }
+
+    public MCCVector mul(MCCVector vector) {
+        return mul(vector.x(), vector.y(), vector.z());
+    }
+
+    public MCCVector mul(MCCBlockPos vector) {
+        return mul(vector.x(), vector.y(), vector.z());
+    }
+    // Div operations
+    public MCCVector div(double x, double y, double z) {
+        return new MCCVector(x() / x, y() / y, z() / z);
+    }
+
+    public MCCVector div(double val) {
+        return div(val, val, val);
+    }
+
+    public MCCVector div(MCCVector vector) {
+        return div(vector.x(), vector.y(), vector.z());
+    }
+
+    public MCCVector div(MCCBlockPos vector) {
+        return div(vector.x(), vector.y(), vector.z());
+    }
+
 
     public MCCVector withX(double x) {
         return new MCCVector(x, y, z);
