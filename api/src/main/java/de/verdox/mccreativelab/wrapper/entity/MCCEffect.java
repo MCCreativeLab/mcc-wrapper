@@ -9,6 +9,10 @@ import java.util.Objects;
 @MCCInstantiationSource(sourceClasses = MCCEffectType.class)
 public interface MCCEffect {
 
+    static Builder create() {
+        return new Builder();
+    }
+
     MCCEffectType getType();
 
     int getDuration();
