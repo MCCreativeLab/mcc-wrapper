@@ -13,6 +13,7 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.TempData;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
+import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
@@ -93,12 +94,12 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType) {
+    public <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
         MCCEntity constructedEntity = mccEntityType.constructNewEntity();
         Entity entity = conversionService.unwrap(constructedEntity);
 
         if (entity instanceof Mob) {
-            ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.COMMAND, null);
+            ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), conversionService.unwrap(spawnReason, EntitySpawnReason.class), null);
         }
 
         this.getHandle().addFreshEntity(entity);
