@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
@@ -22,7 +23,7 @@ import java.util.List;
 @MCCInstantiationSource(sourceClasses = MCCChunk.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
 public interface MCCBlockType extends MCCKeyedWrapper {
-    Serializer<MCCBlockType> SERIALIZER = MCCKeyedWrapper.createSerializer("block", new TypeToken<>() {});
+    Serializer<MCCBlockType> SERIALIZER = MCCSerializers.KEYED_WRAPPER("block", new TypeToken<>() {});
 
     /**
      * Changes a block at the provided location to this block type

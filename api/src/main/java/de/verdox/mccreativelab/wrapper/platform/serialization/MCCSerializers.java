@@ -69,10 +69,14 @@ public interface MCCSerializers {
             .build();
 
     static <T extends MCCKeyedWrapper> Serializer<T> KEYED_WRAPPER(TypeToken<T> type) {
-        return SerializerBuilder.create("keyed", type)
+        return KEYED_WRAPPER("keyed", type);
+    }
+
+    static <T extends MCCKeyedWrapper> Serializer<T> KEYED_WRAPPER(String name, TypeToken<T> type) {
+        return SerializerBuilder.create(name, type)
                 .constructor(
                         new SerializableField<>("key", KEY, Keyed::key),
-                        new SerializableField<>("key", KEY, MCCKeyedWrapper::getRegistryKey),
+                        new SerializableField<>("registry", KEY, MCCKeyedWrapper::getRegistryKey),
                         (valueKey, registryKey) -> (T) MCCPlatform.getInstance().getTypedKeyFactory().getKey(valueKey, registryKey).get()
                 )
                 .build();
