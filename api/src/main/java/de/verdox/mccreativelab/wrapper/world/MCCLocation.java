@@ -266,7 +266,6 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
      *
      * @param yaw the yaw in degrees
      * @return the normalized yaw in degrees
-     * @see Location#getYaw()
      */
     public static float normalizeYaw(float yaw) {
         yaw %= 360.0f;
@@ -284,7 +283,6 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
      *
      * @param pitch the pitch in degrees
      * @return the normalized pitch in degrees
-     * @see Location#getPitch()
      */
     public static float normalizePitch(float pitch) {
         if (pitch > 90.0f) {
