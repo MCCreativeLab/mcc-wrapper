@@ -61,14 +61,15 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        var allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).collect(Collectors.groupingBy(mccConverter -> conversionCache.getApiTypeOfImplType(mccConverter.apiImplementationClass())));
+        //TODO: Group only if the groups are not related to each other
+/*        var allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).collect(Collectors.groupingBy(mccConverter -> conversionCache.getApiTypeOfImplType(mccConverter.apiImplementationClass())));
 
         if (allPossibleConverters.size() > 1) {
             LOGGER.log(Level.SEVERE, "The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
             for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
                 LOGGER.warning("\t" + stackTraceElement.toString());
             }
-        }
+        }*/
 
         T result = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
