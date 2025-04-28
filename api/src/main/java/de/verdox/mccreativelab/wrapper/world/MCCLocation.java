@@ -70,11 +70,11 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return new MCCLocation(world(), x() + x, y() + y, z + z(), yaw(), pitch());
     }
 
-    public MCCVector withYaw(float yaw) {
+    public MCCLocation withYaw(float yaw) {
         return new MCCLocation(world, x, y, z, yaw, pitch);
     }
 
-    public MCCVector withPitch(float pitch) {
+    public MCCLocation withPitch(float pitch) {
         return new MCCLocation(world, x, y, z, yaw, pitch);
     }
 
@@ -194,6 +194,46 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         checkFinite(z, "z not finite");
         checkFinite(pitch, "pitch not finite");
         checkFinite(yaw, "yaw not finite");
+    }
+
+    @NotNull
+    public MCCVector getDirection() {
+        double rotX = this.yaw();
+        double rotY = this.pitch();
+
+        var y = -Math.sin(Math.toRadians(rotY));
+
+        double xz = Math.cos(Math.toRadians(rotY));
+
+        var x = -xz * Math.sin(Math.toRadians(rotX));
+        var z = xz * Math.cos(Math.toRadians(rotX));
+
+        return new MCCVector(x, y, z);
+    }
+
+    @NotNull
+    public MCCLocation withDirection(@NotNull MCCVector vector) {
+        final double _2PI = 2 * Math.PI;
+        final double x = vector.x();
+        final double z = vector.z();
+
+        float newYaw;
+        float newPitch;
+
+        if (x == 0 && z == 0) {
+            newPitch = vector.y() > 0 ? -90 : 90;
+            return withPitch(newPitch);
+        }
+
+        double theta = Math.atan2(-x, z);
+        newYaw = (float) Math.toDegrees((theta + _2PI) % _2PI);
+
+        double x2 = x * x;
+        double z2 = z * z;
+        double xz = Math.sqrt(x2 + z2);
+        newPitch = (float) Math.toDegrees(Math.atan(-vector.y() / xz));
+
+        return withPitch(newPitch).withYaw(newYaw);
     }
 
     private static double square(double num) {
