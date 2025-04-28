@@ -10,12 +10,14 @@ import de.verdox.mccreativelab.wrapper.block.*;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlot;
+import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import io.papermc.paper.entity.TeleportFlag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -55,6 +57,7 @@ public class BukkitAdapter {
         conversionService.registerConverterForNewImplType(MCCCapturedBlockState.class, new CraftBlockStateConverter());
         conversionService.registerConverterForNewImplType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
         conversionService.registerConverterForNewImplType(MCCBlockFace.class, new EnumConverter<>(BlockFace.class, MCCBlockFace.class));
+        conversionService.registerConverterForNewImplType(MCCTeleportFlag.class, new EnumConverter<>(TeleportFlag.EntityState.class, MCCTeleportFlag.class));
     }
 
 

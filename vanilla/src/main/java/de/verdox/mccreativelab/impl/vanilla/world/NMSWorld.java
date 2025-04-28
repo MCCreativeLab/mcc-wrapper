@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
@@ -27,17 +28,16 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -54,6 +54,55 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public String getName() {
         return readFieldFromHandle("serverLevelData", new TypeToken<ServerLevelData>() {}).getLevelName();
+    }
+
+    @Override
+    public CompletableFuture<MCCEntity> teleport(@NotNull MCCEntity entity, @NotNull MCCLocation location, MCCTeleportFlag... flags) {
+        Preconditions.checkArgument(location != null, "location cannot be null");
+        CompletableFuture<MCCEntity> done = new CompletableFuture<>();
+        location.checkFinite();
+        Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
+        boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
+        boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
+
+        boolean isWorldChange = Objects.equals(location.world(), location.world());
+        var handle = conversionService.unwrap(entity, Entity.class);
+
+        if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && handle.isVehicle() && !isWorldChange) {
+            done.complete(null);
+        } else if (!dismount && handle.isPassenger() && isWorldChange) {
+            done.complete(null);
+        } else if ((retainPassengers || !handle.isVehicle()) && !handle.isRemoved()) {
+            if (dismount) {
+                handle.stopRiding();
+            }
+
+            if (location.world() != null && !isWorldChange) {
+
+                ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
+                Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
+
+                handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), e -> done.complete(entity)));
+            } else {
+                handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
+                handle.setYHeadRot(location.yaw());
+                if (retainPassengers && handle.isVehicle()) {
+                    // Teleport passengers
+                    handle.getSelfAndPassengers().forEach(selfOrPassenger -> {
+                        for (Entity passenger : selfOrPassenger.getPassengers()) {
+                            Vec3 vec3 = handle.getPassengerRidingPosition(passenger);
+                            Vec3 vec32 = passenger.getVehicleAttachmentPoint(handle);
+                            passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
+                        }
+                    });
+                }
+                done.complete(entity);
+            }
+
+        } else {
+            done.complete(null);
+        }
+        return done;
     }
 
     @Override

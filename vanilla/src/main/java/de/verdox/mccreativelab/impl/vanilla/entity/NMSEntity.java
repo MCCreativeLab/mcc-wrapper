@@ -66,56 +66,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
-    public CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
-        CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-        location.checkFinite();
-        Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
-        boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
-        boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
-
-        boolean isWorldChange = Objects.equals(location.world(), location.world());
-
-        if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && getHandle().isVehicle() && !isWorldChange) {
-            done.complete(null);
-        } else if (!dismount && getHandle().isPassenger() && isWorldChange) {
-            done.complete(null);
-        } else if ((retainPassengers || !getHandle().isVehicle()) && !getHandle().isRemoved()) {
-            if (dismount) {
-                getHandle().stopRiding();
-            }
-
-            if (location.world() != null && !isWorldChange) {
-
-                ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
-                Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
-
-                handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), entity -> {
-                    done.complete(this);
-                }));
-            } else {
-                getHandle().moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
-                getHandle().setYHeadRot(location.yaw());
-                if (retainPassengers && getHandle().isVehicle()) {
-                    // Teleport passengers
-                    getHandle().getSelfAndPassengers().forEach(entity -> {
-                        for (Entity passenger : entity.getPassengers()) {
-                            Vec3 vec3 = getHandle().getPassengerRidingPosition(passenger);
-                            Vec3 vec32 = passenger.getVehicleAttachmentPoint(getHandle());
-                            passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
-                        }
-                    });
-                }
-                done.complete(this);
-            }
-
-        } else {
-            done.complete(null);
-        }
-        return done;
-    }
-
-    @Override
     public MCCLocation getLocation() {
         return new MCCLocation(conversionService.wrap(handle.level(), new TypeToken<>() {}), handle.position().x(), handle.position().y(), handle.position().z(), handle.getYRot(), handle.getXRot());
     }
