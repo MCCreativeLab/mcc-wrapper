@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.player.client.NMSSkinParts;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
@@ -115,6 +116,31 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     @Override
     public MCCEntityProperty<Boolean, MCCPlayer> getSwapHandsProperty() {
         throw new OperationNotPossibleOnNMS();
+    }
+
+    @Override
+    public MCCEntityProperty<MCCGameMode, MCCPlayer> getGameModeProperty() {
+        return new MCCEntityProperty<MCCGameMode, MCCPlayer>() {
+            @Override
+            public @Nullable MCCGameMode get() {
+                return conversionService.wrap(getServerPlayer().gameMode.getGameModeForPlayer());
+            }
+
+            @Override
+            public void set(@Nullable MCCGameMode newValue) {
+                getServerPlayer().gameMode.changeGameModeForPlayer(conversionService.unwrap(getServerPlayer().gameMode.getGameModeForPlayer()));
+            }
+
+            @Override
+            public void sync() {
+
+            }
+        };
+    }
+
+    @Override
+    public @Nullable MCCGameMode getPreviousGameMode() {
+        return conversionService.wrap(getServerPlayer().gameMode.getPreviousGameModeForPlayer());
     }
 
     @Override
