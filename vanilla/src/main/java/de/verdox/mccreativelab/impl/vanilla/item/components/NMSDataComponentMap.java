@@ -84,7 +84,7 @@ public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements 
 
             try {
                 var convertedType = conversionService.wrap(dataComponentType, MCCDataComponentType.class);
-                set.add(new MCCTypedDataComponentType<>(convertedType, conversionService.wrap(pair.value())));
+                set.add(new MCCTypedDataComponentType<>(convertedType, conversionService.wrap(pair.value(), convertedType.dataType())));
             }
             catch (Exception e) {
                 // The converter will throw exceptions if some data component types don't have a wrapper yet.
