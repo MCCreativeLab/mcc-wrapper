@@ -26,7 +26,7 @@ public class NMSGameComponentRegistry implements GameComponentRegistry {
     public <OWNER, T extends GameComponent<OWNER>> T create(OWNER owner, Class<T> componentType) {
 
         if (!creators.containsKey(componentType)) {
-            throw new IllegalArgumentException("Trying to create not known component type " + componentType);
+            throw new IllegalArgumentException("Trying to create the component type " + componentType+". However the component type is not implemented on this platform.");
         }
         GameComponentCreator<OWNER, T> creator = (GameComponentCreator<OWNER, T>) creators.get(componentType);
         return creator.create(owner);

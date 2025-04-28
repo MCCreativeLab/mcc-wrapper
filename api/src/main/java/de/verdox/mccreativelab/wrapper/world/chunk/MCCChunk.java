@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.wrapper.world.chunk;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -30,6 +31,8 @@ public interface MCCChunk extends MCCWrapped {
         checkIfLocationInChunk(location);
         return getBlockDataAtLocal(location.toChunkBlockLocalX(), location.toChunkBlockLocalY(), location.toChunkBlockLocalZ());
     }
+
+    int getHighestNonAirBlock(int globalX, int globalZ);
 
     default MCCBlockType getBlockTypeAt(MCCLocation location) {
         checkIfLocationInChunk(location);

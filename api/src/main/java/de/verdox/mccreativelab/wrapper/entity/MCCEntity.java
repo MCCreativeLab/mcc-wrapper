@@ -4,6 +4,7 @@ import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPersistent;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
@@ -153,6 +154,13 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      */
     default MCCRider asRider() {
         return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCRider.class);
+    }
+
+    /**
+     * Returns the {@link MCCRider} component
+     */
+    default MCCPersistent asPersistent() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCPersistent.class);
     }
 
     @Override

@@ -44,7 +44,7 @@ public interface MCCDisplayEntity extends MCCEntity {
     /**
      * If present, overrides light values used for rendering. Omitted by default (which means rendering uses values from entity position).
      */
-    VanillaField<BrightnessOverride> blockBrightness();
+    VanillaField<BrightnessOverride> brightnessOverride();
 
     /**
      * Maximum view range of the entity. When the distance is more than {@code view_range x entityDistanceScaling x 64}, the entity is not rendered.

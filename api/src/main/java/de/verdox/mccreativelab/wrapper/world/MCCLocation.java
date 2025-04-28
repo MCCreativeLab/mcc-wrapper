@@ -63,7 +63,7 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return new MCCLocation(world, x, y, z, yaw, pitch);
     }
 
-    public MCCVector withWorld(MCCWorld world) {
+    public MCCLocation withWorld(MCCWorld world) {
         return new MCCLocation(world, x, y, z, yaw, pitch);
     }
 

@@ -43,6 +43,14 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
         return getOrLoadChunk(blockLocation).thenApply(mccChunk -> new MCCBlock(blockLocation, mccChunk));
     }
 
+    default CompletableFuture<MCCBlock> getHighestBlockAt(int x, int z) {
+        MCCLocation blockLocation = new MCCLocation(this, x, 0, z);
+        return getOrLoadChunk(blockLocation).thenApply(mccChunk -> {
+            int height = mccChunk.getHighestNonAirBlock(x, z);
+            return new MCCBlock(blockLocation.withY(height), mccChunk);
+        });
+    }
+
     default CompletableFuture<MCCBlockState> getBlockDataAt(MCCLocation location) {
         if (!location.world().equals(this)) {
             throw new IllegalArgumentException("The provided location does not belong to this world.");
