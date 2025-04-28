@@ -47,34 +47,4 @@ public class NMSLivingEntity<T extends LivingEntity> extends NMSEntity<T> implem
     public MCCAttributeMap getAttributes() {
         return conversionService.wrap(handle.getAttributes(), new TypeToken<>() {});
     }
-
-    @Override
-    public Collection<MCCEffect> getActiveEffects() {
-        return conversionService.wrap(handle.getActiveEffects());
-    }
-
-    @Override
-    public boolean removeAllEffects() {
-        return handle.removeAllEffects();
-    }
-
-    @Override
-    public boolean hasEffect(MCCReference<MCCEffectType> effect) {
-        return handle.hasEffect(conversionService.unwrap(effect, new TypeToken<>() {}));
-    }
-
-    @Override
-    public boolean addEffect(MCCEffect effect, @Nullable MCCEntity cause) {
-        return handle.addEffect(conversionService.unwrap(effect, new TypeToken<>() {}), conversionService.unwrap(cause, new TypeToken<>() {}));
-    }
-
-    @Override
-    public boolean canBeAffected(MCCEffect effect) {
-        return handle.canBeAffected(conversionService.unwrap(effect, new TypeToken<>() {}));
-    }
-
-    @Override
-    public boolean removeEffect(MCCReference<MCCEffectType> effect) {
-        return handle.removeEffect(conversionService.unwrap(effect, new TypeToken<>() {}));
-    }
 }

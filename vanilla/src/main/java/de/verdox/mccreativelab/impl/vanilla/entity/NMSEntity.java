@@ -5,7 +5,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.entity.components.MCCRideable;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
 import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
@@ -309,11 +309,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
-    public List<MCCEntity> getPassengers() {
-        return conversionService.wrap(getHandle().getPassengers(), new TypeToken<>() {});
-    }
-
-    @Override
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()
@@ -333,21 +328,5 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public Flux<Long> tickSignal() {
         return tickSink.asFlux();
-    }
-
-    @Override
-    public boolean startRiding(MCCRideable vehicle, boolean force) {
-        return getHandle().startRiding(conversionService.unwrap(vehicle), force);
-    }
-
-    @Override
-    public boolean stopRiding() {
-        getHandle().stopRiding();
-        return true;
-    }
-
-    @Override
-    public @Nullable MCCRideable getCurrentlyRiddenEntity() {
-        return conversionService.wrap(getHandle().getVehicle(), MCCRideable.class);
     }
 }

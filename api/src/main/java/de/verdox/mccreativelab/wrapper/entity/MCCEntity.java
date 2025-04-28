@@ -3,8 +3,8 @@ package de.verdox.mccreativelab.wrapper.entity;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
-import de.verdox.mccreativelab.wrapper.entity.components.MCCRideable;
-import de.verdox.mccreativelab.wrapper.entity.components.MCCRider;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  * Describes an entity in a minecraft world
  */
 @MCCInstantiationSource(sourceClasses = {MCCWorld.class})
-public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCRideable, MCCRider, MCCTicking, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowEntity>, net.kyori.adventure.sound.Sound.Emitter {
+public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCTicking, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowEntity>, net.kyori.adventure.sound.Sound.Emitter {
     /**
      * Gets the type of this entity
      *
@@ -136,6 +136,16 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * @param pitch the pitch
      */
     void setRotation(float yaw, float pitch);
+
+    /**
+     * Returns the {@link MCCRideable} component
+     */
+    MCCRideable asRideable();
+
+    /**
+     * Returns the {@link MCCRider} component
+     */
+    MCCRider asRider();
 
     @Override
     default Key getRegistryKey() {

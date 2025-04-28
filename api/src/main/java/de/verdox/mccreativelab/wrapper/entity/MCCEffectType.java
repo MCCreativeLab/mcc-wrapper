@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
 import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public interface MCCEffectType extends MCCKeyedWrapper {
     Serializer<MCCEffectType> SERIALIZER = MCCSerializers.KEYED_WRAPPER("effect", new TypeToken<>() {});
 
-    void applyEffectType(MCCLivingEntity mccEntity, MCCEffect mccEffect);
+    void applyEffectType(MCCEffectTarget mccEntity, MCCEffect mccEffect);
 
     MCCEffect create(int duration, int amplifier, boolean ambient, boolean particles, boolean icon, @Nullable MCCEffect hiddenEffect);
 
@@ -26,14 +27,14 @@ public interface MCCEffectType extends MCCKeyedWrapper {
      * @return the active effect or null
      */
     @Nullable
-    MCCEffect getActiveEffect(MCCLivingEntity livingEntity);
+    MCCEffect getActiveEffect(MCCEffectTarget livingEntity);
 
     /**
      * Checks if this entity has an active effect of the provided effect type
      *
      * @return true if there is an active effect
      */
-    default boolean hasActiveEffect(MCCLivingEntity livingEntity){
+    default boolean hasActiveEffect(MCCEffectTarget livingEntity){
         return getActiveEffect(livingEntity) != null;
     }
 

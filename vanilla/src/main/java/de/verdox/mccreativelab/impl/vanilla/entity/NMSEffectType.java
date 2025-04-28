@@ -5,7 +5,7 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
@@ -34,7 +34,7 @@ public class NMSEffectType extends MCCHandle<MobEffect> implements MCCEffectType
     }
 
     @Override
-    public void applyEffectType(MCCLivingEntity mccEntity, MCCEffect mccEffect) {
+    public void applyEffectType(MCCEffectTarget mccEntity, MCCEffect mccEffect) {
         LivingEntity entity = MCCPlatform.getInstance().getConversionService().unwrap(mccEntity, new TypeToken<>() {});
         MobEffectInstance mobEffectInstance = MCCPlatform.getInstance().getConversionService().unwrap(mccEffect, new TypeToken<>() {});
         entity.addEffect(mobEffectInstance);
@@ -53,7 +53,7 @@ public class NMSEffectType extends MCCHandle<MobEffect> implements MCCEffectType
     }
 
     @Override
-    public @Nullable MCCEffect getActiveEffect(MCCLivingEntity livingEntity) {
+    public @Nullable MCCEffect getActiveEffect(MCCEffectTarget livingEntity) {
         NMSLivingEntity<?> nmsLivingEntity = conversionService.unwrap(livingEntity, new TypeToken<>() {});
         Holder<MobEffect> mobEffectHolder = MCCPlatform.getInstance().getConversionService().unwrap(MCCRegistries.EFFECT_TYPE_REGISTRY.get().getReference(this).get(), new TypeToken<>() {});
         MobEffectInstance mobEffectInstance = nmsLivingEntity.getHandle().getEffect(mobEffectHolder);

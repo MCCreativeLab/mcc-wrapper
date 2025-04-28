@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
@@ -173,6 +174,11 @@ public interface MCCPlatform extends MCCTicking {
      * @return the platform serializers
      */
     MCCSerializers getPlatformSerializers();
+
+    /**
+     * Returns the platform game component registry
+     */
+    GameComponentRegistry getGameComponentRegistry();
 
     enum Lifecycle {
         BOOTSTRAP(MCCLifecycleTrigger::bootstrap),

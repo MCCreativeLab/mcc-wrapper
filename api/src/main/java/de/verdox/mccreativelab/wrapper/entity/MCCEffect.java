@@ -72,12 +72,12 @@ public interface MCCEffect {
             return this;
         }
 
-        public MCCEffect build(){
+        public MCCEffect build() {
             return type.create(duration, amplifier, ambient, particles, icon, hiddenEffect);
         }
     }
 
-    default void apply(MCCLivingEntity mccEntity){
+    default void apply(MCCLivingEntity mccEntity) {
         getType().applyEffectType(mccEntity, this);
     }
 }

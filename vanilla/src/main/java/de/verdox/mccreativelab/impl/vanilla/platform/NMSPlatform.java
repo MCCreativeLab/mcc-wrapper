@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
+import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
@@ -39,6 +40,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.types.*;
@@ -101,6 +103,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
+    private final GameComponentRegistry gameComponentRegistry = new NMSGameComponentRegistry(this);
     public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSPlatform(boolean useGeneratedConverters) {
@@ -244,6 +247,11 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public MCCSerializers getPlatformSerializers() {
         return serializers;
+    }
+
+    @Override
+    public GameComponentRegistry getGameComponentRegistry() {
+        return gameComponentRegistry;
     }
 
     @Override

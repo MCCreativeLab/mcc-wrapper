@@ -1,17 +1,20 @@
-package de.verdox.mccreativelab.wrapper.entity.components;
+package de.verdox.mccreativelab.wrapper.component.entity;
 
+import de.verdox.mccreativelab.wrapper.component.GameComponent;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Represents an entity that can have effects
  */
-public interface MCCEffectTarget {
+public interface MCCEffectTarget extends GameComponent<MCCLivingEntity> {
 
     /**
      * Returns all active effects
@@ -38,6 +41,19 @@ public interface MCCEffectTarget {
 
     /**
      * Tries to add an effect of a specified type
+     * @param effectType the effect
+     * @param effectBuilder the effect builder
+     * @param cause the cause
+     */
+    default boolean addEffect(MCCReference<MCCEffectType> effectType, Consumer<MCCEffect.Builder> effectBuilder, @Nullable MCCEntity cause) {
+        MCCEffectType type = effectType.get();
+        MCCEffect.Builder builder = MCCEffect.create().withType(type);
+        effectBuilder.accept(builder);
+        return type.applyEffectType(getOwner(), builder.build());
+    }
+
+    /**
+     * Tries to add an effect of a specified type
      * @param effect the effect
      */
     default boolean addEffect(MCCEffect effect) {
@@ -55,4 +71,9 @@ public interface MCCEffectTarget {
      * @param effectType the effect type
      */
     boolean removeEffect(MCCReference<MCCEffectType> effectType);
+
+    /**
+     * Returns the {@link MCCEffectType} component
+     */
+    MCCEffectType asEffectType();
 }
