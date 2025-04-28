@@ -5,7 +5,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.entity.MCCRideable;
+import de.verdox.mccreativelab.wrapper.entity.components.MCCRideable;
 import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
