@@ -13,6 +13,10 @@ public class MCCVector {
         this.z = z;
     }
 
+    public MCCLocation toLocation(MCCWorld world) {
+        return new MCCLocation(world, x(), y(), z(), 90, 0);
+    }
+
     public MCCVector add(int x, int y, int z) {
         return new MCCVector(x() + x, y() + y, z + z());
     }
