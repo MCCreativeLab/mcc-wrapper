@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ConversionServiceImpl implements ConversionService {
     //TODO: Introduce caching of nativeObjects to object allocations
@@ -60,13 +61,12 @@ public class ConversionServiceImpl implements ConversionService {
             return null;
         }
 
-        List<MCCConverter<?, ?>> directConverters = conversionCache.streamAllDirectVariantsForNativeType(nativeObject.getClass()).toList();
-        List<MCCConverter<?, ?>> allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).toList();
+        var allPossibleConverters = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).collect(Collectors.groupingBy(mccConverter -> conversionCache.getApiTypeOfImplType(mccConverter.apiImplementationClass())));
 
-        if (directConverters.size() != allPossibleConverters.size()) {
+        if (allPossibleConverters.size() > 1) {
             LOGGER.log(Level.SEVERE, "The native type " + nativeObject + " has more than one hierarchy path. This makes using wrap() without providing an explicit TypeToken unsafe. Please use wrap(nativeObject, TypeToken) instead. Potential converters are " + allPossibleConverters);
             for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-                LOGGER.warning("\t"+stackTraceElement.toString());
+                LOGGER.warning("\t" + stackTraceElement.toString());
             }
         }
 

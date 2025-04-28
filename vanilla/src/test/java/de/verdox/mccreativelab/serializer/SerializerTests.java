@@ -2,7 +2,6 @@ package de.verdox.mccreativelab.serializer;
 
 import de.verdox.mccreativelab.NMSTestBase;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffectType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
