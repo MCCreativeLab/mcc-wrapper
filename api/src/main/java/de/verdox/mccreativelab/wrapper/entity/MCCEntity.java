@@ -5,8 +5,10 @@ import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
+import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.MCCVector;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
@@ -118,6 +120,11 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     boolean isUnderwater();
 
     boolean isOnGround();
+
+    /**
+     * Gets the velocity property of this entity
+     */
+    MCCEntityProperty<MCCVector, MCCEntity> velocity();
 
     /**
      * Marks the entity for removal

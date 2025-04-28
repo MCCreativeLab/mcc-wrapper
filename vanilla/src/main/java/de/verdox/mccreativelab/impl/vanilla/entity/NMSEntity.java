@@ -12,7 +12,9 @@ import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.TempData;
+import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.MCCVector;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
@@ -268,6 +270,26 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public boolean isOnGround() {
         return handle.onGround();
+    }
+
+    @Override
+    public MCCEntityProperty<MCCVector, MCCEntity> velocity() {
+        return new MCCEntityProperty<>() {
+            @Override
+            public @Nullable MCCVector get() {
+                return new MCCVector(getHandle().getDeltaMovement().x(), getHandle().getDeltaMovement().y(), getHandle().getDeltaMovement().z());
+            }
+
+            @Override
+            public void set(@Nullable MCCVector newValue) {
+                getHandle().setDeltaMovement(newValue.x(), newValue.y(), newValue.z());
+            }
+
+            @Override
+            public void sync() {
+
+            }
+        };
     }
 
     @Override
