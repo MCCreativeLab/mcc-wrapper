@@ -10,9 +10,13 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
  * Describes an entity in a minecraft world
  */
 @MCCInstantiationSource(sourceClasses = {MCCWorld.class})
-public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCTicking {
+public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCRideable, MCCRider, MCCTicking, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowEntity>, net.kyori.adventure.sound.Sound.Emitter {
     /**
      * Gets the type of this entity
      *
@@ -125,5 +129,11 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     @Override
     default Key getRegistryKey() {
         return getType().getRegistryKey();
+    }
+
+    @NotNull
+    @Override
+    default net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowEntity> asHoverEvent(final @NotNull java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowEntity> op) {
+        return net.kyori.adventure.text.event.HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.showEntity(this.getType().key(), this.getUUID(), this.displayName())));
     }
 }
