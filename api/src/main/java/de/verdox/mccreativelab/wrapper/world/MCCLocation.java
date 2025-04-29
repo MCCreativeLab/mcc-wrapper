@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.wrapper.world;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,12 +97,16 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     }
 
     public CompletableFuture<MCCBlock> getBlock() {
-        return world().getBlockAt(this);
+        return world().at(this, mccBlock -> mccBlock);
     }
 
     @Nullable
     public MCCBlock getBlockNow() {
-        return world().getBlockAt(this).getNow(null);
+        MCCChunk mccChunk = world().getChunkImmediately(this);
+        if(mccChunk == null) {
+            return null;
+        }
+        return mccChunk.get(this);
     }
 
 

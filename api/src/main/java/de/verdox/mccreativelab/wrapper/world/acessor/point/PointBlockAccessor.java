@@ -27,6 +27,20 @@ public interface PointBlockAccessor<
     }
 
     /**
+     * Sets the block type
+     */
+    default void setBlockType(MCCBlockType mccBlockType, boolean triggerBlockUpdate) {
+        getChunk().setBlock(mccBlockType, x(), y(), z(), triggerBlockUpdate);
+    }
+
+    /**
+     * Sets the block type
+     */
+    default void setBlockState(MCCBlockState mccBlockState, boolean triggerBlockUpdate) {
+        getChunk().setBlock(mccBlockState, x(), y(), z(), triggerBlockUpdate);
+    }
+
+    /**
      * Returns the location of this block
      *
      * @return the location of the block

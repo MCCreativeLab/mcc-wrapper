@@ -72,7 +72,7 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
 
     public void dropBlockLoot(@Nullable MCCEntity entity, @Nullable MCCItemStack tool) {
         for (MCCItemStack drop : getBlockState().getDrops(getLocation(), entity, tool)) {
-            getLocation().world().dropItemNaturally(getLocation(), drop);
+            getChunk().dropItemNaturally(getLocation(), drop);
         }
     }
 
@@ -85,7 +85,7 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
      * @param ignoreTool     whether to ignore the tool
      */
     public void breakBlockNaturally(@Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-        getLocation().world().breakBlockNaturally(this, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
+        getChunk().breakBlockNaturally(location, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
     }
 
     /**
