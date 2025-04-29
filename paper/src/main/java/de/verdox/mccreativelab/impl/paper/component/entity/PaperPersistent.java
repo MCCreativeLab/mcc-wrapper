@@ -17,7 +17,7 @@ public class PaperPersistent extends AbstractComponent<Entity, MCCEntity> implem
     }
 
     @Override
-    public void setPersistent() {
-        handle.persist = true;
+    public void setPersistent(boolean value) {
+        handle.persist = value;
     }
 }
