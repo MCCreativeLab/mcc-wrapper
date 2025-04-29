@@ -15,6 +15,7 @@ import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCVector;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 /**
  * Describes an entity in a minecraft world
@@ -63,8 +65,8 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * @param location the location
      * @return the future that is completed when the teleportation is done
      */
-    default CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
-        return location.world().teleport(this, location, flags);
+    default CompletableFuture<Boolean> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
+        return location.world().atChunk(location, (Function<MCCChunk, Boolean>) mccChunk -> mccChunk.teleport(location, this, flags));
     }
 
     MCCLocation getLocation();

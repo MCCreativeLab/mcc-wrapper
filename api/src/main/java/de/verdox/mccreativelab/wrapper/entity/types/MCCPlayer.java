@@ -165,8 +165,8 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      * @param stack the item stack
      */
     default void addItemOrDrop(MCCItemStack stack) {
-        getInventory().addItem(stack).forEach((integer, mccItemStack) -> {
-            getLocation().world().dropItemNaturally(getLocation(), mccItemStack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
+        getLocation().world().atChunk(getLocation(), mccChunk -> {
+            mccChunk.dropItem(getLocation(), stack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
         });
     }
 

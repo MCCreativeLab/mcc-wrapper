@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Describes a block type and its block states
@@ -30,8 +31,8 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      *
      * @param location the location to change the block at
      */
-    default void setBlock(@NotNull MCCLocation location) {
-        setBlock(location, false);
+    default CompletableFuture<Void> setBlock(@NotNull MCCLocation location) {
+        return setBlock(location, false);
     }
 
     /**
@@ -40,8 +41,10 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      * @param location     the location to change the block at
      * @param applyPhysics whether a block update is triggered
      */
-    default void setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
-        location.world().setBlock(this, location, applyPhysics);
+    default CompletableFuture<Void> setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
+        return location.world().at(location, mccBlock -> {
+            mccBlock.setBlockType(this, applyPhysics);
+        });
     }
 
     /**

@@ -64,7 +64,10 @@ public class MCCCapturedBlockState implements MCCWrapped {
             }
         }
 
-        return location.world().setBlock(toChange, location, triggerBlockUpdates).thenApply(unused -> true);
+        return location.world().at(location, mccBlock1 -> {
+            mccBlock1.setBlockState(toChange, triggerBlockUpdates);
+            return true;
+        });
     }
 
     public @Nullable MCCBlock getBlock() {

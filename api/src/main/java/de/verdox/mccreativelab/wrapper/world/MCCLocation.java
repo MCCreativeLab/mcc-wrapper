@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.wrapper.world;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,36 +97,25 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     }
 
     public CompletableFuture<MCCBlock> getBlock() {
-        return world().getBlockAt(this);
+        return world().at(this, mccBlock -> mccBlock);
     }
 
     @Nullable
     public MCCBlock getBlockNow() {
-        return world().getBlockAt(this).getNow(null);
+        MCCChunk mccChunk = world().getChunkImmediately(this);
+        if(mccChunk == null) {
+            return null;
+        }
+        return mccChunk.get(this);
     }
 
-    public static int toChunkBlockLocalX(int globalX) {
-        return Math.floorMod(globalX, CHUNK_X_LENGTH);
-    }
 
     public int toChunkBlockLocalX() {
-        return toChunkBlockLocalX(blockX());
-    }
-
-    public static int toChunkBlockLocalY(int globalY) {
-        return Math.floorMod(globalY, SECTION_Y_LENGTH);
-    }
-
-    public int toChunkBlockLocalY() {
-        return toChunkBlockLocalY(blockY());
-    }
-
-    public static int toChunkBlockLocalZ(int globalZ) {
-        return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
+        return calculateBlockLocalX(blockX());
     }
 
     public int toChunkBlockLocalZ() {
-        return toChunkBlockLocalZ(blockZ());
+        return calculateBlockLocalZ(blockZ());
     }
 
     public int getChunkX() {
@@ -142,6 +132,30 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
 
     public static int calculateChunkZ(int globalZ) {
         return globalZ >> 4;
+    }
+
+    public static int calculateBlockLocalX(int globalX) {
+        return Math.floorMod(globalX, CHUNK_X_LENGTH);
+    }
+
+    public static int calculateBlockLocalY(int globalY) {
+        return Math.floorMod(globalY, SECTION_Y_LENGTH);
+    }
+
+    public static int calculateBlockLocalZ(int globalZ) {
+        return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
+    }
+
+    public static int calculateBlockGlobalX(int chunkX, int localX) {
+        return chunkX * 16 + localX;
+    }
+
+    public static int calculateBlockGlobalY(int sectionY, int localY) {
+        return sectionY * 16 + localY;
+    }
+
+    public static int calculateBlockGlobalZ(int chunkZ, int localZ) {
+        return chunkZ * 16 + localZ;
     }
 
     public int blockX() {

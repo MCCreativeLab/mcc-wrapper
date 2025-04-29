@@ -2,175 +2,26 @@ package de.verdox.mccreativelab.wrapper.world;
 
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
+import de.verdox.mccreativelab.wrapper.world.acessor.global.WorldBlockAccessor;
+import de.verdox.mccreativelab.wrapper.world.acessor.global.WorldEntityAccessor;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.audience.ForwardingAudience;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking {
-
-    default CompletableFuture<MCCBlockState> getBlockDataAt(int x, int y, int z) {
-        return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
-            return mccChunk.getBlockDataAt(x, y, z);
-        });
-    }
-
-    default CompletableFuture<MCCBlockType> getBlockTypeAt(int x, int y, int z) {
-        return getOrLoadChunk(MCCLocation.calculateChunkX(x), MCCLocation.calculateChunkZ(z)).thenApply(mccChunk -> {
-            return mccChunk.getBlockTypeAt(x, y, z);
-        });
-    }
-
-    default CompletableFuture<MCCBlock> getBlockAt(int x, int y, int z) {
-        MCCLocation blockLocation = new MCCLocation(this, x, y, z);
-        return getOrLoadChunk(blockLocation).thenApply(mccChunk -> new MCCBlock(blockLocation, mccChunk));
-    }
-
-    default CompletableFuture<MCCBlock> getHighestBlockAt(int x, int z) {
-        MCCLocation blockLocation = new MCCLocation(this, x, 0, z);
-        return getOrLoadChunk(blockLocation).thenApply(mccChunk -> {
-            int height = mccChunk.getHighestNonAirBlock(x, z);
-            return new MCCBlock(blockLocation.withY(height), mccChunk);
-        });
-    }
-
-    default CompletableFuture<MCCBlockState> getBlockDataAt(MCCLocation location) {
-        if (!location.world().equals(this)) {
-            throw new IllegalArgumentException("The provided location does not belong to this world.");
-        }
-        return getBlockDataAt((int) location.x(), (int) location.y(), (int) location.z());
-    }
-
+public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking, WorldBlockAccessor<MCCWorld, MCCChunk, MCCBlock>, WorldEntityAccessor<MCCWorld, MCCChunk> {
     String getName();
-
-    default CompletableFuture<MCCBlockType> getBlockTypeAt(MCCLocation location) {
-        if (!location.world().equals(this)) {
-            throw new IllegalArgumentException("The provided location does not belong to this world.");
-        }
-        return getBlockTypeAt(location.blockX(), location.blockY(), location.blockZ());
-    }
-
-    default CompletableFuture<MCCBlock> getBlockAt(MCCLocation location) {
-        if (!location.world().equals(this)) {
-            throw new IllegalArgumentException("The provided location does not belong to this world.");
-        }
-        return getBlockAt(location.blockX(), location.blockY(), location.blockZ());
-    }
-
-    /**
-     * Changes a block at the provided location to this block state
-     *
-     * @param mccBlockState      the block state
-     * @param location           the location to change the block at
-     * @param triggerBlockUpdate whether the change should trigger block updates
-     */
-    default CompletableFuture<Void> setBlock(@NotNull MCCBlockState mccBlockState, @NotNull MCCLocation location, boolean triggerBlockUpdate) {
-        return getOrLoadChunk(location).thenApply(mccChunk -> {
-            mccChunk.setBlock(mccBlockState, location);
-            if (triggerBlockUpdate) {
-                triggerBlockUpdate(location);
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Changes a block at the provided location to this block state
-     *
-     * @param mccBlockType       the block type
-     * @param location           the location to change the block at
-     * @param triggerBlockUpdate whether the change should trigger block updates
-     */
-    default CompletableFuture<Void> setBlock(@NotNull MCCBlockType mccBlockType, @NotNull MCCLocation location, boolean triggerBlockUpdate) {
-        return getOrLoadChunk(location).thenApply(mccChunk -> {
-            mccChunk.setBlock(mccBlockType, location);
-            if (triggerBlockUpdate) {
-                triggerBlockUpdate(location);
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Teleports an entity to another location.
-     *
-     * @param location the location
-     * @return the future that is completed when the teleportation is done
-     */
-    CompletableFuture<MCCEntity> teleport(@NotNull MCCEntity entity, @NotNull MCCLocation location, MCCTeleportFlag... flags);
-
-    /**
-     * Naturally breaks this block as if a player had broken it.
-     *
-     * @param tool           the tool used
-     * @param triggerEffect  whether to trigger a block break effect
-     * @param dropExperience whether to drop Experience
-     * @param ignoreTool     whether to ignore the tool
-     */
-    void breakBlockNaturally(MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool);
-
-    /**
-     * Naturally breaks this block as if a player had broken it.
-     *
-     * @param triggerEffect  whether to trigger a block break effect
-     * @param dropExperience whether to drop Experience
-     */
-    default void breakBlockNaturally(MCCBlock mccBlock, boolean triggerEffect, boolean dropLoot, boolean dropExperience) {
-        breakBlockNaturally(mccBlock, null, triggerEffect, dropLoot, dropExperience, true);
-    }
-
-    /**
-     * Drops an item at the specified {@link MCCLocation} with a random offset
-     * Note that functions will run before the entity is spawned
-     *
-     * @param location     Location to drop the item
-     * @param item         ItemStack to drop
-     * @param dropCallback the function to be run before the entity is spawned.
-     * @return ItemDrop entity created as a result of this method
-     */
-    MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback);
-
-    /**
-     * Drops an item at the specified {@link MCCLocation} with a random offset
-     * Note that functions will run before the entity is spawned
-     *
-     * @param location     Location to drop the item
-     * @param item         ItemStack to drop
-     * @param dropCallback the function to be run before the entity is spawned.
-     * @return ItemDrop entity created as a result of this method
-     */
-    MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback);
-
-
-    /**
-     * Drops an item at the specified {@link MCCLocation} with a random offset
-     * Note that functions will run before the entity is spawned
-     *
-     * @param location Location to drop the item
-     * @param item     ItemStack to drop
-     * @return ItemDrop entity created as a result of this method
-     */
-    default MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item) {
-        return dropItemNaturally(location, item, null);
-    }
-
     /**
      * Returns all players in this world
      *
@@ -179,54 +30,10 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
     List<MCCPlayer> getPlayers();
 
     /**
-     * Used to summon an entity at a specified location
-     * @param location the location
-     * @param mccEntityType the entity type
-     * @return a future
-     */
-    <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason);
-
-    /**
-     * Gets or loads a chunk
-     * @param chunkX the chunk x coordinate
-     * @param chunkZ the chunk y coordinate
-     * @return a future
-     */
-    CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ);
-
-    /**
-     * Gets or loads a chunk
-     * @param location a location that is inside the chunk
-     * @return a future
-     */
-    CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location);
-
-    /**
-     * Returns a chunk at specified coordinates if it is loaded
-     * @param chunkX the chunk x coordinate
-     * @param chunkZ the chunk y coordinate
-     * @return the chunk or null if it is not loaded
-     */
-    @Nullable MCCChunk getChunkImmediately(int chunkX, int chunkZ);
-
-    /**
-     * Returns a chunk at specified coordinates if it is loaded
-     * @param location a location that is inside the chunk
-     * @return the chunk or null if it is not loaded
-     */
-    @Nullable MCCChunk getChunkImmediately(MCCLocation location);
-
-    /**
      * Returns the uuid of the world
      * @return the uuid
      */
     UUID getUUID();
-
-    /**
-     * Triggers a block update at a location
-     * @param location the location
-     */
-    void triggerBlockUpdate(MCCLocation location);
 
     /**
      * Returns the max build height of the world
