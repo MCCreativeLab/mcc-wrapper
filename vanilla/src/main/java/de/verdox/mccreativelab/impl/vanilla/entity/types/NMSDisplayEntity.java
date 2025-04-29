@@ -103,7 +103,7 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
     }
 
     @Override
-    public VanillaField<BrightnessOverride> blockBrightness() {
+    public VanillaField<BrightnessOverride> brightnessOverride() {
         return new VanillaField<>() {
             @Override
             public void set(BrightnessOverride newValue) {

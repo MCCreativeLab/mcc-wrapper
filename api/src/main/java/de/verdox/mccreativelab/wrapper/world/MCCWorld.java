@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
+import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
@@ -40,6 +41,14 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
     default CompletableFuture<MCCBlock> getBlockAt(int x, int y, int z) {
         MCCLocation blockLocation = new MCCLocation(this, x, y, z);
         return getOrLoadChunk(blockLocation).thenApply(mccChunk -> new MCCBlock(blockLocation, mccChunk));
+    }
+
+    default CompletableFuture<MCCBlock> getHighestBlockAt(int x, int z) {
+        MCCLocation blockLocation = new MCCLocation(this, x, 0, z);
+        return getOrLoadChunk(blockLocation).thenApply(mccChunk -> {
+            int height = mccChunk.getHighestNonAirBlock(x, z);
+            return new MCCBlock(blockLocation.withY(height), mccChunk);
+        });
     }
 
     default CompletableFuture<MCCBlockState> getBlockDataAt(MCCLocation location) {
@@ -98,6 +107,14 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
             return null;
         });
     }
+
+    /**
+     * Teleports an entity to another location.
+     *
+     * @param location the location
+     * @return the future that is completed when the teleportation is done
+     */
+    CompletableFuture<MCCEntity> teleport(@NotNull MCCEntity entity, @NotNull MCCLocation location, MCCTeleportFlag... flags);
 
     /**
      * Naturally breaks this block as if a player had broken it.

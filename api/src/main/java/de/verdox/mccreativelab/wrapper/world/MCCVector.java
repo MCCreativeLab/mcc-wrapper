@@ -352,7 +352,7 @@ public class MCCVector {
      * will not have its previous length. The scaled length of the resulting
      * vector will be related to the axis vector. If you are not perfectly sure
      * about the scaling of the vector, use
-     * {@link Vector#rotateAroundAxis(Vector, double)}
+     * {@link MCCVector#rotateAroundAxis(MCCVector, double)}
      *
      * @param axis the axis to rotate the vector around.
      * @param angle the angle to rotate the vector around the axis

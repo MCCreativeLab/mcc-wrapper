@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
+import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
@@ -39,6 +40,7 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.types.*;
@@ -73,15 +75,15 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
@@ -104,6 +106,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
+    private final GameComponentRegistry gameComponentRegistry = new NMSGameComponentRegistry(this);
     public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSPlatform(boolean useGeneratedConverters) {
@@ -250,6 +253,11 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
+    public GameComponentRegistry getGameComponentRegistry() {
+        return gameComponentRegistry;
+    }
+
+    @Override
     public @NotNull MCCContainerFactory getContainerFactory() {
         return containerFactory;
     }
@@ -276,6 +284,11 @@ public class NMSPlatform implements MCCPlatform {
             worlds.add(getConversionService().wrap(serverLevel, new TypeToken<>() {}));
         });
         return worlds;
+    }
+
+    @Override
+    public @Nullable MCCWorld getWorld(Key key) {
+        return conversionService.wrap(getServer().getLevel(ResourceKey.create(Registries.DIMENSION, conversionService.unwrap(key, ResourceLocation.class))), MCCWorld.class);
     }
 
     @Override

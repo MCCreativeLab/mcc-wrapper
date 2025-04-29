@@ -34,15 +34,26 @@ public class NMSEffectType extends MCCHandle<MobEffect> implements MCCEffectType
     }
 
     @Override
-    public void applyEffectType(MCCLivingEntity mccEntity, MCCEffect mccEffect) {
+    public boolean addEffect(MCCLivingEntity mccEntity, MCCEffect mccEffect) {
         LivingEntity entity = MCCPlatform.getInstance().getConversionService().unwrap(mccEntity, new TypeToken<>() {});
         MobEffectInstance mobEffectInstance = MCCPlatform.getInstance().getConversionService().unwrap(mccEffect, new TypeToken<>() {});
-        entity.addEffect(mobEffectInstance);
+        return entity.addEffect(mobEffectInstance);
+    }
+
+    @Override
+    public boolean removeEffect(MCCLivingEntity mccEntity) {
+        LivingEntity handle = MCCPlatform.getInstance().getConversionService().unwrap(mccEntity, new TypeToken<>() {});
+        return handle.removeEffect(conversionService.unwrap(this, new TypeToken<>() {}));
+    }
+
+    @Override
+    public boolean canBeAffected(MCCLivingEntity mccEntity) {
+        LivingEntity handle = MCCPlatform.getInstance().getConversionService().unwrap(mccEntity, new TypeToken<>() {});
+        return handle.canBeAffected(conversionService.unwrap(this, new TypeToken<>() {}));
     }
 
     @Override
     public MCCEffect create(int duration, int amplifier, boolean ambient, boolean particles, boolean icon, @Nullable MCCEffect hiddenEffect) {
-
         MobEffectInstance hidden = null;
         if(hiddenEffect != null){
             hidden = MCCPlatform.getInstance().getConversionService().unwrap(hiddenEffect, new TypeToken<>() {});

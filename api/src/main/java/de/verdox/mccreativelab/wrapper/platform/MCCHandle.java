@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 public class MCCHandle<T> {
     protected final T handle;
     protected ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
+    protected GameComponentRegistry componentRegistry = MCCPlatform.getInstance().getGameComponentRegistry();
 
     public MCCHandle(T handle) {
         this.handle = handle;

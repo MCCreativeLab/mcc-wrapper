@@ -3,16 +3,18 @@ package de.verdox.mccreativelab.wrapper.world;
 /**
  * Describes a block position
  */
-public record MCCBlockPos(int x, int y, int z) {
+public class MCCBlockPos extends MCCVector {
+    public MCCBlockPos(int x, int y, int z) {
+        super(x, y, z);
+    }
 
     /**
      * Returns the x coordinate of the block position
      *
      * @return the x coordinate
      */
-    @Override
-    public int x() {
-        return x;
+    public int blockX() {
+        return (int) x;
     }
 
     /**
@@ -20,9 +22,8 @@ public record MCCBlockPos(int x, int y, int z) {
      *
      * @return the y coordinate
      */
-    @Override
-    public int y() {
-        return y;
+    public int blockY() {
+        return (int) y;
     }
 
     /**
@@ -30,8 +31,7 @@ public record MCCBlockPos(int x, int y, int z) {
      *
      * @return the z coordinate
      */
-    @Override
-    public int z() {
-        return z;
+    public int blockZ() {
+        return (int) z;
     }
 }

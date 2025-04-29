@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
@@ -14,6 +15,7 @@ import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,6 +78,22 @@ public interface MCCPlatform extends MCCTicking {
      * @return the list of worlds loaded
      */
     @NotNull List<MCCWorld> getWorlds();
+
+    /**
+     * Gets a world by an uuid or null
+     * @param uuid the uuid
+     */
+    @Nullable
+    default MCCWorld getWorld(UUID uuid) {
+        return getWorlds().stream().filter(world -> world.getUUID().equals(uuid)).findAny().orElse(null);
+    }
+
+    /**
+     * Gets a world by a key or null
+     * @param key the key
+     */
+    @Nullable MCCWorld getWorld(Key key);
+
 
     /**
      * Gets an online player by his uuid. Returns null if the server is not online.
@@ -173,6 +191,11 @@ public interface MCCPlatform extends MCCTicking {
      * @return the platform serializers
      */
     MCCSerializers getPlatformSerializers();
+
+    /**
+     * Returns the platform game component registry
+     */
+    GameComponentRegistry getGameComponentRegistry();
 
     enum Lifecycle {
         BOOTSTRAP(MCCLifecycleTrigger::bootstrap),

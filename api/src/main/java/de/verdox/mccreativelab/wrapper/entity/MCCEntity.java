@@ -3,7 +3,12 @@ package de.verdox.mccreativelab.wrapper.entity;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPersistent;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissible;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
@@ -12,13 +17,10 @@ import de.verdox.mccreativelab.wrapper.world.MCCVector;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * Describes an entity in a minecraft world
  */
 @MCCInstantiationSource(sourceClasses = {MCCWorld.class})
-public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCRideable, MCCRider, MCCTicking, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowEntity>, net.kyori.adventure.sound.Sound.Emitter {
+public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, Audience, MCCPermissible, MCCTicking, net.kyori.adventure.text.event.HoverEventSource<net.kyori.adventure.text.event.HoverEvent.ShowEntity>, net.kyori.adventure.sound.Sound.Emitter {
     /**
      * Gets the type of this entity
      *
@@ -61,7 +63,9 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * @param location the location
      * @return the future that is completed when the teleportation is done
      */
-    CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags);
+    default CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
+        return location.world().teleport(this, location, flags);
+    }
 
     MCCLocation getLocation();
 
@@ -137,6 +141,27 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * @param pitch the pitch
      */
     void setRotation(float yaw, float pitch);
+
+    /**
+     * Returns the {@link MCCRideable} component
+     */
+    default MCCRideable asRideable() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCRideable.class);
+    }
+
+    /**
+     * Returns the {@link MCCRider} component
+     */
+    default MCCRider asRider() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCRider.class);
+    }
+
+    /**
+     * Returns the {@link MCCRider} component
+     */
+    default MCCPersistent asPersistent() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCPersistent.class);
+    }
 
     @Override
     default Key getRegistryKey() {

@@ -12,6 +12,7 @@ import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunkSection;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -57,6 +58,11 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     @Override
     public List<MCCEntity> getEntitiesInChunk() {
         throw new OperationNotPossibleOnNMS();
+    }
+
+    @Override
+    public int getHighestNonAirBlock(int globalX, int globalZ) {
+        return handle.getHeight(Heightmap.Types.WORLD_SURFACE, globalX, globalZ);
     }
 
     @Override

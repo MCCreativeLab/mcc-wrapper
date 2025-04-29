@@ -3,9 +3,10 @@ package de.verdox.mccreativelab.impl.vanilla.entity;
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.entity.MCCRideable;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
 import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
@@ -62,56 +63,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public void displayName(Component name) {
         throw new OperationNotPossibleOnNMS();
-    }
-
-    @Override
-    public CompletableFuture<MCCEntity> teleport(@NotNull MCCLocation location, MCCTeleportFlag... flags) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
-        CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-        location.checkFinite();
-        Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
-        boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
-        boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
-
-        boolean isWorldChange = Objects.equals(location.world(), location.world());
-
-        if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && getHandle().isVehicle() && !isWorldChange) {
-            done.complete(null);
-        } else if (!dismount && getHandle().isPassenger() && isWorldChange) {
-            done.complete(null);
-        } else if ((retainPassengers || !getHandle().isVehicle()) && !getHandle().isRemoved()) {
-            if (dismount) {
-                getHandle().stopRiding();
-            }
-
-            if (location.world() != null && !isWorldChange) {
-
-                ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
-                Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
-
-                handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), entity -> {
-                    done.complete(this);
-                }));
-            } else {
-                getHandle().moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
-                getHandle().setYHeadRot(location.yaw());
-                if (retainPassengers && getHandle().isVehicle()) {
-                    // Teleport passengers
-                    getHandle().getSelfAndPassengers().forEach(entity -> {
-                        for (Entity passenger : entity.getPassengers()) {
-                            Vec3 vec3 = getHandle().getPassengerRidingPosition(passenger);
-                            Vec3 vec32 = passenger.getVehicleAttachmentPoint(getHandle());
-                            passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
-                        }
-                    });
-                }
-                done.complete(this);
-            }
-
-        } else {
-            done.complete(null);
-        }
-        return done;
     }
 
     @Override
@@ -309,11 +260,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
-    public List<MCCEntity> getPassengers() {
-        return conversionService.wrap(getHandle().getPassengers(), new TypeToken<>() {});
-    }
-
-    @Override
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()
@@ -333,21 +279,5 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public Flux<Long> tickSignal() {
         return tickSink.asFlux();
-    }
-
-    @Override
-    public boolean startRiding(MCCRideable vehicle, boolean force) {
-        return getHandle().startRiding(conversionService.unwrap(vehicle), force);
-    }
-
-    @Override
-    public boolean stopRiding() {
-        getHandle().stopRiding();
-        return true;
-    }
-
-    @Override
-    public @Nullable MCCRideable getCurrentlyRiddenEntity() {
-        return conversionService.wrap(getHandle().getVehicle(), MCCRideable.class);
     }
 }
