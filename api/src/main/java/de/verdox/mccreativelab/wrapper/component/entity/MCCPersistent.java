@@ -8,5 +8,5 @@ import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
  */
 public interface MCCPersistent extends GameComponent<MCCEntity> {
     boolean isPersistent();
-    void setPersistent();
+    void setPersistent(boolean value);
 }
