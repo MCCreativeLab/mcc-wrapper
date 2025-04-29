@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 
 public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking, WorldBlockAccessor<MCCWorld, MCCChunk, MCCBlock>, WorldEntityAccessor<MCCWorld, MCCChunk> {
     String getName();
-
     /**
      * Returns all players in this world
      *

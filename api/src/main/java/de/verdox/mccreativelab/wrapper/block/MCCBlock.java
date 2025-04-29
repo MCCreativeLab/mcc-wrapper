@@ -36,17 +36,12 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
         this.mccChunk = mccChunk;
     }
 
-    /**
-     * Gets a relative block
-     * @param x the relative x coordinate
-     * @param y the relative y coordinate
-     * @param z the relative z coordinate
-     * @return the relative block
-     */
-    public MCCBlock getRelative(int x, int y, int z) {
-        return location.add(x, y, z).getBlockNow();
-    }
 
+    /**
+     * Returns the location of this block
+     *
+     * @return the location of the block
+     */
 
     @Override
     @NotNull
