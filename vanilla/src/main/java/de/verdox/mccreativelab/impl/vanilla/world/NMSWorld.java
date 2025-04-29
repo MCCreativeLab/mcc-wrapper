@@ -1,37 +1,23 @@
 package de.verdox.mccreativelab.impl.vanilla.world;
 
-import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.TempData;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
-import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
@@ -39,7 +25,6 @@ import reactor.core.publisher.Sinks;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
@@ -57,133 +42,25 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public CompletableFuture<MCCEntity> teleport(@NotNull MCCEntity entity, @NotNull MCCLocation location, MCCTeleportFlag... flags) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
-        CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-        location.checkFinite();
-        Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
-        boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
-        boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
-
-        boolean isWorldChange = Objects.equals(location.world(), location.world());
-        var handle = conversionService.unwrap(entity, Entity.class);
-
-        if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && handle.isVehicle() && !isWorldChange) {
-            done.complete(null);
-        } else if (!dismount && handle.isPassenger() && isWorldChange) {
-            done.complete(null);
-        } else if ((retainPassengers || !handle.isVehicle()) && !handle.isRemoved()) {
-            if (dismount) {
-                handle.stopRiding();
-            }
-
-            if (location.world() != null && !isWorldChange) {
-
-                ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
-                Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
-
-                handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), e -> done.complete(entity)));
-            } else {
-                handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
-                handle.setYHeadRot(location.yaw());
-                if (retainPassengers && handle.isVehicle()) {
-                    // Teleport passengers
-                    handle.getSelfAndPassengers().forEach(selfOrPassenger -> {
-                        for (Entity passenger : selfOrPassenger.getPassengers()) {
-                            Vec3 vec3 = handle.getPassengerRidingPosition(passenger);
-                            Vec3 vec32 = passenger.getVehicleAttachmentPoint(handle);
-                            passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
-                        }
-                    });
-                }
-                done.complete(entity);
-            }
-
-        } else {
-            done.complete(null);
-        }
-        return done;
-    }
-
-    @Override
-    public void breakBlockNaturally(MCCBlock mccBlock, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-
-    }
-
-    @Override
-    public MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
-        Preconditions.checkArgument(location != null, "Location cannot be null");
-        Preconditions.checkArgument(item != null, "Item cannot be null");
-
-        double xs = (handle.random.nextFloat() * 0.5F) + 0.25D;
-        double ys = (handle.random.nextFloat() * 0.5F) + 0.25D;
-        double zs = (handle.random.nextFloat() * 0.5F) + 0.25D;
-        location = location.add(xs, ys, zs);
-        return this.dropItem(location, item, dropCallback);
-    }
-
-    @Override
-    public MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
-        Preconditions.checkArgument(location != null, "Location cannot be null");
-        Preconditions.checkArgument(item != null, "Item cannot be null");
-
-        ItemEntity entity = new ItemEntity(getHandle(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
-        entity.setPickUpDelay(10);
-        MCCItemEntity mccEntity = conversionService.wrap(entity);
-        if (dropCallback != null) {
-            dropCallback.accept(mccEntity);
-        }
-        getHandle().addFreshEntity(entity);
-        return mccEntity;
-    }
-
-    @Override
     public List<MCCPlayer> getPlayers() {
         return conversionService.wrap(handle.getPlayers(serverPlayer -> true));
     }
 
     @Override
-    public <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
-        MCCEntity constructedEntity = mccEntityType.constructNewEntity();
-        Entity entity = conversionService.unwrap(constructedEntity);
-
-        if (entity instanceof Mob) {
-            ((Mob) entity).finalizeSpawn(this.getHandle(), this.getHandle().getCurrentDifficultyAt(entity.blockPosition()), conversionService.unwrap(spawnReason, EntitySpawnReason.class), null);
-        }
-
-        this.getHandle().addFreshEntity(entity);
-        return CompletableFuture.completedFuture(conversionService.wrap(entity));
-    }
-
-    @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
-        return conversionService.wrap(handle.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true));
-    }
-
-    @Override
-    public CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location) {
-        return conversionService.wrap(handle.getChunk(location.getChunkX(), location.getChunkZ(), ChunkStatus.FULL, true));
+        CompletableFuture<MCCChunk> future = new CompletableFuture<>();
+        conversionService.wrap(handle.getChunk(chunkX, chunkX, ChunkStatus.FULL, true));
+        return future;
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(int x, int z) {
-        return null;
-    }
-
-    @Override
-    public @Nullable MCCChunk getChunkImmediately(MCCLocation location) {
-        return null;
+        return conversionService.wrap(handle.getChunk(x, z, ChunkStatus.FULL, false));
     }
 
     @Override
     public UUID getUUID() {
         return null;
-    }
-
-    @Override
-    public void triggerBlockUpdate(MCCLocation location) {
-        Objects.requireNonNull(location.getBlockNow(), "The chunk at the location " + location + " is not loaded.");
-        handle.updateNeighborsAt(new BlockPos(location.blockX(), location.blockY(), location.blockZ()), conversionService.unwrap(location.getBlockNow().getBlockType()));
     }
 
     @Override
@@ -265,5 +142,15 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public Flux<Long> tickSignal() {
         return tickSink.asFlux();
+    }
+
+    @Override
+    public boolean canAccess(MCCLocation mccLocation) {
+        return mccLocation.world().key().equals(key());
+    }
+
+    @Override
+    public boolean canAccess(int x, int y, int z) {
+        return true;
     }
 }
