@@ -21,6 +21,7 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
@@ -185,4 +186,12 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     default MCCPluginMessenger asPluginMessenger() {
         return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCPluginMessenger.class);
     }
+
+    /**
+     * Used to subscribe to player inputs
+     */
+    Flux<Input> inputSignal();
+
+    record Input(long tick, boolean forward, boolean backward, boolean left, boolean right, boolean jump, boolean sneak,
+                 boolean sprint) {}
 }

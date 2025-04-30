@@ -6,17 +6,23 @@ import de.verdox.mccreativelab.impl.paper.pack.PaperGeneratorHelper;
 import de.verdox.mccreativelab.impl.paper.platform.PaperPlatform;
 import de.verdox.mccreativelab.impl.paper.platform.commands.RegistryLookUpCommand;
 import de.verdox.mccreativelab.impl.vanilla.entity.NMSEntity;
+import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSPlayer;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.text.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.entity.player.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInputEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -105,6 +111,13 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
             for (MCCEntity entity : world.getEntities()) {
                 NMSEntity<?> nmsEntity = (NMSEntity<?>) entity;
                 nmsEntity.tickSink.tryEmitNext(tick);
+
+                if (entity instanceof MCCPlayer player) {
+                    NMSPlayer nmsPlayer = (NMSPlayer) player;
+                    ServerPlayer serverPlayer = (ServerPlayer) nmsPlayer.getHandle();
+                    Input input = serverPlayer.getLastClientInput();
+                    nmsPlayer.inputSink.tryEmitNext(new MCCPlayer.Input(tick, input.forward(), input.backward(), input.left(), input.right(), input.jump(), input.shift(), input.sprint()));
+                }
             }
             NMSWorld nmsWorld = (NMSWorld) world;
             nmsWorld.tickSink.tryEmitNext(tick);
