@@ -10,10 +10,7 @@ import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
-import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
-import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSItemEntity;
-import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSLivingEntity;
-import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSMarkerEntity;
+import de.verdox.mccreativelab.impl.vanilla.entity.types.*;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainer;
 import de.verdox.mccreativelab.impl.vanilla.inventory.factory.NMSContainerFactory;
 import de.verdox.mccreativelab.impl.vanilla.inventory.types.container.NMSPlayerInventory;
@@ -371,6 +368,7 @@ public class NMSPlatform implements MCCPlatform {
         conversionService.registerConverterForNewImplType(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCItemEntity.class, NMSItemEntity.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCMarkerEntity.class, NMSMarkerEntity.CONVERTER);
+        conversionService.registerConverterForNewImplType(MCCInteractionEntity.class, NMSInteractionEntity.CONVERTER);
         registerDisplayEntity();
         // conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER); TODO
     }
