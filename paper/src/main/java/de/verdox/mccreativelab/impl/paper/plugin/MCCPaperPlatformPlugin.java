@@ -26,11 +26,17 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
+    private static MCCPaperPlatformPlugin INSTANCE;
+
+    public static MCCPaperPlatformPlugin getInstance() {
+        return INSTANCE;
+    }
 
     private PaperPlatform platform;
 
     @Override
     public void onLoad() {
+        INSTANCE = this;
         platform = (PaperPlatform) MCCPlatform.getInstance();
         try {
             platform.getResourcePackManager().init(platform);
