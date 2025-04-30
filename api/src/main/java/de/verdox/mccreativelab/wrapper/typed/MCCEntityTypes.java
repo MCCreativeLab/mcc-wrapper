@@ -22,7 +22,7 @@ public interface MCCEntityTypes {
     MCCReference<MCCEntityType<MCCDisplayEntity.Block>> BLOCK_DISPLAY = get("block_display", new TypeToken<>() {});
     MCCReference<MCCEntityType<MCCDisplayEntity.Text>> TEXT_DISPLAY = get("text_display", new TypeToken<>() {});
 
-    MCCReference<MCCEntityType<MCCInteractionEntity>> INTERACTION_ENTITY = get("interact", new TypeToken<>() {});
+    MCCReference<MCCEntityType<MCCInteractionEntity>> INTERACTION_ENTITY = get("interaction", new TypeToken<>() {});
 
     private static <T extends MCCEntity> MCCReference<MCCEntityType<T>> get(String key, TypeToken<MCCEntityType<T>> type) {
         return MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", key), VANILLA_REGISTRY_KEY, type).getAsReference();
