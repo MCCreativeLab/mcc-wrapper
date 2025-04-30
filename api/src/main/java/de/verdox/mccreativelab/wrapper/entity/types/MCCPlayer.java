@@ -2,6 +2,8 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPluginMessenger;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
@@ -9,6 +11,7 @@ import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
@@ -175,4 +178,11 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      * @param entityToSpectate the entity to spectate
      */
     void setCamera(@Nullable MCCEntity entityToSpectate) throws IllegalStateException;
+
+    /**
+     * Returns the {@link MCCEffectTarget} component
+     */
+    default MCCPluginMessenger asPluginMessenger() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCPluginMessenger.class);
+    }
 }

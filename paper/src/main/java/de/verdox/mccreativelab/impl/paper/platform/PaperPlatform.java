@@ -6,7 +6,9 @@ import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockHardnessSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockSoundSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperFurnaceSettings;
+import de.verdox.mccreativelab.impl.paper.component.entity.PaperEntityHiding;
 import de.verdox.mccreativelab.impl.paper.component.entity.PaperPersistent;
+import de.verdox.mccreativelab.impl.paper.component.entity.PaperPluginMessenger;
 import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.entity.types.PaperPlayer;
 import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
@@ -20,7 +22,9 @@ import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEntityHiding;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCPersistent;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPluginMessenger;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
@@ -70,6 +74,8 @@ public class PaperPlatform extends NMSPlatform {
         conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
 
         getGameComponentRegistry().register(MCCPersistent.class, PaperPersistent::new);
+        getGameComponentRegistry().register(MCCPluginMessenger.class, PaperPluginMessenger::new);
+        getGameComponentRegistry().register(MCCEntityHiding.class, PaperEntityHiding::new);
 
         LOGGER.info("Paper Platform initialized");
     }
