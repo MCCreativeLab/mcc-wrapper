@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.entity;
 import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
@@ -16,6 +17,7 @@ import de.verdox.mccreativelab.wrapper.platform.TempData;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCVector;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
@@ -257,6 +259,11 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
         getHandle().yRotO = yaw;
         getHandle().xRotO = pitch;
         getHandle().setYHeadRot(yaw);
+    }
+
+    @Override
+    public @NotNull MCCChunk getChunk() {
+        return new NMSChunk(handle.level().getChunk(handle.chunkPosition().x, handle.chunkPosition().z));
     }
 
     @Override
