@@ -138,6 +138,11 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     void remove();
 
     /**
+     * Checks if the entity was removed
+     */
+    boolean isRemoved();
+
+    /**
      * Changes the rotation of the entity
      * @param yaw the yaw
      * @param pitch the pitch
@@ -175,4 +180,9 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
     default net.kyori.adventure.text.event.HoverEvent<net.kyori.adventure.text.event.HoverEvent.ShowEntity> asHoverEvent(final @NotNull java.util.function.UnaryOperator<net.kyori.adventure.text.event.HoverEvent.ShowEntity> op) {
         return net.kyori.adventure.text.event.HoverEvent.showEntity(op.apply(HoverEvent.ShowEntity.showEntity(this.getType().key(), this.getUUID(), this.displayName())));
     }
+
+    /**
+     * Gets the current chunk of the entity
+     */
+    @NotNull MCCChunk getChunk();
 }
