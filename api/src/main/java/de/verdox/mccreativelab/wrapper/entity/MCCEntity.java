@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
+import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCPersistent;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
@@ -185,4 +186,12 @@ public interface MCCEntity extends MCCKeyedWrapper, TempDataHolder, MCCWrapped, 
      * Gets the current chunk of the entity
      */
     @NotNull MCCChunk getChunk();
+
+    /**
+     * Gets the current block of the entity.
+     */
+    @NotNull
+    default MCCBlock getBlock() {
+        return getChunk().get(getLocation());
+    }
 }
