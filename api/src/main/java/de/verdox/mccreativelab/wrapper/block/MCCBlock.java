@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Describes an actual block in a minecraft world with a location and a type.
@@ -34,6 +35,13 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
         }
         this.location = location;
         this.mccChunk = mccChunk;
+    }
+
+    /**
+     * Gets the relative of a block
+     */
+    public CompletableFuture<MCCBlock> getRelative(int relX, int relY, int relZ) {
+        return getWorld().at(x() + relX, y() + relY, z() + relZ, mccBlock -> mccBlock);
     }
 
 
