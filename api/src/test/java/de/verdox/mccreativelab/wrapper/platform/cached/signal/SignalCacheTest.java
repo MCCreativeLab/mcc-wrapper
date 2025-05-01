@@ -52,7 +52,7 @@ public class SignalCacheTest {
         Object handle = new Object();
         Key key = Key.key("test", "test");
 
-        Signal<String> signal = new Signal<>(Sinks.many().unicast().onBackpressureBuffer());
+        Signal<String> signal = new Signal<>(key, Sinks.many().unicast().onBackpressureBuffer());
         signal.cachedDisposables.add(() -> disposed.set(true)); // mock disposable
 
         // Manuell in die Map eintragen, um GC zu simulieren
@@ -76,7 +76,7 @@ public class SignalCacheTest {
 
     @Test
     void testSubscribeStoresDisposable() {
-        Signal<String> signal = new Signal<>(Sinks.many().multicast().onBackpressureBuffer());
+        Signal<String> signal = new Signal<>(Key.key("minecraft:test"), Sinks.many().multicast().onBackpressureBuffer());
         ObservedSignal<String> observed = signal.asFlux();
 
         AtomicInteger counter = new AtomicInteger();
@@ -89,7 +89,7 @@ public class SignalCacheTest {
 
     @Test
     void testDisposeAllDisposesSubscriptions() {
-        Signal<String> signal = new Signal<>(Sinks.many().multicast().onBackpressureBuffer());
+        Signal<String> signal = new Signal<>(Key.key("minecraft:test"), Sinks.many().multicast().onBackpressureBuffer());
         AtomicBoolean disposed = new AtomicBoolean(false);
 
         Disposable disposable = () -> disposed.set(true);
