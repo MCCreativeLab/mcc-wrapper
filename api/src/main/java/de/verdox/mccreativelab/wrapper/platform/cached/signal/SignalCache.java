@@ -25,7 +25,7 @@ public class SignalCache {
         if(cache.containsKey(key)) {
             return (Signal<VALUE>) cache.get(key);
         }
-        var signal = new Signal<>(sinkCreator.get());
+        var signal = new Signal<>(key, sinkCreator.get());
         cache.put(key, signal);
         return signal;
     }
