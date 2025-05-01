@@ -50,7 +50,8 @@ publishing {
                 version = providers.gradleProperty("version").get()
                 artifactId = "paper"
 
-                artifact(tasks.named("shadowJar"))
+                //artifact(tasks.named("shadowJar"))
+                from(components["java"])
                 licenses {
                     license {
                         name = "GNU GENERAL PUBLIC LICENSE Version 3"
