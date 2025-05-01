@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("fabric-loom") version "1.9-SNAPSHOT"
     id("me.champeau.jmh") version "0.7.2"
+    `java-library`
 }
 
 repositories {
@@ -10,8 +11,7 @@ repositories {
 
 dependencies {
     val mcVersion = providers.gradleProperty("mcversion").get()
-    compileOnly(project(":api"))
-    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
+    api(project(":api"))
 
     minecraft("com.mojang:minecraft:$mcVersion")
     @Suppress("UnstableApiUsage")
@@ -21,6 +21,8 @@ dependencies {
     })
     jmh(project(":api"))
     jmh(project(":TestSuite"))
+
+
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")

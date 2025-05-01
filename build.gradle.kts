@@ -44,7 +44,6 @@ subprojects {
         compileOnly("de.verdox:vserializer:1.2.3-SNAPSHOT")
         compileOnly("it.unimi.dsi:fastutil:8.5.15")
         implementation("com.google.guava:guava:33.3.1-jre")
-        compileOnly("io.projectreactor:reactor-core:3.7.5")
         testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
         testImplementation("io.projectreactor:reactor-core:3.7.5")
 
@@ -69,7 +68,6 @@ subprojects {
         include("**/*.class")  // Stelle sicher, dass nur die Klassen hinzugefügt werden
         include("META-INF/**")  // Stelle sicher, dass die META-INF-Dateien eingeschlossen sind
         exclude("**/test/**", "**/*.java") // Schließe unnötige Testdateien aus
-
     }
 
     publishing {

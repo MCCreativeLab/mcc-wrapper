@@ -1,4 +1,5 @@
 plugins {
+    `java-library`
     id("java")
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper") version "2.3.1" apply true // Adds runServer and runMojangMappedServer tasks for testing
@@ -6,9 +7,10 @@ plugins {
 }
 
 dependencies {
-    compileOnly(project(":api"))
-    implementation(project(":vanilla", "default"))
-    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
+    //compileOnly(project(":api"))
+    api(project(":vanilla", "default"))
+    //compileOnly("io.projectreactor:reactor-core:3.7.5")
+    //compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
     compileOnly("net.bytebuddy:byte-buddy:1.15.10")
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
