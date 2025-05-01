@@ -24,6 +24,9 @@ public class Signal<T> {
 
     void disposeAll() {
         for (Disposable cachedDisposable : cachedDisposables) {
+            if (cachedDisposable.isDisposed()) {
+                continue;
+            }
             cachedDisposable.dispose();
         }
     }

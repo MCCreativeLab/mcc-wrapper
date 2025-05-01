@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.platform.cached.signal;
 
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
@@ -23,8 +24,10 @@ public class ObservedSignal<T> {
         return parent.getSink();
     }
 
-    public void subscribe(Consumer<? super T> consume) {
-        parent.cachedDisposables.add(flux.subscribe(consume));
+    public Disposable subscribe(Consumer<? super T> consume) {
+        Disposable disposable = flux.subscribe(consume);
+        parent.cachedDisposables.add(disposable);
+        return disposable;
     }
 
 }
