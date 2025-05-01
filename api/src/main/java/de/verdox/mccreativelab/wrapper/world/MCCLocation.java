@@ -159,15 +159,15 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     }
 
     public int blockX() {
-        return (int) x();
+        return (int) Math.floor(x());
     }
 
     public int blockY() {
-        return (int) y();
+        return (int) Math.floor(y());
     }
 
     public int blockZ() {
-        return (int) z();
+        return (int) Math.floor(z());
     }
 
     public double distanceSquared(@NotNull MCCLocation o) {
