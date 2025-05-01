@@ -30,8 +30,10 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
         if (mccChunk == null || !mccChunk.isLoaded()) {
             throw new IllegalArgumentException("The provided chunk of the block is not loaded");
         }
-        if (!mccChunk.canAccess(location)) {
-            throw new IllegalArgumentException("The provided chunk " + mccChunk.chunkX() + ", " + mccChunk.chunkZ() + " is not the owner of the provided location " + location);
+        if (!mccChunk.getWorld().canAccess(location)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.chunkX() + ", " + mccChunk.chunkZ() + " is not the owner of the provided location " + location + ". Reason: World mismatch -> " + mccChunk.getWorld().key() + " != " + location.world().key());
+        } else if (!mccChunk.canAccess(location)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.chunkX() + ", " + mccChunk.chunkZ() + " is not the owner of the provided location " + location + ". Reason: Chunk coordinate mismatch -> (" + mccChunk.chunkX() + "," + mccChunk.chunkZ() + ") != (" + location.getChunkX() + "," + location.getChunkZ() + ")");
         }
         this.location = location;
         this.mccChunk = mccChunk;
