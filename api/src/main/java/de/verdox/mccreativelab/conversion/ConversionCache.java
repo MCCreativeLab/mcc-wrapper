@@ -52,8 +52,8 @@ public class ConversionCache<V> {
             throw new IllegalArgumentException("The impl type " + implType + " is already mapped to the value " + implToValue.get(implType) + ". However, you want to map it to " + value);
         }
 
-        apiToImpls.computeIfAbsent(apiType, aClass -> new ArrayList<>()).add(implType);
-        nativeToImpls.computeIfAbsent(nativeType, aClass -> new ArrayList<>()).add(implType);
+        apiToImpls.computeIfAbsent(apiType, aClass -> new ArrayList<>()).addFirst(implType);
+        nativeToImpls.computeIfAbsent(nativeType, aClass -> new ArrayList<>()).addFirst(implType);
 
 
         implToApi.put(implType, apiType);
