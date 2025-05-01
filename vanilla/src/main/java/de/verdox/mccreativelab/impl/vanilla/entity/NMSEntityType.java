@@ -5,6 +5,8 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
+import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
+import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
@@ -24,8 +26,7 @@ public class NMSEntityType extends MCCHandle<EntityType<?>> implements MCCEntity
     }
 
     @Override
-    public MCCEntity constructNewEntity() {
-        //handle.createEntity(location, clazz, randomizeData);
-        return null;
+    public MCCEntity constructNewEntity(MCCWorld world, MCCEntitySpawnReason spawnReason) {
+        return conversionService.wrap(handle.create(conversionService.unwrap(world), conversionService.unwrap(spawnReason)));
     }
 }

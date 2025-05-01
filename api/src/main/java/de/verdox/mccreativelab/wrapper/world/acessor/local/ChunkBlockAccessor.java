@@ -18,9 +18,9 @@ public interface ChunkBlockAccessor<
 
     POINT_ACCESS getHighest(int x, int z);
 
-    MCCBlockState getBlockDataAtLocal(int localX, int localY, int localZ);
+    MCCBlockState getBlockDataAtLocal(int localX, int globalY, int localZ);
 
-    void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int localY, int localZ, boolean triggerBlockUpdate);
+    void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalY, int localZ, boolean triggerBlockUpdate);
 
     /**
      * Naturally breaks this block as if a player had broken it.
@@ -100,7 +100,7 @@ public interface ChunkBlockAccessor<
         setBlockLocal(mccBlockState, MCCLocation.calculateBlockLocalX(globalX), globalY, MCCLocation.calculateBlockLocalZ(globalZ), triggerBlockUpdate);
     }
 
-    default void setBlockLocal(@NotNull MCCBlockType mccBlockType, int localX, int localY, int localZ, boolean triggerBlockUpdate) {
-        setBlockLocal(mccBlockType.getDefaultState(), localX, localY, localZ, triggerBlockUpdate);
+    default void setBlockLocal(@NotNull MCCBlockType mccBlockType, int localX, int globalY, int localZ, boolean triggerBlockUpdate) {
+        setBlockLocal(mccBlockType.getDefaultState(), localX, globalY, localZ, triggerBlockUpdate);
     }
 }

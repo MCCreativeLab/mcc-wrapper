@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.conversion;
 
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,6 +40,10 @@ public class CoordinateTests {
         int localX = MCCLocation.calculateBlockLocalX(globalX);
         int localY = MCCLocation.calculateBlockLocalY(globalY);
         int localZ = MCCLocation.calculateBlockLocalZ(globalZ);
+
+        Assertions.assertTrue(localX < 16);
+        Assertions.assertTrue(localY < 16);
+        Assertions.assertTrue(localZ < 16);
 
         int chunkX = Math.floorDiv(globalX, CHUNK_LENGTH);
         int sectionY = Math.floorDiv(globalY, CHUNK_LENGTH);

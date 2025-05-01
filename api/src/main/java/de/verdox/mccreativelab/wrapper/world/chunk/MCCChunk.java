@@ -35,15 +35,15 @@ public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWo
     MCCChunkSection getChunkSectionByGlobalYCoordinate(int blockHeight);
 
     @Override
-    default MCCBlockState getBlockDataAtLocal(int localX, int localY, int localZ) {
-        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localY);
-        return chunkSection.getBlockState(localX, localY, localZ);
+    default MCCBlockState getBlockDataAtLocal(int localX, int globalY, int localZ) {
+        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalY);
+        return chunkSection.getBlockState(localX, MCCLocation.calculateBlockLocalY(globalY), localZ);
     }
 
     @Override
     default void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalY, int localZ, boolean triggerBlockUpdate) {
         MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalY);
-        chunkSection.setBlockState(localX, globalY, localZ, mccBlockState);
+        chunkSection.setBlockState(localX, MCCLocation.calculateBlockLocalY(globalY), localZ, mccBlockState);
         if (triggerBlockUpdate) {
             triggerBlockUpdate(
                     MCCLocation.calculateBlockGlobalX(chunkX(), localX),

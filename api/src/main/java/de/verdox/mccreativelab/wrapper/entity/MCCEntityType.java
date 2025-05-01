@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.vserializer.generic.Serializer;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public interface MCCEntityType<T extends MCCEntity> extends MCCKeyedWrapper {
         return location.world().summon(location, this, spawnReason);
     }
 
-    MCCEntity constructNewEntity();
+    T constructNewEntity(MCCWorld world, MCCEntitySpawnReason spawnReason);
 
     @Override
     default Key getRegistryKey() {

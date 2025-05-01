@@ -153,8 +153,10 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         Preconditions.checkArgument(mccEntityType != null, "mccEntityType cannot be null");
         Preconditions.checkArgument(spawnReason != null, "spawnReason cannot be null");
         checkAccess(location);
-        MCCEntity constructedEntity = mccEntityType.constructNewEntity();
+        MCCEntity constructedEntity = mccEntityType.constructNewEntity(location.world(), spawnReason);
+        Objects.requireNonNull(constructedEntity, "Could not construct an entity of type " + mccEntityType.key());
         Entity entity = conversionService.unwrap(constructedEntity);
+
 
         if (entity instanceof Mob) {
             ((Mob) entity).finalizeSpawn((ServerLevelAccessor) this.getHandle().getLevel(), this.getHandle().getLevel().getCurrentDifficultyAt(entity.blockPosition()), conversionService.unwrap(spawnReason, EntitySpawnReason.class), null);
