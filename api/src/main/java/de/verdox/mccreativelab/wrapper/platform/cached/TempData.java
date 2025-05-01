@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.platform;
+package de.verdox.mccreativelab.wrapper.platform.cached;
 
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import org.jetbrains.annotations.Nullable;

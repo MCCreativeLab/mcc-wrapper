@@ -5,8 +5,10 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.platform.TempCache;
-import de.verdox.mccreativelab.wrapper.platform.TempData;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempCache;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempData;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.ObservedSignal;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.SignalCache;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
@@ -30,7 +32,6 @@ import java.util.function.Predicate;
 public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     public static final MCCConverter<ServerLevel, NMSWorld> CONVERTER = converter(NMSWorld.class, ServerLevel.class, NMSWorld::new, MCCHandle::getHandle);
     private Pointers adventurePointer;
-    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSWorld(ServerLevel handle) {
         super(handle);
@@ -137,11 +138,6 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public Key getRegistryKey() {
         return Key.key("minecraft", "dimension");
-    }
-
-    @Override
-    public Flux<Long> tickSignal() {
-        return tickSink.asFlux();
     }
 
     @Override

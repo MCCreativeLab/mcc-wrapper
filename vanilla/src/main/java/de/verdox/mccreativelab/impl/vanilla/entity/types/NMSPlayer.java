@@ -17,6 +17,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInvent
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.ObservedSignal;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCPropertyKey;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
@@ -24,19 +25,15 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.Weather;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.bossbar.BossBarImplementation;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.resource.ResourcePackCallback;
-import net.kyori.adventure.resource.ResourcePackInfo;
 import net.kyori.adventure.resource.ResourcePackRequest;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.sound.SoundStop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
-import net.kyori.adventure.util.MonkeyBars;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
@@ -48,8 +45,6 @@ import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +53,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
@@ -66,7 +60,6 @@ import java.util.*;
 
 public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     public static final MCCConverter<Player, NMSPlayer> CONVERTER = MCCHandle.converter(NMSPlayer.class, Player.class, NMSPlayer::new, MCCHandle::getHandle);
-    public final Sinks.Many<Input> inputSink = Sinks.many().multicast().directBestEffort();
 
     public NMSPlayer(Player handle) {
         super(handle);
@@ -417,12 +410,6 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
         if (getServerPlayer().connection != null) {
             getServerPlayer().connection.send(new ClientboundResourcePackPopPacket(Optional.empty()));
         }
-    }
-
-
-    @Override
-    public Flux<Input> inputSignal() {
-        return inputSink.asFlux();
     }
 
     private static int ticks(Duration duration) {

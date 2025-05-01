@@ -96,6 +96,7 @@ dependencies {
     testImplementation("org.ow2.asm:asm-tree:9.7")
     testImplementation("com.google.guava:guava:33.3.1-jre")
     testImplementation("org.mockito:mockito-core:5.14.2")
+    testImplementation("net.kyori:adventure-api:4.17.0")
 }
 
 java {

@@ -1,13 +1,16 @@
 package de.verdox.mccreativelab.wrapper.platform;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
+import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.inventory.factory.MCCContainerFactory;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.Signal;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCServerProperties;
@@ -18,10 +21,12 @@ import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import reactor.core.publisher.Sinks;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -207,5 +212,15 @@ public interface MCCPlatform extends MCCTicking {
         Lifecycle(Consumer<MCCLifecycleTrigger> lifecycleFunction) {
             this.lifecycleFunction = lifecycleFunction;
         }
+    }
+
+    <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator);
+
+    default <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject) {
+        return createSignal(key, apiObject, () -> Sinks.many().multicast().directBestEffort());
+    }
+
+    default <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, TypeToken<VALUE> typeToken) {
+        return createSignal(key, apiObject, () -> Sinks.many().multicast().directBestEffort());
     }
 }

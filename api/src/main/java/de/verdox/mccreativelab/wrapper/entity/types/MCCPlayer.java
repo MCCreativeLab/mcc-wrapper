@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.entity.types;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
@@ -12,16 +13,17 @@ import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInventory;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.ObservedSignal;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityMultiProperty;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.Weather;
 import net.kyori.adventure.identity.Identified;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
@@ -190,7 +192,9 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     /**
      * Used to subscribe to player inputs
      */
-    Flux<Input> inputSignal();
+    default ObservedSignal<Input> inputSignal() {
+        return MCCPlatform.getInstance().createSignal(Key.key("minecraft", "player_input"), this, new TypeToken<Input>() {}).asFlux();
+    }
 
     record Input(long tick, boolean forward, boolean backward, boolean left, boolean right, boolean jump, boolean sneak,
                  boolean sprint) {}

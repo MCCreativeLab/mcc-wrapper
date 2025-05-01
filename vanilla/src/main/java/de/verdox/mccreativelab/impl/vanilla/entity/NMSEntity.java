@@ -1,19 +1,17 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
-import com.google.common.base.Preconditions;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
-import de.verdox.mccreativelab.wrapper.component.entity.MCCRider;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
-import de.verdox.mccreativelab.wrapper.component.entity.MCCRideable;
-import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.platform.TempCache;
-import de.verdox.mccreativelab.wrapper.platform.TempData;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempCache;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempData;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.ObservedSignal;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.SignalCache;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCVector;
@@ -22,25 +20,20 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.portal.TeleportTransition;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEntity {
     public static final MCCConverter<Entity, NMSEntity> CONVERTER = converter(NMSEntity.class, Entity.class, NMSEntity::new, nmsEntity -> (Entity) nmsEntity.getHandle());
 
     private final MCCPermissionContainer permissionContainer = new MCCPermissionContainer();
     protected Pointers adventurePointer;
-    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
 
     public NMSEntity(T handle) {
@@ -286,10 +279,5 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public MCCPermissionContainer getPermissions() {
         return permissionContainer;
-    }
-
-    @Override
-    public Flux<Long> tickSignal() {
-        return tickSink.asFlux();
     }
 }

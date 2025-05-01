@@ -22,6 +22,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("net.kyori:adventure-api:4.17.0")
 }
 
 tasks.test {

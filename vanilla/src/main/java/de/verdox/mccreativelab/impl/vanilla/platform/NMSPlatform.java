@@ -31,6 +31,7 @@ import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -56,6 +57,8 @@ import de.verdox.mccreativelab.wrapper.platform.MCCLifecycleTrigger;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.MCCResourcePack;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.Signal;
+import de.verdox.mccreativelab.wrapper.platform.cached.signal.SignalCache;
 import de.verdox.mccreativelab.wrapper.platform.factory.MCCElementFactory;
 import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.platform.properties.MCCPropertyKey;
@@ -92,6 +95,7 @@ import reactor.core.publisher.Sinks;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class NMSPlatform implements MCCPlatform {
     protected final NMSTypedKeyFactory typedKeyFactory;
@@ -104,7 +108,6 @@ public class NMSPlatform implements MCCPlatform {
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
     private final GameComponentRegistry gameComponentRegistry = new NMSGameComponentRegistry(this);
-    public final Sinks.Many<Long> tickSink = Sinks.many().multicast().directBestEffort();
 
     public NMSPlatform(boolean useGeneratedConverters) {
         this.useGeneratedConverters = useGeneratedConverters;
@@ -252,6 +255,11 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public GameComponentRegistry getGameComponentRegistry() {
         return gameComponentRegistry;
+    }
+
+    @Override
+    public <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator) {
+        return SignalCache.INSTANCE.createFlux(Key.key("minecraft", "tick"), conversionService.unwrap(apiObject), sinkCreator);
     }
 
     @Override
@@ -425,10 +433,5 @@ public class NMSPlatform implements MCCPlatform {
 
     public GeneratorPlatformHelper constructPackGeneratorHelper(CustomResourcePack customResourcePack) {
         return new VanillaGeneratorHelper(customResourcePack);
-    }
-
-    @Override
-    public Flux<Long> tickSignal() {
-        return tickSink.asFlux();
     }
 }

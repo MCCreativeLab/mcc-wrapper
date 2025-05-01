@@ -105,22 +105,21 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onServerTick(ServerTickEndEvent e) {
         NMSPlatform nmsPlatform = (NMSPlatform) MCCPlatform.getInstance();
         long tick = e.getTickNumber();
-        nmsPlatform.tickSink.tryEmitNext(tick);
+        nmsPlatform.tickSignal().sink().tryEmitNext(tick);
 
         for (MCCWorld world : nmsPlatform.getWorlds()) {
             for (MCCEntity entity : world.getEntities()) {
                 NMSEntity<?> nmsEntity = (NMSEntity<?>) entity;
-                nmsEntity.tickSink.tryEmitNext(tick);
-
-                if (entity instanceof MCCPlayer player) {
-                    NMSPlayer nmsPlayer = (NMSPlayer) player;
-                    ServerPlayer serverPlayer = (ServerPlayer) nmsPlayer.getHandle();
-                    Input input = serverPlayer.getLastClientInput();
-                    nmsPlayer.inputSink.tryEmitNext(new MCCPlayer.Input(tick, input.forward(), input.backward(), input.left(), input.right(), input.jump(), input.shift(), input.sprint()));
-                }
+                nmsEntity.tickSignal().sink().tryEmitNext(tick);
+            }
+            for (MCCPlayer player : world.getPlayers()) {
+                NMSPlayer nmsPlayer = (NMSPlayer) player;
+                ServerPlayer serverPlayer = (ServerPlayer) nmsPlayer.getHandle();
+                Input input = serverPlayer.getLastClientInput();
+                nmsPlayer.inputSignal().sink().tryEmitNext(new MCCPlayer.Input(tick, input.forward(), input.backward(), input.left(), input.right(), input.jump(), input.shift(), input.sprint()));
             }
             NMSWorld nmsWorld = (NMSWorld) world;
-            nmsWorld.tickSink.tryEmitNext(tick);
+            nmsWorld.tickSignal().sink().tryEmitNext(tick);
         }
     }
 }

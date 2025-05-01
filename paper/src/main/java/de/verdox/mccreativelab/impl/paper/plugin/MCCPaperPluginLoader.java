@@ -22,8 +22,7 @@ public class MCCPaperPluginLoader implements PluginLoader {
 
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         resolver.addRepository((new RemoteRepository.Builder("verdox-repo", "default", "https://repo.verdox.de/snapshots")).build());
-/*        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox:vserializer:1.2.3-SNAPSHOT"), (String) null));
-        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper:api:"+version), (String) null));*/
+        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper:api:"+version), (String) null));
 
         MavenLibraryResolver central = new MavenLibraryResolver();
         central.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
