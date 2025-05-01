@@ -5,13 +5,11 @@ import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
-import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import io.papermc.paper.entity.TeleportFlag;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,9 +31,9 @@ public class PaperChunk extends NMSChunk {
     }
 
     @Override
-    public void breakBlockNaturally(MCCLocation location, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
+    public void breakBlockNaturally(Pos<?> pos, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
         boolean result = false;
-        MCCBlock mccBlock = get(location);
+        MCCBlock mccBlock = get(pos);
         BlockPos blockPos = new BlockPos(mccBlock.getLocation().blockX(), mccBlock.getLocation().blockY(), mccBlock.getLocation().blockZ());
         BlockState nmsBlockState = getHandle().getBlockState(blockPos);
         if (!mccBlock.getBlockType().equals(MCCBlocks.AIR) && (tool == null || !mccBlock.getBlockState().requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(mccBlock.getBlockState()))) {
@@ -72,9 +70,9 @@ public class PaperChunk extends NMSChunk {
     }
 
     @Override
-    public boolean teleport(@NotNull MCCLocation location, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
+    public boolean teleport(@NotNull Pos<?> pos, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
         var bukkitFlags = Arrays.stream(flags).map(mccTeleportFlag -> BukkitAdapter.unwrap(mccTeleportFlag, TeleportFlag.EntityState.class)).toArray(TeleportFlag.EntityState[]::new);
         Entity bukkitEntity = BukkitAdapter.unwrap(entity, Entity.class);
-        return bukkitEntity.teleport(BukkitAdapter.unwrap(location, Location.class), PlayerTeleportEvent.TeleportCause.PLUGIN, bukkitFlags);
+        return bukkitEntity.teleport(BukkitAdapter.unwrap(pos, Location.class), PlayerTeleportEvent.TeleportCause.PLUGIN, bukkitFlags);
     }
 }

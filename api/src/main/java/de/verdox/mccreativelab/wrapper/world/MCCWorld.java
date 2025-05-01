@@ -81,9 +81,9 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
 
     /**
      * Gets the nearest player at a specified location
-     * @param x the x location
-     * @param y the y location
-     * @param z the z location
+     * @param x the localX location
+     * @param y the globalY location
+     * @param z the localZ location
      * @param distance the distance
      * @param filter the filter
      * @return the found player or null
@@ -93,9 +93,9 @@ public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAud
 
     /**
      * Checks if any alive player is nearby
-     * @param x the x location
-     * @param y the y location
-     * @param z the z location
+     * @param x the localX location
+     * @param y the globalY location
+     * @param z the localZ location
      * @param distance the distance
      * @return true or false
      */

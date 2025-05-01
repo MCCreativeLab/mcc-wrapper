@@ -3,30 +3,55 @@ package de.verdox.mccreativelab.wrapper.world;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.mccreativelab.wrapper.world.coordinates.FloatingPointPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class MCCLocation extends MCCVector implements MCCWrapped {
+public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
 
     public static final int CHUNK_X_LENGTH = 16;
     public static final int SECTION_Y_LENGTH = 16;
     public static final int CHUNK_Z_LENGTH = 16;
 
     private final MCCWorld world;
+    private final MCPos mcPos;
     private final float yaw;
     private final float pitch;
 
-    public MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) {
-        super(x, y, z);
+    public MCCLocation(MCCWorld world, MCPos mcPos, float yaw, float pitch) {
         this.world = world;
+        this.mcPos = mcPos;
         this.yaw = yaw;
         this.pitch = pitch;
     }
 
+    public MCCLocation(MCCWorld world, MCPos mcPos) {
+        this(world, mcPos, 0, 0);
+    }
+
+    public MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) {
+        this(world, new MCPos(x, y, z), yaw, pitch);
+    }
+
     public MCCLocation(MCCWorld world, double x, double y, double z) {
         this(world, x, y, z, 0, 0);
+    }
+
+    public double x() {
+        return mcPos.x();
+    }
+
+    public double y() {
+        return mcPos.y();
+    }
+
+    public double z() {
+        return mcPos.z();
     }
 
     public MCCWorld world() {
@@ -41,31 +66,31 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return pitch;
     }
 
-    @Override
+
     public MCCLocation withX(double x) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x, y(), z(), yaw, pitch);
     }
 
-    @Override
+
     public MCCLocation withY(double y) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x(), y, z(), yaw, pitch);
     }
 
-    @Override
+
     public MCCLocation withZ(double z) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x(), y(), z, yaw, pitch);
     }
 
     public MCCLocation withYaw(float yaw) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x(), y(), z(), yaw, pitch);
     }
 
     public MCCLocation withPitch(float pitch) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x(), y(), z(), yaw, pitch);
     }
 
     public MCCLocation withWorld(MCCWorld world) {
-        return new MCCLocation(world, x, y, z, yaw, pitch);
+        return new MCCLocation(world, x(), y(), z(), yaw, pitch);
     }
 
     public MCCLocation above() {
@@ -107,6 +132,30 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
             return null;
         }
         return mccChunk.get(this);
+    }
+
+
+    public MCCLocation add(MCCVector vector) {
+        return new MCCLocation(world, x() + vector.x(), y() + vector.y(), z() + vector.z(), yaw, pitch);
+    }
+
+
+    public MCCLocation sub(MCCVector vector) {
+        return new MCCLocation(world, x() - vector.x(), y() - vector.y(), z() - vector.z(), yaw, pitch);
+    }
+
+
+    public MCCLocation mul(MCCVector vector) {
+        return new MCCLocation(world, x() * vector.x(), y() * vector.y(), z() * vector.z(), yaw, pitch);
+    }
+
+
+    public MCCLocation div(MCCVector vector) {
+        return new MCCLocation(world, x() / vector.x(), y() / vector.y(), z() / vector.z(), yaw, pitch);
+    }
+
+    public MCCVector asVector() {
+        return new MCCVector(x(), y(), z());
     }
 
 
@@ -202,6 +251,42 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return calculateBlockZ(z());
     }
 
+    @Override
+    public MCCLocation add(MCCLocation vector) {
+        return new MCCLocation(world, x() + vector.x(), y() + vector.y(), z() + vector.z(), yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation sub(MCCLocation vector) {
+        return new MCCLocation(world, x() - vector.x(), y() - vector.y(), z() - vector.z(), yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation mul(MCCLocation vector) {
+        return new MCCLocation(world, x() * vector.x(), y() * vector.y(), z() * vector.z(), yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation div(MCCLocation vector) {
+        return new MCCLocation(world, x() / vector.x(), y() / vector.y(), z() / vector.z(), yaw, pitch);
+    }
+
+    @Override
+    public double length() {
+        return 0;
+    }
+
+    @Override
+    public double lengthSquared() {
+        return 0;
+    }
+
+    @Override
+    public double distance(MCCLocation vector) {
+        return toBlockPos().distance(vector.toBlockPos());
+    }
+
+    @Override
     public double distanceSquared(@NotNull MCCLocation o) {
         if (o == null) {
             throw new IllegalArgumentException("Cannot measure distance to a null location");
@@ -211,7 +296,38 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
             throw new IllegalArgumentException("Cannot measure distance between " + world().getName() + " and " + o.world().getName());
         }
 
-        return square(x - o.x) + square(y - o.y) + square(z - o.z);
+        return square(x() - o.x()) + square(y() - o.y()) + square(z() - o.z());
+    }
+
+    @Override
+    public double dot(MCCLocation vector) {
+        return toPos().dot(vector.toPos());
+    }
+
+    @Override
+    public MCCLocation crossProduct(MCCLocation vector) {
+        MCPos mcPos = toPos().crossProduct(vector.toPos());
+        return new MCCLocation(world, mcPos.x(), mcPos.y(), mcPos.z(), yaw, pitch);
+    }
+
+    @Override
+    public boolean isInAABB(MCCLocation min, MCCLocation max) {
+        return toPos().isInAABB(min.toPos(), max.toPos());
+    }
+
+    @Override
+    public boolean isInSphere(MCCLocation origin, double radius) {
+        return toPos().isInSphere(origin.toPos(), radius);
+    }
+
+    @Override
+    public MCPos toPos() {
+        return mcPos;
+    }
+
+    @Override
+    public MCBlockPos toBlockPos() {
+        return toPos().toBlockPos();
     }
 
     /**
@@ -220,9 +336,9 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
      * @throws IllegalArgumentException if any component is not finite
      */
     public void checkFinite() throws IllegalArgumentException {
-        checkFinite(x, "x not finite");
-        checkFinite(y, "y not finite");
-        checkFinite(z, "z not finite");
+        checkFinite(x(), "localX not finite");
+        checkFinite(y(), "globalY not finite");
+        checkFinite(z(), "localZ not finite");
         checkFinite(pitch, "pitch not finite");
         checkFinite(yaw, "yaw not finite");
     }
@@ -332,5 +448,46 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         sb.append(", pitch=").append(pitch);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public MCCLocation normalize() {
+        MCPos mcPos = toPos().normalize();
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation rotateAroundX(double angle) {
+        MCPos mcPos = toPos().rotateAroundX(angle);
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation rotateAroundY(double angle) {
+        MCPos mcPos = toPos().rotateAroundY(angle);
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation rotateAroundZ(double angle) {
+        MCPos mcPos = toPos().rotateAroundZ(angle);
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+    @Override
+    public MCCLocation rotateAroundAxis(MCCLocation axis, double angle) {
+        MCPos mcPos = toPos().rotateAroundAxis(axis.toPos(), angle);
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+
+    public MCCLocation rotateAroundAxis(MCPos axis, double angle) {
+        MCPos mcPos = toPos().rotateAroundAxis(axis, angle);
+        return new MCCLocation(world, mcPos, yaw, pitch);
+    }
+
+    @Override
+    public boolean isNormalized() {
+        return mcPos.isNormalized();
     }
 }

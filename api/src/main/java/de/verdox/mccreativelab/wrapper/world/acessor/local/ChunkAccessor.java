@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.wrapper.world.acessor.local;
 
 import de.verdox.mccreativelab.wrapper.world.acessor.Accessor;
 import de.verdox.mccreativelab.wrapper.world.acessor.global.WorldAccessor;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCChunkPos;
 
 /**
  * Represents an accessor that has local read and write rights over its elements.
@@ -14,13 +15,5 @@ public interface ChunkAccessor<
 
     WORLD_ACCESS getWorld();
 
-    /**
-     * Returns the x coordinate of this chunk
-     */
-    int chunkX();
-
-    /**
-     * Returns the z coordinate of this chunk
-     */
-    int chunkZ();
+    MCChunkPos getChunkPos();
 }

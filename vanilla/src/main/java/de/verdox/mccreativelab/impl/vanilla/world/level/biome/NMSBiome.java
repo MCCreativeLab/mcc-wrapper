@@ -7,7 +7,7 @@ import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.sounds.MCCMusic;
-import de.verdox.mccreativelab.wrapper.world.MCCBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCAmbientAdditionsSettings;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiomeSpecialEffects;
@@ -37,8 +37,8 @@ public class NMSBiome extends MCCHandle<Biome> implements MCCBiome {
     }
 
     @Override
-    public Precipitation getPrecipitationAt(MCCBlockPos pos, int seaLevel) {
-        return Precipitation.valueOf(getHandle().getPrecipitationAt(new BlockPos(pos.blockX(), pos.blockY(), pos.blockZ()), seaLevel).name());
+    public Precipitation getPrecipitationAt(MCBlockPos pos, int seaLevel) {
+        return Precipitation.valueOf(getHandle().getPrecipitationAt(new BlockPos(pos.x(), pos.y(), pos.z()), seaLevel).name());
     }
 
     @Override

@@ -8,6 +8,9 @@ import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.acessor.point.PointAccessor;
 import de.verdox.mccreativelab.wrapper.world.acessor.point.PointBlockAccessor;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,29 +24,40 @@ import java.util.concurrent.CompletableFuture;
  *
  */
 public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBlock, MCCWorld, MCCChunk> {
-    private final MCCLocation location;
+    private final MCCWorld world;
+    private final MCBlockPos blockPos;
     private final MCCChunk mccChunk;
 
-    public MCCBlock(MCCLocation location, @NotNull MCCChunk mccChunk) {
-        Objects.requireNonNull(location);
-        Objects.requireNonNull(mccChunk);
-        if (mccChunk == null || !mccChunk.isLoaded()) {
+    public MCCBlock(@NotNull MCCWorld world, @NotNull Pos<?> pos, @NotNull MCCChunk mccChunk) {
+        Objects.requireNonNull(world, "The world cannot be null");
+        Objects.requireNonNull(pos, "The position cannot be null");
+        Objects.requireNonNull(mccChunk, "The chunk cannot be null");
+        if (pos instanceof MCCLocation) {
+            throw new IllegalArgumentException("Please don't use location and world in the same constructor");
+        }
+        if (!mccChunk.isLoaded()) {
             throw new IllegalArgumentException("The provided chunk of the block is not loaded");
         }
-        if (!mccChunk.getWorld().canAccess(location)) {
-            throw new IllegalArgumentException("The provided chunk " + mccChunk.chunkX() + ", " + mccChunk.chunkZ() + " is not the owner of the provided location " + location + ". Reason: World mismatch -> " + mccChunk.getWorld().key() + " != " + location.world().key());
-        } else if (!mccChunk.canAccess(location)) {
-            throw new IllegalArgumentException("The provided chunk " + mccChunk.chunkX() + ", " + mccChunk.chunkZ() + " is not the owner of the provided location " + location + ". Reason: Chunk coordinate mismatch -> (" + mccChunk.chunkX() + "," + mccChunk.chunkZ() + ") != (" + location.getChunkX() + "," + location.getChunkZ() + ")");
+        if (!mccChunk.getWorld().canAccess(pos)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.getChunkPos().x() + ", " + mccChunk.getChunkPos().z() + " is not the owner of the provided position " + pos + ". Reason: World mismatch -> " + mccChunk.getWorld().key() + " != " + world.key());
+        } else if (!mccChunk.canAccess(pos)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.getChunkPos().x() + ", " + mccChunk.getChunkPos().z() + " is not the owner of the provided position " + pos + ". Reason: Chunk coordinate mismatch -> (" + mccChunk.getChunkPos().x() + "," + mccChunk.getChunkPos().z() + ") != (" + pos.toChunkPos().x() + "," + pos.toChunkPos().z() + ")");
         }
-        this.location = location;
+
+        this.world = world;
+        this.blockPos = pos.toBlockPos();
         this.mccChunk = mccChunk;
+    }
+
+    public MCCBlock(MCCLocation location, @NotNull MCCChunk mccChunk) {
+        this(Objects.requireNonNull(location).world(), location.toPos(), mccChunk);
     }
 
     /**
      * Gets the relative of a block
      */
     public CompletableFuture<MCCBlock> getRelative(int relX, int relY, int relZ) {
-        return getWorld().at(x() + relX, y() + relY, z() + relZ, mccBlock -> mccBlock);
+        return getWorld().at(new MCBlockPos(blockPos.x() + relX, blockPos.y() + relY, blockPos.z() + relZ), mccBlock -> mccBlock);
     }
 
 
@@ -56,7 +70,7 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
     @Override
     @NotNull
     public MCCLocation getLocation() {
-        return location;
+        return new MCCLocation(world, blockPos.toPos());
     }
 
     MCCCapturedBlockState captureBlock() {
@@ -90,7 +104,7 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
      * @param ignoreTool     whether to ignore the tool
      */
     public void breakBlockNaturally(@Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-        getChunk().breakBlockNaturally(location, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
+        getChunk().breakBlockNaturally(blockPos, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
     }
 
     /**
@@ -112,13 +126,13 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MCCBlock block = (MCCBlock) o;
-        return Objects.equals(location, block.location);
+        MCCBlock mccBlock = (MCCBlock) o;
+        return Objects.equals(world, mccBlock.world) && Objects.equals(blockPos, mccBlock.blockPos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(location);
+        return Objects.hash(world, blockPos);
     }
 
     @Override
@@ -127,18 +141,8 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
     }
 
     @Override
-    public int x() {
-        return location.blockX();
-    }
-
-    @Override
-    public int y() {
-        return location.blockY();
-    }
-
-    @Override
-    public int z() {
-        return location.blockZ();
+    public MCPos getPos() {
+        return blockPos.toPos();
     }
 
     @Override
@@ -149,5 +153,10 @@ public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBl
     @Override
     public MCCWorld getWorld() {
         return mccChunk.getWorld();
+    }
+
+    @Override
+    public boolean canAccess(Pos<?> pos) {
+        return pos.toPos().equals(getPos());
     }
 }

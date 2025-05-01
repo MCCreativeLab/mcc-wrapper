@@ -5,8 +5,9 @@ import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCChunkPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.Location;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,13 +24,9 @@ public class PaperWorld extends NMSWorld {
     }
 
     @Override
-    public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
-        return handle.getWorld().getChunkAtAsync(chunkX, chunkZ).thenApply(chunk -> conversionService.wrap(chunk));
-    }
-
-    @Override
-    public CompletableFuture<MCCChunk> getOrLoadChunk(MCCLocation location) {
-        return handle.getWorld().getChunkAtAsync(conversionService.unwrap(location, new TypeToken<Location>(){})).thenApply(chunk -> conversionService.wrap(chunk));
+    public CompletableFuture<MCCChunk> getOrLoadChunk(Pos<?> pos) {
+        MCChunkPos chunkPos = pos.toChunkPos();
+        return handle.getWorld().getChunkAtAsync(chunkPos.x(), chunkPos.z()).thenApply(chunk -> conversionService.wrap(chunk));
     }
 
     @Override

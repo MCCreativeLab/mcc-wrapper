@@ -53,7 +53,7 @@ public interface MCCSerializers {
             .constructor(
                     new SerializableField<>("world", KEY, location -> location.world().key()),
                     new SerializableField<>("x", Serializer.Primitive.DOUBLE, MCCLocation::x),
-                    new SerializableField<>("y", Serializer.Primitive.DOUBLE, MCCLocation::y),
+                    new SerializableField<>("globalY", Serializer.Primitive.DOUBLE, MCCLocation::y),
                     new SerializableField<>("z", Serializer.Primitive.DOUBLE, MCCLocation::z),
                     new SerializableField<>("yaw", Serializer.Primitive.FLOAT, MCCLocation::yaw),
                     new SerializableField<>("pitch", Serializer.Primitive.FLOAT, MCCLocation::pitch),

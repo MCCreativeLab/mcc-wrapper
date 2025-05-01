@@ -47,7 +47,7 @@ public interface MCCDisplayEntity extends MCCEntity {
     VanillaField<BrightnessOverride> brightnessOverride();
 
     /**
-     * Maximum view range of the entity. When the distance is more than {@code view_range x entityDistanceScaling x 64}, the entity is not rendered.
+     * Maximum view range of the entity. When the distance is more than {@code view_range localX entityDistanceScaling localX 64}, the entity is not rendered.
      * Defaults to 1.0.
      */
     VanillaField<Float> viewRange();
@@ -68,7 +68,7 @@ public interface MCCDisplayEntity extends MCCEntity {
     VanillaField<Float> width();
 
     /**
-     * The maximum height of the entity. Rendering culling bounding box spans vertically y to y+height, and the part beyond will be culled. If set to 0, no culling on both vertical and horizontal directions. Defaults to 0.
+     * The maximum height of the entity. Rendering culling bounding box spans vertically globalY to globalY+height, and the part beyond will be culled. If set to 0, no culling on both vertical and horizontal directions. Defaults to 0.
      */
     VanillaField<Float> height();
 

@@ -16,28 +16,28 @@ public interface PointBlockAccessor<
      * Returns the block type of this block.
      */
     default MCCBlockType getBlockType() {
-        return getChunk().getBlockTypeAt(x(), y(), z());
+        return getChunk().getBlockTypeAt(getPos());
     }
 
     /**
      * Returns the block data of this block.
      */
     default MCCBlockState getBlockState() {
-        return getChunk().getBlockDataAt(x(), y(), z());
+        return getChunk().getBlockDataAt(getPos());
     }
 
     /**
      * Sets the block type
      */
     default void setBlockType(MCCBlockType mccBlockType, boolean triggerBlockUpdate) {
-        getChunk().setBlock(mccBlockType, x(), y(), z(), triggerBlockUpdate);
+        getChunk().setBlock(mccBlockType, getPos(), triggerBlockUpdate);
     }
 
     /**
      * Sets the block type
      */
     default void setBlockState(MCCBlockState mccBlockState, boolean triggerBlockUpdate) {
-        getChunk().setBlock(mccBlockState, x(), y(), z(), triggerBlockUpdate);
+        getChunk().setBlock(mccBlockState, getPos(), triggerBlockUpdate);
     }
 
     /**
@@ -46,14 +46,4 @@ public interface PointBlockAccessor<
      * @return the location of the block
      */
     MCCLocation getLocation();
-
-    @Override
-    default boolean canAccess(double x, double y, double z) {
-        return getChunk().canAccess(x, y, z) && x() == x && y() == y && z() == z;
-    }
-
-    @Override
-    default boolean canAccess(MCCLocation mccLocation) {
-        return getChunk().canAccess(mccLocation) && x() == mccLocation.blockX() && y() == mccLocation.blockY() && z() == mccLocation.blockZ();
-    }
 }

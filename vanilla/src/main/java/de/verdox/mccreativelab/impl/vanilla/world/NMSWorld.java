@@ -11,6 +11,8 @@ import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCChunkPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.minecraft.server.level.ServerLevel;
@@ -41,18 +43,6 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public List<MCCPlayer> getPlayers() {
         return conversionService.wrap(handle.getPlayers(serverPlayer -> true));
-    }
-
-    @Override
-    public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
-        CompletableFuture<MCCChunk> future = new CompletableFuture<>();
-        future.complete(conversionService.wrap(handle.getChunk(chunkX, chunkX, ChunkStatus.FULL, true)));
-        return future;
-    }
-
-    @Override
-    public @Nullable MCCChunk getChunkImmediately(int x, int z) {
-        return conversionService.wrap(handle.getChunk(x, z, ChunkStatus.FULL, false));
     }
 
     @Override
@@ -137,12 +127,24 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     }
 
     @Override
-    public boolean canAccess(MCCLocation mccLocation) {
-        return mccLocation.world().key().equals(key());
+    public CompletableFuture<MCCChunk> getOrLoadChunk(Pos<?> pos) {
+        CompletableFuture<MCCChunk> future = new CompletableFuture<>();
+        MCChunkPos chunkPos = pos.toChunkPos();
+        future.complete(conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, true)));
+        return future;
     }
 
     @Override
-    public boolean canAccess(double x, double y, double z) {
+    public @Nullable MCCChunk getChunkImmediately(Pos<?> pos) {
+        MCChunkPos chunkPos = pos.toChunkPos();
+        return conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, false));
+    }
+
+    @Override
+    public boolean canAccess(Pos<?> pos) {
+        if(pos instanceof MCCLocation mccLocation) {
+            return mccLocation.world().key().equals(key());
+        }
         return true;
     }
 }

@@ -17,6 +17,7 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunkSection;
+import de.verdox.mccreativelab.wrapper.world.coordinates.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -39,8 +40,11 @@ import java.util.function.Consumer;
 public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     public static final MCCConverter<LevelChunk, NMSChunk> CONVERTER = converter(NMSChunk.class, LevelChunk.class, NMSChunk::new, MCCHandle::getHandle);
 
+    private final MCChunkPos chunkPos;
+
     public NMSChunk(LevelChunk handle) {
         super(handle);
+        chunkPos = new MCChunkPos(handle.getPos().x, handle.getPos().z);
     }
 
     @Override
@@ -55,13 +59,8 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public int chunkX() {
-        return handle.getPos().x;
-    }
-
-    @Override
-    public int chunkZ() {
-        return handle.getPos().z;
+    public MCChunkPos getChunkPos() {
+        return chunkPos;
     }
 
     @Override
@@ -101,7 +100,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     @Override
     public MCCChunkSection getChunkSectionByIndex(int index) {
         LevelChunkSection levelChunkSection = handle.getSection(index);
-        return new NMSChunkSection(handle, levelChunkSection, index, chunkX(), chunkZ());
+        return new NMSChunkSection(handle, levelChunkSection, index, chunkPos.x(), chunkPos.z());
     }
 
     @Override
@@ -122,8 +121,8 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public MCCBlock get(double x, double y, double z) {
-        return new MCCBlock(new MCCLocation(conversionService.wrap(handle.getLevel(), MCCWorld.class), x, y, z), this);
+    public MCCBlock get(Pos<?> pos) {
+        return new MCCBlock(new MCCLocation(conversionService.wrap(handle.getLevel(), MCCWorld.class), pos.toPos()), this);
     }
 
     @Override
@@ -133,28 +132,25 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public void breakBlockNaturally(double globalX, double globalY, double globalZ, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
+    public void breakBlockNaturally(Pos<?> pos, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
         throw new OperationNotPossibleOnNMS();
     }
 
     @Override
-    public void triggerBlockUpdate(double globalX, double globalY, double globalZ) {
-        checkAccess(globalX, globalY, globalZ);
-        handle.getLevel().updateNeighborsAt(new BlockPos(MCCLocation.calculateBlockX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockZ(globalZ)), conversionService.unwrap(get(globalX, globalY, globalZ).getBlockType(), Block.class));
+    public void triggerBlockUpdate(Pos<?> pos) {
+        checkAccess(pos);
+        MCBlockPos blockPos = pos.toBlockPos();
+        handle.getLevel().updateNeighborsAt(new BlockPos(blockPos.x(), blockPos.y(), blockPos.z()), conversionService.unwrap(get(pos).getBlockType(), Block.class));
+
     }
 
     @Override
-    public void checkAccess(double x, double y, double z) {
-        MCCChunk.super.checkAccess(x, y, z);
-    }
-
-    @Override
-    public <T extends MCCEntity> T summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
+    public <T extends MCCEntity> T summon(@NotNull Pos<?> pos, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
+        Preconditions.checkArgument(pos != null, "pos cannot be null");
         Preconditions.checkArgument(mccEntityType != null, "mccEntityType cannot be null");
         Preconditions.checkArgument(spawnReason != null, "spawnReason cannot be null");
-        checkAccess(location);
-        MCCEntity constructedEntity = mccEntityType.constructNewEntity(location.world(), spawnReason);
+        checkAccess(pos);
+        MCCEntity constructedEntity = mccEntityType.constructNewEntity(getWorld(), spawnReason);
         Objects.requireNonNull(constructedEntity, "Could not construct an entity of type " + mccEntityType.key());
         Entity entity = conversionService.unwrap(constructedEntity);
 
@@ -168,10 +164,18 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public boolean teleport(@NotNull MCCLocation location, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
-        Preconditions.checkArgument(location != null, "location cannot be null");
+    public boolean teleport(@NotNull Pos<?> pos, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
+        Preconditions.checkArgument(pos != null, "pos cannot be null");
         Preconditions.checkArgument(entity != null, "entity cannot be null");
-        checkAccess(location);
+        checkAccess(pos);
+
+        MCCLocation location = null;
+        if (pos instanceof MCCLocation loc) {
+            location = loc;
+        } else {
+            location = new MCCLocation(getWorld(), pos.toPos());
+        }
+
         location.checkFinite();
         Set<MCCTeleportFlag> flagSet = new HashSet<>(List.of(flags));
         boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
@@ -215,23 +219,25 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public MCCItemEntity dropItemNaturally(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
-        Preconditions.checkArgument(location != null, "Location cannot be null");
+    public MCCItemEntity dropItemNaturally(@NotNull Pos<?> pos, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
+        Preconditions.checkArgument(pos != null, "pos cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
         double xs = (handle.getLevel().random.nextFloat() * 0.5F) + 0.25D;
         double ys = (handle.getLevel().random.nextFloat() * 0.5F) + 0.25D;
         double zs = (handle.getLevel().random.nextFloat() * 0.5F) + 0.25D;
-        location = location.add(xs, ys, zs);
-        return this.dropItem(location, item, dropCallback);
+        pos = pos.toPos().add(new MCPos(xs, ys, zs));
+        return this.dropItem(pos, item, dropCallback);
     }
 
     @Override
-    public MCCItemEntity dropItem(MCCLocation location, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
-        Preconditions.checkArgument(location != null, "Location cannot be null");
+    public MCCItemEntity dropItem(@NotNull Pos<?> pos, MCCItemStack item, @Nullable Consumer<MCCItemEntity> dropCallback) {
+        Preconditions.checkArgument(pos != null, "Location cannot be null");
         Preconditions.checkArgument(item != null, "Item cannot be null");
 
-        ItemEntity entity = new ItemEntity(getHandle().getLevel(), location.x(), location.y(), location.z(), conversionService.unwrap(item.copy()));
+        MCPos mcPos = pos.toPos();
+
+        ItemEntity entity = new ItemEntity(getHandle().getLevel(), mcPos.x(), mcPos.y(), mcPos.z(), conversionService.unwrap(item.copy()));
         entity.setPickUpDelay(10);
         MCCItemEntity mccEntity = conversionService.wrap(entity);
         if (dropCallback != null) {
@@ -239,5 +245,10 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         }
         getHandle().getLevel().addFreshEntity(entity);
         return mccEntity;
+    }
+
+    @Override
+    public boolean canAccess(Pos<?> pos) {
+        return getWorld().canAccess(pos) && pos.toChunkPos().equals(chunkPos);
     }
 }

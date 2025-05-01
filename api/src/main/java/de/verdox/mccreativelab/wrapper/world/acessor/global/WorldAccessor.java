@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.world.acessor.global;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.acessor.Accessor;
 import de.verdox.mccreativelab.wrapper.world.acessor.local.ChunkAccessor;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -16,91 +16,29 @@ public interface WorldAccessor<
         WORLD_ACCESS extends WorldAccessor<WORLD_ACCESS, CHUNK_ACCESS>,
         CHUNK_ACCESS extends ChunkAccessor<CHUNK_ACCESS, WORLD_ACCESS>
         > extends Accessor {
-    /**
-     * Gets or loads a chunk at specified world coordinates
-     */
-    default CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(double globalX, double globalY, double globalZ) {
-        return getOrLoadChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ));
-    }
 
     /**
      * Gets or loads a chunk at specified chunk coordinates
      */
-    CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(int chunkX, int chunkZ);
+    CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(Pos<?> pos);
 
     /**
      * Gets a chunk if it is loaded and available at specified chunk coordinates
      */
     @Nullable
-    CHUNK_ACCESS getChunkImmediately(int chunkX, int chunkZ);
-
-    /**
-     * Gets a chunk if it is loaded and available at a specified location
-     */
-    @Nullable
-    default CHUNK_ACCESS getChunkImmediately(MCCLocation mccLocation) {
-        checkAccess(mccLocation);
-        return getChunkImmediately(mccLocation.x(), mccLocation.y(), mccLocation.z());
-    }
-
-
-    /**
-     * Gets or loads a chunk at a specified location
-     */
-    default CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(MCCLocation mccLocation) {
-        checkAccess(mccLocation);
-        return getOrLoadChunk(mccLocation.x(), mccLocation.y(), mccLocation.z());
-    }
-
-    /**
-     * Gets a chunk if it is loaded and available at specified world coordinates
-     */
-    @Nullable
-    default CHUNK_ACCESS getChunkImmediately(double globalX, double globalY, double globalZ) {
-        return getChunkImmediately(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ));
-    }
+    CHUNK_ACCESS getChunkImmediately(Pos<?> pos);
 
     /**
      * Used to read something from a chunk at the specified coordinates
      */
-    default <T> CompletableFuture<T> atChunk(int chunkX, int chunkZ, Function<CHUNK_ACCESS, T> read) {
-        return getOrLoadChunk(chunkX, chunkZ).thenApply(read);
+    default <T> CompletableFuture<T> atChunk(Pos<?> pos, Function<CHUNK_ACCESS, T> read) {
+        return getOrLoadChunk(pos).thenApply(read);
     }
 
     /**
      * Used to do something at the specified coordinates
      */
-    default CompletableFuture<Void> atChunk(int chunkX, int chunkZ, Consumer<CHUNK_ACCESS> doSomething) {
-        return getOrLoadChunk(chunkX, chunkZ).thenAcceptAsync(doSomething);
-    }
-
-    /**
-     * Used to read something from a chunk at the specified coordinates
-     */
-    default <T> CompletableFuture<T> atChunk(MCCLocation mccLocation, Function<CHUNK_ACCESS, T> read) {
-        checkAccess(mccLocation);
-        return atChunk(mccLocation.x(), mccLocation.y(), mccLocation.z(), read);
-    }
-
-    /**
-     * Used to do something at the specified coordinates
-     */
-    default CompletableFuture<Void> atChunk(MCCLocation mccLocation, Consumer<CHUNK_ACCESS> doSomething) {
-        checkAccess(mccLocation);
-        return atChunk(mccLocation.x(), mccLocation.y(), mccLocation.z(), doSomething);
-    }
-
-    /**
-     * Used to read something from a chunk at the specified coordinates
-     */
-    default <T> CompletableFuture<T> atChunk(double globalX, double globalY, double globalZ, Function<CHUNK_ACCESS, T> read) {
-        return atChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ), read);
-    }
-
-    /**
-     * Used to do something at the specified coordinates
-     */
-    default CompletableFuture<Void> atChunk(double globalX, double globalY, double globalZ, Consumer<CHUNK_ACCESS> doSomething) {
-        return atChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ), doSomething);
+    default CompletableFuture<Void> atChunk(Pos<?> pos, Consumer<CHUNK_ACCESS> doSomething) {
+        return getOrLoadChunk(pos).thenAcceptAsync(doSomething);
     }
 }

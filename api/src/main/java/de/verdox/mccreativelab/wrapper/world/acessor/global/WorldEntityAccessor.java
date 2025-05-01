@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.acessor.local.ChunkEntityAccessor;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -16,23 +17,23 @@ public interface WorldEntityAccessor<
         > extends WorldAccessor<WORLD_ACCESS, CHUNK_ACCESS> {
     /**
      * Used to summon an entity at a specified location
-     * @param location the location
+     * @param pos the pos
      * @param mccEntityType the entity type
      * @return a future
      */
-    default <T extends MCCEntity> CompletableFuture<T> summon(@NotNull MCCLocation location, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
-        checkAccess(location);
-        return getOrLoadChunk(location).thenApply(chunkAccess -> chunkAccess.summon(location, mccEntityType, spawnReason));
+    default <T extends MCCEntity> CompletableFuture<T> summon(@NotNull Pos<?> pos, @NotNull MCCEntityType<T> mccEntityType, @NotNull MCCEntitySpawnReason spawnReason) {
+        checkAccess(pos);
+        return getOrLoadChunk(pos).thenApply(chunkAccess -> chunkAccess.summon(pos, mccEntityType, spawnReason));
     }
 
     /**
      * Teleports an entity to another location.
      *
-     * @param location the location
+     * @param pos the pos
      * @return the future that is completed when the teleportation is done
      */
-    default CompletableFuture<Boolean> teleport(@NotNull MCCLocation location, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
-        checkAccess(location);
-        return getOrLoadChunk(location).thenApply(chunkAccess -> chunkAccess.teleport(location, entity, flags));
+    default CompletableFuture<Boolean> teleport(@NotNull Pos<?> pos, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
+        checkAccess(pos);
+        return getOrLoadChunk(pos).thenApply(chunkAccess -> chunkAccess.teleport(pos, entity, flags));
     }
 }

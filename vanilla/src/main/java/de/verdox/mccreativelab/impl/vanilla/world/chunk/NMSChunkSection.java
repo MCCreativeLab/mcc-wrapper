@@ -66,11 +66,11 @@ public class NMSChunkSection extends MCCHandle<LevelChunkSection> implements MCC
 
     private void checkBounds(int localX, int localY, int localZ) {
         if (localX < 0 || localX > 15) {
-            throw new IllegalArgumentException("The x coordinate " + localX + " is not in its bounds [0-15]");
+            throw new IllegalArgumentException("The localX coordinate " + localX + " is not in its bounds [0-15]");
         } else if (localY < 0 || localY > 15) {
-            throw new IllegalArgumentException("The y coordinate " + localY + " is not in its bounds [0-15]");
+            throw new IllegalArgumentException("The globalY coordinate " + localY + " is not in its bounds [0-15]");
         } else if (localZ < 0 || localZ > 15) {
-            throw new IllegalArgumentException("The z coordinate " + localZ + " is not in its bounds [0-15]");
+            throw new IllegalArgumentException("The localZ coordinate " + localZ + " is not in its bounds [0-15]");
         }
     }
 

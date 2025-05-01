@@ -1,8 +1,8 @@
 package de.verdox.mccreativelab.wrapper.world.acessor.global;
 
-import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.acessor.local.ChunkBlockAccessor;
 import de.verdox.mccreativelab.wrapper.world.acessor.point.PointBlockAccessor;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -14,30 +14,19 @@ public interface WorldBlockAccessor<
         POINT_ACCESS extends PointBlockAccessor<POINT_ACCESS, SELF, CHUNK_ACCESS>
         > extends WorldAccessor<SELF, CHUNK_ACCESS> {
 
-    default <T> CompletableFuture<T> at(double globalX, double globalY, double globalZ, Function<POINT_ACCESS, T> read) {
-        checkAccess(globalX, globalY, globalZ);
+    default <T> CompletableFuture<T> at(Pos<?> pos, Function<POINT_ACCESS, T> read) {
+        checkAccess(pos);
 
-        return atChunk(globalX, globalY, globalZ, l -> {
-            return read.apply(l.get(globalX, globalY, globalZ));
+        return atChunk(pos, chunkAccess -> {
+            return read.apply(chunkAccess.get(pos));
         });
     }
 
-    default CompletableFuture<Void> at(double globalX, double globalY, double globalZ, Consumer<POINT_ACCESS> doSomething) {
-        checkAccess(globalX, globalY, globalZ);
+    default CompletableFuture<Void> at(Pos<?> pos, Consumer<POINT_ACCESS> doSomething) {
+        checkAccess(pos);
 
-        return atChunk(globalX, globalY, globalZ, l -> {
-            doSomething.accept(l.get(globalX, globalY, globalZ));
+        return atChunk(pos, chunkAccess -> {
+            doSomething.accept(chunkAccess.get(pos));
         });
-    }
-
-    default <T> CompletableFuture<T> at(MCCLocation mccLocation, Function<POINT_ACCESS, T> read) {
-        checkAccess(mccLocation);
-
-        return at(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ(), read);
-    }
-
-    default CompletableFuture<Void> at(MCCLocation mccLocation, Consumer<POINT_ACCESS> doSomething) {
-        checkAccess(mccLocation);
-        return at(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ(), doSomething);
     }
 }

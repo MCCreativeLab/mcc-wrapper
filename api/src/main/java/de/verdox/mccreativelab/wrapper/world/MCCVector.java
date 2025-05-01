@@ -39,10 +39,6 @@ public class MCCVector {
     public MCCVector add(MCCVector vector) {
         return add(vector.x(), vector.y(), vector.z());
     }
-
-    public MCCVector add(MCCBlockPos vector) {
-        return add(vector.x(), vector.y(), vector.z());
-    }
     // Sub operations
     public MCCVector sub(double x, double y, double z) {
         return new MCCVector(x() - x, y() - y, z() - z);
@@ -53,10 +49,6 @@ public class MCCVector {
     }
 
     public MCCVector sub(MCCVector vector) {
-        return sub(vector.x(), vector.y(), vector.z());
-    }
-
-    public MCCVector sub(MCCBlockPos vector) {
         return sub(vector.x(), vector.y(), vector.z());
     }
     // Mul operations
@@ -71,10 +63,6 @@ public class MCCVector {
     public MCCVector mul(MCCVector vector) {
         return mul(vector.x(), vector.y(), vector.z());
     }
-
-    public MCCVector mul(MCCBlockPos vector) {
-        return mul(vector.x(), vector.y(), vector.z());
-    }
     // Div operations
     public MCCVector div(double x, double y, double z) {
         return new MCCVector(x() / x, y() / y, z() / z);
@@ -85,10 +73,6 @@ public class MCCVector {
     }
 
     public MCCVector div(MCCVector vector) {
-        return div(vector.x(), vector.y(), vector.z());
-    }
-
-    public MCCVector div(MCCBlockPos vector) {
         return div(vector.x(), vector.y(), vector.z());
     }
 
@@ -124,7 +108,7 @@ public class MCCVector {
     }
 
     /**
-     * Gets the magnitude of the vector, defined as sqrt(x^2+y^2+z^2). The
+     * Gets the magnitude of the vector, defined as sqrt(localX^2+globalY^2+localZ^2). The
      * value of this method is not cached and uses a costly square-root
      * function, so do not repeatedly call this method to get the vector's
      * magnitude. NaN will be returned if the inner result of the sqrt()
@@ -196,9 +180,9 @@ public class MCCVector {
      * Calculates the cross product of this vector with another. The cross
      * product is defined as:
      * <ul>
-     * <li>x = y1 * z2 - y2 * z1
-     * <li>y = z1 * x2 - z2 * x1
-     * <li>z = x1 * y2 - x2 * y1
+     * <li>localX = y1 * z2 - y2 * z1
+     * <li>globalY = z1 * x2 - z2 * x1
+     * <li>localZ = x1 * y2 - x2 * y1
      * </ul>
      *
      * @param o The other vector
@@ -247,7 +231,7 @@ public class MCCVector {
     }
 
     /**
-     * Rotates the vector around the x axis.
+     * Rotates the vector around the localX axis.
      * <p>
      * This piece of math is based on the standard rotation matrix for vectors
      * in three dimensional space. This matrix can be found here:
@@ -269,7 +253,7 @@ public class MCCVector {
     }
 
     /**
-     * Rotates the vector around the y axis.
+     * Rotates the vector around the globalY axis.
      * <p>
      * This piece of math is based on the standard rotation matrix for vectors
      * in three dimensional space. This matrix can be found here:
@@ -291,7 +275,7 @@ public class MCCVector {
     }
 
     /**
-     * Rotates the vector around the z axis
+     * Rotates the vector around the localZ axis
      * <p>
      * This piece of math is based on the standard rotation matrix for vectors
      * in three dimensional space. This matrix can be found here:
@@ -310,34 +294,6 @@ public class MCCVector {
         double x = angleCos * x() - angleSin * y();
         double y = angleSin * x() + angleCos * y();
         return withX(x).withY(y);
-    }
-
-    /**
-     * Rotates the vector around a given arbitrary axis in 3 dimensional space.
-     *
-     * <p>
-     * Rotation will follow the general Right-Hand-Rule, which means rotation
-     * will be counterclockwise when the axis is pointing towards the observer.
-     * <p>
-     * This method will always make sure the provided axis is a unit vector, to
-     * not modify the length of the vector when rotating. If you are experienced
-     * with the scaling of a non-unit axis vector, you can use
-     * {@link MCCVector#rotateAroundNonUnitAxis(MCCVector, double)}.
-     *
-     * @param axis the axis to rotate the vector around. If the passed vector is
-     * not of length 1, it gets copied and normalized before using it for the
-     * rotation. Please use {@link MCCVector#normalize()} on the instance before
-     * passing it to this method
-     * @param angle the angle to rotate the vector around the axis
-     * @return the same vector
-     * @throws IllegalArgumentException if the provided axis vector instance is
-     * null
-     */
-    @NotNull
-    public MCCVector rotateAroundAxis(@NotNull MCCVector axis, double angle) throws IllegalArgumentException {
-        Preconditions.checkArgument(axis != null, "The provided axis vector was null");
-
-        return rotateAroundNonUnitAxis(axis.isNormalized() ? axis : axis.normalize(), angle);
     }
 
     /**
@@ -399,9 +355,9 @@ public class MCCVector {
 
     @Override
     public String toString() {
-        return "MCCVector{" + "x=" + x +
-                ", y=" + y +
-                ", z=" + z +
+        return "MCCVector{" + "localX=" + x +
+                ", globalY=" + y +
+                ", localZ=" + z +
                 '}';
     }
 

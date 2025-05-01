@@ -8,6 +8,8 @@ import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.acessor.local.ChunkBlockAccessor;
 import de.verdox.mccreativelab.wrapper.world.acessor.local.ChunkEntityAccessor;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCLocalBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCPos;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,31 +37,18 @@ public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWo
     MCCChunkSection getChunkSectionByGlobalYCoordinate(int blockHeight);
 
     @Override
-    default MCCBlockState getBlockDataAtLocal(int localX, int globalBlockY, int localZ) {
-        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalBlockY);
-        return chunkSection.getBlockState(localX, MCCLocation.calculateBlockLocalY(globalBlockY), localZ);
+    default MCCBlockState getBlockDataAtLocal(MCLocalBlockPos localBlockPos) {
+        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localBlockPos.globalY());
+        return chunkSection.getBlockState(localBlockPos.localX(), MCCLocation.calculateBlockLocalY(localBlockPos.globalY()), localBlockPos.localZ());
     }
 
     @Override
-    default void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalBlockY, int localZ, boolean triggerBlockUpdate) {
-        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalBlockY);
-        chunkSection.setBlockState(localX, MCCLocation.calculateBlockLocalY(globalBlockY), localZ, mccBlockState);
+    default void setBlockLocal(@NotNull MCCBlockState mccBlockState, MCLocalBlockPos localBlockPos, boolean triggerBlockUpdate) {
+        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(localBlockPos.globalY());
+
+        chunkSection.setBlockState(localBlockPos.localX(), MCCLocation.calculateBlockLocalY(localBlockPos.globalY()), localBlockPos.localZ(), mccBlockState);
         if (triggerBlockUpdate) {
-            triggerBlockUpdate(
-                    MCCLocation.calculateBlockGlobalX(chunkX(), localX),
-                    globalBlockY,
-                    MCCLocation.calculateBlockGlobalZ(chunkZ(), localZ)
-            );
+            triggerBlockUpdate(localBlockPos.toPos(getChunkPos()));
         }
-    }
-
-    @Override
-    default boolean canAccess(MCCLocation mccLocation) {
-        return getWorld().canAccess(mccLocation) && mccLocation.getChunkX() == chunkX() && mccLocation.getChunkZ() == chunkZ();
-    }
-
-    @Override
-    default boolean canAccess(double x, double y, double z) {
-        return getWorld().canAccess(x, y, z) && MCCLocation.calculateChunkX(x) == chunkX() && MCCLocation.calculateChunkZ(z) == chunkZ();
     }
 }
