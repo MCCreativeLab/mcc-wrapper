@@ -122,28 +122,29 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public MCCBlock get(int x, int y, int z) {
+    public MCCBlock get(double x, double y, double z) {
         return new MCCBlock(new MCCLocation(conversionService.wrap(handle.getLevel(), MCCWorld.class), x, y, z), this);
     }
 
     @Override
-    public MCCBlock getHighest(int x, int z) {
-        return null;
+    public MCCBlock getHighest(double x, double z) {
+        int height = handle.getHeight(Heightmap.Types.WORLD_SURFACE, MCCLocation.calculateBlockX(x), MCCLocation.calculateBlockZ(z));
+        return new MCCBlock(new MCCLocation(conversionService.wrap(handle.getLevel(), MCCWorld.class), x, height, z), this);
     }
 
     @Override
-    public void breakBlockNaturally(int globalX, int globalY, int globalZ, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
+    public void breakBlockNaturally(double globalX, double globalY, double globalZ, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
         throw new OperationNotPossibleOnNMS();
     }
 
     @Override
-    public void triggerBlockUpdate(int globalX, int globalY, int globalZ) {
+    public void triggerBlockUpdate(double globalX, double globalY, double globalZ) {
         checkAccess(globalX, globalY, globalZ);
-        handle.getLevel().updateNeighborsAt(new BlockPos(globalX, globalY, globalZ), conversionService.unwrap(get(globalX, globalY, globalZ).getBlockType(), Block.class));
+        handle.getLevel().updateNeighborsAt(new BlockPos(MCCLocation.calculateBlockX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockZ(globalZ)), conversionService.unwrap(get(globalX, globalY, globalZ).getBlockType(), Block.class));
     }
 
     @Override
-    public void checkAccess(int x, int y, int z) {
+    public void checkAccess(double x, double y, double z) {
         MCCChunk.super.checkAccess(x, y, z);
     }
 

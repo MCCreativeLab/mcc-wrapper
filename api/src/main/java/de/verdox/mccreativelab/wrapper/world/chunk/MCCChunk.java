@@ -35,19 +35,19 @@ public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWo
     MCCChunkSection getChunkSectionByGlobalYCoordinate(int blockHeight);
 
     @Override
-    default MCCBlockState getBlockDataAtLocal(int localX, int globalY, int localZ) {
-        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalY);
-        return chunkSection.getBlockState(localX, MCCLocation.calculateBlockLocalY(globalY), localZ);
+    default MCCBlockState getBlockDataAtLocal(int localX, int globalBlockY, int localZ) {
+        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalBlockY);
+        return chunkSection.getBlockState(localX, MCCLocation.calculateBlockLocalY(globalBlockY), localZ);
     }
 
     @Override
-    default void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalY, int localZ, boolean triggerBlockUpdate) {
-        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalY);
-        chunkSection.setBlockState(localX, MCCLocation.calculateBlockLocalY(globalY), localZ, mccBlockState);
+    default void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalBlockY, int localZ, boolean triggerBlockUpdate) {
+        MCCChunkSection chunkSection = getChunkSectionByGlobalYCoordinate(globalBlockY);
+        chunkSection.setBlockState(localX, MCCLocation.calculateBlockLocalY(globalBlockY), localZ, mccBlockState);
         if (triggerBlockUpdate) {
             triggerBlockUpdate(
                     MCCLocation.calculateBlockGlobalX(chunkX(), localX),
-                    globalY,
+                    globalBlockY,
                     MCCLocation.calculateBlockGlobalZ(chunkZ(), localZ)
             );
         }
@@ -59,7 +59,7 @@ public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWo
     }
 
     @Override
-    default boolean canAccess(int x, int y, int z) {
+    default boolean canAccess(double x, double y, double z) {
         return getWorld().canAccess(x, y, z) && MCCLocation.calculateChunkX(x) == chunkX() && MCCLocation.calculateChunkZ(z) == chunkZ();
     }
 }

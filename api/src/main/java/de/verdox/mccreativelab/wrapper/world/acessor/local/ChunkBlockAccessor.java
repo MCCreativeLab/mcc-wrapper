@@ -14,11 +14,11 @@ public interface ChunkBlockAccessor<
         WORLD_ACCESS extends WorldBlockAccessor<WORLD_ACCESS, SELF, POINT_ACCESS>,
         POINT_ACCESS extends PointBlockAccessor<POINT_ACCESS, WORLD_ACCESS, SELF>
         > extends ChunkAccessor<SELF, WORLD_ACCESS> {
-    POINT_ACCESS get(int x, int y, int z);
+    POINT_ACCESS get(double x, double y, double z);
 
-    POINT_ACCESS getHighest(int x, int z);
+    POINT_ACCESS getHighest(double x, double z);
 
-    MCCBlockState getBlockDataAtLocal(int localX, int globalY, int localZ);
+    MCCBlockState getBlockDataAtLocal(int localX, int globalBlockY, int localZ);
 
     void setBlockLocal(@NotNull MCCBlockState mccBlockState, int localX, int globalY, int localZ, boolean triggerBlockUpdate);
 
@@ -30,12 +30,12 @@ public interface ChunkBlockAccessor<
      * @param dropExperience whether to drop Experience
      * @param ignoreTool     whether to ignore the tool
      */
-    void breakBlockNaturally(int globalX, int globalY, int globalZ, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool);
+    void breakBlockNaturally(double globalX, double globalY, double globalZ, @Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool);
 
     /**
      * Triggers a block update at world coordinates
      */
-    void triggerBlockUpdate(int globalX, int globalY, int globalZ);
+    void triggerBlockUpdate(double globalX, double globalY, double globalZ);
 
     // DEFAULT METHODS
 
@@ -60,8 +60,8 @@ public interface ChunkBlockAccessor<
         breakBlockNaturally(location.blockX(), location.blockY(), location.blockZ(), tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
     }
 
-    default MCCBlockType getBlockTypeAtLocal(int localX, int globalY, int localZ) {
-        return getBlockDataAtLocal(localX, globalY, localZ).getBlockType();
+    default MCCBlockType getBlockTypeAtLocal(int localX, int globalBlockY, int localZ) {
+        return getBlockDataAtLocal(localX, globalBlockY, localZ).getBlockType();
     }
 
     default MCCBlockState getBlockDataAt(MCCLocation location) {
@@ -74,12 +74,12 @@ public interface ChunkBlockAccessor<
         return getBlockTypeAtLocal(location.toChunkBlockLocalX(), location.blockY(), location.toChunkBlockLocalZ());
     }
 
-    default MCCBlockType getBlockTypeAt(int globalX, int globalY, int globalZ) {
-        return getBlockTypeAtLocal(MCCLocation.calculateBlockLocalX(globalX), globalY, MCCLocation.calculateBlockLocalZ(globalZ));
+    default MCCBlockType getBlockTypeAt(double globalX, double globalY, double globalZ) {
+        return getBlockTypeAtLocal(MCCLocation.calculateBlockLocalX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockLocalZ(globalZ));
     }
 
-    default MCCBlockState getBlockDataAt(int globalX, int globalY, int globalZ) {
-        return getBlockDataAtLocal(MCCLocation.calculateBlockLocalX(globalX), globalY, MCCLocation.calculateBlockLocalZ(globalZ));
+    default MCCBlockState getBlockDataAt(double globalX, double globalY, double globalZ) {
+        return getBlockDataAtLocal(MCCLocation.calculateBlockLocalX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockLocalZ(globalZ));
     }
 
     default void setBlock(@NotNull MCCBlockType mccBlockType, MCCLocation location, boolean triggerBlockUpdate) {
@@ -92,15 +92,15 @@ public interface ChunkBlockAccessor<
         setBlockLocal(mccBlockState, location.toChunkBlockLocalX(), location.blockY(), location.toChunkBlockLocalZ(), triggerBlockUpdate);
     }
 
-    default void setBlock(@NotNull MCCBlockType mccBlockType, int globalX, int globalY, int globalZ, boolean triggerBlockUpdate) {
-        setBlockLocal(mccBlockType, MCCLocation.calculateBlockLocalX(globalX), globalY, MCCLocation.calculateBlockLocalZ(globalZ), triggerBlockUpdate);
+    default void setBlock(@NotNull MCCBlockType mccBlockType, double globalX, double globalY, double globalZ, boolean triggerBlockUpdate) {
+        setBlockLocal(mccBlockType, MCCLocation.calculateBlockLocalX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockLocalZ(globalZ), triggerBlockUpdate);
     }
 
-    default void setBlock(@NotNull MCCBlockState mccBlockState, int globalX, int globalY, int globalZ, boolean triggerBlockUpdate) {
-        setBlockLocal(mccBlockState, MCCLocation.calculateBlockLocalX(globalX), globalY, MCCLocation.calculateBlockLocalZ(globalZ), triggerBlockUpdate);
+    default void setBlock(@NotNull MCCBlockState mccBlockState, double globalX, double globalY, double globalZ, boolean triggerBlockUpdate) {
+        setBlockLocal(mccBlockState, MCCLocation.calculateBlockLocalX(globalX), MCCLocation.calculateBlockY(globalY), MCCLocation.calculateBlockLocalZ(globalZ), triggerBlockUpdate);
     }
 
-    default void setBlockLocal(@NotNull MCCBlockType mccBlockType, int localX, int globalY, int localZ, boolean triggerBlockUpdate) {
-        setBlockLocal(mccBlockType.getDefaultState(), localX, globalY, localZ, triggerBlockUpdate);
+    default void setBlockLocal(@NotNull MCCBlockType mccBlockType, int localX, int globalBlockY, int localZ, boolean triggerBlockUpdate) {
+        setBlockLocal(mccBlockType.getDefaultState(), localX, globalBlockY, localZ, triggerBlockUpdate);
     }
 }

@@ -19,7 +19,7 @@ public interface WorldAccessor<
     /**
      * Gets or loads a chunk at specified world coordinates
      */
-    default CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(int globalX, int globalY, int globalZ) {
+    default CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(double globalX, double globalY, double globalZ) {
         return getOrLoadChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ));
     }
 
@@ -40,7 +40,7 @@ public interface WorldAccessor<
     @Nullable
     default CHUNK_ACCESS getChunkImmediately(MCCLocation mccLocation) {
         checkAccess(mccLocation);
-        return getChunkImmediately(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ());
+        return getChunkImmediately(mccLocation.x(), mccLocation.y(), mccLocation.z());
     }
 
 
@@ -49,14 +49,14 @@ public interface WorldAccessor<
      */
     default CompletableFuture<CHUNK_ACCESS> getOrLoadChunk(MCCLocation mccLocation) {
         checkAccess(mccLocation);
-        return getOrLoadChunk(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ());
+        return getOrLoadChunk(mccLocation.x(), mccLocation.y(), mccLocation.z());
     }
 
     /**
      * Gets a chunk if it is loaded and available at specified world coordinates
      */
     @Nullable
-    default CHUNK_ACCESS getChunkImmediately(int globalX, int globalY, int globalZ) {
+    default CHUNK_ACCESS getChunkImmediately(double globalX, double globalY, double globalZ) {
         return getChunkImmediately(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ));
     }
 
@@ -79,7 +79,7 @@ public interface WorldAccessor<
      */
     default <T> CompletableFuture<T> atChunk(MCCLocation mccLocation, Function<CHUNK_ACCESS, T> read) {
         checkAccess(mccLocation);
-        return atChunk(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ(), read);
+        return atChunk(mccLocation.x(), mccLocation.y(), mccLocation.z(), read);
     }
 
     /**
@@ -87,20 +87,20 @@ public interface WorldAccessor<
      */
     default CompletableFuture<Void> atChunk(MCCLocation mccLocation, Consumer<CHUNK_ACCESS> doSomething) {
         checkAccess(mccLocation);
-        return atChunk(mccLocation.blockX(), mccLocation.blockY(), mccLocation.blockZ(), doSomething);
+        return atChunk(mccLocation.x(), mccLocation.y(), mccLocation.z(), doSomething);
     }
 
     /**
      * Used to read something from a chunk at the specified coordinates
      */
-    default <T> CompletableFuture<T> atChunk(int globalX, int globalY, int globalZ, Function<CHUNK_ACCESS, T> read) {
+    default <T> CompletableFuture<T> atChunk(double globalX, double globalY, double globalZ, Function<CHUNK_ACCESS, T> read) {
         return atChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ), read);
     }
 
     /**
      * Used to do something at the specified coordinates
      */
-    default CompletableFuture<Void> atChunk(int globalX, int globalY, int globalZ, Consumer<CHUNK_ACCESS> doSomething) {
+    default CompletableFuture<Void> atChunk(double globalX, double globalY, double globalZ, Consumer<CHUNK_ACCESS> doSomething) {
         return atChunk(MCCLocation.calculateChunkX(globalX), MCCLocation.calculateChunkZ(globalZ), doSomething);
     }
 }

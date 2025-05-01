@@ -14,7 +14,7 @@ public interface WorldBlockAccessor<
         POINT_ACCESS extends PointBlockAccessor<POINT_ACCESS, SELF, CHUNK_ACCESS>
         > extends WorldAccessor<SELF, CHUNK_ACCESS> {
 
-    default <T> CompletableFuture<T> at(int globalX, int globalY, int globalZ, Function<POINT_ACCESS, T> read) {
+    default <T> CompletableFuture<T> at(double globalX, double globalY, double globalZ, Function<POINT_ACCESS, T> read) {
         checkAccess(globalX, globalY, globalZ);
 
         return atChunk(globalX, globalY, globalZ, l -> {
@@ -22,7 +22,7 @@ public interface WorldBlockAccessor<
         });
     }
 
-    default CompletableFuture<Void> at(int globalX, int globalY, int globalZ, Consumer<POINT_ACCESS> doSomething) {
+    default CompletableFuture<Void> at(double globalX, double globalY, double globalZ, Consumer<POINT_ACCESS> doSomething) {
         checkAccess(globalX, globalY, globalZ);
 
         return atChunk(globalX, globalY, globalZ, l -> {

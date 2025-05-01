@@ -103,7 +103,7 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     @Nullable
     public MCCBlock getBlockNow() {
         MCCChunk mccChunk = world().getChunkImmediately(this);
-        if(mccChunk == null) {
+        if (mccChunk == null) {
             return null;
         }
         return mccChunk.get(this);
@@ -126,12 +126,32 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
         return calculateChunkZ(blockZ());
     }
 
+    public static int calculateBlockX(double globalX) {
+        return (int) Math.floor(globalX);
+    }
+
+    public static int calculateBlockY(double globalY) {
+        return (int) Math.floor(globalY);
+    }
+
+    public static int calculateBlockZ(double globalZ) {
+        return (int) Math.floor(globalZ);
+    }
+
     public static int calculateChunkX(int globalX) {
         return globalX >> 4;
     }
 
     public static int calculateChunkZ(int globalZ) {
         return globalZ >> 4;
+    }
+
+    public static int calculateChunkX(double globalX) {
+        return calculateChunkX(calculateBlockX(globalX));
+    }
+
+    public static int calculateChunkZ(double globalZ) {
+        return calculateChunkX(calculateBlockZ(globalZ));
     }
 
     public static int calculateBlockLocalX(int globalX) {
@@ -144,6 +164,18 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
 
     public static int calculateBlockLocalZ(int globalZ) {
         return Math.floorMod(globalZ, CHUNK_Z_LENGTH);
+    }
+
+    public static int calculateBlockLocalX(double globalX) {
+        return calculateBlockLocalX(calculateBlockLocalX(globalX));
+    }
+
+    public static int calculateBlockLocalY(double globalY) {
+        return calculateBlockLocalY(calculateBlockY(globalY));
+    }
+
+    public static int calculateBlockLocalZ(double globalZ) {
+        return calculateBlockLocalZ(calculateBlockLocalZ(globalZ));
     }
 
     public static int calculateBlockGlobalX(int chunkX, int localX) {
@@ -159,15 +191,15 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
     }
 
     public int blockX() {
-        return (int) Math.floor(x());
+        return calculateBlockX(x());
     }
 
     public int blockY() {
-        return (int) Math.floor(y());
+        return calculateBlockY(y());
     }
 
     public int blockZ() {
-        return (int) Math.floor(z());
+        return calculateBlockZ(z());
     }
 
     public double distanceSquared(@NotNull MCCLocation o) {
@@ -290,5 +322,15 @@ public class MCCLocation extends MCCVector implements MCCWrapped {
             pitch = -90.0f;
         }
         return pitch;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("MCCLocation{");
+        sb.append("world=").append(world);
+        sb.append(", yaw=").append(yaw);
+        sb.append(", pitch=").append(pitch);
+        sb.append('}');
+        return sb.toString();
     }
 }

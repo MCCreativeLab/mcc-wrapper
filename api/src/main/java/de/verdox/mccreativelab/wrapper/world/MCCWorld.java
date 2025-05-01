@@ -3,9 +3,7 @@ package de.verdox.mccreativelab.wrapper.world;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.TempDataHolder;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.util.math.AxisAlignedBoundingBox;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public interface MCCWorld extends MCCKeyedWrapper, TempDataHolder, ForwardingAudience, MCCTicking, WorldBlockAccessor<MCCWorld, MCCChunk, MCCBlock>, WorldEntityAccessor<MCCWorld, MCCChunk> {

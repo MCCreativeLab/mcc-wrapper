@@ -48,7 +48,7 @@ public interface PointBlockAccessor<
     MCCLocation getLocation();
 
     @Override
-    default boolean canAccess(int x, int y, int z) {
+    default boolean canAccess(double x, double y, double z) {
         return getChunk().canAccess(x, y, z) && x() == x && y() == y && z() == z;
     }
 
