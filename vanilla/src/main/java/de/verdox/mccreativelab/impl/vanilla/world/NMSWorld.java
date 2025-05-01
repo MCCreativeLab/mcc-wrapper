@@ -50,7 +50,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(int chunkX, int chunkZ) {
         CompletableFuture<MCCChunk> future = new CompletableFuture<>();
-        conversionService.wrap(handle.getChunk(chunkX, chunkX, ChunkStatus.FULL, true));
+        future.complete(conversionService.wrap(handle.getChunk(chunkX, chunkX, ChunkStatus.FULL, true)))
         return future;
     }
 
