@@ -36,10 +36,6 @@ tasks.named("build") {
     dependsOn(":api:shadowJar")  // Stellt sicher, dass das shadowJar von API gebaut wird, bevor der Haupt-Build läuft
 }
 
-tasks.named<Jar>("jar") {
-    enabled = true
-}
-
 artifacts {
     add("default", tasks.named("shadowJar"))
 }
@@ -60,7 +56,7 @@ publishing {
                 version = providers.gradleProperty("version").get()
                 artifactId = "api"
 
-                artifact(tasks.named("shadowJar"))  // Verwende das geshadete Jar
+                artifact(tasks.named("shadowJar"))
 
                 //from(components["java"])
                 licenses {

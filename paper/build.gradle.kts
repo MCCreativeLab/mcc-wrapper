@@ -22,6 +22,14 @@ dependencies {
     testImplementation(project(":TestSuite"))
 }
 
+tasks.named("build") {
+    dependsOn(":paper:shadowJar")  // Stellt sicher, dass das shadowJar von API gebaut wird, bevor der Haupt-Build läuft
+}
+
+artifacts {
+    add("default", tasks.named("shadowJar"))
+}
+
 sourceSets {
     main {
         java {
@@ -41,8 +49,8 @@ publishing {
                 groupId = providers.gradleProperty("wrapper_group").get()
                 version = providers.gradleProperty("version").get()
                 artifactId = "paper"
-                //artifact(tasks.named("reobfJar"))
-                from(components["java"])
+
+                artifact(tasks.named("shadowJar"))
                 licenses {
                     license {
                         name = "GNU GENERAL PUBLIC LICENSE Version 3"
