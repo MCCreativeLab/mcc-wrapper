@@ -143,13 +143,8 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     }
 
     @Override
-    public boolean canAccess(MCCLocation mccLocation) {
-        return getWorld().canAccess(mccLocation) && mccLocation.getChunkX() == chunkX() && mccLocation.getChunkZ() == chunkX();
-    }
-
-    @Override
-    public boolean canAccess(int x, int y, int z) {
-        return getWorld().canAccess(x, y, z) && MCCLocation.calculateChunkX(x) == chunkX() && MCCLocation.calculateChunkZ(z) == chunkX();
+    public void checkAccess(int x, int y, int z) {
+        MCCChunk.super.checkAccess(x, y, z);
     }
 
     @Override

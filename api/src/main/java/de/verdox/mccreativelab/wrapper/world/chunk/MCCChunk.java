@@ -52,4 +52,14 @@ public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWo
             );
         }
     }
+
+    @Override
+    default boolean canAccess(MCCLocation mccLocation) {
+        return getWorld().canAccess(mccLocation) && mccLocation.getChunkX() == chunkX() && mccLocation.getChunkZ() == chunkZ();
+    }
+
+    @Override
+    default boolean canAccess(int x, int y, int z) {
+        return getWorld().canAccess(x, y, z) && MCCLocation.calculateChunkX(x) == chunkX() && MCCLocation.calculateChunkZ(z) == chunkZ();
+    }
 }
