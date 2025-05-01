@@ -259,7 +259,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator) {
-        return SignalCache.INSTANCE.createFlux(Key.key("minecraft", "tick"), conversionService.unwrap(apiObject), sinkCreator);
+        return SignalCache.INSTANCE.createFlux(key, conversionService.unwrap(apiObject), sinkCreator);
     }
 
     @Override

@@ -116,6 +116,7 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
                 NMSPlayer nmsPlayer = (NMSPlayer) player;
                 ServerPlayer serverPlayer = (ServerPlayer) nmsPlayer.getHandle();
                 Input input = serverPlayer.getLastClientInput();
+                nmsPlayer.tickSignal().sink().tryEmitNext(tick);
                 nmsPlayer.inputSignal().sink().tryEmitNext(new MCCPlayer.Input(tick, input.forward(), input.backward(), input.left(), input.right(), input.jump(), input.shift(), input.sprint()));
             }
             NMSWorld nmsWorld = (NMSWorld) world;
