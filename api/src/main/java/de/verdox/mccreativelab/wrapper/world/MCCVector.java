@@ -355,9 +355,9 @@ public class MCCVector {
 
     @Override
     public String toString() {
-        return "MCCVector{" + "localX=" + x +
-                ", globalY=" + y +
-                ", localZ=" + z +
+        return "MCCVector{" + "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
                 '}';
     }
 
