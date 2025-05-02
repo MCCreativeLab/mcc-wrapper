@@ -444,6 +444,7 @@ public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
     public String toString() {
         final StringBuilder sb = new StringBuilder("MCCLocation{");
         sb.append("world=").append(world);
+        sb.append(", mcPos=").append(mcPos);
         sb.append(", yaw=").append(yaw);
         sb.append(", pitch=").append(pitch);
         sb.append('}');

@@ -62,10 +62,6 @@ public class PaperPlatform extends NMSPlatform {
 
     public PaperPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
         super(fullRegistryAccess, reloadableRegistries);
-
-        getGameComponentRegistry().register(MCCPersistent.class, PaperPersistent::new);
-        getGameComponentRegistry().register(MCCPluginMessenger.class, PaperPluginMessenger::new);
-        getGameComponentRegistry().register(MCCEntityHiding.class, PaperEntityHiding::new);
     }
 
     @Override
@@ -80,6 +76,11 @@ public class PaperPlatform extends NMSPlatform {
         conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
         conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
         conversionService.registerConverterForNewImplType(MCCChunk.class, PaperChunk.CONVERTER);
+
+        getGameComponentRegistry().register(MCCPersistent.class, PaperPersistent::new);
+        getGameComponentRegistry().register(MCCPluginMessenger.class, PaperPluginMessenger::new);
+        getGameComponentRegistry().register(MCCEntityHiding.class, PaperEntityHiding::new);
+
         BukkitAdapter.init();
         LOGGER.info("Paper Platform initialized");
     }
