@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEntityHiding;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCPluginMessenger;
 import de.verdox.mccreativelab.wrapper.entity.ContainerViewer;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -187,6 +188,13 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      */
     default MCCPluginMessenger asPluginMessenger() {
         return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCPluginMessenger.class);
+    }
+
+    /**
+     * Returns the {@link MCCEffectTarget} component
+     */
+    default MCCEntityHiding asHider() {
+        return MCCPlatform.getInstance().getGameComponentRegistry().create(this, MCCEntityHiding.class);
     }
 
     /**
