@@ -184,6 +184,12 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
     void setCamera(@Nullable MCCEntity entityToSpectate) throws IllegalStateException;
 
     /**
+     * Returns the entity the player is currently spectating
+     */
+    @Nullable
+    MCCEntity getCamera();
+
+    /**
      * Returns the {@link MCCEffectTarget} component
      */
     default MCCPluginMessenger asPluginMessenger() {

@@ -212,6 +212,12 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     public void setCamera(@Nullable MCCEntity entityToSpectate) {
         getServerPlayer().setCamera(conversionService.unwrap(entityToSpectate, Entity.class));
     }
+    
+    @Override
+    @Nullable
+    public MCCEntity getCamera() {
+        return conversionService.wrap(getServerPlayer().getCamera(), MCCEntity.class);
+    }
 
     @Override
     public void closeCurrentInventory(MCCContainerCloseReason closeReason) {
