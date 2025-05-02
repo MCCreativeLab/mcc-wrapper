@@ -39,11 +39,7 @@ public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
     }
 
     public MCCLocation(MCCWorld world, double x, double y, double z) {
-        this(world, new MCCPos(x, y, z), 0, 0);
-    }
-
-    public MCCLocation(MCCWorld world, double x, double y, double z, float yaw, float pitch) {
-        this(world, new MCCPos(x, y, z), yaw, pitch);
+        this(world, x, y, z, 0, 0);
     }
 
     public double x() {
@@ -98,31 +94,31 @@ public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
     }
 
     public MCCLocation above() {
-        return new MCCLocation(this.world(), this.pos().x(), this.pos().y() + 1, this.pos().z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x(), this.y() + 1, this.z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation below() {
-        return new MCCLocation(this.world(), this.pos().x(), this.pos().y() - 1, this.pos().z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x(), this.y() - 1, this.z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation add(double x, double y, double z) {
-        return new MCCLocation(this.world(), this.pos().x() + x, this.pos().y() + y, this.pos().z() + z, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x() + x, this.y() + y, this.z() + z, this.yaw(), this.pitch());
     }
 
     public MCCLocation left() {
-        return new MCCLocation(this.world(), this.pos().x() - 1, this.pos().y(), this.pos().z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x() - 1, this.y(), this.z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation right() {
-        return new MCCLocation(this.world(), this.pos().x() + 1, this.pos().y(), this.pos().z(), this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x() + 1, this.y(), this.z(), this.yaw(), this.pitch());
     }
 
     public MCCLocation forward() {
-        return new MCCLocation(this.world(), this.pos().x(), this.pos().y(), this.pos().z() + 1, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x(), this.y(), this.z() + 1, this.yaw(), this.pitch());
     }
 
     public MCCLocation backward() {
-        return new MCCLocation(this.world(), this.pos().x(), this.pos().y(), this.pos().z() - 1, this.yaw(), this.pitch());
+        return new MCCLocation(this.world(), this.x(), this.y(), this.z() - 1, this.yaw(), this.pitch());
     }
 
     public CompletableFuture<MCCBlock> getBlock() {
@@ -138,15 +134,16 @@ public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
         return mccChunk.get(this);
     }
 
+
     public MCCLocation add(MCCVector vector) {
         return new MCCLocation(world, x() + vector.x(), y() + vector.y(), z() + vector.z(), yaw, pitch);
-
     }
 
 
     public MCCLocation sub(MCCVector vector) {
         return new MCCLocation(world, x() - vector.x(), y() - vector.y(), z() - vector.z(), yaw, pitch);
     }
+
 
     public MCCLocation mul(MCCVector vector) {
         return new MCCLocation(world, x() * vector.x(), y() * vector.y(), z() * vector.z(), yaw, pitch);
@@ -160,6 +157,7 @@ public class MCCLocation implements MCCWrapped, FloatingPointPos<MCCLocation> {
     public MCCVector asVector() {
         return new MCCVector(x(), y(), z());
     }
+
 
     public int toChunkBlockLocalX() {
         return calculateBlockLocalX(blockX());
