@@ -66,7 +66,7 @@ public interface MCCTaskManager {
      * @return the created task
      */
     default MCCTask runLaterOnTickThread(Consumer<MCCTask> taskConsumer, long delay, TimeUnit timeUnit) {
-        return runLaterOnTickThread(null, delay, timeUnit);
+        return runLaterOnTickThread(null, taskConsumer, delay, timeUnit);
     }
 
     /**
@@ -79,7 +79,7 @@ public interface MCCTaskManager {
      * @return the created task
      */
     default MCCTask runTimerOnTickThread(Consumer<MCCTask> taskConsumer, long delay, long period, TimeUnit timeUnit) {
-        return runTimerOnTickThread(null, delay, period, timeUnit);
+        return runTimerOnTickThread(null, taskConsumer, delay, period, timeUnit);
     }
 
     /**
