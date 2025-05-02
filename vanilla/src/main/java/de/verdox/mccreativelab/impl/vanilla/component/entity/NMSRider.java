@@ -15,7 +15,8 @@ public class NMSRider extends AbstractComponent<Entity, MCCEntity> implements MC
 
     @Override
     public boolean startRiding(MCCRideable vehicle, boolean force) {
-        return getHandle().startRiding(conversionService.unwrap(vehicle), force);
+        NMSRideable rideable = (NMSRideable) vehicle;
+        return getHandle().startRiding(conversionService.unwrap(rideable.getHandle()), force);
     }
 
     @Override
