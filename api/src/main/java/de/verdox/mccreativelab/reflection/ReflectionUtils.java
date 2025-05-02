@@ -85,7 +85,7 @@ public class ReflectionUtils {
     @SuppressWarnings("unchecked")
     public static <C, R> R invokeMethodInClass(C clazz, String methodName, Object... args) {
         try {
-            Method method = clazz.getClass().getDeclaredMethod(methodName);
+            Method method = findMethodInHierarchy(clazz.getClass(), methodName);
             method.setAccessible(true);
             return (R) method.invoke(clazz, args);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
