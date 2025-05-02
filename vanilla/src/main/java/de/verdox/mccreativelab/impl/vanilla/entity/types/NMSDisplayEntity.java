@@ -12,6 +12,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.util.VanillaField;
+import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import net.kyori.adventure.text.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.util.Brightness;
@@ -45,6 +46,18 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
     @Override
     public VanillaField<Integer> interpolationDurationInTicks() {
         return new EntityDataField<>(this::getHandle, DATA_TRANSFORMATION_INTERPOLATION_DURATION_ID);
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        yaw = MCCLocation.normalizeYaw(yaw);
+        // We allow every rotation!
+        pitch = MCCLocation.normalizeYaw(pitch);
+        getHandle().setYRot(yaw);
+        getHandle().setXRot(pitch);
+        getHandle().yRotO = yaw;
+        getHandle().xRotO = pitch;
+        getHandle().setYHeadRot(yaw);
     }
 
     @Override
@@ -155,6 +168,11 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
     public static class NMSTransformation extends MCCHandle<com.mojang.math.Transformation> implements Transformation {
         public static final MCCConverter<com.mojang.math.Transformation, NMSTransformation> CONVERTER = converter(NMSTransformation.class, com.mojang.math.Transformation.class, NMSTransformation::new, MCCHandle::getHandle);
 
+        private Vector3f translation;
+        private Quaternionf leftRotation;
+        private Quaternionf rightRotation;
+        private Vector3f scale;
+
         public NMSTransformation(com.mojang.math.Transformation handle) {
             super(handle);
         }
@@ -164,7 +182,8 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
             return new VanillaField<>() {
                 @Override
                 public void set(Vector3f newValue) {
-                    handle.getTranslation().set(newValue);
+                    translation = newValue;
+                    updateHandle();
                 }
 
                 @Override
@@ -179,7 +198,8 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
             return new VanillaField<>() {
                 @Override
                 public void set(Quaternionf newValue) {
-                    handle.getLeftRotation().set(newValue);
+                    leftRotation = newValue;
+                    updateHandle();
                 }
 
                 @Override
@@ -194,7 +214,8 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
             return new VanillaField<>() {
                 @Override
                 public void set(Quaternionf newValue) {
-                    handle.getRightRotation().set(newValue);
+                    rightRotation = newValue;
+                    updateHandle();
                 }
 
                 @Override
@@ -209,7 +230,8 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
             return new VanillaField<>() {
                 @Override
                 public void set(Vector3f newValue) {
-                    handle.getScale().set(newValue);
+                    scale = newValue;
+                    updateHandle();
                 }
 
                 @Override
@@ -217,6 +239,10 @@ public class NMSDisplayEntity<T extends Display> extends NMSEntity<T> implements
                     return handle.getScale();
                 }
             };
+        }
+
+        private void updateHandle() {
+            this.handle = new com.mojang.math.Transformation(translation, leftRotation, scale, rightRotation);
         }
     }
 
