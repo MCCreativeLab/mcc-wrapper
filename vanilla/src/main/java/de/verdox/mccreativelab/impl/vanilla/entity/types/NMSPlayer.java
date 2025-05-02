@@ -5,6 +5,7 @@ import com.google.common.io.BaseEncoding;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.player.client.NMSSkinParts;
+import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
@@ -49,6 +50,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -112,7 +115,9 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public MCCEntityProperty<MCCGameMode, MCCPlayer> getGameModeProperty() {
-        return new MCCEntityProperty<MCCGameMode, MCCPlayer>() {
+
+
+        return new MCCEntityProperty<>() {
             @Override
             public @Nullable MCCGameMode get() {
                 return conversionService.wrap(getServerPlayer().gameMode.getGameModeForPlayer());
@@ -120,7 +125,24 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
             @Override
             public void set(@Nullable MCCGameMode newValue) {
-                getServerPlayer().gameMode.changeGameModeForPlayer(conversionService.unwrap(getServerPlayer().gameMode.getGameModeForPlayer()));
+                boolean isSpectator = handle.isSpectator();
+
+                GameType gameMode = conversionService.unwrap(newValue, GameType.class);
+
+                getServerPlayer().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, (float) gameMode.getId()));
+                if (gameMode == GameType.SPECTATOR) {
+                    ReflectionUtils.invokeMethodInClass(handle, "removeEntitiesOnShoulder");
+                    handle.stopRiding();
+                    EnchantmentHelper.stopLocationBasedEffects(handle);
+                } else {
+                    getServerPlayer().setCamera(handle);
+                    if (isSpectator) {
+                        EnchantmentHelper.runLocationChangedEffects(getServerPlayer().serverLevel(), handle);
+                    }
+                }
+
+                handle.onUpdateAbilities();
+                ReflectionUtils.invokeMethodInClass(handle, "updateEffectVisibility");
             }
 
             @Override
@@ -212,7 +234,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     public void setCamera(@Nullable MCCEntity entityToSpectate) {
         getServerPlayer().setCamera(conversionService.unwrap(entityToSpectate, Entity.class));
     }
-    
+
     @Override
     @Nullable
     public MCCEntity getCamera() {
