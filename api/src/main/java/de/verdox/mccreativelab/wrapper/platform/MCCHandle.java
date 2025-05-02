@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class MCCHandle<T> {
-    protected final T handle;
+    protected T handle;
     protected ConversionService conversionService = MCCPlatform.getInstance().getConversionService();
     protected GameComponentRegistry componentRegistry = MCCPlatform.getInstance().getGameComponentRegistry();
 
