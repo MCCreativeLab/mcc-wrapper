@@ -21,13 +21,17 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class NMSRegistryStorage implements MCCRegistryStorage {
+    private static final Logger LOGGER = Logger.getLogger(MCCRegistryStorage.class.getSimpleName());
+
     private final Map<Key, DelayedFreezingRegistry<?>> CUSTOM_REGISTRIES = new HashMap<>();
     private final Map<Key, OpenRegistry<?>> CUSTOM_OPEN_REGISTRIES = new HashMap<>();
     private final Supplier<RegistryAccess.Frozen> fullRegistryAccess;
@@ -84,6 +88,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
         DelayedFreezingRegistry<T> mappedRegistry = new DelayedFreezingRegistry<>(registryKey, Lifecycle.stable());
         CUSTOM_REGISTRIES.put(key, mappedRegistry);
+        LOGGER.info("Creating the custom minecraft registry "+key);
 
         Holder<DelayedFreezingRegistry<T>> holder = new DelayedFreezingRegistryHolder<>(mappedRegistry, registryLocation, registryKey);
 
@@ -99,8 +104,9 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
-        OpenRegistry<T> openRegistry = new OpenRegistry<>();
+        OpenRegistry<T> openRegistry = OpenRegistry.createUnboundRegistry(key);
         CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
+        LOGGER.info("Creating the custom open registry "+key);
 
         AtomicReference<MCCReference<OpenRegistry<T>>> reference = new AtomicReference<>();
         AtomicReference<MCCTypedKey<OpenRegistry<T>>> typedKey = new AtomicReference<>();
@@ -146,23 +152,20 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
         return reference.get();
     }
 
-    @Override
-    public <T> MCCReference<MCCRegistry<T>> createMinecraftRegistry(Key key, TypeToken<T> type) {
-        return createMinecraftRegistry(key);
-    }
-
     @Nullable
     private <T> MCCRegistry<T> searchForRegistry(Key registryKey) {
         if (registryKey.equals(Key.key("minecraft", "root"))) {
             return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY);
         }
 
-        if (CUSTOM_REGISTRIES.containsKey(registryKey)) {
-            return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
-        }
-
-        if (CUSTOM_OPEN_REGISTRIES.containsKey(registryKey)) {
-            return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey));
+        if (!registryKey.namespace().equals("minecraft")) {
+            if (CUSTOM_REGISTRIES.containsKey(registryKey)) {
+                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
+            } else if (CUSTOM_OPEN_REGISTRIES.containsKey(registryKey)) {
+                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey));
+            } else {
+                throw new NoSuchElementException("Could not find the registry " + registryKey);
+            }
         }
 
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));

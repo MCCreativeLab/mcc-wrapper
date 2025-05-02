@@ -4,61 +4,77 @@ import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.mccreativelab.wrapper.world.acessor.point.PointAccessor;
+import de.verdox.mccreativelab.wrapper.world.acessor.point.PointBlockAccessor;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * Describes an actual block in a minecraft world with a location and a type
+ * Describes an actual block in a minecraft world with a location and a type.
+ *
  */
-public final class MCCBlock implements MCCKeyedWrapper {
-    private final MCCLocation location;
-    private MCCChunk mccChunk;
+public final class MCCBlock implements MCCKeyedWrapper, PointBlockAccessor<MCCBlock, MCCWorld, MCCChunk> {
+    private final MCCWorld world;
+    private final MCBlockPos blockPos;
+    private final MCCChunk mccChunk;
+
+    public MCCBlock(@NotNull MCCWorld world, @NotNull Pos<?> pos, @NotNull MCCChunk mccChunk) {
+        Objects.requireNonNull(world, "The world cannot be null");
+        Objects.requireNonNull(pos, "The position cannot be null");
+        Objects.requireNonNull(mccChunk, "The chunk cannot be null");
+        if (pos instanceof MCCLocation) {
+            throw new IllegalArgumentException("Please don't use location and world in the same constructor");
+        }
+        if (!mccChunk.isLoaded()) {
+            throw new IllegalArgumentException("The provided chunk of the block is not loaded");
+        }
+        if (!mccChunk.getWorld().canAccess(pos)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.getChunkPos().x() + ", " + mccChunk.getChunkPos().z() + " is not the owner of the provided position " + pos + ". Reason: World mismatch -> " + mccChunk.getWorld().key() + " != " + world.key());
+        } else if (!mccChunk.canAccess(pos)) {
+            throw new IllegalArgumentException("The provided chunk " + mccChunk.getChunkPos().x() + ", " + mccChunk.getChunkPos().z() + " is not the owner of the provided position " + pos + ". Reason: Chunk coordinate mismatch -> (" + mccChunk.getChunkPos().x() + "," + mccChunk.getChunkPos().z() + ") != (" + pos.toChunkPos().x() + "," + pos.toChunkPos().z() + ")");
+        }
+
+        this.world = world;
+        this.blockPos = pos.toBlockPos();
+        this.mccChunk = mccChunk;
+    }
 
     public MCCBlock(MCCLocation location, @NotNull MCCChunk mccChunk) {
-        Objects.requireNonNull(location);
-        Objects.requireNonNull(mccChunk);
-        this.location = location;
-        this.mccChunk = mccChunk;
-
+        this(Objects.requireNonNull(location).world(), location.toPos(), mccChunk);
     }
+
+    /**
+     * Gets the relative of a block
+     */
+    public CompletableFuture<MCCBlock> getRelative(int relX, int relY, int relZ) {
+        return getWorld().at(new MCBlockPos(blockPos.x() + relX, blockPos.y() + relY, blockPos.z() + relZ), mccBlock -> mccBlock);
+    }
+
 
     /**
      * Returns the location of this block
      *
      * @return the location of the block
      */
+
+    @Override
     @NotNull
     public MCCLocation getLocation() {
-        return location;
-    }
-
-    /**
-     * Returns the block data of this block.
-     *
-     * @return the block data
-     */
-    @NotNull
-    public MCCBlockState getBlockState() {
-        return getOrLoadChunk().getBlockDataAt(location);
+        return new MCCLocation(world, blockPos.toPos());
     }
 
     MCCCapturedBlockState captureBlock() {
         return new MCCCapturedBlockState(this);
-    }
-
-    /**
-     * Returns the block type of this block
-     *
-     * @return the block type
-     */
-    @NotNull
-    public MCCBlockType getBlockType() {
-        return getOrLoadChunk().getBlockTypeAt(location);
     }
 
     /**
@@ -75,7 +91,7 @@ public final class MCCBlock implements MCCKeyedWrapper {
 
     public void dropBlockLoot(@Nullable MCCEntity entity, @Nullable MCCItemStack tool) {
         for (MCCItemStack drop : getBlockState().getDrops(getLocation(), entity, tool)) {
-            getLocation().world().dropItemNaturally(getLocation(), drop);
+            getChunk().dropItemNaturally(getLocation(), drop);
         }
     }
 
@@ -88,7 +104,7 @@ public final class MCCBlock implements MCCKeyedWrapper {
      * @param ignoreTool     whether to ignore the tool
      */
     public void breakBlockNaturally(@Nullable MCCItemStack tool, boolean triggerEffect, boolean dropLoot, boolean dropExperience, boolean ignoreTool) {
-        getLocation().world().breakBlockNaturally(this, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
+        getChunk().breakBlockNaturally(blockPos, tool, triggerEffect, dropLoot, dropExperience, ignoreTool);
     }
 
     /**
@@ -110,25 +126,37 @@ public final class MCCBlock implements MCCKeyedWrapper {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MCCBlock block = (MCCBlock) o;
-        return Objects.equals(location, block.location);
+        MCCBlock mccBlock = (MCCBlock) o;
+        return Objects.equals(world, mccBlock.world) && Objects.equals(blockPos, mccBlock.blockPos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(location);
-    }
-
-    private MCCChunk getOrLoadChunk() {
-        if (this.mccChunk == null) {
-            mccChunk = location.world().getChunkImmediately(location);
-            Objects.requireNonNull(mccChunk, "The chunk was not loaded");
-        }
-        return this.mccChunk;
+        return Objects.hash(world, blockPos);
     }
 
     @Override
     public Key getRegistryKey() {
         return getBlockType().getRegistryKey();
+    }
+
+    @Override
+    public MCPos getPos() {
+        return blockPos.toPos();
+    }
+
+    @Override
+    public MCCChunk getChunk() {
+        return mccChunk;
+    }
+
+    @Override
+    public MCCWorld getWorld() {
+        return mccChunk.getWorld();
+    }
+
+    @Override
+    public boolean canAccess(Pos<?> pos) {
+        return pos.toPos().equals(getPos());
     }
 }

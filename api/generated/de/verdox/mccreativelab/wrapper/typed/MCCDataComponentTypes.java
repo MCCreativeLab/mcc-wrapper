@@ -67,7 +67,7 @@ public class MCCDataComponentTypes {
 
     public static final MCCReference<MCCDataComponentType<MCCEnchantable>> ENCHANTABLE = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "enchantable"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCEnchantable>>() {}).getAsReference();
 
-    //public static final MCCReference<MCCDataComponentType<Equippable>> EQUIPPABLE = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "equippable"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<Equippable>>() {}).getAsReference();
+    public static final MCCReference<MCCDataComponentType<MCCEquippable>> EQUIPPABLE = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "equippable"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCEquippable>>() {}).getAsReference();
 
     public static final MCCReference<MCCDataComponentType<MCCRepairable>> REPAIRABLE = MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("minecraft", "repairable"), VANILLA_REGISTRY_KEY, new TypeToken<MCCDataComponentType<MCCRepairable>>() {}).getAsReference();
 

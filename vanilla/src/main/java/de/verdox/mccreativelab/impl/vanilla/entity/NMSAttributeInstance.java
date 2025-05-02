@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.entity;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
@@ -18,6 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class NMSAttributeInstance extends MCCHandle<AttributeInstance> implements MCCAttributeInstance {
+    public static final MCCConverter<AttributeInstance, NMSAttributeInstance> CONVERTER = converter(NMSAttributeInstance.class, AttributeInstance.class, NMSAttributeInstance::new, MCCHandle::getHandle);
+
     public NMSAttributeInstance(AttributeInstance handle) {
         super(handle);
     }

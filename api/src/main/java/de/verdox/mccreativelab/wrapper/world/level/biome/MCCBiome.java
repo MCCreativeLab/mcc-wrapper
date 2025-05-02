@@ -3,7 +3,7 @@ package de.verdox.mccreativelab.wrapper.world.level.biome;
 import de.verdox.mccreativelab.wrapper.MCCDataDriven;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.sounds.MCCMusic;
-import de.verdox.mccreativelab.wrapper.world.MCCBlockPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
 import net.kyori.adventure.sound.Sound;
 
 import java.util.Optional;
@@ -28,7 +28,7 @@ public interface MCCBiome extends MCCDataDriven {
      *
      * @return the precipitation type
      */
-    Precipitation getPrecipitationAt(MCCBlockPos pos, int seaLevel);
+    Precipitation getPrecipitationAt(MCBlockPos pos, int seaLevel);
 
     /**
      * Gets the base temperature of the biome

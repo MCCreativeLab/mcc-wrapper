@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Describes a variant of a block
@@ -43,8 +44,10 @@ public interface MCCBlockState extends MCCKeyedWrapper {
      * @param location     the location to change the block at
      * @param applyPhysics whether the change should trigger block updates
      */
-    default void setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
-        location.world().setBlock(this, location, applyPhysics);
+    default CompletableFuture<Void> setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
+        return location.world().at(location, mccBlock -> {
+            mccBlock.setBlockState(this, applyPhysics);
+        });
     }
 
     /**

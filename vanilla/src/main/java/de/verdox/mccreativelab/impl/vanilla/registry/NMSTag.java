@@ -14,11 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class NMSTag<T> extends MCCHandle<TagKey<?>> implements MCCTag<T> {
     public static final MCCConverter<TagKey, NMSTag> CONVERTER = converter(NMSTag.class, TagKey.class, NMSTag::new, tag -> (TagKey) tag.getHandle());
 
     public NMSTag(Key key, Key registryKey) {
-        this(TagKey.create(ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey, ResourceLocation.class)), MCCPlatform.getInstance().getConversionService().unwrap(key, ResourceLocation.class)));
+        this(TagKey.create(ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(Objects.requireNonNull(registryKey, "Registry key cannot be null"), ResourceLocation.class)), MCCPlatform.getInstance().getConversionService().unwrap(Objects.requireNonNull(key, "Key cannot be null"), ResourceLocation.class)));
     }
 
     public NMSTag(TagKey<?> handle) {

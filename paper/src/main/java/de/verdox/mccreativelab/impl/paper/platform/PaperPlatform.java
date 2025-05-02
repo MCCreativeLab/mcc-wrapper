@@ -6,6 +6,9 @@ import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockHardnessSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockSoundSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperFurnaceSettings;
+import de.verdox.mccreativelab.impl.paper.component.entity.PaperEntityHiding;
+import de.verdox.mccreativelab.impl.paper.component.entity.PaperPersistent;
+import de.verdox.mccreativelab.impl.paper.component.entity.PaperPluginMessenger;
 import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.entity.types.PaperPlayer;
 import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
@@ -14,15 +17,21 @@ import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.paper.platform.converter.ComponentConverter;
 import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
 import de.verdox.mccreativelab.impl.paper.world.PaperWorld;
+import de.verdox.mccreativelab.impl.paper.world.chunk.PaperChunk;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCEntityHiding;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPersistent;
+import de.verdox.mccreativelab.wrapper.component.entity.MCCPluginMessenger;
 import de.verdox.mccreativelab.wrapper.entity.MCCAttributeInstance;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCTaskManager;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.HolderGetter;
@@ -63,10 +72,16 @@ public class PaperPlatform extends NMSPlatform {
 
         conversionService.registerConverterForNewImplType(MCCPlayer.class, PaperPlayer.CONVERTER);
         conversionService.registerConverterForNewImplType(MCCWorld.class, PaperWorld.CONVERTER);
-        BukkitAdapter.init();
+
         conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
         conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
+        conversionService.registerConverterForNewImplType(MCCChunk.class, PaperChunk.CONVERTER);
 
+        getGameComponentRegistry().register(MCCPersistent.class, PaperPersistent::new);
+        getGameComponentRegistry().register(MCCPluginMessenger.class, PaperPluginMessenger::new);
+        getGameComponentRegistry().register(MCCEntityHiding.class, PaperEntityHiding::new);
+
+        BukkitAdapter.init();
         LOGGER.info("Paper Platform initialized");
     }
 
@@ -82,7 +97,7 @@ public class PaperPlatform extends NMSPlatform {
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
 
-        PlatformEvents.init(javaPlugin);
+        //PlatformEvents.init(javaPlugin);
     }
 
     public ConversionService getBukkitConversionService() {

@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.vserializer.generic.Serializer;
 import net.kyori.adventure.key.Key;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 @MCCInstantiationSource(sourceClasses = MCCItemStack.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
 public interface MCCItemType extends MCCKeyedWrapper {
-    Serializer<MCCItemType> SERIALIZER = MCCKeyedWrapper.createSerializer("item", new TypeToken<>() {});
+    Serializer<MCCItemType> SERIALIZER = MCCSerializers.KEYED_WRAPPER("item", new TypeToken<>() {});
 
     @NotNull
     MCCItemStack createItem();

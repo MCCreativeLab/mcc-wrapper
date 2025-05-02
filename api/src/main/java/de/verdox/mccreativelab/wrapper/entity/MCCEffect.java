@@ -9,6 +9,10 @@ import java.util.Objects;
 @MCCInstantiationSource(sourceClasses = MCCEffectType.class)
 public interface MCCEffect {
 
+    static Builder create() {
+        return new Builder();
+    }
+
     MCCEffectType getType();
 
     int getDuration();
@@ -68,12 +72,12 @@ public interface MCCEffect {
             return this;
         }
 
-        public MCCEffect build(){
+        public MCCEffect build() {
             return type.create(duration, amplifier, ambient, particles, icon, hiddenEffect);
         }
     }
 
-    default void apply(MCCLivingEntity mccEntity){
-        getType().applyEffectType(mccEntity, this);
+    default boolean apply(MCCLivingEntity mccEntity) {
+        return getType().addEffect(mccEntity, this);
     }
 }

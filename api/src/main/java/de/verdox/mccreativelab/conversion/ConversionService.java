@@ -25,6 +25,16 @@ public interface ConversionService {
     <F, T> T wrap(F nativeObject);
 
     /**
+     * Wraps a given native object into an impl object that implements a specific api type
+     * @param nativeObject the native object
+     * @param apiTypeToConvertTo a type token for explicit type declaration
+     * @return the api object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo);
+
+    /**
      * Wraps a given impl object into a native object
      * @param apiObject the api object
      * @return the native object
@@ -32,6 +42,18 @@ public interface ConversionService {
      * @param <T> the api type
      */
     <F, T> F unwrap(T apiObject);
+
+    /**
+     * Wraps a given impl object into a native object
+     * @param apiObject the api object
+     * @param nativePlatformType a class for explicit type declaration
+     * @return the native object
+     * @param <F> the native type
+     * @param <T> the api type
+     */
+    default <F, T> F unwrap(@Nullable T apiObject, TypeToken<F> nativePlatformType) {
+        return unwrap(apiObject);
+    }
 
     /**
      * This method is used to convert from one type tree to another.
@@ -86,37 +108,13 @@ public interface ConversionService {
     /**
      * Wraps a given native object into an impl object that implements a specific api type
      * @param nativeObject the native object
-     * @param apiTypeToConvertTo a type token for explicit type declaration
-     * @return the api object
-     * @param <F> the native type
-     * @param <T> the api type
-     */
-    default <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
-        return (T) wrap(nativeObject);
-    }
-
-    /**
-     * Wraps a given native object into an impl object that implements a specific api type
-     * @param nativeObject the native object
      * @param apiTypeToConvertTo a class for explicit type declaration
      * @return the api object
      * @param <F> the native type
      * @param <T> the api type
      */
     default <F, T> T wrap(@Nullable F nativeObject, Class<T> apiTypeToConvertTo) {
-        return (T) wrap(nativeObject);
-    }
-
-    /**
-     * Wraps a given impl object into a native object
-     * @param apiObject the api object
-     * @param nativePlatformType a class for explicit type declaration
-     * @return the native object
-     * @param <F> the native type
-     * @param <T> the api type
-     */
-    default <F, T> F unwrap(@Nullable T apiObject, TypeToken<F> nativePlatformType) {
-        return (F) unwrap(apiObject);
+        return wrap(nativeObject, TypeToken.of(apiTypeToConvertTo));
     }
 
     /**
@@ -128,6 +126,6 @@ public interface ConversionService {
      * @param <T> the api type
      */
     default <F, T> F unwrap(@Nullable T apiObject, Class<F> nativePlatformType) {
-        return (F) unwrap(apiObject);
+        return unwrap(apiObject, TypeToken.of(nativePlatformType));
     }
 }

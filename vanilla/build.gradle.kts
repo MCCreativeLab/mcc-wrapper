@@ -1,6 +1,8 @@
 plugins {
     id("java")
     id("fabric-loom") version "1.9-SNAPSHOT"
+    id("me.champeau.jmh") version "0.7.2"
+    `java-library`
 }
 
 repositories {
@@ -10,7 +12,6 @@ repositories {
 dependencies {
     val mcVersion = providers.gradleProperty("mcversion").get()
     compileOnly(project(":api"))
-    compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
     minecraft("com.mojang:minecraft:$mcVersion")
     @Suppress("UnstableApiUsage")
@@ -18,11 +19,17 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
     })
+    jmh(project(":api"))
+    jmh(project(":TestSuite"))
+
+
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testImplementation("org.hamcrest:hamcrest:2.2")
     testImplementation(project(":api"))
     testImplementation(project(":TestSuite"))
+    testImplementation("net.kyori:adventure-text-serializer-gson:4.20.0")
+    testImplementation("net.kyori:adventure-text-minimessage:4.20.0")
 }
 
 sourceSets {

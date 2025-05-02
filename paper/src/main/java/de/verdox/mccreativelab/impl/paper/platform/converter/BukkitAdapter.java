@@ -10,12 +10,14 @@ import de.verdox.mccreativelab.wrapper.block.*;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlot;
+import de.verdox.mccreativelab.wrapper.entity.MCCTeleportFlag;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
+import io.papermc.paper.entity.TeleportFlag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -55,6 +57,7 @@ public class BukkitAdapter {
         conversionService.registerConverterForNewImplType(MCCCapturedBlockState.class, new CraftBlockStateConverter());
         conversionService.registerConverterForNewImplType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
         conversionService.registerConverterForNewImplType(MCCBlockFace.class, new EnumConverter<>(BlockFace.class, MCCBlockFace.class));
+        conversionService.registerConverterForNewImplType(MCCTeleportFlag.class, new EnumConverter<>(TeleportFlag.EntityState.class, MCCTeleportFlag.class));
     }
 
 
@@ -107,15 +110,27 @@ public class BukkitAdapter {
     }
 
     public static <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
-        return unwrap(objectToUnwrap);
+        return unwrap(objectToUnwrap, TypeToken.of(nativePlatformType));
     }
 
-    public static <F, T> T wrap(@Nullable F objectToWrap, TypeToken<T> apiTypeToConvertTo) {
-        return wrap(objectToWrap);
+    public static <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
+        if (nativeObject instanceof Material material) {
+            Item nmsItem = CraftItemType.bukkitToMinecraft(material);
+            if (nmsItem != null) {
+                return wrap(CraftItemType.minecraftToBukkitNew(nmsItem));
+            }
+            Block nmsBlock = CraftBlockType.bukkitToMinecraft(material);
+            if (nmsBlock == null) {
+                throw new NoConverterFoundException("Could not find a converter to convert the material " + material);
+            }
+            return wrap(CraftBlockType.minecraftToBukkitNew(nmsBlock), apiTypeToConvertTo);
+        }
+
+        return conversionService.wrap(nativeObject, apiTypeToConvertTo);
     }
 
     public static <F, T> T wrap(@Nullable F objectToWrap, Class<T> apiTypeToConvertTo) {
-        return wrap(objectToWrap);
+        return wrap(objectToWrap, TypeToken.of(apiTypeToConvertTo));
     }
 
     private static <F, B, A, T extends A> BukkitCraftConverter<F, B, A> register(Class<A> apiType, TypeToken<T> implType, TypeToken<B> bukkitType, Function<B, F> getter, Function<F, B> wrapper) {

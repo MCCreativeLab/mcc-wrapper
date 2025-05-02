@@ -53,7 +53,7 @@ public record NMSDataComponentEditor<R, T extends MCCDataComponentType<R>>(DataC
                 throw new RuntimeException(e);
             }
         }
-        else throw new IllegalStateException("Trying to manipulate an immutable data component map");
+        else throw new IllegalStateException("Trying to manipulate an immutable data component map with type "+dataComponents.getClass());
 
 
     }

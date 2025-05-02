@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.event.entity.MCCProjectileHitEvent;
 import de.verdox.mccreativelab.wrapper.event.entity.MCCProjectileLaunchEvent;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -12,10 +13,10 @@ public class ProjectileEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ProjectileHitEvent event) {
         callEvent(event, new MCCProjectileHitEvent(
-                wrap(event.getEntity()),
-                wrap(event.getHitEntity()),
-                wrap(event.getHitBlock()),
-                wrap(event.getHitBlockFace()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
+                wrap(event.getHitEntity(), new TypeToken<>() {}),
+                wrap(event.getHitBlock(), new TypeToken<>() {}),
+                wrap(event.getHitBlockFace(), new TypeToken<>() {}),
                 event.isCancelled()
         ));
     }
@@ -24,7 +25,7 @@ public class ProjectileEvents extends EventBase {
     public void handle(ProjectileLaunchEvent event) {
         // TODO: duplicate: public MCCProjectileLaunchEvent(MCCEntity entity, boolean canceled, boolean cancelled){
         callEvent(event, new MCCProjectileLaunchEvent(
-                wrap(event.getEntity()),
+                wrap(event.getEntity(), new TypeToken<>() {}),
                 event.isCancelled(),
                 event.isCancelled()
         ));

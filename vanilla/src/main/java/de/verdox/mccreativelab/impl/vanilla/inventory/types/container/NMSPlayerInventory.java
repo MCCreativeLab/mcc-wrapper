@@ -9,6 +9,7 @@ import de.verdox.mccreativelab.wrapper.inventory.types.container.MCCPlayerInvent
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerInventoryPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public class NMSPlayerInventory extends NMSContainer implements MCCPlayerInvento
             case FEET -> setItem(getSize() - 5, item);
             case MAINHAND -> setItem(this.getHeldItemSlot(), item);
             case OFFHAND ->
-                this.setSlots(new MCCItemStack[]{item}, ((Inventory) handle).items.size() + ((Inventory) handle).armor.size(), ((Inventory) handle).offhand.size());
+                    this.setSlots(new MCCItemStack[]{item}, ((Inventory) handle).items.size() + ((Inventory) handle).armor.size(), ((Inventory) handle).offhand.size());
             case ANY -> {
                 if (item != null) {
                     addItem(item);
@@ -59,7 +60,7 @@ public class NMSPlayerInventory extends NMSContainer implements MCCPlayerInvento
             case FEET -> getItem(getSize() - 5);
             case MAINHAND, HAND -> getItem(this.getHeldItemSlot());
             case OFFHAND ->
-                MCCPlatform.getInstance().getConversionService().wrap((((Inventory) handle).offhand.get(0)), new TypeToken<>() {});
+                    MCCPlatform.getInstance().getConversionService().wrap((((Inventory) handle).offhand.get(0)), new TypeToken<>() {});
             case ANY -> getItemInMainHand();
         };
     }
@@ -84,7 +85,14 @@ public class NMSPlayerInventory extends NMSContainer implements MCCPlayerInvento
 
     @Override
     public void sendFakeContents(MCCItemStack[] contents) {
-
+        for (int i = 0; i < contents.length; i++) {
+            MCCItemStack content = contents[i];
+            ItemStack nmsStack = conversionService.unwrap(content);
+            if(nmsStack == null) {
+                nmsStack = ItemStack.EMPTY;
+            }
+            ((ServerPlayer) ((Inventory) handle).player).connection.send(new ClientboundSetPlayerInventoryPacket(i, nmsStack));
+        }
     }
 
     private void setSlots(MCCItemStack[] items, int baseSlot, int length) {

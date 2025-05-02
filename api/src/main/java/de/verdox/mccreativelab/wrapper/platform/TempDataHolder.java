@@ -1,5 +1,7 @@
 package de.verdox.mccreativelab.wrapper.platform;
 
+import de.verdox.mccreativelab.wrapper.platform.cached.TempData;
+
 /**
  * An element that can hold temporary data that is not saved persistently
  */

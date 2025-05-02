@@ -59,12 +59,25 @@ public class NMSChunkSection extends MCCHandle<LevelChunkSection> implements MCC
         if (!state.isVanilla()) {
             throw new IllegalArgumentException("You can only provide vanilla block types here");
         }
+        checkBounds(localX, localY, localZ);
         var service = MCCPlatform.getInstance().getConversionService();
         return service.wrap(getHandle().setBlockState(localX, localY, localZ, service.unwrap(state, new TypeToken<>() {})), new TypeToken<>() {});
     }
 
+    private void checkBounds(int localX, int localY, int localZ) {
+        if (localX < 0 || localX > 15) {
+            throw new IllegalArgumentException("The localX coordinate " + localX + " is not in its bounds [0-15]");
+        } else if (localY < 0 || localY > 15) {
+            throw new IllegalArgumentException("The globalY coordinate " + localY + " is not in its bounds [0-15]");
+        } else if (localZ < 0 || localZ > 15) {
+            throw new IllegalArgumentException("The localZ coordinate " + localZ + " is not in its bounds [0-15]");
+        }
+    }
+
     @Override
     public MCCBlockState getBlockState(int localX, int localY, int localZ) {
+        checkBounds(localX, localY, localZ);
+
         return MCCPlatform.getInstance().getConversionService().wrap(getHandle().getBlockState(localX, localY, localZ), new TypeToken<>() {});
     }
 

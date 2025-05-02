@@ -2,14 +2,18 @@ package de.verdox.mccreativelab.impl.vanilla.entity;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.entity.permission.MCCPermissionContainer;
 import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.platform.TempCache;
-import de.verdox.mccreativelab.wrapper.platform.TempData;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempCache;
+import de.verdox.mccreativelab.wrapper.platform.cached.TempData;
+import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
+import de.verdox.mccreativelab.wrapper.world.MCCVector;
+import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.pointer.Pointers;
 import net.kyori.adventure.text.Component;
@@ -17,10 +21,9 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEntity {
     public static final MCCConverter<Entity, NMSEntity> CONVERTER = converter(NMSEntity.class, Entity.class, NMSEntity::new, nmsEntity -> (Entity) nmsEntity.getHandle());
@@ -51,27 +54,6 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public void displayName(Component name) {
         throw new OperationNotPossibleOnNMS();
-    }
-
-    @Override
-    public CompletableFuture<MCCEntity> teleport(MCCLocation location) {
-        Objects.requireNonNull(location, "The teleport location cannot be null");
-        //TODO: Teleport Flags
-        location.checkFinite();
-        handle.stopRiding();
-
-        if (!getLocation().world().equals(location.world())) {
-            CompletableFuture<MCCEntity> done = new CompletableFuture<>();
-            // TODO: Needs another PR
-            /*            handle.teleport(new TeleportTransition(conversionService.unwrap(location.world(), ServerLevel.class), new Vec3(location.x(), location.y(), location.z()), Vec3.ZERO, location.pitch(), location.yaw(), entity -> {
-                done.complete(this);
-            }));*/
-            return done;
-        } else {
-            handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
-            handle.setYHeadRot(location.yaw());
-        }
-        return CompletableFuture.completedFuture(this);
     }
 
     @Override
@@ -233,13 +215,59 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     }
 
     @Override
+    public MCCEntityProperty<MCCVector, MCCEntity> velocity() {
+        return new MCCEntityProperty<>() {
+            @Override
+            public @Nullable MCCVector get() {
+                return new MCCVector(getHandle().getDeltaMovement().x(), getHandle().getDeltaMovement().y(), getHandle().getDeltaMovement().z());
+            }
+
+            @Override
+            public void set(@Nullable MCCVector newValue) {
+                getHandle().setDeltaMovement(newValue.x(), newValue.y(), newValue.z());
+            }
+
+            @Override
+            public void sync() {
+
+            }
+        };
+    }
+
+    @Override
+    public void remove() {
+        getHandle().remove(Entity.RemovalReason.DISCARDED);
+    }
+
+    @Override
+    public boolean isRemoved() {
+        return handle.isRemoved();
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        yaw = MCCLocation.normalizeYaw(yaw);
+        pitch = MCCLocation.normalizePitch(pitch);
+        getHandle().setYRot(yaw);
+        getHandle().setXRot(pitch);
+        getHandle().yRotO = yaw;
+        getHandle().xRotO = pitch;
+        getHandle().setYHeadRot(yaw);
+    }
+
+    @Override
+    public @NotNull MCCChunk getChunk() {
+        return new NMSChunk(handle.level().getChunk(handle.chunkPosition().x, handle.chunkPosition().z));
+    }
+
+    @Override
     public Pointers pointers() {
         if (this.adventurePointer == null) {
             this.adventurePointer = Pointers.builder()
-                .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
-                .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
-                .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
-                .build();
+                    .withDynamic(net.kyori.adventure.identity.Identity.DISPLAY_NAME, this::displayName)
+                    .withDynamic(net.kyori.adventure.identity.Identity.UUID, this::getUUID)
+                    .withStatic(net.kyori.adventure.permission.PermissionChecker.POINTER, permission -> getPermissions().permissionValue(permission))
+                    .build();
         }
         return this.adventurePointer;
     }
@@ -247,5 +275,19 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public MCCPermissionContainer getPermissions() {
         return permissionContainer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        NMSEntity<?> nmsEntity = (NMSEntity<?>) o;
+        return Objects.equals(getUUID(), nmsEntity.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUUID());
     }
 }

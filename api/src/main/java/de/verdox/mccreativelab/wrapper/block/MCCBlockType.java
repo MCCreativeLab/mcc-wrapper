@@ -6,6 +6,7 @@ import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Describes a block type and its block states
@@ -22,15 +24,15 @@ import java.util.List;
 @MCCInstantiationSource(sourceClasses = MCCChunk.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
 public interface MCCBlockType extends MCCKeyedWrapper {
-    Serializer<MCCBlockType> SERIALIZER = MCCKeyedWrapper.createSerializer("block", new TypeToken<>() {});
+    Serializer<MCCBlockType> SERIALIZER = MCCSerializers.KEYED_WRAPPER("block", new TypeToken<>() {});
 
     /**
      * Changes a block at the provided location to this block type
      *
      * @param location the location to change the block at
      */
-    default void setBlock(@NotNull MCCLocation location) {
-        setBlock(location, false);
+    default CompletableFuture<Void> setBlock(@NotNull MCCLocation location) {
+        return setBlock(location, false);
     }
 
     /**
@@ -39,8 +41,10 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      * @param location     the location to change the block at
      * @param applyPhysics whether a block update is triggered
      */
-    default void setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
-        location.world().setBlock(this, location, applyPhysics);
+    default CompletableFuture<Void> setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
+        return location.world().at(location, mccBlock -> {
+            mccBlock.setBlockType(this, applyPhysics);
+        });
     }
 
     /**
