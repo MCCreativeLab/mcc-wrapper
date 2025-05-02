@@ -26,7 +26,7 @@ public class NMSRider extends AbstractComponent<Entity, MCCEntity> implements MC
 
     @Override
     public @Nullable MCCRideable getCurrentlyRiddenEntity() {
-        return conversionService.wrap(getHandle().getVehicle(), MCCRideable.class);
+        return conversionService.wrap(getHandle().getVehicle(), MCCEntity.class).asRideable();
     }
 
     @Override
