@@ -10,8 +10,6 @@ import de.verdox.mccreativelab.wrapper.exceptions.OperationNotPossibleOnNMS;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.cached.TempCache;
 import de.verdox.mccreativelab.wrapper.platform.cached.TempData;
-import de.verdox.mccreativelab.wrapper.platform.cached.signal.ObservedSignal;
-import de.verdox.mccreativelab.wrapper.platform.cached.signal.SignalCache;
 import de.verdox.mccreativelab.wrapper.util.MCCEntityProperty;
 import de.verdox.mccreativelab.wrapper.world.MCCLocation;
 import de.verdox.mccreativelab.wrapper.world.MCCVector;
@@ -24,8 +22,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
 
 import java.util.*;
 
@@ -279,5 +275,19 @@ public class NMSEntity<T extends Entity> extends MCCHandle<T> implements MCCEnti
     @Override
     public MCCPermissionContainer getPermissions() {
         return permissionContainer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        NMSEntity<?> nmsEntity = (NMSEntity<?>) o;
+        return Objects.equals(getUUID(), nmsEntity.getUUID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUUID());
     }
 }
