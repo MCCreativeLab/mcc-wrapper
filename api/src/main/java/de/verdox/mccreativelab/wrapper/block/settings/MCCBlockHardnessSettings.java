@@ -1,7 +1,16 @@
 package de.verdox.mccreativelab.wrapper.block.settings;
 
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
+import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
+import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.typed.MCCAttributes;
+import de.verdox.mccreativelab.wrapper.typed.MCCEffects;
+import de.verdox.mccreativelab.wrapper.util.DataHolderPredicate;
+import net.kyori.adventure.key.Key;
 
 /**
  * Used to change the block hardness of any block type.
@@ -16,6 +25,11 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
  */
 @MCCLogic
 public interface MCCBlockHardnessSettings {
+    DataHolderPredicate.TickDelay DELAY_BETWEEN_BLOCK_BREAKS = new DataHolderPredicate.TickDelay("BlockBreakDelay", 5);
+    Key MODIFIER_KEY = Key.key("mcc", "fake_block_break_effect");
+    MCCAttributeModifier NO_BLOCK_BREAK_MODIFIER = new MCCAttributeModifier(MODIFIER_KEY, -1024, MCCAttributeModifier.Operation.ADD_VALUE);
+
+
     /**
      * Returns the hardness of the provided block type
      *
@@ -40,4 +54,74 @@ public interface MCCBlockHardnessSettings {
      */
     void setHardness(MCCBlockType mccBlockType, float hardness);
 
+    /**
+     * Calculates the block hardness of the provided block state but with custom hardness taken into account
+     * @param player the player
+     * @param mccBlockState the block state
+     * @return the hardness
+     */
+    default float getBlockHardness(MCCPlayer player, MCCBlockState mccBlockState) {
+        float destroySpeed = mccBlockState.getBlockType().getBlockProperties().getBlockHardness();
+
+        if (destroySpeed > 1.0F) {
+            destroySpeed += (float) player.getAttributes().getValue(MCCAttributes.MINING_EFFICIENCY);
+        }
+
+        // Haste effect
+        if (player.asEffectTarget().hasEffect(MCCEffects.DIG_SPEED)) {
+            destroySpeed *= (0.2F * player.asEffectTarget().getEffect(MCCEffects.DIG_SPEED).getAmplifier() + 1.0F);
+        }
+
+        if (player.asEffectTarget().hasEffect(MCCEffects.DIG_SLOWDOWN)) {
+            float slowDown = switch (player.asEffectTarget().getEffect(MCCEffects.DIG_SLOWDOWN).getAmplifier()) {
+                case 0 -> 0.3F;
+                case 1 -> 0.09F;
+                case 2 -> 0.0027F;
+                default -> 8.1E-4F;
+            };
+            destroySpeed *= slowDown;
+        }
+
+        destroySpeed *= (float) player.getAttributes().getValueWithoutModifiers(MCCAttributes.BLOCK_BREAK_SPEED, NO_BLOCK_BREAK_MODIFIER);
+
+        if (player.isInWater()) {
+            destroySpeed *= (float) player.getAttributes().getValue(MCCAttributes.SUBMERGED_MINING_SPEED);
+        }
+
+        if (!player.isOnGround()) {
+            destroySpeed /= 5.0F;
+        }
+        return destroySpeed;
+    }
+
+    /**
+     * @param player the player
+     * @param block the block
+     * @return whether a player is in the block break effect range
+     */
+    default boolean playerNotInEffectRange(MCCPlayer player, MCCBlock block) {
+        if (!player.getLocation().world().equals(block.getLocation().world())) {
+            return true;
+        }
+
+        double xDistance = block.getLocation().x() - player.getLocation().x();
+        double yDistance = block.getLocation().y() - player.getLocation().y();
+        double zDistance = block.getLocation().z() - player.getLocation().z();
+
+        return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance >= 1024.0D;
+    }
+
+    /**
+     * Calculates the block destroy damage for a single tick
+     * @param player the player
+     * @param hardness the provided hardness of the block
+     * @param block the block
+     * @return the damage for a single tick
+     */
+    default float calculateBlockDestroyDamageDick(MCCPlayer player, float hardness, MCCBlock block) {
+        MCCItemStack hand = player.getInventory().getItemInMainHand();
+
+        boolean hasCorrectToolForDrops = block.getBlockState().isPreferredTool(hand);
+        return getBlockHardness(player, block.getBlockState()) / hardness / (hasCorrectToolForDrops ? 30f : 100f);
+    }
 }

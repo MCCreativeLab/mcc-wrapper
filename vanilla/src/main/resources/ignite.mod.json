@@ -1,0 +1,8 @@
+{
+  "id": "mcc-platform",
+  "version": "1.0.0",
+  "mixins": [
+    "mcc.mixins.json"
+  ],
+  "wideners": []
+}

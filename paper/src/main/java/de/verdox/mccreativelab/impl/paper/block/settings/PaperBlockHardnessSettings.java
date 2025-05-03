@@ -4,26 +4,13 @@ import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
-import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
-import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
+import de.verdox.mccreativelab.wrapper.block.settings.AbstractBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
-import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.typed.MCCAttributes;
-import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
-import de.verdox.mccreativelab.wrapper.typed.MCCEffects;
-import de.verdox.mccreativelab.wrapper.typed.MCCEnchantments;
-import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
-import de.verdox.mccreativelab.wrapper.util.DataHolderPredicate;
 import io.papermc.paper.event.block.BlockBreakProgressUpdateEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,39 +20,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
-
-public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Listener {
-    private static final DataHolderPredicate.TickDelay DELAY_BETWEEN_BLOCK_BREAKS = new DataHolderPredicate.TickDelay("BlockBreakDelay", 5);
-    private static final NamespacedKey MODIFIER_KEY = new NamespacedKey("paper", "fake_block_break_effect");
-    private static final MCCAttributeModifier NO_BLOCK_BREAK_MODIFIER = new MCCAttributeModifier(MODIFIER_KEY, -1, MCCAttributeModifier.Operation.ADD_VALUE);
-
-    private final Map<MCCPlayer, BlockBreakProgress> map = new HashMap<>();
-    private final Map<MCCBlock, Set<MCCPlayer>> blockBrokenToPlayerMapping = new HashMap<>();
-    private final Map<MCCBlockType, Float> customHardnessMap = new HashMap<>();
-
-    @Override
-    public float getHardness(MCCBlockType mccBlockType) {
-        return customHardnessMap.getOrDefault(mccBlockType, mccBlockType.getHardness());
-    }
-
-    @Override
-    public boolean doesHardnessDifferFromVanilla(MCCBlockType mccBlockType) {
-        if (!mccBlockType.isVanilla()) {
-            return true;
-        }
-        return getHardness(mccBlockType) != mccBlockType.getHardness();
-    }
-
-    @Override
-    public void setHardness(MCCBlockType mccBlockType, float hardness) {
-        customHardnessMap.put(mccBlockType, hardness);
-    }
+public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
@@ -77,13 +32,18 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
             return;
         }
         if (e.getClickedBlock() != null && e.getAction().isLeftClick()) {
-            startBlockBreakAction(e.getPlayer(), e.getClickedBlock(), e);
+
+            if (startBlockBreakAction(BukkitAdapter.wrap(e.getPlayer()), BukkitAdapter.wrap(e.getClickedBlock()))) {
+                e.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
     public void onStartDigging(BlockDamageEvent e) {
-        startBlockBreakAction(e.getPlayer(), e.getBlock(), e);
+        if (startBlockBreakAction(BukkitAdapter.wrap(e.getPlayer()), BukkitAdapter.wrap(e.getBlock()))) {
+            e.setCancelled(true);
+        }
     }
 
 
@@ -110,6 +70,14 @@ public class PaperBlockHardnessSettings implements MCCBlockHardnessSettings, Lis
         Bukkit.getOnlinePlayers().forEach(player -> tick(BukkitAdapter.wrap(player, new TypeToken<>() {})));
     }
 
+    @Override
+    protected void onProgress(MCCPlayer player, MCCBlock block, float progress) {
+        Block bukkitBlock = BukkitAdapter.unwrap(block, new TypeToken<>() {});
+        Player bukkitPlayer = BukkitAdapter.unwrap(player, new TypeToken<>() {});
+        BlockBreakProgressUpdateEvent blockBreakProgressUpdateEvent = new BlockBreakProgressUpdateEvent(bukkitBlock, progress, bukkitPlayer);
+        blockBreakProgressUpdateEvent.callEvent();
+    }
+  
     public void startBlockBreakAction(Player bukkitPlayer, Block bukkitBlock, Cancellable cancellable) {
         MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});
         MCCBlock block = BukkitAdapter.wrap(bukkitBlock, new TypeToken<>() {});

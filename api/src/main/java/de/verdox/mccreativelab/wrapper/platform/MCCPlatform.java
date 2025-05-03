@@ -3,6 +3,8 @@ package de.verdox.mccreativelab.wrapper.platform;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
+import de.verdox.mccreativelab.custom.MCCGameFactory;
+import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
@@ -213,6 +215,19 @@ public interface MCCPlatform extends MCCTicking {
             this.lifecycleFunction = lifecycleFunction;
         }
     }
+  
+    /**
+     * Returns the game factory used to inject custom types into the platform
+     *
+     * @return the game factory
+     */
+    MCCGameFactory getGameFactory();
+
+    /**
+     * Returns the block state property factory
+     * @return the factory
+     */
+    MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
 
     <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator);
 
@@ -223,4 +238,5 @@ public interface MCCPlatform extends MCCTicking {
     default <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, TypeToken<VALUE> typeToken) {
         return createSignal(key, apiObject, () -> Sinks.many().multicast().directBestEffort());
     }
+
 }
