@@ -1,12 +1,14 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
 
 import de.verdox.mccreativelab.custom.item.MCCCustomItemType;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.misc.MCCUseOnContext;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,8 +42,10 @@ public class ProxyItem extends Item implements GameProxy {
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
         return proxy(
                 delegate::useOn,
-                param(context, MCCUseContext.class),
-                (c) -> getProxy().useOn(c)
+                param(context, MCCUseOnContext.class),
+                (c) -> {
+                    return getProxy().useOn(c);
+                }
         );
     }
 
@@ -62,7 +66,7 @@ public class ProxyItem extends Item implements GameProxy {
         if (result) {
             return true;
         }
-        return getProxy().isCorrectToolForDrops();
+        return getProxy().isCorrectToolForDrops(conversionService().wrap(stack, MCCItemStack.class), conversionService().wrap(state, MCCBlockState.class));
     }
 
     @Override
@@ -73,7 +77,9 @@ public class ProxyItem extends Item implements GameProxy {
                 param(player, MCCPlayer.class),
                 param(interactionTarget, MCCLivingEntity.class),
                 param(usedHand, MCCInteractionHand.class),
-                (item, mccPlayer, targetEntity, interactionHand) -> getProxy().interactLivingEntity(item, mccPlayer, targetEntity, interactionHand)
+                (item, mccPlayer, targetEntity, interactionHand) -> {
+                    return getProxy().interactLivingEntity(item, mccPlayer, targetEntity, interactionHand);
+                }
         );
     }
 

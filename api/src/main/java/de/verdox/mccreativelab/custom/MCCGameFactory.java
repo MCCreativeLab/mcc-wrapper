@@ -28,15 +28,15 @@ import java.util.Optional;
 public interface MCCGameFactory {
 
     // A registry holding custom attributes
-    MCCTypedKey<MCCRegistry<MCCAttribute>> ATTRIBUTE_REGISTRY = registry("attributes", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCAttribute>> ATTRIBUTE_REGISTRY = registry("attribute", new TypeToken<>() {});
     // A registry holding custom block types
-    MCCTypedKey<MCCRegistry<MCCCustomBlockType>> BLOCK_REGISTRY = registry("attributes", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCCustomBlockType>> BLOCK_REGISTRY = registry("block", new TypeToken<>() {});
     // A registry holding custom item types
-    MCCTypedKey<MCCRegistry<MCCCustomItemType>> ITEM_REGISTRY = registry("attributes", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCCustomItemType>> ITEM_REGISTRY = registry("item", new TypeToken<>() {});
     // A registry holding custom poi types
-    MCCTypedKey<MCCRegistry<MCCAttribute>> POI_TYPE_REGISTRY = registry("attributes", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCAttribute>> POI_TYPE_REGISTRY = registry("poi_type", new TypeToken<>() {});
     // A registry holding custom villager professions
-    MCCTypedKey<MCCRegistry<MCCAttribute>> VILLAGER_PROFESSION_REGISTRY = registry("attributes", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCAttribute>> VILLAGER_PROFESSION_REGISTRY = registry("profession", new TypeToken<>() {});
 
     default <T extends MCCKeyedWrapper> void registerCustom(MCCTypedKey<MCCRegistry<T>> customRegistry, Key key, T customType) {
         if (customType.isVanilla()) {
@@ -47,6 +47,7 @@ public interface MCCGameFactory {
         }
         MCCTypedKey<T> typedKey = MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, customType.getRegistryKey());
         customRegistry.getAsReference().get().register(typedKey, customType);
+
     }
 
     default void registerCustomItemType(Key key, MCCCustomItemType customItemType) {
@@ -61,8 +62,8 @@ public interface MCCGameFactory {
         }
     }
 
-    static <T> MCCTypedKey<T> registry(String registryKey, TypeToken<T> type) {
-        return MCCPlatform.getInstance().getTypedKeyFactory().getKey(Key.key("mccreativelab", registryKey), TypedKeyFactory.REGISTRY_OF_REGISTRIES, type);
+    static <T> MCCTypedKey<MCCRegistry<T>> registry(String registryKey, TypeToken<T> type) {
+        return MCCPlatform.getInstance().getRegistryStorage().createMinecraftRegistry(Key.key("mcc", registryKey), type).unwrapKey().get();
     }
 
     default MCCItemStack instantiateCustomItem(MCCCustomItemType mccItemType) {

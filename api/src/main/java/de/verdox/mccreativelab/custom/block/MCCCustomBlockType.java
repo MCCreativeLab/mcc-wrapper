@@ -279,16 +279,6 @@ public abstract class MCCCustomBlockType implements MCCBlockType {
     }
 
     @Override
-    public final void setBlock(@NotNull MCCLocation location) {
-        MCCBlockType.super.setBlock(location);
-    }
-
-    @Override
-    public final void setBlock(@NotNull MCCLocation location, boolean applyPhysics) {
-        MCCBlockType.super.setBlock(location, applyPhysics);
-    }
-
-    @Override
     public final int getIndexOfState(MCCBlockState mccBlockState) {
         return MCCBlockType.super.getIndexOfState(mccBlockState);
     }

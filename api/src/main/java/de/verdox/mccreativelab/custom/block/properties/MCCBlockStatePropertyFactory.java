@@ -18,7 +18,8 @@ public interface MCCBlockStatePropertyFactory {
      * Create a new EnumProperty with all Enum constants of the given class that match the given Predicate.
      */
     default <T extends Enum<T>> MCCBlockStateProperty<T> create(String name, Class<T> clazz, Predicate<T> filter) {
-        return createEnum(name, (List<T>) Arrays.stream((Enum[])clazz.getEnumConstants()).filter(anEnum -> filter.test((T) anEnum)).collect(Collectors.toList()));
+        T[] constants = clazz.getEnumConstants();
+        return createEnum(name, Arrays.stream(constants).filter(filter).collect(Collectors.toList()));
     }
 
     /**

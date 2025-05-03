@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.wrapper.misc;
 
-import de.verdox.mccreativelab.wrapper.world.MCCPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
 
 public interface MCCBlockHitResult extends MCCHitResult {
     /**
@@ -11,7 +11,7 @@ public interface MCCBlockHitResult extends MCCHitResult {
     /**
      * @return the block pos of the hit block
      */
-    MCCPos getBlockPos();
+    MCBlockPos getBlockPos();
 
     /**
      * @return whether the hit is inside the block

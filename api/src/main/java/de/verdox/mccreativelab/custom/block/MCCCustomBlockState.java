@@ -235,7 +235,7 @@ public final class MCCCustomBlockState implements MCCBlockState {
      * @return the interaction result
      */
     public MCCInteractionResult useItemOn(MCCItemStack stack, MCCWorld level, MCCPlayer player, MCCInteractionHand hand, MCCBlockHitResult hitResult) {
-        return getBlockType().useItemOn(stack, this, new MCCLocation(level, hitResult.getBlockPos()), player, hand, hitResult);
+        return getBlockType().useItemOn(stack, this, new MCCLocation(level, hitResult.getBlockPos().toPos()), player, hand, hitResult);
     }
 
     /**
@@ -248,7 +248,7 @@ public final class MCCCustomBlockState implements MCCBlockState {
      * @return the interaction result
      */
     public MCCInteractionResult useWithoutItem(MCCWorld level, MCCPlayer player, MCCBlockHitResult hitResult) {
-        return getBlockType().useWithoutItem(this, new MCCLocation(level, hitResult.getBlockPos()), player, hitResult);
+        return getBlockType().useWithoutItem(this, new MCCLocation(level, hitResult.getBlockPos().toPos()), player, hitResult);
     }
 
     public void handlePrecipitation(MCCLocation mccLocation, MCCBiome.Precipitation precipitation) {

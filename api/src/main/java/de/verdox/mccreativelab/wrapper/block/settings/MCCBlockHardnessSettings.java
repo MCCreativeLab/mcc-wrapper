@@ -68,12 +68,12 @@ public interface MCCBlockHardnessSettings {
         }
 
         // Haste effect
-        if (player.hasActiveEffect(MCCEffects.DIG_SPEED.get())) {
-            destroySpeed *= (0.2F * player.getActiveEffect(MCCEffects.DIG_SPEED.get()).getAmplifier() + 1.0F);
+        if (player.asEffectTarget().hasEffect(MCCEffects.DIG_SPEED)) {
+            destroySpeed *= (0.2F * player.asEffectTarget().getEffect(MCCEffects.DIG_SPEED).getAmplifier() + 1.0F);
         }
 
-        if (player.hasActiveEffect(MCCEffects.DIG_SLOWDOWN.get())) {
-            float slowDown = switch (player.getActiveEffect(MCCEffects.DIG_SLOWDOWN.get()).getAmplifier()) {
+        if (player.asEffectTarget().hasEffect(MCCEffects.DIG_SLOWDOWN)) {
+            float slowDown = switch (player.asEffectTarget().getEffect(MCCEffects.DIG_SLOWDOWN).getAmplifier()) {
                 case 0 -> 0.3F;
                 case 1 -> 0.09F;
                 case 2 -> 0.0027F;
@@ -104,9 +104,9 @@ public interface MCCBlockHardnessSettings {
             return true;
         }
 
-        double xDistance = block.getLocation().pos().x() - player.getLocation().pos().x();
-        double yDistance = block.getLocation().pos().y() - player.getLocation().pos().y();
-        double zDistance = block.getLocation().pos().z() - player.getLocation().pos().z();
+        double xDistance = block.getLocation().x() - player.getLocation().x();
+        double yDistance = block.getLocation().y() - player.getLocation().y();
+        double zDistance = block.getLocation().z() - player.getLocation().z();
 
         return xDistance * xDistance + yDistance * yDistance + zDistance * zDistance >= 1024.0D;
     }

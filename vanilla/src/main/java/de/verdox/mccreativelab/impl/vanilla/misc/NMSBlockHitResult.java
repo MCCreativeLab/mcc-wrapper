@@ -4,7 +4,7 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.misc.MCCBlockHitResult;
 import de.verdox.mccreativelab.wrapper.misc.MCCDirection;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.world.MCCPos;
+import de.verdox.mccreativelab.wrapper.world.coordinates.MCBlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class NMSBlockHitResult extends NMSHitResult<BlockHitResult> implements MCCBlockHitResult {
@@ -20,8 +20,8 @@ public class NMSBlockHitResult extends NMSHitResult<BlockHitResult> implements M
     }
 
     @Override
-    public MCCPos getBlockPos() {
-        return new MCCPos(handle.getBlockPos().getX(), handle.getBlockPos().getY(), handle.getBlockPos().getZ());
+    public MCBlockPos getBlockPos() {
+        return new MCBlockPos(handle.getBlockPos().getX(), handle.getBlockPos().getY(), handle.getBlockPos().getZ());
     }
 
     @Override
