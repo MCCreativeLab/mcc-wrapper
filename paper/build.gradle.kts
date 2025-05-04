@@ -9,10 +9,12 @@ plugins {
 dependencies {
     compileOnly(project(":api"))
     api(project(":vanilla", "default"))
+
+    api("de.verdox.vcore:paper:+")
     //compileOnly("io.projectreactor:reactor-core:3.7.5")
     //compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
-    compileOnly("net.bytebuddy:byte-buddy:1.15.10")
+    api("net.bytebuddy:byte-buddy:1.15.10")
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")

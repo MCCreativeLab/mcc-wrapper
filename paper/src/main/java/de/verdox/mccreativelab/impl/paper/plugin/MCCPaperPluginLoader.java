@@ -21,15 +21,15 @@ public class MCCPaperPluginLoader implements PluginLoader {
 
         MavenLibraryResolver central = new MavenLibraryResolver();
         central.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
-        central.addDependency(new Dependency(new DefaultArtifact("io.vertx:vertx-core:4.5.10"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("com.hierynomus:sshj:0.38.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.tukaani:xz:1.9"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("commons-io:commons-io:2.17.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("ws.schild:jave-all-deps:3.5.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("net.bytebuddy:byte-buddy:1.15.10"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-compress:1.27.1"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("com.google.guava:guava:33.3.1-jre"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-lang3:3.17.0"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("io.vertx:vertx-core:4.5.10"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("com.hierynomus:sshj:0.38.0"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("org.tukaani:xz:1.9"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("commons-io:commons-io:2.17.0"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("ws.schild:jave-all-deps:3.5.0"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("net.bytebuddy:byte-buddy:1.15.10"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-compress:1.27.1"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("com.google.guava:guava:33.3.1-jre"), (String) null));
+        //central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-lang3:3.17.0"), (String) null));
         //central.addDependency(new Dependency(new DefaultArtifact("io.projectreactor:reactor-core:3.7.5"), (String) null));
         classpathBuilder.addLibrary(resolver);
         classpathBuilder.addLibrary(central);
