@@ -12,7 +12,6 @@ dependencies {
     api("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
     api("io.projectreactor:reactor-core:3.7.5")
     api("de.verdox:vserializer:1.2.3-SNAPSHOT")
-    api("de.verdox:vpipeline:+")
 
     api("com.google.guava:guava:33.3.1-jre")
     api("net.kyori:adventure-text-serializer-gson:4.20.0")
