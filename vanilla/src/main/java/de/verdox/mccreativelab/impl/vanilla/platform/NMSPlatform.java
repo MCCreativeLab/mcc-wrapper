@@ -25,6 +25,7 @@ import de.verdox.mccreativelab.impl.vanilla.platform.converter.*;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSElementFactory;
 import de.verdox.mccreativelab.impl.vanilla.platform.factory.NMSTypedKeyFactory;
 import de.verdox.mccreativelab.impl.vanilla.platform.serialization.NMSSerializers;
+import de.verdox.mccreativelab.impl.vanilla.platform.serialization.nbt.NBTSerializationContext;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.types.*;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
@@ -71,6 +72,7 @@ import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
+import de.verdox.vserializer.generic.SerializationContext;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
 import net.minecraft.core.HolderGetter;
@@ -89,7 +91,6 @@ import net.minecraft.world.level.GameType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import java.util.LinkedList;
@@ -260,6 +261,11 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator) {
         return SignalCache.INSTANCE.createFlux(key, conversionService.unwrap(apiObject), sinkCreator);
+    }
+
+    @Override
+    public SerializationContext getNBTSerializationContext() {
+        return new NBTSerializationContext();
     }
 
     @Override

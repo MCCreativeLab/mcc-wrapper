@@ -18,6 +18,7 @@ import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.vserializer.generic.SerializationContext;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -223,4 +224,9 @@ public interface MCCPlatform extends MCCTicking {
     default <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, TypeToken<VALUE> typeToken) {
         return createSignal(key, apiObject, () -> Sinks.many().multicast().directBestEffort());
     }
+
+    /**
+     * Returns the nbt serialization context
+     */
+    SerializationContext getNBTSerializationContext();
 }
