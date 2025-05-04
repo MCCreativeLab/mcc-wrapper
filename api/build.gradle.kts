@@ -72,16 +72,6 @@ publishing {
                         email = "mail.ysp@web.de"
                     }
                 }
-
-                repositories {
-                    maven("https://repo.verdox.de/snapshots")
-                }
-
-                dependencies {
-                    api("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
-                    api("io.projectreactor:reactor-core:3.7.5")
-                    api("de.verdox:vserializer:1.2.3-SNAPSHOT")
-                }
             }
         }
     }
