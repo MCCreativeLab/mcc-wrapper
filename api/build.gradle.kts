@@ -13,6 +13,7 @@ dependencies {
     api("io.projectreactor:reactor-core:3.7.5")
     api("de.verdox:vserializer:1.2.3-SNAPSHOT")
 
+    api("net.bytebuddy:byte-buddy:1.15.10")
     api("com.google.guava:guava:33.3.1-jre")
     api("net.kyori:adventure-text-serializer-gson:4.20.0")
     api("net.kyori:adventure-text-minimessage:4.20.0")

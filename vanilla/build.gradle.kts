@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     val mcVersion = providers.gradleProperty("mcversion").get()
-    compileOnly(project(":api"))
+    api(project(":api"))
 
     minecraft("com.mojang:minecraft:$mcVersion")
     @Suppress("UnstableApiUsage")
