@@ -17,7 +17,6 @@ dependencies {
     api("com.google.guava:guava:33.3.1-jre")
     api("net.kyori:adventure-text-serializer-gson:4.20.0")
     api("net.kyori:adventure-text-minimessage:4.20.0")
-    api("com.mojang:authlib:3.13.56")
     api("org.joml:joml:1.10.8")
     api("org.apache.commons:commons-lang3:3.17.0")
 

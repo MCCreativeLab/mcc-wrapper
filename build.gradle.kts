@@ -86,7 +86,6 @@ subprojects {
 dependencies {
     compileOnly("net.kyori:adventure-api:4.17.0")
     compileOnly("it.unimi.dsi:fastutil:8.5.15")
-    //compileOnly("com.mojang:authlib:1.5.25")
     implementation("com.google.guava:guava:33.3.1-jre")
     implementation("net.bytebuddy:byte-buddy:1.15.10")
 
