@@ -39,6 +39,6 @@ public interface WorldAccessor<
      * Used to do something at the specified coordinates
      */
     default CompletableFuture<Void> atChunk(Pos<?> pos, Consumer<CHUNK_ACCESS> doSomething) {
-        return getOrLoadChunk(pos).thenAcceptAsync(doSomething);
+        return getOrLoadChunk(pos).thenAccept(doSomething);
     }
 }
