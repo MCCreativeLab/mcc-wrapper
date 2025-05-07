@@ -1,7 +1,7 @@
 plugins {
     id("java")
     `java-library`
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply true
+    //id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
 
 repositories {
@@ -33,13 +33,13 @@ tasks.test {
     relocate("reactor.core", "de.verdox.shaded.reactor.core")
 }*/
 
-tasks.named("build") {
+/*tasks.named("build") {
     dependsOn(":api:shadowJar")  // Stellt sicher, dass das shadowJar von API gebaut wird, bevor der Haupt-Build läuft
 }
 
 artifacts {
     add("default", tasks.named("shadowJar"))
-}
+}*/
 
 sourceSets {
     main {

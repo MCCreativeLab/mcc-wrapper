@@ -3,7 +3,7 @@ plugins {
     id("java")
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper") version "2.3.1" apply true // Adds runServer and runMojangMappedServer tasks for testing
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply true
+    //id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
 
 dependencies {
@@ -22,13 +22,13 @@ dependencies {
     testImplementation(project(":TestSuite"))
 }
 
-tasks.named("build") {
+/*tasks.named("build") {
     dependsOn(":paper:shadowJar")  // Stellt sicher, dass das shadowJar von API gebaut wird, bevor der Haupt-Build läuft
 }
 
 artifacts {
     add("default", tasks.named("shadowJar"))
-}
+}*/
 
 sourceSets {
     main {
