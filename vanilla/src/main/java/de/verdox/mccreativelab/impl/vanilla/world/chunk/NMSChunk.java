@@ -182,7 +182,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
         boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
 
-        boolean isWorldChange = Objects.equals(location.world(), location.world());
+        boolean isWorldChange = Objects.equals(entity.getLocation().world(), location.world());
         var handle = conversionService.unwrap(entity, Entity.class);
 
         if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && handle.isVehicle() && !isWorldChange) {
