@@ -37,7 +37,7 @@ public class PaperTaskScheduler implements MCCTaskManager {
 
     @Override
     public MCCTask runLaterOnTickThread(@Nullable MCCLocation location, Consumer<MCCTask> taskConsumer, long delay, TimeUnit timeUnit) {
-        long ticks = timeUnit.toSeconds(delay) / 20;
+        long ticks = toTicks(delay, timeUnit);
         if (location != null) {
             Location bukkitLocation = BukkitAdapter.unwrap(location);
             return new PaperMCCTask(Bukkit.getRegionScheduler().runDelayed(javaPlugin, bukkitLocation, (scheduledTask) -> {
@@ -52,8 +52,8 @@ public class PaperTaskScheduler implements MCCTaskManager {
 
     @Override
     public MCCTask runTimerOnTickThread(@Nullable MCCLocation location, Consumer<MCCTask> taskConsumer, long delay, long period, TimeUnit timeUnit) {
-        long ticksDelay = Math.min(1, timeUnit.toSeconds(delay) / 20);
-        long ticksPeriod = Math.min(1, timeUnit.toSeconds(period) / 20);
+        long ticksDelay = toTicks(delay, timeUnit);
+        long ticksPeriod = toTicks(period, timeUnit);
         if (location != null) {
             Location bukkitLocation = BukkitAdapter.unwrap(location);
             return new PaperMCCTask(Bukkit.getRegionScheduler().runAtFixedRate(javaPlugin, bukkitLocation, (scheduledTask) -> {
@@ -85,5 +85,10 @@ public class PaperTaskScheduler implements MCCTaskManager {
         return new PaperMCCTask(Bukkit.getAsyncScheduler().runAtFixedRate(javaPlugin, scheduledTask -> {
             taskConsumer.accept(new PaperMCCTask(scheduledTask, false));
         }, delay <= 0 ? 1 : delay, period <= 0 ? 1 : period, timeUnit), false);
+    }
+
+    private static long toTicks(long duration, TimeUnit timeUnit) {
+        long millis = timeUnit.toMillis(duration);
+        return millis / 50;
     }
 }
