@@ -15,6 +15,7 @@ import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.vserializer.exception.SerializationException;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Input;
@@ -49,7 +50,7 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
             GeneratorPlatformHelper.INSTANCE.setup(platform.getResourcePackManager().getHelper(), platformHelper -> {
             });
             platform.getResourcePackManager().getResourcePack().initialize();
-        } catch (IOException e) {
+        } catch (IOException | SerializationException e) {
             getLogger().log(Level.SEVERE, "An error occurred while initializing mcc-platform", e);
             platform.shutdown();
             return;

@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.typed.*;
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.SerializationElement;
 import de.verdox.vserializer.generic.Serializer;
 import de.verdox.vserializer.json.JsonSerializerContext;
@@ -49,7 +50,7 @@ public class SerializerTests extends NMSTestBase {
 
     @ParameterizedTest
     @MethodSource("provideTestEntries")
-    public <T> void testKeySerializer(TestEntry<T> testEntry) {
+    public <T> void testKeySerializer(TestEntry<T> testEntry) throws SerializationException {
         Objects.requireNonNull(testEntry.serializer(), "The provided serializer cannot be null");
         Objects.requireNonNull(testEntry.objectToSerialize(), "The object to serialize cannot be null!");
         SerializationElement serializationElement = testEntry.serializer.serialize(jsonContext, testEntry.objectToSerialize());
