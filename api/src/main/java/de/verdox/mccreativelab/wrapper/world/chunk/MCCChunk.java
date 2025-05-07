@@ -14,8 +14,11 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public interface MCCChunk extends MCCWrapped, ChunkBlockAccessor<MCCChunk, MCCWorld, MCCBlock>, ChunkEntityAccessor<MCCChunk, MCCWorld> {
+    Logger LOGGER = Logger.getLogger(MCCChunk.class.getSimpleName());
+
     boolean isLoaded();
 
     MCCWorld getWorld();
