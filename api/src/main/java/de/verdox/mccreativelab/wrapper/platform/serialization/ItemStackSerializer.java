@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.typed.MCCItems;
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.SerializationContainer;
 import de.verdox.vserializer.generic.SerializationContext;
 import de.verdox.vserializer.generic.SerializationElement;
@@ -14,7 +15,7 @@ import java.util.logging.Level;
 
 public class ItemStackSerializer implements Serializer<MCCItemStack> {
     @Override
-    public SerializationElement serialize(SerializationContext context, MCCItemStack object) {
+    public SerializationElement serialize(SerializationContext context, MCCItemStack object) throws SerializationException {
         Serializer<MCCItemType> itemTypeSerializer = MCCSerializers.KEYED_WRAPPER(new TypeToken<>() {});
         int amount = object.getAmount();
 
@@ -26,7 +27,7 @@ public class ItemStackSerializer implements Serializer<MCCItemStack> {
     }
 
     @Override
-    public MCCItemStack deserialize(SerializationElement serializedElement) {
+    public MCCItemStack deserialize(SerializationElement serializedElement) throws SerializationException {
         if (!serializedElement.isContainer()) {
             return MCCItems.STONE.get().createItem();
         }
