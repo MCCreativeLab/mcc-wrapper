@@ -34,6 +34,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
                     container.set(key, element);
                 }
             }
+            return container;
         } else if (tag instanceof ByteTag primitive) {
             return create(primitive.getAsByte());
         } else if (tag instanceof ShortTag primitive) {
@@ -51,7 +52,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
         } else if (tag instanceof EndTag) {
             return createNull();
         }
-        LOGGER.log(Level.SEVERE, "Unknown tag type: " + tag.getType().getPrettyName());
+        LOGGER.log(Level.SEVERE, "Unknown tag type: " + tag.getType().getPrettyName() + " for tag " + tag.getClass().getName());
         return null;
     }
 
@@ -61,6 +62,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
             for (String childKey : container.getChildKeys()) {
                 compoundTag.put(childKey, fromAPI(container.get(childKey)));
             }
+            return compoundTag;
         } else if (serializationElement instanceof SerializationArray array) {
             if (array.isByteArray()) {
                 return NbtOps.INSTANCE.createByteList(ByteBuffer.wrap(array.getAsByteArray()));
