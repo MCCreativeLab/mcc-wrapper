@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +61,9 @@ public class NBTSerializationContext extends BlankSerializationContext {
         if (serializationElement instanceof SerializationContainer container) {
             CompoundTag compoundTag = new CompoundTag();
             for (String childKey : container.getChildKeys()) {
-                compoundTag.put(childKey, fromAPI(container.get(childKey)));
+                var e = fromAPI(container.get(childKey));
+                if (e == null) continue;
+                compoundTag.put(childKey, e);
             }
             return compoundTag;
         } else if (serializationElement instanceof SerializationArray array) {
@@ -71,10 +74,8 @@ public class NBTSerializationContext extends BlankSerializationContext {
             } else if (array.isLongArray()) {
                 return NbtOps.INSTANCE.createLongList(Arrays.stream(array.getAsLongArray()));
             } else {
-                return NbtOps.INSTANCE.createList(array.stream().map(this::fromAPI));
+                return NbtOps.INSTANCE.createList(array.stream().map(this::fromAPI).filter(Objects::nonNull));
             }
-        } else if (serializationElement instanceof SerializationNull) {
-            return EndTag.INSTANCE;
         } else if (serializationElement instanceof SerializationPrimitive primitive) {
             if (primitive.isBoolean()) {
                 return NbtOps.INSTANCE.createBoolean(primitive.getAsBoolean());
@@ -90,9 +91,11 @@ public class NBTSerializationContext extends BlankSerializationContext {
                 return NbtOps.INSTANCE.createFloat(primitive.getAsFloat());
             } else if (primitive.isDouble()) {
                 return NbtOps.INSTANCE.createDouble(primitive.getAsDouble());
+            } else if (primitive.isString()) {
+                return NbtOps.INSTANCE.createString(primitive.getAsString());
             }
         }
-        return EndTag.INSTANCE;
+        return null;
     }
 
     @Override
