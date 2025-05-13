@@ -2,7 +2,10 @@ package de.verdox.mccreativelab.wrapper.platform;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
+import de.verdox.mccreativelab.advancement.AdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
+import de.verdox.mccreativelab.data.DataPackInterceptor;
+import de.verdox.mccreativelab.data.VanillaRegistryManipulator;
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
@@ -229,4 +232,22 @@ public interface MCCPlatform extends MCCTicking {
      * Returns the nbt serialization context
      */
     SerializationContext getNBTSerializationContext();
+
+    /**
+     * Returns the {@link DataPackInterceptor}
+     * @return the data pack interceptor
+     */
+    @NotNull DataPackInterceptor getDataPackInterceptor();
+
+    /**
+     * Returns the {@link VanillaRegistryManipulator}
+     * @return the vanilla registry manipulator
+     */
+    @NotNull VanillaRegistryManipulator getRegistryManipulator();
+
+    /**
+     * Returns the {@link @NotNull AdvancementBuilder}
+     * @return the advancement builder
+     */
+    @NotNull AdvancementBuilder createAdvancement();
 }

@@ -1,14 +1,19 @@
 package de.verdox.mccreativelab.impl.vanilla.platform;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.advancement.AdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.data.DataPackInterceptor;
+import de.verdox.mccreativelab.data.VanillaRegistryManipulator;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
+import de.verdox.mccreativelab.impl.vanilla.data.NMSDataPackInterceptor;
+import de.verdox.mccreativelab.impl.vanilla.data.NMSVanillaRegistryManipulator;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.*;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainer;
@@ -109,6 +114,9 @@ public class NMSPlatform implements MCCPlatform {
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
     private final GameComponentRegistry gameComponentRegistry = new NMSGameComponentRegistry(this);
+
+    private final DataPackInterceptor dataPackInterceptor = new NMSDataPackInterceptor();
+    private final VanillaRegistryManipulator registryManipulator = new NMSVanillaRegistryManipulator();
 
     public NMSPlatform(boolean useGeneratedConverters) {
         this.useGeneratedConverters = useGeneratedConverters;
@@ -266,6 +274,21 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public SerializationContext getNBTSerializationContext() {
         return new NBTSerializationContext();
+    }
+
+    @Override
+    public @NotNull DataPackInterceptor getDataPackInterceptor() {
+        return dataPackInterceptor;
+    }
+
+    @Override
+    public @NotNull VanillaRegistryManipulator getRegistryManipulator() {
+        return registryManipulator;
+    }
+
+    @Override
+    public @NotNull AdvancementBuilder createAdvancement() {
+        return null; // TODO
     }
 
     @Override
