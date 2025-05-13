@@ -26,7 +26,6 @@ public abstract class MixinMinecraftServer {
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z", shift = At.Shift.AFTER), method = "runServer")
     public void injectRunServer(CallbackInfo ci) {
-        System.out.println("Minecraft server is starting...");
         if (Bukkit.getPluginManager().getPlugin("MCCPaperPlatform") == null) {
             System.err.println("MCCPaperPlatform plugin not found! Shutting down server.");
             stopServer();
