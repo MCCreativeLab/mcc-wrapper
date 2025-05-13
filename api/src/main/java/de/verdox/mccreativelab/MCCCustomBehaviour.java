@@ -10,12 +10,12 @@ import java.util.Objects;
  * This is normally used to change constants in the minecraft gameplay.
  * @param <T>
  */
-public class CustomBehaviour<T> {
-    private final ProxyInterface<T> proxyInterface;
+public class MCCCustomBehaviour<T> {
+    private final MCCProxyInterface<T> proxyInterface;
     private final String key;
-    public CustomBehaviour(@NotNull Class<? extends T> type, @NotNull T defaultImplementation, @NotNull String key){
+    public MCCCustomBehaviour(@NotNull Class<? extends T> type, @NotNull T defaultImplementation, @NotNull String key){
         this.key = key;
-        this.proxyInterface = new ProxyInterface<>(type, defaultImplementation);
+        this.proxyInterface = new MCCProxyInterface<>(type, defaultImplementation);
     }
 
     @NotNull public String getKey() {

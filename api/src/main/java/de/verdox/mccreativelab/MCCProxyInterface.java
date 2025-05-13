@@ -14,13 +14,13 @@ import java.util.function.BiFunction;
  *
  * @param <T>
  */
-public class ProxyInterface<T> {
+public class MCCProxyInterface<T> {
     private final Map<Method, T> methodToImplementationCache = new HashMap<>();
     private final Class<? extends T> type;
     private final T defaultImplementation;
     private final T proxy;
 
-    public ProxyInterface(@NotNull Class<? extends T> type, @NotNull T defaultImplementation) {
+    public MCCProxyInterface(@NotNull Class<? extends T> type, @NotNull T defaultImplementation) {
         this.type = type;
         this.defaultImplementation = defaultImplementation;
         this.proxy = createProxy();

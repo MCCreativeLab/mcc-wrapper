@@ -7,7 +7,7 @@ package de.verdox.mccreativelab.data;
  * We need this because when we want to add stuff like custom attributes we must ensure, that they are registered after the mc attributes.
  * Else the attribute ids that are sent via packets are doomed.
  */
-public interface VanillaRegistryManipulator {
+public interface MCCVanillaRegistryManipulator {
     /**
      * Injects code into the explained code point.
      * @param runnable the code

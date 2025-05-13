@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.behaviour;
 
 import com.google.gson.JsonElement;
-import de.verdox.mccreativelab.CustomBehaviour;
+import de.verdox.mccreativelab.MCCCustomBehaviour;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +14,8 @@ import java.util.UUID;
 /**
  * Changes behaviour of the saving / loading mechanics of the server
  */
-public interface StorageBehaviour extends Behaviour {
-    CustomBehaviour<StorageBehaviour> STORAGE_BEHAVIOUR = new CustomBehaviour<>(StorageBehaviour.class, new StorageBehaviour() {
+public interface MCCStorageBehaviour extends MCCBehaviour {
+    MCCCustomBehaviour<MCCStorageBehaviour> STORAGE_BEHAVIOUR = new MCCCustomBehaviour<>(MCCStorageBehaviour.class, new MCCStorageBehaviour() {
     }, "MCCLab - StorageBehaviour");
 
     /**
@@ -25,8 +25,8 @@ public interface StorageBehaviour extends Behaviour {
      * @return The advancements in json loaded
      */
     @NotNull
-    default BehaviourResult.Object<JsonElement> loadPlayerAdvancements(@NotNull MCCPlayer player) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<JsonElement> loadPlayerAdvancements(@NotNull MCCPlayer player) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 
     /**
@@ -38,8 +38,8 @@ public interface StorageBehaviour extends Behaviour {
      * @return the path the server should save the json to
      */
     @NotNull
-    default BehaviourResult.Object<Path> savePlayerAdvancements(@NotNull MCCPlayer player, @NotNull JsonElement serializedAdvancements) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<Path> savePlayerAdvancements(@NotNull MCCPlayer player, @NotNull JsonElement serializedAdvancements) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 
     /**
@@ -49,8 +49,8 @@ public interface StorageBehaviour extends Behaviour {
      * @return The stats in json loaded
      */
     @NotNull
-    default BehaviourResult.Object<JsonElement> loadPlayerStats(@NotNull UUID playerUUID) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<JsonElement> loadPlayerStats(@NotNull UUID playerUUID) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 
     /**
@@ -62,8 +62,8 @@ public interface StorageBehaviour extends Behaviour {
      * @return the path the server should save the json to
      */
     @NotNull
-    default BehaviourResult.Object<Path> savePlayerStats(@NotNull UUID playerUUID, @NotNull JsonElement serializedAdvancements) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<Path> savePlayerStats(@NotNull UUID playerUUID, @NotNull JsonElement serializedAdvancements) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 
     /**
@@ -74,8 +74,8 @@ public interface StorageBehaviour extends Behaviour {
      * @return the InputStream where the data will be serialized into
      */
     @NotNull
-    default BehaviourResult.Object<InputStream> loadPlayerNBTData(@NotNull UUID playerUUID, @Nullable MCCPlayer player) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<InputStream> loadPlayerNBTData(@NotNull UUID playerUUID, @Nullable MCCPlayer player) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 
     /**
@@ -85,7 +85,7 @@ public interface StorageBehaviour extends Behaviour {
      * @return the OutputStream where the data will be deserialized from
      */
     @NotNull
-    default BehaviourResult.Object<OutputStream> savePlayerNBTData(@NotNull MCCPlayer player) {
-        return BehaviourResult.Object.DEFAULT_INSTANCE;
+    default MCCBehaviourResult.Object<OutputStream> savePlayerNBTData(@NotNull MCCPlayer player) {
+        return MCCBehaviourResult.Object.DEFAULT_INSTANCE;
     }
 }

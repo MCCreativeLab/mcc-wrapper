@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class MultiCustomBehaviour<K, T> {
+public class MCCMultiCustomBehaviour<K, T> {
     private final String key;
     private final Class<? extends T> type;
     private final T defaultImplementation;
-    public final Map<K, ProxyInterface<T>> storedBehaviour = new HashMap<>();
+    public final Map<K, MCCProxyInterface<T>> storedBehaviour = new HashMap<>();
 
-    public MultiCustomBehaviour(@NotNull Class<T> type, @NotNull T defaultImplementation, @NotNull String key) {
+    public MCCMultiCustomBehaviour(@NotNull Class<T> type, @NotNull T defaultImplementation, @NotNull String key) {
         this.key = key;
         this.type = type;
         this.defaultImplementation = defaultImplementation;
@@ -33,14 +33,14 @@ public class MultiCustomBehaviour<K, T> {
     public void setBehaviour(@NotNull K key, @NotNull T behaviour) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(behaviour);
-        storedBehaviour.computeIfAbsent(key, k -> new ProxyInterface<>(type, defaultImplementation)).addImplementation(behaviour);
+        storedBehaviour.computeIfAbsent(key, k -> new MCCProxyInterface<>(type, defaultImplementation)).addImplementation(behaviour);
     }
 
     @Nullable
     @ApiStatus.Internal
     public T getBehaviour(@NotNull K key) {
         Objects.requireNonNull(key);
-        return storedBehaviour.computeIfAbsent(key, k -> new ProxyInterface<>(type, defaultImplementation)).getImplementation();
+        return storedBehaviour.computeIfAbsent(key, k -> new MCCProxyInterface<>(type, defaultImplementation)).getImplementation();
     }
 
     /**

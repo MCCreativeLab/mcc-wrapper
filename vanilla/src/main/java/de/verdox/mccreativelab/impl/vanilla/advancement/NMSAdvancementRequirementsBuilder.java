@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.advancement;
 
-import de.verdox.mccreativelab.advancement.AdvancementRequirementsBuilder;
+import de.verdox.mccreativelab.advancement.MCCAdvancementRequirementsBuilder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
@@ -10,18 +10,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NMSAdvancementRequirementsBuilder implements AdvancementRequirementsBuilder {
+public class NMSAdvancementRequirementsBuilder implements MCCAdvancementRequirementsBuilder {
     Map<String, Criterion<?>> criteria = new HashMap<>();
     Strategy strategy = Strategy.OR;
 
     @Override
-    public @NotNull AdvancementRequirementsBuilder withStrategy(@NotNull Strategy strategy) {
+    public @NotNull MCCAdvancementRequirementsBuilder withStrategy(@NotNull Strategy strategy) {
         this.strategy = strategy;
         return this;
     }
 
     @Override
-    public @NotNull AdvancementRequirementsBuilder addCriterion(@NotNull String name) {
+    public @NotNull MCCAdvancementRequirementsBuilder addCriterion(@NotNull String name) {
         this.criteria.put(name, CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
         return this;
     }

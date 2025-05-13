@@ -3,7 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.data;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-import de.verdox.mccreativelab.data.DataPackInterceptor;
+import de.verdox.mccreativelab.data.MCCDataPackInterceptor;
 import net.kyori.adventure.key.Key;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.IoSupplier;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class NMSDataPackInterceptor implements DataPackInterceptor {
+public class NMSDataPackInterceptor implements MCCDataPackInterceptor {
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Set<PackAssetType> excludedTypes = new HashSet<>();
     private final Set<String> stringPatternExcludes = new HashSet<>();
@@ -32,38 +32,38 @@ public class NMSDataPackInterceptor implements DataPackInterceptor {
     private Consumer<DataPackAsset> installCallback;
 
     @Override
-    public @NotNull DataPackInterceptor exclude(@NotNull String pathContains) {
+    public @NotNull MCCDataPackInterceptor exclude(@NotNull String pathContains) {
         stringPatternExcludes.add(pathContains);
         return this;
     }
 
     @Override
-    public @NotNull DataPackInterceptor exclude(@NotNull PackAssetType packAssetType) {
+    public @NotNull MCCDataPackInterceptor exclude(@NotNull PackAssetType packAssetType) {
         excludedTypes.add(packAssetType);
         return this;
     }
 
     @Override
-    public @NotNull DataPackInterceptor modify(@NotNull PackAssetType packAssetType, @NotNull Key key, @NotNull Function<DataPackAsset, Boolean> consumer) {
+    public @NotNull MCCDataPackInterceptor modify(@NotNull PackAssetType packAssetType, @NotNull Key key, @NotNull Function<DataPackAsset, Boolean> consumer) {
         modifies.computeIfAbsent(packAssetType, packAssetType1 -> new HashMap<>()).computeIfAbsent(key, key1 -> new LinkedList<>()).add(consumer);
         return this;
     }
 
     @Override
-    public @NotNull DataPackInterceptor modify(@NotNull Function<DataPackAsset, Boolean> modifier) {
+    public @NotNull MCCDataPackInterceptor modify(@NotNull Function<DataPackAsset, Boolean> modifier) {
         globalModifiers.add(modifier);
         return this;
     }
 
 
     @Override
-    public @NotNull DataPackInterceptor exclude(@NotNull PackAssetType packAssetType, @NotNull Key key) {
+    public @NotNull MCCDataPackInterceptor exclude(@NotNull PackAssetType packAssetType, @NotNull Key key) {
         exclusions.computeIfAbsent(packAssetType, packAssetType1 -> new HashSet<>()).add(key);
         return this;
     }
 
     @Override
-    public @NotNull DataPackInterceptor onInstall(@NotNull Consumer<DataPackAsset> installCallback) {
+    public @NotNull MCCDataPackInterceptor onInstall(@NotNull Consumer<DataPackAsset> installCallback) {
         this.installCallback = installCallback;
         return this;
     }

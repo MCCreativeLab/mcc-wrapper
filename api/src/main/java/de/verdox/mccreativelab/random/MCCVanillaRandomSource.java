@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.random;
 
-public interface VanillaRandomSource {
+public interface MCCVanillaRandomSource {
     void setSeed(long seed);
 
     int nextInt();

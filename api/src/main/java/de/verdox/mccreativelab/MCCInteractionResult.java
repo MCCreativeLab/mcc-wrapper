@@ -2,7 +2,7 @@ package de.verdox.mccreativelab;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum InteractionResult {
+public enum MCCInteractionResult {
     SUCCESS,
     SUCCESS_NO_ITEM_USED,
     CONSUME,
@@ -22,7 +22,7 @@ public enum InteractionResult {
         return this == SUCCESS || this == CONSUME;
     }
 
-    @NotNull public static InteractionResult sidedSuccess(boolean swingHand) {
+    @NotNull public static MCCInteractionResult sidedSuccess(boolean swingHand) {
         return swingHand ? SUCCESS : CONSUME;
     }
 }

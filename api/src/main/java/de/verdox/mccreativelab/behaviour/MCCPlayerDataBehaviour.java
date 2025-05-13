@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.behavior;
 
 import com.google.gson.JsonElement;
-import de.verdox.mccreativelab.behaviour.Behaviour;
+import de.verdox.mccreativelab.behaviour.MCCBehaviour;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlayerDataBehaviour extends Behaviour {
+public interface MCCPlayerDataBehaviour extends MCCBehaviour {
 
     @Nullable
     default CompletableFuture<JsonElement> loadAdvancementsAsync(@NotNull UUID playerUUID) {

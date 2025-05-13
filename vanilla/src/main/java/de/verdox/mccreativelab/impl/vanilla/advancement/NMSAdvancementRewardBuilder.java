@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.advancement;
 
-import de.verdox.mccreativelab.advancement.AdvancementRewardBuilder;
+import de.verdox.mccreativelab.advancement.MCCAdvancementRewardBuilder;
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class NMSAdvancementRewardBuilder implements AdvancementRewardBuilder {
+public class NMSAdvancementRewardBuilder implements MCCAdvancementRewardBuilder {
     int experience;
     final List<MCCTypedKey<MCCLootTable>> lootTables = new ArrayList<>();
     final List<MCCTypedKey<MCCRecipe>> recipes = new ArrayList<>();

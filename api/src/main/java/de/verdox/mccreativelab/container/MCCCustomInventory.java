@@ -4,7 +4,7 @@ import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public interface CustomInventory {
+public interface MCCCustomInventory {
 
     @NotNull Slot[] getSlots();
     @NotNull MCCItemStack quickMoveStack(@NotNull MCCPlayer player, int slot);

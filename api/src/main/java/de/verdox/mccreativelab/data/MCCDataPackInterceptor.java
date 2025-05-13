@@ -8,14 +8,14 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface DataPackInterceptor {
-    @NotNull DataPackInterceptor exclude(@NotNull String pathContains);
+public interface MCCDataPackInterceptor {
+    @NotNull MCCDataPackInterceptor exclude(@NotNull String pathContains);
 
-    @NotNull DataPackInterceptor exclude(@NotNull PackAssetType packAssetType);
+    @NotNull MCCDataPackInterceptor exclude(@NotNull PackAssetType packAssetType);
 
-    @NotNull DataPackInterceptor exclude(@NotNull PackAssetType packAssetType, @NotNull Key key);
+    @NotNull MCCDataPackInterceptor exclude(@NotNull PackAssetType packAssetType, @NotNull Key key);
 
-    @NotNull DataPackInterceptor onInstall(@NotNull Consumer<DataPackAsset> installCallback);
+    @NotNull MCCDataPackInterceptor onInstall(@NotNull Consumer<DataPackAsset> installCallback);
 
     /**
      * Modifies a data pack element loaded into the server. The provided function modifies the asset and returns true if the asset should be loaded.
@@ -25,7 +25,7 @@ public interface DataPackInterceptor {
      * @param modifier - The modification function
      * @return         - The interceptor
      */
-    @NotNull DataPackInterceptor modify(@NotNull PackAssetType packAssetType, @NotNull Key key, @NotNull Function<DataPackAsset, Boolean> modifier);
+    @NotNull MCCDataPackInterceptor modify(@NotNull PackAssetType packAssetType, @NotNull Key key, @NotNull Function<DataPackAsset, Boolean> modifier);
 
     /**
      * Modifies a data pack element loaded into the server. The provided function modifies the asset and returns true if the asset should be loaded.
@@ -33,7 +33,7 @@ public interface DataPackInterceptor {
      * @param modifier - The modification function
      * @return         - The interceptor
      */
-    @NotNull DataPackInterceptor modify(@NotNull Function<DataPackAsset, Boolean> modifier);
+    @NotNull MCCDataPackInterceptor modify(@NotNull Function<DataPackAsset, Boolean> modifier);
 
     record DataPackAsset(@NotNull PackAssetType packAssetType, @NotNull Key key, @NotNull JsonObject jsonObject) {}
 
