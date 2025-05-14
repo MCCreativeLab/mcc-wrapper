@@ -120,4 +120,9 @@ public class NBTSerializationContext extends BlankSerializationContext {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean hasCaseSensitiveKeys() {
+        return true;
+    }
 }
