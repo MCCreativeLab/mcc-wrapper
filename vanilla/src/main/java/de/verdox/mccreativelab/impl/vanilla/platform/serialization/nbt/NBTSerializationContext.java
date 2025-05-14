@@ -104,6 +104,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
         if (tag instanceof CompoundTag compoundTag) {
             try {
                 NbtIo.write(compoundTag, file.toPath());
+                return;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
