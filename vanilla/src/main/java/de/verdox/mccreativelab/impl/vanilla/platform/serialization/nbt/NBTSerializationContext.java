@@ -115,9 +115,14 @@ public class NBTSerializationContext extends BlankSerializationContext {
     @Override
     public SerializationElement readFromFile(File file) {
         try {
-            return fromNBT(NbtIo.read(file.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return fromNBT(NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap()));
+
+        } catch (Exception e) {
+            try {
+                return fromNBT(NbtIo.read(file.toPath()));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
