@@ -44,6 +44,7 @@ subprojects {
         compileOnly("it.unimi.dsi:fastutil:8.5.15")
         implementation("com.google.guava:guava:33.3.1-jre")
         testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
+        testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT:test-sources")
         testImplementation("io.projectreactor:reactor-core:3.7.5")
 
         jmh("org.openjdk.jmh:jmh-core:1.37")
