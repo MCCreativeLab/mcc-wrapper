@@ -28,7 +28,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
             });
             return blankSerializationArray;
         } else if (tag instanceof CompoundTag compoundTag) {
-            BlankSerializationContainer container = new BlankSerializationContainer(this);
+            BlankSerializationContainer container = new BlankSerializationContainer(this, hasCaseSensitiveKeys());
             for (String key : compoundTag.getAllKeys()) {
                 SerializationElement element = fromNBT(compoundTag.get(key));
                 if (element != null && !element.isNull()) {
