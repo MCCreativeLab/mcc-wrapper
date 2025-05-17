@@ -30,6 +30,9 @@ dependencies {
     testImplementation(project(":TestSuite"))
     testImplementation("net.kyori:adventure-text-serializer-gson:4.20.0")
     testImplementation("net.kyori:adventure-text-minimessage:4.20.0")
+
+    compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 }
 
 sourceSets {

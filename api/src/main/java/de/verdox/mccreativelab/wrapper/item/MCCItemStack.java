@@ -33,6 +33,13 @@ public interface MCCItemStack {
     void setAmount(int amount);
 
     /**
+     * Returns the max stack size of this item stack
+     *
+     * @return the max stack size
+     */
+    int getMaxStackSize();
+
+    /**
      * Checks whether the two item stacks are similar but does not compare amounts
      *
      * @param mccItemStack the other item stack

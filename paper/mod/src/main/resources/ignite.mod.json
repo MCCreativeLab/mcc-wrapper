@@ -1,0 +1,9 @@
+{
+  "id": "mcc-wrapper",
+  "version": "1.21.4-R0.1-SNAPSHOT",
+  "mixins": [
+    "vanilla.mcc-wrapper.mccreativelab.mixins.json",
+    "paper.mcc-wrapper.mccreativelab.mixins.json"
+  ],
+  "wideners": []
+}

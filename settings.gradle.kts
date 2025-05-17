@@ -19,5 +19,6 @@ rootProject.name = "mcc-wrapper"
 include("api")
 include("vanilla")
 include("paper")
+include("paper:mod")
 include("class-generator")
 include("TestSuite")

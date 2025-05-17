@@ -1,14 +1,19 @@
 package de.verdox.mccreativelab.impl.vanilla.platform;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.advancement.MCCAdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.data.MCCDataPackInterceptor;
+import de.verdox.mccreativelab.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
+import de.verdox.mccreativelab.impl.vanilla.data.NMSDataPackInterceptor;
+import de.verdox.mccreativelab.impl.vanilla.data.NMSVanillaRegistryManipulator;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.*;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainer;
@@ -32,7 +37,6 @@ import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
-import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -109,6 +113,9 @@ public class NMSPlatform implements MCCPlatform {
     private final boolean useGeneratedConverters;
     private final ResourcePackManager resourcePackManager = new ResourcePackManager();
     private final GameComponentRegistry gameComponentRegistry = new NMSGameComponentRegistry(this);
+
+    private final MCCDataPackInterceptor dataPackInterceptor = new NMSDataPackInterceptor();
+    private final MCCVanillaRegistryManipulator registryManipulator = new NMSVanillaRegistryManipulator();
 
     public NMSPlatform(boolean useGeneratedConverters) {
         this.useGeneratedConverters = useGeneratedConverters;
@@ -266,6 +273,21 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public SerializationContext getNBTSerializationContext() {
         return new NBTSerializationContext();
+    }
+
+    @Override
+    public @NotNull MCCDataPackInterceptor getDataPackInterceptor() {
+        return dataPackInterceptor;
+    }
+
+    @Override
+    public @NotNull MCCVanillaRegistryManipulator getRegistryManipulator() {
+        return registryManipulator;
+    }
+
+    @Override
+    public @NotNull MCCAdvancementBuilder createAdvancement() {
+        return null; // TODO
     }
 
     @Override
