@@ -28,7 +28,7 @@ public class NBTSerializationContext extends BlankSerializationContext {
             });
             return blankSerializationArray;
         } else if (tag instanceof CompoundTag compoundTag) {
-            BlankSerializationContainer container = new BlankSerializationContainer(this);
+            BlankSerializationContainer container = new BlankSerializationContainer(this, hasCaseSensitiveKeys());
             for (String key : compoundTag.getAllKeys()) {
                 SerializationElement element = fromNBT(compoundTag.get(key));
                 if (element != null && !element.isNull()) {
@@ -103,7 +103,8 @@ public class NBTSerializationContext extends BlankSerializationContext {
         Tag tag = fromAPI(element);
         if (tag instanceof CompoundTag compoundTag) {
             try {
-                NbtIo.write(compoundTag, file.toPath());
+                NbtIo.writeCompressed(compoundTag, file.toPath());
+                return;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -114,9 +115,19 @@ public class NBTSerializationContext extends BlankSerializationContext {
     @Override
     public SerializationElement readFromFile(File file) {
         try {
-            return fromNBT(NbtIo.read(file.toPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return fromNBT(NbtIo.readCompressed(file.toPath(), NbtAccounter.unlimitedHeap()));
+
+        } catch (Exception e) {
+            try {
+                return fromNBT(NbtIo.read(file.toPath()));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
+    }
+
+    @Override
+    public boolean hasCaseSensitiveKeys() {
+        return true;
     }
 }
