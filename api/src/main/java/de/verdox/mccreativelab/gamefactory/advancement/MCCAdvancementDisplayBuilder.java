@@ -1,10 +1,12 @@
-package de.verdox.mccreativelab.factory.advancement;
+package de.verdox.mccreativelab.gamefactory.advancement;
 
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@ApiStatus.Experimental
 public interface MCCAdvancementDisplayBuilder {
     // TODO: @NotNull AdvancementDisplayBuilder setFrame(@NotNull AdvancementDisplay.Frame frame);
 

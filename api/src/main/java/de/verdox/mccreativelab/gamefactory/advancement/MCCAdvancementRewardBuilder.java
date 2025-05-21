@@ -1,10 +1,12 @@
-package de.verdox.mccreativelab.factory.advancement;
+package de.verdox.mccreativelab.gamefactory.advancement;
 
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.types.MCCLootTable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+@ApiStatus.Experimental
 public interface MCCAdvancementRewardBuilder {
     @NotNull MCCAdvancementRewardBuilder setExperience(int experience);
 
