@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.data;
+package de.verdox.mccreativelab.impl.vanilla.platform.data;
 
-import de.verdox.mccreativelab.wrapper.data.MCCVanillaRegistryManipulator;
+import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 
 import java.util.LinkedList;
 import java.util.List;

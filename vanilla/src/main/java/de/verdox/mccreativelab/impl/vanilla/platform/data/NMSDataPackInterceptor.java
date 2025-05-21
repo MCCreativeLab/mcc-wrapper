@@ -1,9 +1,9 @@
-package de.verdox.mccreativelab.impl.vanilla.data;
+package de.verdox.mccreativelab.impl.vanilla.platform.data;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-import de.verdox.mccreativelab.wrapper.data.MCCDataPackInterceptor;
+import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import net.kyori.adventure.key.Key;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.IoSupplier;

@@ -1,20 +1,19 @@
 package de.verdox.mccreativelab.impl.vanilla.platform;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.gamefactory.advancement.MCCAdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
-import de.verdox.mccreativelab.wrapper.data.MCCDataPackInterceptor;
-import de.verdox.mccreativelab.wrapper.data.MCCVanillaRegistryManipulator;
+import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
+import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
 import de.verdox.mccreativelab.impl.vanilla.component.entity.NMSGameComponentRegistry;
-import de.verdox.mccreativelab.impl.vanilla.data.NMSDataPackInterceptor;
-import de.verdox.mccreativelab.impl.vanilla.data.NMSVanillaRegistryManipulator;
+import de.verdox.mccreativelab.impl.vanilla.platform.data.NMSDataPackInterceptor;
+import de.verdox.mccreativelab.impl.vanilla.platform.data.NMSVanillaRegistryManipulator;
 import de.verdox.mccreativelab.impl.vanilla.entity.*;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.*;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainer;

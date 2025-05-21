@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.data;
+package de.verdox.mccreativelab.wrapper.platform.data;
 
 import org.jetbrains.annotations.ApiStatus;
 
