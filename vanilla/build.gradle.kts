@@ -30,7 +30,9 @@ allprojects {
 
     dependencies {
         val mcVersion = providers.gradleProperty("mcversion").get()
-        minecraft("com.mojang:minecraft:$mcVersion")
+        minecraft("com.mojang:minecraft:$mcVersion") {
+            isTransitive = false
+        }
         @Suppress("UnstableApiUsage")
         mappings(loom.layered {
             officialMojangMappings()

@@ -12,8 +12,7 @@ sourceSets {
 }
 
 dependencies {
-    api(project(":vanilla:mod"))
-    compileOnly(project(":paper"))
+    api(project(":paper"))
 
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
