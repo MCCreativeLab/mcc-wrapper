@@ -2,7 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.mixins;
 
 import com.google.common.base.Joiner;
 import com.mojang.logging.LogUtils;
-import de.verdox.mccreativelab.impl.vanilla.data.NMSDataPackInterceptor;
+import de.verdox.mccreativelab.impl.vanilla.platform.data.NMSDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.FileUtil;
 import net.minecraft.Util;
