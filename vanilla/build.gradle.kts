@@ -10,18 +10,22 @@ repositories {
 }
 
 dependencies {
-    val mcVersion = providers.gradleProperty("mcversion").get()
     api(project(":api"))
 
-    minecraft("com.mojang:minecraft:$mcVersion")
+    jmh(project(":api"))
+    jmh(project(":TestSuite"))
+
+    val mcVersion = providers.gradleProperty("mcversion").get()
+    minecraft("com.mojang:minecraft:$mcVersion") {
+        isTransitive = false
+    }
     @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
     })
-    jmh(project(":api"))
-    jmh(project(":TestSuite"))
-
+    compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
 
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")

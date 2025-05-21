@@ -42,7 +42,6 @@ subprojects {
     dependencies {
         compileOnly("net.kyori:adventure-api:4.17.0")
         compileOnly("it.unimi.dsi:fastutil:8.5.15")
-        implementation("com.google.guava:guava:33.3.1-jre")
         testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT")
         testImplementation("de.verdox:vserializer:1.2.3-SNAPSHOT:test-sources")
         testImplementation("io.projectreactor:reactor-core:3.7.5")

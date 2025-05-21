@@ -27,6 +27,7 @@ import org.bukkit.event.player.PlayerInputEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onLoad() {
         INSTANCE = this;
         platform = (PaperPlatform) MCCPlatform.getInstance();
+        Bukkit.getServicesManager().register(MCCPlatform.class, platform, this, ServicePriority.Highest);
         try {
             platform.getResourcePackManager().init(platform);
             GeneratorPlatformHelper.INSTANCE.setup(platform.getResourcePackManager().getHelper(), platformHelper -> {
