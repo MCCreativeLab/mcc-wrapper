@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
@@ -28,6 +29,7 @@ import de.verdox.mccreativelab.impl.vanilla.platform.serialization.NMSSerializer
 import de.verdox.mccreativelab.impl.vanilla.platform.serialization.nbt.NBTSerializationContext;
 import de.verdox.mccreativelab.impl.vanilla.registry.*;
 import de.verdox.mccreativelab.impl.vanilla.types.*;
+import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
 import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
@@ -93,10 +95,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import reactor.core.publisher.Sinks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 public class NMSPlatform implements MCCPlatform {
     protected final NMSTypedKeyFactory typedKeyFactory;
@@ -140,54 +141,54 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
-    public void init() {
-        conversionService.registerConverterForNewImplType(MCCBlockState.class, NMSBlockState.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBlockType.class, NMSBlockType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCAttribute.class, NMSAttribute.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEntityType.class, NMSEntityType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCItemStack.class, NMSItemStack.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDataComponentMap.class, NMSDataComponentMap.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCItemType.class, NMSItemType.CONVERTER);
-        // TODO: is this correct? conversionService.registerConverterForNewImplType(MCCWorld.class, NMSWorld.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBiome.class, NMSBiome.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEffectType.class, NMSEffectType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEffect.class, NMSEffect.CONVERTER);
+    public void load() {
+        prepareConverter(MCCBlockState.class, NMSBlockState.CONVERTER);
+        prepareConverter(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
+        prepareConverter(MCCBlockType.class, NMSBlockType.CONVERTER);
+        prepareConverter(MCCAttribute.class, NMSAttribute.CONVERTER);
+        prepareConverter(MCCEntityType.class, NMSEntityType.CONVERTER);
+        prepareConverter(MCCItemStack.class, NMSItemStack.CONVERTER);
+        prepareConverter(MCCDataComponentMap.class, NMSDataComponentMap.CONVERTER);
+        prepareConverter(MCCItemType.class, NMSItemType.CONVERTER);
+        prepareConverter(MCCWorld.class, NMSWorld.CONVERTER);
+        prepareConverter(MCCBiome.class, NMSBiome.CONVERTER);
+        prepareConverter(MCCEffectType.class, NMSEffectType.CONVERTER);
+        prepareConverter(MCCEffect.class, NMSEffect.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, NMSAttributeInstance.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCChunk.class, NMSChunk.CONVERTER);
+        prepareConverter(MCCAttributeInstance.class, NMSAttributeInstance.CONVERTER);
+        prepareConverter(MCCAttributeMap.class, NMSAttributeMap.CONVERTER);
+        prepareConverter(MCCChunk.class, NMSChunk.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(Key.class, new ResourceLocationConverter());
-        conversionService.registerConverterForNewImplType(Sound.class, new SoundConverter());
-        conversionService.registerConverterForNewImplType(MCCAttributeModifier.class, new AttributeModifierConverter());
-        conversionService.registerConverterForNewImplType(MCCMenuType.class, new MenuTypeConverter());
-        conversionService.registerConverterForNewImplType(MCCTypedKey.class, NMSTypedKey.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCReference.class, NMSReference.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCTag.class, NMSTag.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCReferenceSet.class, NMSReferenceSet.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEitherReference.class, NMSEitherReference.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistry.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCRegistry.class, NMSRegistryLookup.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCContainer.class, NMSContainer.CONVERTER);
+        prepareConverter(Key.class, new ResourceLocationConverter());
+        prepareConverter(Sound.class, new SoundConverter());
+        prepareConverter(MCCAttributeModifier.class, new AttributeModifierConverter());
+        prepareConverter(MCCMenuType.class, new MenuTypeConverter());
+        prepareConverter(MCCTypedKey.class, NMSTypedKey.CONVERTER);
+        prepareConverter(MCCReference.class, NMSReference.CONVERTER);
+        prepareConverter(MCCTag.class, NMSTag.CONVERTER);
+        prepareConverter(MCCReferenceSet.class, NMSReferenceSet.CONVERTER);
+        prepareConverter(MCCEitherReference.class, NMSEitherReference.CONVERTER);
+        prepareConverter(MCCRegistry.class, NMSRegistry.CONVERTER);
+        prepareConverter(MCCRegistry.class, NMSRegistryLookup.CONVERTER);
+        prepareConverter(MCCContainer.class, NMSContainer.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCGameEvent.class, NMSGameEvent.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCJukeboxSong.class, NMSJukeboxSong.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCLootTable.class, NMSLootTable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCPaintingVariant.class, NMSPaintingVariant.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCPoiType.class, NMSPoiType.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCPotion.class, NMSPotion.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCTrimPattern.class, NMSTrimPattern.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCVillagerProfession.class, NMSVillagerProfession.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDamageType.class, NMSDamageType.CONVERTER);
+        prepareConverter(MCCGameEvent.class, NMSGameEvent.CONVERTER);
+        prepareConverter(MCCJukeboxSong.class, NMSJukeboxSong.CONVERTER);
+        prepareConverter(MCCLootTable.class, NMSLootTable.CONVERTER);
+        prepareConverter(MCCPaintingVariant.class, NMSPaintingVariant.CONVERTER);
+        prepareConverter(MCCPoiType.class, NMSPoiType.CONVERTER);
+        prepareConverter(MCCPotion.class, NMSPotion.CONVERTER);
+        prepareConverter(MCCTrimPattern.class, NMSTrimPattern.CONVERTER);
+        prepareConverter(MCCVillagerProfession.class, NMSVillagerProfession.CONVERTER);
+        prepareConverter(MCCDamageType.class, NMSDamageType.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCEnchantment.class, NMSEnchantment.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEnchantment.Definition.class, NMSEnchantment.NMSDefinition.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
+        prepareConverter(MCCEnchantment.class, NMSEnchantment.CONVERTER);
+        prepareConverter(MCCEnchantment.Definition.class, NMSEnchantment.NMSDefinition.CONVERTER);
+        prepareConverter(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
+        prepareConverter(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
+        prepareConverter(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -197,6 +198,12 @@ public class NMSPlatform implements MCCPlatform {
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
+    }
+
+    @Override
+    public void setupConversionService() {
+        LOGGER.info("Initializing conversion service with " + preparedConverters.size() + " converters");
+        preparedConverters.forEach((aClass, preparedConverter) -> preparedConverter.register(conversionService));
     }
 
     @Override
@@ -355,82 +362,82 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     private void registerMenuTypes() {
-        conversionService.registerConverterForNewImplType(MCCAnvilContainerMenu.class, NMSAnvilContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBeaconContainerMenu.class, NMSBeaconContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBrewingStandContainerMenu.class, NMSBrewingStandContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCCartographyTableContainerMenu.class, NMSCartographyTableContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCChestContainerMenu.class, NMSChestContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCCrafterContainerMenu.class, NMSCrafterContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDispenserContainerMenu.class, NMSDispenserContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEnchantingTableContainerMenu.class, NMSEnchantingTableContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Furnace.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.BlastFurnace.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Smoker.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCLoomContainerMenu.class, NMSLoomContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCGrindstoneContainerMenu.class, NMSGrindstoneContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCLecternContainerMenu.class, NMSLecternContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCMerchantContainerMenu.class, NMSMerchantContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCWorkBenchContainerMenu.class, NMSWorkBenchContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCHopperContainerMenu.class, NMSHopperContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCShulkerContainerMenu.class, NMSShulkerContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCStonecutterContainerMenu.class, NMSStoneCutterContainerMenu.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
+        prepareConverter(MCCAnvilContainerMenu.class, NMSAnvilContainerMenu.CONVERTER);
+        prepareConverter(MCCBeaconContainerMenu.class, NMSBeaconContainerMenu.CONVERTER);
+        prepareConverter(MCCBrewingStandContainerMenu.class, NMSBrewingStandContainerMenu.CONVERTER);
+        prepareConverter(MCCCartographyTableContainerMenu.class, NMSCartographyTableContainerMenu.CONVERTER);
+        prepareConverter(MCCChestContainerMenu.class, NMSChestContainerMenu.CONVERTER);
+        prepareConverter(MCCCrafterContainerMenu.class, NMSCrafterContainerMenu.CONVERTER);
+        prepareConverter(MCCDispenserContainerMenu.class, NMSDispenserContainerMenu.CONVERTER);
+        prepareConverter(MCCEnchantingTableContainerMenu.class, NMSEnchantingTableContainerMenu.CONVERTER);
+        prepareConverter(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Furnace.CONVERTER);
+        prepareConverter(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.BlastFurnace.CONVERTER);
+        prepareConverter(MCCFurnaceContainerMenu.class, NMSFurnaceContainerMenu.Smoker.CONVERTER);
+        prepareConverter(MCCLoomContainerMenu.class, NMSLoomContainerMenu.CONVERTER);
+        prepareConverter(MCCGrindstoneContainerMenu.class, NMSGrindstoneContainerMenu.CONVERTER);
+        prepareConverter(MCCLecternContainerMenu.class, NMSLecternContainerMenu.CONVERTER);
+        prepareConverter(MCCMerchantContainerMenu.class, NMSMerchantContainerMenu.CONVERTER);
+        prepareConverter(MCCWorkBenchContainerMenu.class, NMSWorkBenchContainerMenu.CONVERTER);
+        prepareConverter(MCCHopperContainerMenu.class, NMSHopperContainerMenu.CONVERTER);
+        prepareConverter(MCCShulkerContainerMenu.class, NMSShulkerContainerMenu.CONVERTER);
+        prepareConverter(MCCStonecutterContainerMenu.class, NMSStoneCutterContainerMenu.CONVERTER);
+        prepareConverter(MCCSmithingContainerMenu.class, NMSSmithingContainerMenu.CONVERTER);
     }
 
     private void registerEntityClasses() {
-        conversionService.registerConverterForNewImplType(MCCEntity.class, NMSEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCItemEntity.class, NMSItemEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCMarkerEntity.class, NMSMarkerEntity.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCInteractionEntity.class, NMSInteractionEntity.CONVERTER);
+        prepareConverter(MCCEntity.class, NMSEntity.CONVERTER);
+        prepareConverter(MCCLivingEntity.class, NMSLivingEntity.CONVERTER);
+        prepareConverter(MCCItemEntity.class, NMSItemEntity.CONVERTER);
+        prepareConverter(MCCMarkerEntity.class, NMSMarkerEntity.CONVERTER);
+        prepareConverter(MCCInteractionEntity.class, NMSInteractionEntity.CONVERTER);
+        prepareConverter(MCCPlayer.class, NMSPlayer.CONVERTER);
         registerDisplayEntity();
-        // conversionService.registerConverterForNewImplType(MCCPlayer.class, NMSPlayer.CONVERTER); TODO
     }
 
     private void registerDisplayEntity() {
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Item.class, NMSDisplayEntity.Item.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Block.class, NMSDisplayEntity.Block.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Text.class, NMSDisplayEntity.Text.CONVERTER);
+        prepareConverter(MCCDisplayEntity.Item.class, NMSDisplayEntity.Item.CONVERTER);
+        prepareConverter(MCCDisplayEntity.Block.class, NMSDisplayEntity.Block.CONVERTER);
+        prepareConverter(MCCDisplayEntity.Text.class, NMSDisplayEntity.Text.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Transformation.class, NMSDisplayEntity.NMSTransformation.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Text.Alignment.class, new EnumConverter<>(Display.TextDisplay.Align.class, MCCDisplayEntity.Text.Alignment.class));
-        conversionService.registerConverterForNewImplType(MCCDisplayEntity.Item.Display.class, new EnumConverter<>(ItemDisplayContext.class, MCCDisplayEntity.Item.Display.class));
+        prepareConverter(MCCDisplayEntity.Transformation.class, NMSDisplayEntity.NMSTransformation.CONVERTER);
+        prepareConverter(MCCDisplayEntity.Text.Alignment.class, new EnumConverter<>(Display.TextDisplay.Align.class, MCCDisplayEntity.Text.Alignment.class));
+        prepareConverter(MCCDisplayEntity.Item.Display.class, new EnumConverter<>(ItemDisplayContext.class, MCCDisplayEntity.Item.Display.class));
     }
 
     private void registerContainerTypes() {
-        conversionService.registerConverterForNewImplType(MCCPlayerInventory.class, NMSPlayerInventory.CONVERTER);
+        prepareConverter(MCCPlayerInventory.class, NMSPlayerInventory.CONVERTER);
     }
 
     private void registerEnumConverters() {
-        conversionService.registerConverterForNewImplType(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
-        conversionService.registerConverterForNewImplType(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
-        conversionService.registerConverterForNewImplType(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
-        conversionService.registerConverterForNewImplType(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
-        conversionService.registerConverterForNewImplType(MCCEntitySpawnReason.class, new EnumConverter<>(EntitySpawnReason.class, MCCEntitySpawnReason.class));
+        prepareConverter(MCCEquipmentSlot.class, new EnumConverter<>(EquipmentSlot.class, MCCEquipmentSlot.class));
+        prepareConverter(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
+        prepareConverter(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
+        prepareConverter(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
+        prepareConverter(MCCEntitySpawnReason.class, new EnumConverter<>(EntitySpawnReason.class, MCCEntitySpawnReason.class));
     }
 
     private void registerItemComponentConverters() {
-        conversionService.registerConverterForNewImplType(MCCDyedItemColor.class, NMSDyedItemColor.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCTool.class, NMSTool.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCUnbreakable.class, NMSUnbreakable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCMapId.class, NMSMapId.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCRepairable.class, NMSRepairable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCCustomModelData.class, NMSCustomModelData.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCLodestoneTracker.class, NMSLodestoneTracker.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCTool.Rule.class, NMSTool.NMSRule.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCUseRemainder.class, NMSUseRemainder.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCJukeboxPlayable.class, NMSJukeboxPlayable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.class, NMSSuspiciousStewEffects.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEnchantable.class, NMSEnchantable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCEquippable.class, NMSEquippable.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCMapItemColor.class, NMSMapItemColor.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCItemLore.class, NMSItemLore.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCSuspiciousStewEffects.Entry.class, NMSSuspiciousStewEffects.NMSEntry.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCUseCooldown.class, NMSUseCooldown.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCBlockItemStateProperties.class, NMSBlockItemStateProperties.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCDataComponentType.class, new DataComponentTypeConverter());
+        prepareConverter(MCCDyedItemColor.class, NMSDyedItemColor.CONVERTER);
+        prepareConverter(MCCTool.class, NMSTool.CONVERTER);
+        prepareConverter(MCCUnbreakable.class, NMSUnbreakable.CONVERTER);
+        prepareConverter(MCCMapId.class, NMSMapId.CONVERTER);
+        prepareConverter(MCCRepairable.class, NMSRepairable.CONVERTER);
+        prepareConverter(MCCCustomModelData.class, NMSCustomModelData.CONVERTER);
+        prepareConverter(MCCLodestoneTracker.class, NMSLodestoneTracker.CONVERTER);
+        prepareConverter(MCCTool.Rule.class, NMSTool.NMSRule.CONVERTER);
+        prepareConverter(MCCUseRemainder.class, NMSUseRemainder.CONVERTER);
+        prepareConverter(MCCJukeboxPlayable.class, NMSJukeboxPlayable.CONVERTER);
+        prepareConverter(MCCSuspiciousStewEffects.class, NMSSuspiciousStewEffects.CONVERTER);
+        prepareConverter(MCCEnchantable.class, NMSEnchantable.CONVERTER);
+        prepareConverter(MCCEquippable.class, NMSEquippable.CONVERTER);
+        prepareConverter(MCCMapItemColor.class, NMSMapItemColor.CONVERTER);
+        prepareConverter(MCCItemLore.class, NMSItemLore.CONVERTER);
+        prepareConverter(MCCSuspiciousStewEffects.Entry.class, NMSSuspiciousStewEffects.NMSEntry.CONVERTER);
+        prepareConverter(MCCUseCooldown.class, NMSUseCooldown.CONVERTER);
+        prepareConverter(MCCBlockItemStateProperties.class, NMSBlockItemStateProperties.CONVERTER);
+        prepareConverter(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
+        prepareConverter(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
+        prepareConverter(MCCDataComponentType.class, new DataComponentTypeConverter());
     }
 
     public ResourcePackManager getResourcePackManager() {
@@ -439,5 +446,32 @@ public class NMSPlatform implements MCCPlatform {
 
     public GeneratorPlatformHelper constructPackGeneratorHelper(CustomResourcePack customResourcePack) {
         return new VanillaGeneratorHelper(customResourcePack);
+    }
+
+    private static final Map<Class<?>, PreparedConverter<?, ?, ?>> preparedConverters = new HashMap<>();
+
+    /**
+     * We prepare converters so other platforms can override prepared converters.
+     * A native minecraft class type can only have one prepared converter.
+     */
+    protected <A, T extends A, F> void prepareConverter(Class<A> apiType, MCCConverter<F, T> converter) {
+        var preparedConverter = new PreparedConverter<>(apiType, converter);
+        if (preparedConverters.containsKey(converter.nativeMinecraftType())) {
+            var oldApiImplClass = preparedConverters.get(converter.nativeMinecraftType()).converter.apiImplementationClass();
+            var newApiImplClass = converter.apiImplementationClass();
+            if (oldApiImplClass.equals(newApiImplClass)) {
+                LOGGER.log(Level.SEVERE, apiType.getSimpleName() + " is already mapped to impl type " + newApiImplClass.getSimpleName());
+                return;
+            }
+
+            LOGGER.info(apiType.getSimpleName() + ": replacing " + oldApiImplClass.getSimpleName() + " with " + newApiImplClass.getSimpleName());
+        }
+        preparedConverters.put(converter.nativeMinecraftType(), preparedConverter);
+    }
+
+    private record PreparedConverter<A, T extends A, F>(Class<A> apiType, MCCConverter<F, T> converter) {
+        void register(ConversionService conversionService) {
+            conversionService.registerConverterForNewImplType(apiType, converter);
+        }
     }
 }
