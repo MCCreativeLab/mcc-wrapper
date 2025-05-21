@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.impl.paper.mixins;
+package de.verdox.mccreativelab.impl.vanilla.mixins;
 
 import com.google.common.base.Joiner;
 import com.mojang.logging.LogUtils;
@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 @Mixin(PathPackResources.class)
-public class PathPackResourcesMixin {
+public class MixinPathPackResources {
     private static final Joiner PATH_JOINER = Joiner.on("/");
     private static final Logger LOGGER = LogUtils.getLogger();
 
