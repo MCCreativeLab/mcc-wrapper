@@ -125,24 +125,8 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
             @Override
             public void set(@Nullable MCCGameMode newValue) {
-                boolean isSpectator = handle.isSpectator();
-
                 GameType gameMode = conversionService.unwrap(newValue, GameType.class);
-
-                getServerPlayer().connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.CHANGE_GAME_MODE, (float) gameMode.getId()));
-                if (gameMode == GameType.SPECTATOR) {
-                    ReflectionUtils.invokeMethodInClass(handle, "removeEntitiesOnShoulder");
-                    handle.stopRiding();
-                    EnchantmentHelper.stopLocationBasedEffects(handle);
-                } else {
-                    getServerPlayer().setCamera(handle);
-                    if (isSpectator) {
-                        EnchantmentHelper.runLocationChangedEffects(getServerPlayer().serverLevel(), handle);
-                    }
-                }
-
-                handle.onUpdateAbilities();
-                ReflectionUtils.invokeMethodInClass(handle, "updateEffectVisibility");
+                getServerPlayer().setGameMode(gameMode);
             }
 
             @Override

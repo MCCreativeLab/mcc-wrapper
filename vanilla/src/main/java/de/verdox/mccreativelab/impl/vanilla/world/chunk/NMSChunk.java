@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
     public static final MCCConverter<LevelChunk, NMSChunk> CONVERTER = converter(NMSChunk.class, LevelChunk.class, NMSChunk::new, MCCHandle::getHandle);
@@ -182,12 +183,14 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         boolean dismount = !flagSet.contains(MCCTeleportFlag.RETAIN_VEHICLE);
         boolean retainPassengers = flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS);
 
-        boolean isWorldChange = Objects.equals(location.world(), location.world());
+        boolean isWorldChange = Objects.equals(entity.getLocation().world(), location.world());
         var handle = conversionService.unwrap(entity, Entity.class);
 
         if (flagSet.contains(MCCTeleportFlag.RETAIN_PASSENGERS) && handle.isVehicle() && !isWorldChange) {
+            LOGGER.log(Level.FINER, "Could not teleport " + handle + " because flag " + MCCTeleportFlag.RETAIN_PASSENGERS + " is active and the entity is a vehicle.");
             return false;
         } else if (!dismount && handle.isPassenger() && isWorldChange) {
+            LOGGER.log(Level.FINER, "Could not teleport " + handle + " because flag the entity is a passenger and cannot be dismounted due to a world change");
             return false;
         } else if ((retainPassengers || !handle.isVehicle()) && !handle.isRemoved()) {
             if (dismount) {
@@ -197,7 +200,9 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
             if (location.world() != null && !isWorldChange) {
                 ServerLevel targetWorld = conversionService.unwrap(location.world(), ServerLevel.class);
                 Vec3 targetPos = new Vec3(location.x(), location.y(), location.z());
+                LOGGER.log(Level.FINER, "Teleporting " + handle + " to a location in a different world (" + entity.getLocation().world().key() + " -> " + location.world().key());
                 handle.teleport(new TeleportTransition(targetWorld, targetPos, Vec3.ZERO, location.pitch(), location.yaw(), Set.of(), e -> {
+                    LOGGER.log(Level.FINER, "Teleporting " + handle + " to a location in a different world");
                 }));
             } else {
                 handle.moveTo(location.x(), location.y(), location.z(), location.yaw(), location.pitch());
@@ -210,11 +215,13 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
                             Vec3 vec32 = passenger.getVehicleAttachmentPoint(handle);
                             passenger.moveTo(vec3.x - vec32.x, vec3.y - vec32.y, vec3.z - vec32.z);
                         }
+                        LOGGER.log(Level.FINER, "Teleporting " + handle + " and its passengers to a position in the same world");
                     });
                 }
             }
             return true;
         } else {
+            LOGGER.log(Level.FINER, "Could not teleport " + handle + ". Is vehicle = " + handle.isVehicle() + ", Is removed = " + handle.isRemoved() + ", retainPassengers = " + retainPassengers);
             return false;
         }
     }

@@ -20,6 +20,7 @@ import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistryStorage;
 import de.verdox.mccreativelab.wrapper.util.MCCTicking;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
+import de.verdox.vserializer.generic.SerializationContext;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +128,20 @@ public interface MCCPlatform extends MCCTicking {
     /**
      * Must be called after instantiating the platform object. Else the platform might not work as expected
      */
-    void init();
+    default void init() {
+        load();
+        setupConversionService();
+    }
+
+    /**
+     * Used to set up the conversion service
+     */
+    void setupConversionService();
+
+    /**
+     * Called on initialize to load all necessary subsystems
+     */
+    void load();
 
     /**
      * Returns the block hardness settings of this platform
@@ -239,4 +253,8 @@ public interface MCCPlatform extends MCCTicking {
         return createSignal(key, apiObject, () -> Sinks.many().multicast().directBestEffort());
     }
 
+    /**
+     * Returns the nbt serialization context
+     */
+    SerializationContext getNBTSerializationContext();
 }

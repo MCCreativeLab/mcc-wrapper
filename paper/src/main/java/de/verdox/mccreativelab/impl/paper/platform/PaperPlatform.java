@@ -65,17 +65,17 @@ public class PaperPlatform extends NMSPlatform {
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void load() {
+        super.load();
         //CraftBukkitConverters.init();
         //BukkitToMCCConverters.init();
 
-        conversionService.registerConverterForNewImplType(MCCPlayer.class, PaperPlayer.CONVERTER);
-        conversionService.registerConverterForNewImplType(MCCWorld.class, PaperWorld.CONVERTER);
+        prepareConverter(MCCPlayer.class, PaperPlayer.CONVERTER);
+        prepareConverter(MCCWorld.class, PaperWorld.CONVERTER);
 
-        conversionService.registerConverterForNewImplType(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
-        conversionService.registerConverterForNewImplType(Component.class, new ComponentConverter());
-        conversionService.registerConverterForNewImplType(MCCChunk.class, PaperChunk.CONVERTER);
+        prepareConverter(MCCAttributeInstance.class, PaperAttributeInstance.CONVERTER);
+        prepareConverter(Component.class, new ComponentConverter());
+        prepareConverter(MCCChunk.class, PaperChunk.CONVERTER);
 
         getGameComponentRegistry().register(MCCPersistent.class, PaperPersistent::new);
         getGameComponentRegistry().register(MCCPluginMessenger.class, PaperPluginMessenger::new);

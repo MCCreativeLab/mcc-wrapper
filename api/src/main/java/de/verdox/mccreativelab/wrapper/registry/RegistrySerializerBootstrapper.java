@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.registry;
 
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.SerializationContext;
 import de.verdox.vserializer.generic.Serializer;
 import de.verdox.vserializer.json.JsonSerializerContext;
@@ -59,7 +60,7 @@ public abstract class RegistrySerializerBootstrapper<T extends Keyed> {
                                 if (deserialized == null)
                                     return;
                                 registry.register(deserialized.key(), deserialized);
-                            } catch (IOException e) {
+                            } catch (IOException | SerializationException e) {
                                 e.printStackTrace();
                             }
                         });
@@ -73,7 +74,7 @@ public abstract class RegistrySerializerBootstrapper<T extends Keyed> {
             File file = new File(registryFolder + "/" + standardValue.key().namespace() + "_" + standardValue.key().value() + ".json");
             try {
                 context.writeToFile(elementSerializer.serialize(context, standardValue), file);
-            } catch (IOException e) {
+            } catch (IOException | SerializationException e) {
                 LOGGER.log(Level.SEVERE, "An error occurred while saving a registry preset for registry " + registry.getRegistryKey(), e);
             }
         }

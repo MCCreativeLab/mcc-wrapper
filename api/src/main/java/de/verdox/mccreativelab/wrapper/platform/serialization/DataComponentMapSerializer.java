@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCTypedDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.*;
 import net.kyori.adventure.key.Key;
 
@@ -12,7 +13,7 @@ import java.util.logging.Level;
 
 public class DataComponentMapSerializer implements Serializer<MCCDataComponentMap> {
     @Override
-    public SerializationElement serialize(SerializationContext context, MCCDataComponentMap object) {
+    public SerializationElement serialize(SerializationContext context, MCCDataComponentMap object) throws SerializationException {
         SerializationContainer container = context.createContainer();
 
         for (MCCTypedDataComponentType<?> mccTypedDataComponentType : object.pairSet()) {
@@ -26,7 +27,7 @@ public class DataComponentMapSerializer implements Serializer<MCCDataComponentMa
     }
 
     @Override
-    public MCCDataComponentMap deserialize(SerializationElement serializedElement) {
+    public MCCDataComponentMap deserialize(SerializationElement serializedElement) throws SerializationException {
         MCCDataComponentMap map = MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap();
         if (!serializedElement.isContainer()) {
             return map;
@@ -48,7 +49,7 @@ public class DataComponentMapSerializer implements Serializer<MCCDataComponentMa
         return map;
     }
 
-    private <T> void deserializeValueAndSaveToMap(Key key, MCCDataComponentType<T> type, SerializationElement serializationElement, MCCDataComponentMap map) {
+    private <T> void deserializeValueAndSaveToMap(Key key, MCCDataComponentType<T> type, SerializationElement serializationElement, MCCDataComponentMap map) throws SerializationException {
         if (type.getValueSerializer() == null) {
             MCCSerializers.LOGGER.log(Level.WARNING, "No value serializer was defined by the platform for data component type " + key);
             return;

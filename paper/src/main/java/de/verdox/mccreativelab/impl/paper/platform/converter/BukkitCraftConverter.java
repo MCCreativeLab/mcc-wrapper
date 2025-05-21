@@ -30,7 +30,7 @@ public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
         if(nmsObject == null){
             return notDone(null);
         }
-        return done(MCCPlatform.getInstance().getConversionService().wrap(nmsObject));
+        return done(MCCPlatform.getInstance().getConversionService().wrap(nmsObject, apiImplType));
     }
 
     @Override

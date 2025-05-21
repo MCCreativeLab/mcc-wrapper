@@ -65,10 +65,10 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         MCCBlockSoundGroup blockSoundGroup = getSoundGroup(block.getBlockType());
 
         Sound soundToPlay = Sound.sound(blockSoundGroup.hitSound())
-            .source(Sound.Source.BLOCK)
-            .volume(0.15F)
-            .pitch(blockSoundGroup.getPitch() * 0.3F)
-            .build();
+                .source(Sound.Source.BLOCK)
+                .volume(0.15F)
+                .pitch(blockSoundGroup.getPitch() * 0.3F)
+                .build();
         player.playSound(soundToPlay, block.getLocation().x(), block.getLocation().y(), block.getLocation().z());
         DIGGING_SOUND_DELAY.reset(player);
     }
@@ -80,10 +80,10 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         MCCBlockSoundGroup blockSoundGroup = getSoundGroup(block.getBlockType());
 
         Sound soundToPlay = Sound.sound(blockSoundGroup.breakSound())
-            .source(Sound.Source.BLOCK)
-            .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
-            .pitch(blockSoundGroup.getPitch() * 0.8F)
-            .build();
+                .source(Sound.Source.BLOCK)
+                .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
+                .pitch(blockSoundGroup.getPitch() * 0.8F)
+                .build();
         player.playSound(soundToPlay, block.getLocation().x(), block.getLocation().y(), block.getLocation().z());
     }
 
@@ -94,10 +94,10 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         MCCBlockSoundGroup blockSoundGroup = getSoundGroup(block.getBlockType());
 
         Sound soundToPlay = Sound.sound(blockSoundGroup.placeSound())
-            .source(Sound.Source.BLOCK)
-            .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
-            .pitch(blockSoundGroup.getPitch() * 0.8F)
-            .build();
+                .source(Sound.Source.BLOCK)
+                .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
+                .pitch(blockSoundGroup.getPitch() * 0.8F)
+                .build();
         player.playSound(soundToPlay, block.getLocation().x(), block.getLocation().y(), block.getLocation().z());
     }
 
@@ -108,10 +108,10 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         MCCBlockSoundGroup blockSoundGroup = getSoundGroup(block.getBlockType());
 
         Sound soundToPlay = Sound.sound(blockSoundGroup.fallSound())
-            .source(Sound.Source.BLOCK)
-            .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
-            .pitch(blockSoundGroup.getPitch() * 0.8F)
-            .build();
+                .source(Sound.Source.BLOCK)
+                .volume((blockSoundGroup.getVolume() + 1.0F) / 2.0F)
+                .pitch(blockSoundGroup.getPitch() * 0.8F)
+                .build();
         player.playSound(soundToPlay, block.getLocation().x(), block.getLocation().y(), block.getLocation().z());
     }
 
@@ -124,22 +124,21 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         float pitch;
 
         // Running on carpet / snow / -> play the sound of the block below the snow block
-        if(MCCBlockTags.COMBINATION_STEP_SOUND_BLOCKS.contains(block.getBlockType())){
+        if (MCCBlockTags.COMBINATION_STEP_SOUND_BLOCKS.contains(block.getBlockType())) {
             MCCBlock blockProducingSound = block.getLocation().below().getBlockNow();
             blockSoundGroup = getSoundGroup(blockProducingSound.getBlockType());
             volume = (blockSoundGroup.getVolume() + 1.0F) / 3.0F;
             pitch = blockSoundGroup.getPitch() * 0.8F;
-        }
-        else {
+        } else {
             blockSoundGroup = getSoundGroup(block.getBlockType());
             volume = (blockSoundGroup.getVolume() + 1.0F) / 2.0F;
             pitch = blockSoundGroup.getPitch() * 0.8F;
         }
         Sound soundToPlay = Sound.sound(blockSoundGroup.stepSound())
-            .source(Sound.Source.BLOCK)
-            .volume(volume)
-            .pitch(pitch)
-            .build();
+                .source(Sound.Source.BLOCK)
+                .volume(volume)
+                .pitch(pitch)
+                .build();
         player.playSound(soundToPlay, block.getLocation().x(), block.getLocation().y(), block.getLocation().z());
     }
 
@@ -203,6 +202,9 @@ public class PaperBlockSoundSettings implements MCCBlockSoundSettings, Listener 
         }
 
         Block bukkitTargetBlock = bukkitPlayer.getTargetBlockExact((int) bukkitPlayer.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getValue());
+        if (bukkitTargetBlock == null) {
+            return;
+        }
 
         MCCBlock block = BukkitAdapter.wrap(bukkitTargetBlock, new TypeToken<>() {});
         MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});

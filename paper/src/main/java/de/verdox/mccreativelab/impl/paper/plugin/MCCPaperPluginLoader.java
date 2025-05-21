@@ -8,30 +8,38 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.repository.RemoteRepository;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class MCCPaperPluginLoader implements PluginLoader {
 
     @Override
     public void classloader(PluginClasspathBuilder classpathBuilder) {
-        String version = classpathBuilder.getContext().getConfiguration().getVersion();
-        classpathBuilder.getContext().getLogger().info(Component.text("Starting MCC Paper Platform for version: " + version));
+        String version = readVersion();
+
+        classpathBuilder.getContext().getLogger().info(Component.text("Downloading dependencies for MCC Paper Platform " + version));
 
         MavenLibraryResolver resolver = new MavenLibraryResolver();
         resolver.addRepository((new RemoteRepository.Builder("verdox-repo", "default", "https://repo.verdox.de/snapshots")).build());
-        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper:api:"+version), (String) null));
+        resolver.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
 
-        MavenLibraryResolver central = new MavenLibraryResolver();
-        central.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
-        central.addDependency(new Dependency(new DefaultArtifact("io.vertx:vertx-core:4.5.10"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("com.hierynomus:sshj:0.38.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.tukaani:xz:1.9"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("commons-io:commons-io:2.17.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("ws.schild:jave-all-deps:3.5.0"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("net.bytebuddy:byte-buddy:1.15.10"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-compress:1.27.1"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("com.google.guava:guava:33.3.1-jre"), (String) null));
-        central.addDependency(new Dependency(new DefaultArtifact("org.apache.commons:commons-lang3:3.17.0"), (String) null));
-        //central.addDependency(new Dependency(new DefaultArtifact("io.projectreactor:reactor-core:3.7.5"), (String) null));
+        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper", "vanilla", "dev", "jar", version), (String) null));
         classpathBuilder.addLibrary(resolver);
-        classpathBuilder.addLibrary(central);
+    }
+
+    private static String readVersion() {
+        try (InputStream in = MCCPaperPluginLoader.class.getClassLoader().getResourceAsStream("mcc-version.txt")) {
+            if (in == null) {
+                throw new IOException("Could not find mcc-version.txt");
+            }
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+                return reader.readLine();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read version file", e);
+        }
     }
 }

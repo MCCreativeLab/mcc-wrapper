@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.vserializer.SerializableField;
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.SerializationElement;
 import de.verdox.vserializer.generic.Serializer;
 import de.verdox.vserializer.generic.SerializerBuilder;
@@ -26,7 +27,7 @@ public class ResourcePackManager {
     private ResourcePackFileHoster resourcePackFileHoster;
     private ResourcePackSettings resourcePackSettings;
 
-    public boolean init(NMSPlatform nmsPlatform) throws IOException {
+    public boolean init(NMSPlatform nmsPlatform) throws IOException, SerializationException {
         File templateFolder = new File("resourcePack/template/");
         File fileStorage = new File("resourcePack/settings/");
         File hostStorage = new File("resourcePack/host/");
@@ -73,7 +74,7 @@ public class ResourcePackManager {
         try {
             customResourcePack.installPack(false);
             resourcePackFileHoster.createResourcePackZipFiles();
-        } catch (IOException e) {
+        } catch (IOException | SerializationException e) {
             throw new RuntimeException(e);
         }
     }

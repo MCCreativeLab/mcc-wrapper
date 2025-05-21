@@ -3,16 +3,16 @@ plugins {
     id("java")
     id("io.papermc.paperweight.userdev")
     id("xyz.jpenilla.run-paper") version "2.3.1" apply true // Adds runServer and runMojangMappedServer tasks for testing
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply true
+    //id("com.github.johnrengelman.shadow") version "8.1.1" apply true
 }
 
 dependencies {
-    compileOnly(project(":api"))
+    //compileOnly(project(":api"))
     api(project(":vanilla", "default"))
     //compileOnly("io.projectreactor:reactor-core:3.7.5")
     //compileOnly("de.verdox.mccreativelab:mcc-pack-generator:" + providers.gradleProperty("pack_generator_version").get())
 
-    compileOnly("net.bytebuddy:byte-buddy:1.15.10")
+
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
@@ -22,13 +22,13 @@ dependencies {
     testImplementation(project(":TestSuite"))
 }
 
-tasks.named("build") {
+/*tasks.named("build") {
     dependsOn(":paper:shadowJar")  // Stellt sicher, dass das shadowJar von API gebaut wird, bevor der Haupt-Build läuft
 }
 
 artifacts {
     add("default", tasks.named("shadowJar"))
-}
+}*/
 
 sourceSets {
     main {
@@ -40,6 +40,35 @@ sourceSets {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+val writeVersionFile by tasks.registering(WriteVersionFile::class) {
+    versionProp.set(providers.gradleProperty("version"))
+}
+
+// Sicherstellen, dass processResources darauf wartet
+tasks.processResources {
+    dependsOn(writeVersionFile)
+}
+
+abstract class WriteVersionFile : DefaultTask() {
+
+    @get:Input
+    abstract val versionProp: Property<String>
+
+    @get:OutputFile
+    val outputFile: RegularFileProperty = project.objects.fileProperty().convention(
+        project.layout.projectDirectory.file("build/resources/main/mcc-version.txt")
+    )
+
+    @TaskAction
+    fun write() {
+        val version = versionProp.get()
+        outputFile.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(version)
+        }
+    }
 }
 
 publishing {
