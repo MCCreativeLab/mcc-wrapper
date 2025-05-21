@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.random;
+package de.verdox.mccreativelab.wrapper.random;
 
 public interface MCCVanillaRandomSource {
     void setSeed(long seed);

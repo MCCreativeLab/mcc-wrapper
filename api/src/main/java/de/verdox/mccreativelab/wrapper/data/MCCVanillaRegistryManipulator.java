@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.data;
+package de.verdox.mccreativelab.wrapper.data;
 
 /**
  * Used as a helper class that injects runnable code after the minecraft registries are bootstrapped.

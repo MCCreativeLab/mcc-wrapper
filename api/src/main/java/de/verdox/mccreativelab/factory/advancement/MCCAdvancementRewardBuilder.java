@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.advancement;
+package de.verdox.mccreativelab.factory.advancement;
 
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;

@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.behaviour;
+package de.verdox.mccreativelab.behavior;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,11 +10,11 @@ import java.util.function.Supplier;
  * @param <T> The actual return value of a behaviour that was run.
  * @param <R> The Result Type
  */
-public abstract class MCCBehaviourResult<T, R extends MCCBehaviourResult.Type> {
+public abstract class MCCBehaviorResult<T, R extends MCCBehaviorResult.Type> {
     private final T value;
     private final R result;
 
-    MCCBehaviourResult(@Nullable T value, @NotNull R result) {
+    MCCBehaviorResult(@Nullable T value, @NotNull R result) {
         this.value = value;
         this.result = result;
     }
@@ -47,7 +47,7 @@ public abstract class MCCBehaviourResult<T, R extends MCCBehaviourResult.Type> {
 
     public abstract boolean replaceVanillaLogic();
 
-    public static class Callback extends MCCBehaviourResult<java.lang.Void, Type> {
+    public static class Callback extends MCCBehaviorResult<java.lang.Void, Type> {
         public static final Callback DEFAULT_INSTANCE = new Callback();
 
         public Callback() {
@@ -65,7 +65,7 @@ public abstract class MCCBehaviourResult<T, R extends MCCBehaviourResult.Type> {
         }
     }
 
-    public static class Void extends MCCBehaviourResult<java.lang.Void, Type> {
+    public static class Void extends MCCBehaviorResult<java.lang.Void, Type> {
         public static final Void DEFAULT_INSTANCE = new Void(Type.USE_VANILLA_ONLY);
 
         public Void(@NotNull Type result) {
@@ -77,7 +77,7 @@ public abstract class MCCBehaviourResult<T, R extends MCCBehaviourResult.Type> {
         }
     }
 
-    public static class Bool extends MCCBehaviourResult<Boolean, Type> {
+    public static class Bool extends MCCBehaviorResult<Boolean, Type> {
         public static final Bool DEFAULT_INSTANCE = new Bool(false, Type.USE_VANILLA_ONLY);
 
         public Bool(@Nullable Boolean value, @NotNull Type result) {
@@ -105,14 +105,14 @@ public abstract class MCCBehaviourResult<T, R extends MCCBehaviourResult.Type> {
             return Type.REPLACE_VANILLA.equals(getResult());
         }
 
-        public static final class BooleanType extends MCCBehaviourResult.Type {
+        public static final class BooleanType extends MCCBehaviorResult.Type {
             public static final BooleanType AND = new BooleanType();
             public static final BooleanType OR = new BooleanType();
             public static final BooleanType XOR = new BooleanType();
         }
     }
 
-    public static class Object<T> extends MCCBehaviourResult<T, Type> {
+    public static class Object<T> extends MCCBehaviorResult<T, Type> {
         public static final Object DEFAULT_INSTANCE = new Object(null, Type.USE_VANILLA_ONLY);
 
         public Object(@Nullable T value, @NotNull Type result) {

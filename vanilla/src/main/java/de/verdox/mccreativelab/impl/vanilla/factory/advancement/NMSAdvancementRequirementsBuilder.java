@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.advancement;
+package de.verdox.mccreativelab.impl.vanilla.factory.advancement;
 
-import de.verdox.mccreativelab.advancement.MCCAdvancementRequirementsBuilder;
+import de.verdox.mccreativelab.factory.advancement.MCCAdvancementRequirementsBuilder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;

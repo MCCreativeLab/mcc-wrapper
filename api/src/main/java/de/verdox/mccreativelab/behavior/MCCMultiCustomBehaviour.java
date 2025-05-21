@@ -1,5 +1,6 @@
-package de.verdox.mccreativelab;
+package de.verdox.mccreativelab.behavior;
 
+import de.verdox.mccreativelab.MCCProxyInterface;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

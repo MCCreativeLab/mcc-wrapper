@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.data;
+package de.verdox.mccreativelab.wrapper.data;
 
 import com.google.gson.JsonObject;
 import net.kyori.adventure.key.Key;

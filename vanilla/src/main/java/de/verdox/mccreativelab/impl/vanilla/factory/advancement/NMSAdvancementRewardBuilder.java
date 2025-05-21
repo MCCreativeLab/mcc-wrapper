@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.advancement;
+package de.verdox.mccreativelab.impl.vanilla.factory.advancement;
 
-import de.verdox.mccreativelab.advancement.MCCAdvancementRewardBuilder;
+import de.verdox.mccreativelab.factory.advancement.MCCAdvancementRewardBuilder;
 import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
