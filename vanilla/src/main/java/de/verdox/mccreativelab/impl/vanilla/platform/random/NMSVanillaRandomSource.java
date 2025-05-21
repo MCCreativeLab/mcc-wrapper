@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.random;
+package de.verdox.mccreativelab.impl.vanilla.platform.random;
 
-import de.verdox.mccreativelab.wrapper.random.MCCVanillaRandomSource;
+import de.verdox.mccreativelab.wrapper.platform.random.MCCVanillaRandomSource;
 import net.minecraft.util.RandomSource;
 
 public class NMSVanillaRandomSource implements MCCVanillaRandomSource {
