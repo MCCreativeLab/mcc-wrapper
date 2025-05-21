@@ -293,11 +293,6 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
-    public @NotNull MCCAdvancementBuilder createAdvancement() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     public @NotNull MCCContainerFactory getContainerFactory() {
         return containerFactory;
     }

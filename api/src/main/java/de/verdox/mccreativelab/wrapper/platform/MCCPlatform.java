@@ -256,10 +256,4 @@ public interface MCCPlatform extends MCCTicking {
      * @return the vanilla registry manipulator
      */
     @NotNull MCCVanillaRegistryManipulator getRegistryManipulator();
-
-    /**
-     * Returns the {@link @NotNull AdvancementBuilder}
-     * @return the advancement builder
-     */
-    @NotNull MCCAdvancementBuilder createAdvancement();
 }
