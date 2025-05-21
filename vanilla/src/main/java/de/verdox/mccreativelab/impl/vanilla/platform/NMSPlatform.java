@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.platform;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.factory.advancement.MCCAdvancementBuilder;
+import de.verdox.mccreativelab.gamefactory.advancement.MCCAdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
