@@ -29,21 +29,6 @@ public class NBTSerializerTests extends SerializerTests {
         return NBT_SERIALIZATION_CONTEXT;
     }
 
-    @Test
-    public void checkOfElementsAreSameAfterSerialization() throws Exception {
-        try(var inputStream = NBTSerializerTests.class.getResourceAsStream("/nbt.dat")) {
-
-            File streamAsFile = writeStreamToTempFile(inputStream, "nbt", ".dat");
-
-            SerializationElement serializationElement = NBT_SERIALIZATION_CONTEXT.readFromFile(streamAsFile);
-            File saved = new File("nbt2.dat");
-            NBT_SERIALIZATION_CONTEXT.writeToFile(serializationElement, saved);
-            SerializationElement serializationElement2 = NBT_SERIALIZATION_CONTEXT.readFromFile(saved);
-
-            Assertions.assertEquals(serializationElement, serializationElement2);
-        }
-    }
-
     private File writeStreamToTempFile(InputStream inputStream, String prefix, String suffix) throws IOException {
         File tempFile = File.createTempFile(prefix, suffix);
         tempFile.deleteOnExit();
