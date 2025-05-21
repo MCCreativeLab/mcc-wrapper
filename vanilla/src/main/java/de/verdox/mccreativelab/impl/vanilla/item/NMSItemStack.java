@@ -45,11 +45,6 @@ public class NMSItemStack extends MCCHandle<ItemStack> implements MCCItemStack {
     }
 
     @Override
-    public int getMaxStackSize() {
-        return getHandle().getMaxStackSize();
-    }
-
-    @Override
     public boolean isSimilar(MCCItemStack stack) {
         if (stack == null) {
             return false;
