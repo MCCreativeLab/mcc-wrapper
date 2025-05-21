@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.impl.vanilla.platform.serialization.nbt.NBTSerial
 import de.verdox.vserializer.generic.SerializationContext;
 import de.verdox.vserializer.generic.SerializationElement;
 import de.verdox.vserializer.tests.test.SerializerTests;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -29,14 +30,17 @@ public class NBTSerializerTests extends SerializerTests {
     }
 
     @Test
-    public void printElementsForManualCheck() throws Exception {
-
+    public void checkOfElementsAreSameAfterSerialization() throws Exception {
         try(var inputStream = NBTSerializerTests.class.getResourceAsStream("/nbt.dat")) {
 
             File streamAsFile = writeStreamToTempFile(inputStream, "nbt", ".dat");
 
             SerializationElement serializationElement = NBT_SERIALIZATION_CONTEXT.readFromFile(streamAsFile);
-            System.out.println(serializationElement);
+            File saved = new File("nbt2.dat");
+            NBT_SERIALIZATION_CONTEXT.writeToFile(serializationElement, saved);
+            SerializationElement serializationElement2 = NBT_SERIALIZATION_CONTEXT.readFromFile(saved);
+
+            Assertions.assertEquals(serializationElement, serializationElement2);
         }
     }
 

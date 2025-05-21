@@ -38,7 +38,7 @@ public class PaperChunk extends NMSChunk {
         BlockState nmsBlockState = getHandle().getBlockState(blockPos);
         if (!mccBlock.getBlockType().equals(MCCBlocks.AIR) && (tool == null || !mccBlock.getBlockState().requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(mccBlock.getBlockState()))) {
 
-            mccBlock.dropBlockLoot(null, conversionService.unwrap(tool));
+            mccBlock.dropBlockLoot(null, tool);
             if (triggerEffect) {
                 if (mccBlock.getBlockType().equals(MCCBlocks.FIRE)) {
                     getHandle().getLevel().levelEvent(net.minecraft.world.level.block.LevelEvent.SOUND_EXTINGUISH_FIRE, blockPos, 0);

@@ -128,7 +128,20 @@ public interface MCCPlatform extends MCCTicking {
     /**
      * Must be called after instantiating the platform object. Else the platform might not work as expected
      */
-    void init();
+    default void init() {
+        load();
+        setupConversionService();
+    }
+
+    /**
+     * Used to set up the conversion service
+     */
+    void setupConversionService();
+
+    /**
+     * Called on initialize to load all necessary subsystems
+     */
+    void load();
 
     /**
      * Returns the block hardness settings of this platform
