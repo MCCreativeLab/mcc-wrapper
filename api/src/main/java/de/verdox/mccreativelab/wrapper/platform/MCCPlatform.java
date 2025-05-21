@@ -2,10 +2,10 @@ package de.verdox.mccreativelab.wrapper.platform;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
-import de.verdox.mccreativelab.advancement.MCCAdvancementBuilder;
+import de.verdox.mccreativelab.factory.advancement.MCCAdvancementBuilder;
 import de.verdox.mccreativelab.conversion.ConversionService;
-import de.verdox.mccreativelab.data.MCCDataPackInterceptor;
-import de.verdox.mccreativelab.data.MCCVanillaRegistryManipulator;
+import de.verdox.mccreativelab.wrapper.data.MCCDataPackInterceptor;
+import de.verdox.mccreativelab.wrapper.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
