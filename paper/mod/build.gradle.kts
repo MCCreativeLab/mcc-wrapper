@@ -12,9 +12,7 @@ sourceSets {
 }
 
 dependencies {
-    api(project(":vanilla:mod")) {
-        isTransitive = false
-    }
+    api(project(":vanilla:mod"))
     compileOnly(project(":paper"))
 
     paperweight.paperDevBundle(providers.gradleProperty("version").get())
