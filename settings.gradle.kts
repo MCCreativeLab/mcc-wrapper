@@ -22,3 +22,5 @@ include("paper")
 include("paper:mod")
 include("class-generator")
 include("TestSuite")
+include("vanilla:mod")
+findProject(":vanilla:mod")?.name = "mod"

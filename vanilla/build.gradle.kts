@@ -10,18 +10,10 @@ repositories {
 }
 
 dependencies {
-    val mcVersion = providers.gradleProperty("mcversion").get()
     api(project(":api"))
 
-    minecraft("com.mojang:minecraft:$mcVersion")
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
-    })
     jmh(project(":api"))
     jmh(project(":TestSuite"))
-
 
     testImplementation("net.kyori:adventure-api:4.18.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
@@ -30,9 +22,23 @@ dependencies {
     testImplementation(project(":TestSuite"))
     testImplementation("net.kyori:adventure-text-serializer-gson:4.20.0")
     testImplementation("net.kyori:adventure-text-minimessage:4.20.0")
+}
 
-    compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
-    compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
+allprojects {
+    apply(plugin = "fabric-loom")
+    apply(plugin = "me.champeau.jmh")
+
+    dependencies {
+        val mcVersion = providers.gradleProperty("mcversion").get()
+        minecraft("com.mojang:minecraft:$mcVersion")
+        @Suppress("UnstableApiUsage")
+        mappings(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-$mcVersion:2025.03.23@zip")
+        })
+        compileOnly("net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7")
+        compileOnly("io.github.llamalad7:mixinextras-common:0.4.1")
+    }
 }
 
 sourceSets {
