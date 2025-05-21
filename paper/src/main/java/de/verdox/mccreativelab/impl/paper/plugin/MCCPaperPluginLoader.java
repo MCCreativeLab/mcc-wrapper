@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.paper.plugin;
 
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import io.papermc.paper.plugin.loader.PluginClasspathBuilder;
 import io.papermc.paper.plugin.loader.PluginLoader;
 import io.papermc.paper.plugin.loader.library.impl.MavenLibraryResolver;
@@ -19,14 +20,19 @@ public class MCCPaperPluginLoader implements PluginLoader {
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         String version = readVersion();
 
-        classpathBuilder.getContext().getLogger().info(Component.text("Downloading dependencies for MCC Paper Platform " + version));
+        try {
+            NMSPlatform.class.getSimpleName();
+            classpathBuilder.getContext().getLogger().info(Component.text("Found paper mod provided by ignite."));
+        } catch (Throwable e) {
+            classpathBuilder.getContext().getLogger().info(Component.text("Downloading dependencies for MCC Paper Platform " + version) + ". Consider using ignite and the paper mod to use game factory api");
 
-        MavenLibraryResolver resolver = new MavenLibraryResolver();
-        resolver.addRepository((new RemoteRepository.Builder("verdox-repo", "default", "https://repo.verdox.de/snapshots")).build());
-        resolver.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
+            MavenLibraryResolver resolver = new MavenLibraryResolver();
+            resolver.addRepository((new RemoteRepository.Builder("verdox-repo", "default", "https://repo.verdox.de/snapshots")).build());
+            resolver.addRepository(new RemoteRepository.Builder("maven-central", "default", "https://repo.maven.apache.org/maven2/").build());
 
-        resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper", "vanilla", "dev", "jar", version), (String) null));
-        classpathBuilder.addLibrary(resolver);
+            resolver.addDependency(new Dependency(new DefaultArtifact("de.verdox.mccreativelab.mcc-wrapper", "vanilla", "dev", "jar", version), (String) null));
+            classpathBuilder.addLibrary(resolver);
+        }
     }
 
     private static String readVersion() {

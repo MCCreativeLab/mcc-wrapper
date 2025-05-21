@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "de.verdox.mccreativelab.impl.vanilla.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 0
+  },
+  "mixins": []
+}

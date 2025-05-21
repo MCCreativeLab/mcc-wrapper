@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.item;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
+import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import de.verdox.mccreativelab.wrapper.types.MCCEnchantment;
 import net.kyori.adventure.text.Component;
 
@@ -31,6 +32,15 @@ public interface MCCItemStack {
      * @param amount the amount
      */
     void setAmount(int amount);
+
+    /**
+     * Returns the max stack size of this item stack
+     *
+     * @return the max stack size
+     */
+    default int getMaxStackSize() {
+        return components().get(MCCDataComponentTypes.MAX_STACK_SIZE.get());
+    }
 
     /**
      * Checks whether the two item stacks are similar but does not compare amounts
