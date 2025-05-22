@@ -31,6 +31,7 @@ import java.util.Optional;
  * For now the game factory is only used to inject built in data types. Data driven types are injected via data packs.
  * As this api grows we will implement logic to inject data driven objects aswell.
  */
+@MCCRequireMixin
 public interface MCCGameFactory {
 
     // A registry holding custom attributes
