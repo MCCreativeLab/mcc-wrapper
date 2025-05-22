@@ -5,7 +5,29 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCSpecialRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapedRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapelessRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.MCCStonecutterRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCBlastingRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCCampfireRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCFurnaceRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCSmokingRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTransformRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTrimRecipe;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSIngredient;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSSpecialRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapedRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapelessRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.NMSStonecutterRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSBlastingRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSCampfireRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSFurnaceRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSSmokingRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTransformRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTrimRecipe;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
@@ -222,7 +244,7 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
 
         prepareConverter(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
-  
+
         prepareConverter(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
 
         prepareConverter(MCCHitResult.class, NMSHitResult.CONVERTER);
@@ -239,6 +261,7 @@ public class NMSPlatform implements MCCPlatform {
         registerEnumConverters();
         registerEntityClasses();
         registerItemComponentConverters();
+        registerRecipeConverters();
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
@@ -520,6 +543,25 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
         prepareConverter(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
         prepareConverter(MCCDataComponentType.class, new DataComponentTypeConverter());
+    }
+
+    private void registerRecipeConverters() {
+        prepareConverter(MCCIngredient.class, NMSIngredient.CONVERTER);
+
+        prepareConverter(MCCShapelessRecipe.class, NMSShapelessRecipe.CONVERTER);
+        prepareConverter(MCCShapedRecipe.class, NMSShapedRecipe.CONVERTER);
+
+        prepareConverter(MCCBlastingRecipe.class, NMSBlastingRecipe.CONVERTER);
+        prepareConverter(MCCCampfireRecipe.class, NMSCampfireRecipe.CONVERTER);
+        prepareConverter(MCCFurnaceRecipe.class, NMSFurnaceRecipe.CONVERTER);
+        prepareConverter(MCCSmokingRecipe.class, NMSSmokingRecipe.CONVERTER);
+
+        prepareConverter(MCCStonecutterRecipe.class, NMSStonecutterRecipe.CONVERTER);
+
+        prepareConverter(MCCSmithingTransformRecipe.class, NMSSmithingTransformRecipe.CONVERTER);
+        prepareConverter(MCCSmithingTrimRecipe.class, NMSSmithingTrimRecipe.CONVERTER);
+
+        prepareConverter(MCCSpecialRecipe.class, NMSSpecialRecipe.CONVERTER);
     }
 
     public ResourcePackManager getResourcePackManager() {

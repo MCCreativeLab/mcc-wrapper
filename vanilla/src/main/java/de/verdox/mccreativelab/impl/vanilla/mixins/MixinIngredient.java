@@ -1,43 +1,34 @@
-package de.verdox.mccreativelab.impl.paper.mixins;
+package de.verdox.mccreativelab.impl.vanilla.mixins;
 
-import de.verdox.mccreativelab.impl.paper.recipe.PredicateChoice;
-import net.minecraft.core.HolderSet;
-import net.minecraft.world.item.Item;
+import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.ItemLike;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Mixin(Ingredient.class)
 public class MixinIngredient implements PredicateIngredient {
     // Paper start - Add itemPredicate field
     @Nullable
-    public PredicateChoice itemPredicate;
+    public RecipePredicate itemPredicate;
     // Paper end
 
-    // Paper start - Add static constructor for PredicateChoice
-    @Invoker("of")
-    private static Ingredient invokeOf(Stream<? extends ItemLike> items) {
-        throw new AssertionError(); // Will be transformed by Mixin
-    }
-
     @Override
-    public PredicateChoice getItemPredicate() {
+    public RecipePredicate getItemPredicate() {
         return itemPredicate;
     }
 
     @Override
-    public void setItemPredicate(PredicateChoice predicate) {
+    public void setItemPredicate(RecipePredicate predicate) {
         this.itemPredicate = predicate;
     }
 
@@ -45,17 +36,18 @@ public class MixinIngredient implements PredicateIngredient {
     @Inject(method = "test", at = @At("HEAD"), cancellable = true)
     public void injectPredicateTest(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (this.itemPredicate != null) {
-            cir.setReturnValue(this.itemPredicate.test(stack.getBukkitStack()));
+            cir.setReturnValue(this.itemPredicate.predicate().test(MCCPlatform.getInstance().getConversionService().wrap(stack, MCCItemStack.class)));
         }
     }
 
     @Inject(method = "display", at = @At("HEAD"), cancellable = true)
     public void injectDisplay(CallbackInfoReturnable<SlotDisplay> cir) {
         if (this.itemPredicate != null) {
-            List<SlotDisplay> displays = this.itemPredicate.recipeBookExamples().stream()
-                    .map(item -> (SlotDisplay) new SlotDisplay.ItemStackSlotDisplay(
-                            ((org.bukkit.craftbukkit.inventory.CraftItemStack) item).handle
-                    )).toList();
+            List<SlotDisplay> displays = this.itemPredicate
+                    .recipeBookExamples()
+                    .stream()
+                    .map(mccItemStack -> MCCPlatform.getInstance().getConversionService().unwrap(mccItemStack, ItemStack.class))
+                    .map(item -> (SlotDisplay) new SlotDisplay.ItemStackSlotDisplay(item)).toList();
             cir.setReturnValue(new SlotDisplay.Composite(displays));
         }
     }

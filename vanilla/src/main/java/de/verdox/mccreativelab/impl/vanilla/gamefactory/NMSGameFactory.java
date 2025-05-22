@@ -3,13 +3,20 @@ package de.verdox.mccreativelab.impl.vanilla.gamefactory;
 import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
+import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import net.kyori.adventure.key.Key;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class NMSGameFactory implements MCCGameFactory {
     private final MCCPlatform platform;
@@ -43,5 +50,17 @@ public class NMSGameFactory implements MCCGameFactory {
     @Override
     public MCCBlockStatePropertyFactory getBlockStatePropertyFactory() {
         return nmsBlockStatePropertyFactory;
+    }
+
+    @Override
+    public MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples) {
+        platform.checkForMixins();
+        Ingredient ingredient = Ingredient.of(Items.BEDROCK);
+        Object ingredientAsObject = ingredient;
+        if (!(ingredientAsObject instanceof PredicateIngredient predicateIngredient)) {
+            throw new IllegalStateException("Ingredients should implement " + PredicateIngredient.class + " through mixins.");
+        }
+        predicateIngredient.setItemPredicate(new RecipePredicate(ingredientPredicate, Arrays.stream(recipeBookExamples).toList()));
+        return MCCPlatform.getInstance().getConversionService().wrap(ingredient, MCCIngredient.class);
     }
 }

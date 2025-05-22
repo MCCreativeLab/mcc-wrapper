@@ -7,11 +7,14 @@ import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockType;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.gamefactory.item.ItemVisuals;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
 import de.verdox.mccreativelab.generator.resourcepack.types.ItemTextureData;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
+import de.verdox.mccreativelab.wrapper.annotations.MCCRequireMixin;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
@@ -25,6 +28,8 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Entrypoint for the custom data api used to inject custom types into the platform (e.g. blocks, items, attributes, etc...)
@@ -115,4 +120,25 @@ public interface MCCGameFactory {
      * @return the factory
      */
     MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
+
+    /**
+     * Creates an ingredient that only allows the specified item types
+     */
+    default MCCIngredient createIngredient(MCCItemType... allowedTypes) {
+        Set<MCCItemType> set = Set.of(allowedTypes);
+        return createIngredient(mccItemStack -> set.contains(mccItemStack.getType()), set.stream().map(MCCItemType::createItem).toArray(MCCItemStack[]::new));
+    }
+
+    /**
+     * Creates an ingredient that only allows the specified item stacks
+     */
+    default MCCIngredient createIngredient(MCCItemStack... allowedItemStacks) {
+        Set<MCCItemStack> set = Set.of(allowedItemStacks);
+        return createIngredient(set::contains, set.toArray(MCCItemStack[]::new));
+    }
+
+    /**
+     * Creates an ingredient with a custom predicate
+     */
+    MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples);
 }
