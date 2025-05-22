@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
 
 import com.mojang.serialization.MapCodec;
-import de.verdox.mccreativelab.custom.block.MCCCustomBlockState;
+import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;

@@ -5,5 +5,10 @@
   "injectors": {
     "defaultRequire": 0
   },
-  "mixins": []
+  "mixins": [],
+  "client": [],
+  "server": [
+    "BootstrapMixin",
+    "BlockMixin"
+  ]
 }

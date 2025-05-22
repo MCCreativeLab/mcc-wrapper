@@ -1,7 +1,7 @@
-package de.verdox.mccreativelab.custom.block;
+package de.verdox.mccreativelab.gamefactory.block;
 
-import de.verdox.mccreativelab.custom.annotation.MCCCustomType;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.annotation.MCCCustomType;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;

@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.custom.block;
+package de.verdox.mccreativelab.gamefactory.block;
 
-import de.verdox.mccreativelab.custom.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.wrapper.annotations.MCCRequireVanillaElement;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -8,6 +8,7 @@ import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.typed.MCCBlocks;
 import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import de.verdox.vserializer.SerializableField;
+import de.verdox.vserializer.exception.SerializationException;
 import de.verdox.vserializer.generic.SerializationElement;
 import de.verdox.vserializer.generic.Serializer;
 import de.verdox.vserializer.generic.SerializerBuilder;
@@ -34,14 +35,14 @@ public class MCCBlockStateMapping {
         if(INSTANCE == null) {
             try {
                 INSTANCE = new MCCBlockStateMapping();
-            } catch (IOException e) {
+            } catch (IOException | SerializationException e) {
                 throw new RuntimeException(e);
             }
         }
         return INSTANCE;
     }
 
-    private MCCBlockStateMapping() throws IOException {
+    private MCCBlockStateMapping() throws IOException, SerializationException {
         File file = new File("/mcc_block_mapping/mapping_storage.json");
         file.getParentFile().mkdirs();
         if(file.exists()) {

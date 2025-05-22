@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.block.properties;
 
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import net.minecraft.world.level.block.state.properties.Property;
 

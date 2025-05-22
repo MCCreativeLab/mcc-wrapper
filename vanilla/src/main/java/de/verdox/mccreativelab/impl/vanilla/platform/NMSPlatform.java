@@ -4,18 +4,15 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
-import de.verdox.mccreativelab.custom.MCCGameFactory;
-import de.verdox.mccreativelab.impl.vanilla.block.*;
-import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
-import de.verdox.mccreativelab.impl.vanilla.custom.NMSGameFactory;
-import de.verdox.mccreativelab.impl.vanilla.custom.converter.MCCCustomBlockStateConverter;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
@@ -50,8 +47,6 @@ import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.impl.vanilla.world.level.biome.NMSBiome;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
-import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
-import de.verdox.mccreativelab.wrapper.MCCWrapped;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -94,7 +89,6 @@ import de.verdox.mccreativelab.wrapper.platform.serialization.MCCSerializers;
 import de.verdox.mccreativelab.wrapper.registry.*;
 import de.verdox.mccreativelab.wrapper.types.*;
 import de.verdox.mccreativelab.wrapper.world.MCCDifficulty;
-import de.verdox.mccreativelab.wrapper.world.MCCInteractionResult;
 import de.verdox.mccreativelab.wrapper.world.MCCEntitySpawnReason;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
@@ -138,7 +132,7 @@ public class NMSPlatform implements MCCPlatform {
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
     protected final MCCGameFactory nmsGameFactory;
-    protected final MCCBlockStatePropertyFactory nmsBlockStatePropertyFactory;
+
     protected final NMSElementFactory elementFactory = new NMSElementFactory(this);
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
@@ -155,7 +149,7 @@ public class NMSPlatform implements MCCPlatform {
         this.containerFactory = new NMSContainerFactory(this);
         this.registryStorage = new NMSRegistryStorage();
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
-        this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory(this);
+
         this.nmsGameFactory = constructGameFactory();
     }
 
@@ -177,7 +171,6 @@ public class NMSPlatform implements MCCPlatform {
         this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.nmsGameFactory = constructGameFactory();
-        this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory(this);
         this.useGeneratedConverters = true;
     }
 
@@ -236,6 +229,9 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCRandomSource.class, NMSRandomSource.CONVERTER);
         prepareConverter(MCCUseOnContext.class, NMSUseOnContext.CONVERTER);
         prepareConverter(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
+
+        prepareConverter(MCCBlockStateProperty.class, NMSBlockStateProperty.CONVERTER);
+        prepareConverter(MCCBlockStateProperty.Value.class, NMSBlockStateProperty.Value.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
@@ -300,11 +296,6 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public MCCGameFactory getGameFactory() {
         return nmsGameFactory;
-    }
-
-    @Override
-    public MCCBlockStatePropertyFactory getBlockStatePropertyFactory() {
-        return nmsBlockStatePropertyFactory;
     }
 
     @Override

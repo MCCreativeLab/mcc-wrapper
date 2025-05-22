@@ -3,9 +3,8 @@ package de.verdox.mccreativelab.wrapper.platform;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
-import de.verdox.mccreativelab.custom.MCCGameFactory;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
-import de.verdox.mccreativelab.wrapper.MCCWrapped;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -238,12 +237,6 @@ public interface MCCPlatform extends MCCTicking {
      * @return the game factory
      */
     MCCGameFactory getGameFactory();
-
-    /**
-     * Returns the block state property factory
-     * @return the factory
-     */
-    MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
 
     <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator);
 

@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins;
 
-import de.verdox.mccreativelab.custom.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
 import de.verdox.mccreativelab.impl.vanilla.mixins.proxy.ProxyItem;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.core.component.DataComponentMap;

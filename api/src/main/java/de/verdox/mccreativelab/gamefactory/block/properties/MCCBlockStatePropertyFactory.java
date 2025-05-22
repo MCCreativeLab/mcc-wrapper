@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.custom.block.properties;
+package de.verdox.mccreativelab.gamefactory.block.properties;
 
 import java.util.Arrays;
 import java.util.List;

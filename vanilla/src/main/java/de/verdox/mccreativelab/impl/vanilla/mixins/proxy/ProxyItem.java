@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
 
-import de.verdox.mccreativelab.custom.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;

@@ -1,22 +1,28 @@
-package de.verdox.mccreativelab.custom;
+package de.verdox.mccreativelab.gamefactory;
 
 import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.custom.block.MCCBlockStateMapping;
-import de.verdox.mccreativelab.custom.block.MCCCustomBlockState;
-import de.verdox.mccreativelab.custom.block.MCCCustomBlockType;
-import de.verdox.mccreativelab.custom.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.block.MCCBlockStateMapping;
+import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockState;
+import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockType;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
+import de.verdox.mccreativelab.gamefactory.item.ItemVisuals;
+import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
+import de.verdox.mccreativelab.generator.resourcepack.types.ItemTextureData;
+import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
-import de.verdox.mccreativelab.wrapper.platform.factory.TypedKeyFactory;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
 import de.verdox.mccreativelab.wrapper.typed.MCCItems;
 import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
+import de.verdox.mccreativelab.wrapper.types.MCCPoiType;
+import de.verdox.mccreativelab.wrapper.types.MCCVillagerProfession;
 import net.kyori.adventure.key.Key;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
 
@@ -34,10 +40,13 @@ public interface MCCGameFactory {
     // A registry holding custom item types
     MCCTypedKey<MCCRegistry<MCCCustomItemType>> ITEM_REGISTRY = registry("item", new TypeToken<>() {});
     // A registry holding custom poi types
-    MCCTypedKey<MCCRegistry<MCCAttribute>> POI_TYPE_REGISTRY = registry("poi_type", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCPoiType>> POI_TYPE_REGISTRY = registry("poi_type", new TypeToken<>() {});
     // A registry holding custom villager professions
-    MCCTypedKey<MCCRegistry<MCCAttribute>> VILLAGER_PROFESSION_REGISTRY = registry("profession", new TypeToken<>() {});
+    MCCTypedKey<MCCRegistry<MCCVillagerProfession>> VILLAGER_PROFESSION_REGISTRY = registry("profession", new TypeToken<>() {});
 
+    /**
+     * Generic register function
+     */
     default <T extends MCCKeyedWrapper> void registerCustom(MCCTypedKey<MCCRegistry<T>> customRegistry, Key key, T customType) {
         if (customType.isVanilla()) {
             throw new IllegalArgumentException("Cannot register data that is marked as vanilla");
@@ -50,10 +59,18 @@ public interface MCCGameFactory {
 
     }
 
-    default void registerCustomItemType(Key key, MCCCustomItemType customItemType) {
+    /**
+     * Used to register a custom item type
+     */
+    default void registerCustomItemType(Key key, MCCCustomItemType customItemType, ItemVisuals itemVisuals) {
         registerCustom(ITEM_REGISTRY, key, customItemType);
+        PlatformResourcePack.INSTANCE.get().register(itemVisuals.asTextureData(key));
     }
 
+    /**
+     * Used to register a custom block type
+     */
+    @ApiStatus.Experimental
     default void registerCustomBlock(Key key, MCCCustomBlockType customBlockType) {
         registerCustom(BLOCK_REGISTRY, key, customBlockType);
 
@@ -62,10 +79,17 @@ public interface MCCGameFactory {
         }
     }
 
+    /**
+     * Creates a registry for custom types
+     */
     static <T> MCCTypedKey<MCCRegistry<T>> registry(String registryKey, TypeToken<T> type) {
         return MCCPlatform.getInstance().getRegistryStorage().createMinecraftRegistry(Key.key("mcc", registryKey), type).unwrapKey().get();
     }
 
+    /**
+     * Instantiates a custom item type with all valid data components for identification
+     * @param mccItemType the custom item type
+     */
     default MCCItemStack instantiateCustomItem(MCCCustomItemType mccItemType) {
         if (mccItemType.isVanilla()) {
             throw new IllegalArgumentException("Please provide a custom item type");
@@ -79,5 +103,15 @@ public interface MCCGameFactory {
         return stack;
     }
 
+    /**
+     * Used to extract a potential custom item type from an item stack
+     * @param mccItemStack the item stack
+     */
     Optional<MCCCustomItemType> extract(MCCItemStack mccItemStack);
+
+    /**
+     * Returns the block state property factory
+     * @return the factory
+     */
+    MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
 }

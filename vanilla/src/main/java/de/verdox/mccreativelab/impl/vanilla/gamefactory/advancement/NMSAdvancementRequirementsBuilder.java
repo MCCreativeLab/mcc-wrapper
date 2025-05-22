@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.impl.vanilla.factory.advancement;
+package de.verdox.mccreativelab.impl.vanilla.gamefactory.advancement;
 
 import de.verdox.mccreativelab.gamefactory.advancement.MCCAdvancementRequirementsBuilder;
 import net.minecraft.advancements.AdvancementRequirements;

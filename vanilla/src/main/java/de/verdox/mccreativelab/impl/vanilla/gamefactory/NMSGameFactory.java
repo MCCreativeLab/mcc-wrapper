@@ -1,7 +1,9 @@
-package de.verdox.mccreativelab.impl.vanilla.custom;
+package de.verdox.mccreativelab.impl.vanilla.gamefactory;
 
-import de.verdox.mccreativelab.custom.MCCGameFactory;
-import de.verdox.mccreativelab.custom.item.MCCCustomItemType;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
+import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
+import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
@@ -11,10 +13,12 @@ import java.util.Optional;
 
 public class NMSGameFactory implements MCCGameFactory {
     private final MCCPlatform platform;
+    protected final MCCBlockStatePropertyFactory nmsBlockStatePropertyFactory;
 
     public NMSGameFactory(MCCPlatform platform) {
         this.platform = platform;
         createRegistries();
+        this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory();
     }
 
     private void createRegistries() {
@@ -34,5 +38,10 @@ public class NMSGameFactory implements MCCGameFactory {
             return Optional.empty();
         }
         return MCCGameFactory.ITEM_REGISTRY.get().getOptional(itemModelKey);
+    }
+
+    @Override
+    public MCCBlockStatePropertyFactory getBlockStatePropertyFactory() {
+        return nmsBlockStatePropertyFactory;
     }
 }

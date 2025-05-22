@@ -1,6 +1,6 @@
-package de.verdox.mccreativelab.custom.item;
+package de.verdox.mccreativelab.gamefactory.item;
 
-import de.verdox.mccreativelab.custom.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.misc.MCCUseOnContext;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;

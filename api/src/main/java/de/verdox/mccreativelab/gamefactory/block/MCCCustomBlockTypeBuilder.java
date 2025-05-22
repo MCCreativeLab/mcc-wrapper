@@ -1,7 +1,9 @@
-package de.verdox.mccreativelab.custom.block;
+package de.verdox.mccreativelab.gamefactory.block;
 
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Experimental
 public class MCCCustomBlockTypeBuilder {
     private MCCBlockSoundGroup soundGroup /* TODO: = MCCBlockSoundGroups.STONE*/;
     private float explosionResistance;

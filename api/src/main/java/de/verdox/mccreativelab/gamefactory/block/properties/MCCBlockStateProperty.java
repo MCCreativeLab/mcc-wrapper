@@ -1,4 +1,6 @@
-package de.verdox.mccreativelab.custom.block.properties;
+package de.verdox.mccreativelab.gamefactory.block.properties;
+
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
 import java.util.stream.Stream;
 
@@ -6,6 +8,10 @@ import java.util.stream.Stream;
  * Represents a block state property
  */
 public interface MCCBlockStateProperty<T extends Comparable<T>> {
+
+    static MCCBlockStatePropertyFactory factory() {
+        return MCCPlatform.getInstance().getGameFactory().getBlockStatePropertyFactory();
+    }
 
     /**
      * Returns the name of the property

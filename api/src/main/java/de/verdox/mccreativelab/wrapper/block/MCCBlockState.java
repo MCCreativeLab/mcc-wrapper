@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.wrapper.block;
 
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;

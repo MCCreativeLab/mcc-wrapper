@@ -1,10 +1,10 @@
-package de.verdox.mccreativelab.custom.block;
+package de.verdox.mccreativelab.gamefactory.block;
 
 import com.google.common.collect.Maps;
-import de.verdox.mccreativelab.custom.MCCGameFactory;
-import de.verdox.mccreativelab.custom.annotation.MCCCustomType;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.annotation.MCCCustomType;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -288,16 +288,8 @@ public abstract class MCCCustomBlockType implements MCCBlockType {
         return false;
     }
 
-    private static class StateFactory {
-        private final List<MCCBlockStateProperty<?>> propertyOrder = new LinkedList<>();
-
-        public void addProperty(MCCBlockStateProperty<?> property) {
-            propertyOrder.add(property);
-        }
-    }
-
     private List<MCCCustomBlockState> createBlockStatesFromProperties(StateFactory stateFactory) {
-        stateDefinitions(MCCPlatform.getInstance().getBlockStatePropertyFactory(), stateFactory);
+        stateDefinitions(MCCBlockStateProperty.factory(), stateFactory);
 
         List<MCCCustomBlockState> states = new LinkedList<>();
         Map<Map<MCCBlockStateProperty<?>, Comparable<?>>, MCCCustomBlockState> map = Maps.newLinkedHashMap();
@@ -333,5 +325,13 @@ public abstract class MCCCustomBlockType implements MCCBlockType {
             }));
         }
         return stream;
+    }
+
+    public static class StateFactory {
+        private final List<MCCBlockStateProperty<?>> propertyOrder = new LinkedList<>();
+
+        public void addProperty(MCCBlockStateProperty<?> property) {
+            propertyOrder.add(property);
+        }
     }
 }

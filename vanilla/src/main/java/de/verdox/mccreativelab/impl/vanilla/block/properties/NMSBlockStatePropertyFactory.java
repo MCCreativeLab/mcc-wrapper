@@ -1,8 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.block.properties;
 
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStateProperty;
-import de.verdox.mccreativelab.custom.block.properties.MCCBlockStatePropertyFactory;
-import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -12,12 +11,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import java.util.List;
 
 public class NMSBlockStatePropertyFactory implements MCCBlockStatePropertyFactory {
-    private final NMSPlatform nmsPlatform;
-
-    public NMSBlockStatePropertyFactory(NMSPlatform nmsPlatform) {
-        this.nmsPlatform = nmsPlatform;
-    }
-
     @Override
     public <T extends Enum<T>> MCCBlockStateProperty<T> createEnum(String name, List<T> enumValues) {
         if (enumValues.isEmpty()) {
