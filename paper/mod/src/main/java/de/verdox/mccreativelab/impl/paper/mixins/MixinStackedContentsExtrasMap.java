@@ -1,6 +1,9 @@
 package de.verdox.mccreativelab.impl.paper.mixins;
 
-import de.verdox.mccreativelab.impl.paper.recipe.PredicateChoice;
+import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import io.papermc.paper.inventory.recipe.ItemOrExact;
 import io.papermc.paper.inventory.recipe.StackedContentsExtrasMap;
 import net.minecraft.world.entity.player.StackedContents;
@@ -26,7 +29,7 @@ public class MixinStackedContentsExtrasMap {
 
     // Neue Felder für PredicateChoice
     private boolean hasPredicateChoice = false;
-    private final List<PredicateChoice> predicateChoices = new ArrayList<>();
+    private final List<RecipePredicate> predicateChoices = new ArrayList<>();
 
     // Injection in initialize() am Ende, um PredicateChoices zu sammeln
     @Inject(method = "initialize", at = @At("TAIL"))
@@ -43,10 +46,10 @@ public class MixinStackedContentsExtrasMap {
     @Inject(method = "accountStack", at = @At("TAIL"), cancellable = true)
     private void injectAccountStack(ItemStack stack, int count, CallbackInfoReturnable<Boolean> cir) {
         if (this.hasPredicateChoice) {
-            for (PredicateChoice predicateChoice : this.predicateChoices) {
-                if (predicateChoice.test(stack.getBukkitStack())) {
+            for (RecipePredicate predicateChoice : this.predicateChoices) {
+                if (predicateChoice.predicate().test(MCCPlatform.getInstance().getConversionService().wrap(stack, MCCItemStack.class))) {
                     this.contents.account(new ItemOrExact.Exact(stack), count);
-                    cir.setReturnValue(true); // Signalisiert, dass der Stack berücksichtigt wurde
+                    cir.setReturnValue(true);
                     return;
                 }
             }
