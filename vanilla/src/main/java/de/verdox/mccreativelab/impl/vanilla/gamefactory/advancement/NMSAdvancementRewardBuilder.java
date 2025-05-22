@@ -1,7 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.gamefactory.advancement;
 
 import de.verdox.mccreativelab.gamefactory.advancement.MCCAdvancementRewardBuilder;
-import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.types.MCCLootTable;
