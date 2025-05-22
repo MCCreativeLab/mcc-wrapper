@@ -126,6 +126,7 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class NMSPlatform implements MCCPlatform {
+    public static boolean isMixinSupported = false;
     protected final NMSTypedKeyFactory typedKeyFactory;
     protected final ConversionService conversionService;
     protected final MCCContainerFactory containerFactory;
@@ -295,6 +296,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public MCCGameFactory getGameFactory() {
+        checkForMixins();
         return nmsGameFactory;
     }
 
@@ -331,6 +333,13 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public @NotNull MCCVanillaRegistryManipulator getRegistryManipulator() {
         return registryManipulator;
+    }
+
+    @Override
+    public void checkForMixins() throws IllegalStateException {
+        if(!isMixinSupported) {
+            throw new IllegalStateException("Mixins are necessary for this feature. If you want to use this feature consider using an environment that supports mixins. If you run papermc please use ignite and the mcc-paper-mod to enable mixins on your papermc server.");
+        }
     }
 
     @Override
