@@ -61,7 +61,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
                         }
                     }
 
-                    consumeEntry.accept(BukkitAdapter.wrap(playerToShow, MCCPlayer.class), entry);
+                    consumeEntry.accept(BukkitAdapter.toMcc(playerToShow, MCCPlayer.class), entry);
                 } catch (Exception e) {
                     sender.sendMessage("An internal error occured while doing the registry lookup");
                     e.printStackTrace();

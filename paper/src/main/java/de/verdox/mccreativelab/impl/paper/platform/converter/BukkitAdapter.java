@@ -73,23 +73,23 @@ public class BukkitAdapter {
     static final BukkitCraftConverter<Block, BlockType, MCCBlockType> BLOCK_TYPE = register(MCCBlockType.class, new TypeToken<>() {}, new TypeToken<>() {}, CraftBlockType::bukkitToMinecraftNew, CraftBlockType::minecraftToBukkitNew);
     static final BukkitCraftConverter<Item, ItemType, MCCItemType> ITEM_TYPE = register(MCCItemType.class, new TypeToken<>() {}, new TypeToken<>() {}, CraftItemType::bukkitToMinecraftNew, CraftItemType::minecraftToBukkitNew);
 
-    public static <F, T> T wrap(F nativeObject) {
+    public static <F, T> T toMcc(F nativeObject) {
         if (nativeObject instanceof Material material) {
             Item nmsItem = CraftItemType.bukkitToMinecraft(material);
             if (nmsItem != null) {
-                return wrap(CraftItemType.minecraftToBukkitNew(nmsItem));
+                return toMcc(CraftItemType.minecraftToBukkitNew(nmsItem));
             }
             Block nmsBlock = CraftBlockType.bukkitToMinecraft(material);
             if (nmsBlock == null) {
                 throw new NoConverterFoundException("Could not find a converter to convert the material " + material);
             }
-            return wrap(CraftBlockType.minecraftToBukkitNew(nmsBlock));
+            return toMcc(CraftBlockType.minecraftToBukkitNew(nmsBlock));
         }
 
         return conversionService.wrap(nativeObject);
     }
 
-    public static <F, T> F unwrap(T apiObject) {
+    public static <F, T> F toBukkit(T apiObject) {
         Object result = conversionService.unwrap(apiObject);
         if (result instanceof Material material) {
             Item nmsItem = CraftItemType.bukkitToMinecraft(material);
@@ -105,32 +105,32 @@ public class BukkitAdapter {
         return (F) result;
     }
 
-    public static <F, T> F unwrap(@Nullable T objectToUnwrap, TypeToken<F> nativePlatformType) {
-        return unwrap(objectToUnwrap);
+    public static <F, T> F toBukkit(@Nullable T objectToUnwrap, TypeToken<F> nativePlatformType) {
+        return toBukkit(objectToUnwrap);
     }
 
-    public static <F, T> F unwrap(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
-        return unwrap(objectToUnwrap, TypeToken.of(nativePlatformType));
+    public static <F, T> F toBukkit(@Nullable T objectToUnwrap, Class<F> nativePlatformType) {
+        return toBukkit(objectToUnwrap, TypeToken.of(nativePlatformType));
     }
 
-    public static <F, T> T wrap(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
+    public static <F, T> T toMcc(@Nullable F nativeObject, TypeToken<T> apiTypeToConvertTo) {
         if (nativeObject instanceof Material material) {
             Item nmsItem = CraftItemType.bukkitToMinecraft(material);
             if (nmsItem != null) {
-                return wrap(CraftItemType.minecraftToBukkitNew(nmsItem));
+                return toMcc(CraftItemType.minecraftToBukkitNew(nmsItem));
             }
             Block nmsBlock = CraftBlockType.bukkitToMinecraft(material);
             if (nmsBlock == null) {
                 throw new NoConverterFoundException("Could not find a converter to convert the material " + material);
             }
-            return wrap(CraftBlockType.minecraftToBukkitNew(nmsBlock), apiTypeToConvertTo);
+            return toMcc(CraftBlockType.minecraftToBukkitNew(nmsBlock), apiTypeToConvertTo);
         }
 
         return conversionService.wrap(nativeObject, apiTypeToConvertTo);
     }
 
-    public static <F, T> T wrap(@Nullable F objectToWrap, Class<T> apiTypeToConvertTo) {
-        return wrap(objectToWrap, TypeToken.of(apiTypeToConvertTo));
+    public static <F, T> T toMcc(@Nullable F objectToWrap, Class<T> apiTypeToConvertTo) {
+        return toMcc(objectToWrap, TypeToken.of(apiTypeToConvertTo));
     }
 
     private static <F, B, A, T extends A> BukkitCraftConverter<F, B, A> register(Class<A> apiType, TypeToken<T> implType, TypeToken<B> bukkitType, Function<B, F> getter, Function<F, B> wrapper) {

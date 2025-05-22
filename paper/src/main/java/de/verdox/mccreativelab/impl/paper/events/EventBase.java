@@ -12,19 +12,19 @@ import org.bukkit.event.Listener;
  */
 public class EventBase implements Listener {
     protected <F, T> T wrap(F nativeObject){
-        return BukkitAdapter.wrap(nativeObject);
+        return BukkitAdapter.toMcc(nativeObject);
     }
 
     protected <F, T> T wrap(F nativeObject, Class<T> type){
-        return BukkitAdapter.wrap(nativeObject, type);
+        return BukkitAdapter.toMcc(nativeObject, type);
     }
 
     protected <F, T> T wrap(F nativeObject, TypeToken<T> type){
-        return BukkitAdapter.wrap(nativeObject, type);
+        return BukkitAdapter.toMcc(nativeObject, type);
     }
 
     protected <F, T> F unwrap(T apiObject){
-        return BukkitAdapter.unwrap(apiObject);
+        return BukkitAdapter.toBukkit(apiObject);
     }
 
     protected void callEvent(Event bukkitEvent, MCCEvent mccEvent){

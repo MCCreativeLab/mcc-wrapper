@@ -24,7 +24,7 @@ public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings im
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.toMcc(e.getPlayer(), new TypeToken<>() {});
         if (e.getClickedBlock() == null || e.getAction().isRightClick()) {
             stopBlockBreakAction(player);
         }
@@ -33,7 +33,7 @@ public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings im
         }
         if (e.getClickedBlock() != null && e.getAction().isLeftClick()) {
 
-            if (startBlockBreakAction(BukkitAdapter.wrap(e.getPlayer()), BukkitAdapter.wrap(e.getClickedBlock()))) {
+            if (startBlockBreakAction(BukkitAdapter.toMcc(e.getPlayer()), BukkitAdapter.toMcc(e.getClickedBlock()))) {
                 e.setCancelled(true);
             }
         }
@@ -41,7 +41,7 @@ public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings im
 
     @EventHandler
     public void onStartDigging(BlockDamageEvent e) {
-        if (startBlockBreakAction(BukkitAdapter.wrap(e.getPlayer()), BukkitAdapter.wrap(e.getBlock()))) {
+        if (startBlockBreakAction(BukkitAdapter.toMcc(e.getPlayer()), BukkitAdapter.toMcc(e.getBlock()))) {
             e.setCancelled(true);
         }
     }
@@ -49,38 +49,38 @@ public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings im
 
     @EventHandler
     public void onStopDigging(BlockDamageAbortEvent e) {
-        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.toMcc(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.toMcc(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler
     public void stopDiggingOnQuit(PlayerQuitEvent e) {
-        MCCPlayer player = BukkitAdapter.wrap(e.getPlayer(), new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.toMcc(e.getPlayer(), new TypeToken<>() {});
         stopBlockBreakAction(player);
     }
 
     @EventHandler
     public void tickPlayers(ServerTickEndEvent e) {
-        Bukkit.getOnlinePlayers().forEach(player -> tick(BukkitAdapter.wrap(player, new TypeToken<>() {})));
+        Bukkit.getOnlinePlayers().forEach(player -> tick(BukkitAdapter.toMcc(player, new TypeToken<>() {})));
     }
 
     @Override
     protected void onProgress(MCCPlayer player, MCCBlock block, float progress) {
-        Block bukkitBlock = BukkitAdapter.unwrap(block, new TypeToken<>() {});
-        Player bukkitPlayer = BukkitAdapter.unwrap(player, new TypeToken<>() {});
+        Block bukkitBlock = BukkitAdapter.toBukkit(block, new TypeToken<>() {});
+        Player bukkitPlayer = BukkitAdapter.toBukkit(player, new TypeToken<>() {});
         BlockBreakProgressUpdateEvent blockBreakProgressUpdateEvent = new BlockBreakProgressUpdateEvent(bukkitBlock, progress, bukkitPlayer);
         blockBreakProgressUpdateEvent.callEvent();
     }
   
     public void startBlockBreakAction(Player bukkitPlayer, Block bukkitBlock, Cancellable cancellable) {
-        MCCPlayer player = BukkitAdapter.wrap(bukkitPlayer, new TypeToken<>() {});
-        MCCBlock block = BukkitAdapter.wrap(bukkitBlock, new TypeToken<>() {});
+        MCCPlayer player = BukkitAdapter.toMcc(bukkitPlayer, new TypeToken<>() {});
+        MCCBlock block = BukkitAdapter.toMcc(bukkitBlock, new TypeToken<>() {});
 
         if (!doesHardnessDifferFromVanilla(block.getBlockType())) {
             player.getTempData().storeData("isBreakingNormalBlock", block);
@@ -225,8 +225,8 @@ public class PaperBlockHardnessSettings extends AbstractBlockHardnessSettings im
                 progress = stage * (1f / 9);
 
             if (progress > 0) {
-                Block bukkitBlock = BukkitAdapter.unwrap(block, new TypeToken<>() {});
-                Player bukkitPlayer = BukkitAdapter.unwrap(player, new TypeToken<>() {});
+                Block bukkitBlock = BukkitAdapter.toBukkit(block, new TypeToken<>() {});
+                Player bukkitPlayer = BukkitAdapter.toBukkit(player, new TypeToken<>() {});
                 BlockBreakProgressUpdateEvent blockBreakProgressUpdateEvent = new BlockBreakProgressUpdateEvent(bukkitBlock, progress, bukkitPlayer);
                 blockBreakProgressUpdateEvent.callEvent();
             }

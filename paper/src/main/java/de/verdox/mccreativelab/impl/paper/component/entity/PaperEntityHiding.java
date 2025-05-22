@@ -16,22 +16,22 @@ public class PaperEntityHiding extends AbstractComponent<Player, MCCPlayer> impl
 
     @Override
     public void hide(MCCEntity other) {
-        var bukkitPlayer = BukkitAdapter.unwrap(getOwner(), org.bukkit.entity.Player.class);
-        var otherBukkitEntity = BukkitAdapter.unwrap(other, org.bukkit.entity.Player.class);
+        var bukkitPlayer = BukkitAdapter.toBukkit(getOwner(), org.bukkit.entity.Player.class);
+        var otherBukkitEntity = BukkitAdapter.toBukkit(other, org.bukkit.entity.Player.class);
         bukkitPlayer.hideEntity(MCCPaperPlatformPlugin.getInstance(), otherBukkitEntity);
     }
 
     @Override
     public void show(MCCEntity other) {
-        var bukkitPlayer = BukkitAdapter.unwrap(getOwner(), org.bukkit.entity.Player.class);
-        var otherBukkitEntity = BukkitAdapter.unwrap(other, org.bukkit.entity.Player.class);
+        var bukkitPlayer = BukkitAdapter.toBukkit(getOwner(), org.bukkit.entity.Player.class);
+        var otherBukkitEntity = BukkitAdapter.toBukkit(other, org.bukkit.entity.Player.class);
         bukkitPlayer.showEntity(MCCPaperPlatformPlugin.getInstance(), otherBukkitEntity);
     }
 
     @Override
     public boolean canSee(MCCEntity other) {
-        var bukkitPlayer = BukkitAdapter.unwrap(getOwner(), org.bukkit.entity.Player.class);
-        var otherBukkitEntity = BukkitAdapter.unwrap(other, org.bukkit.entity.Player.class);
+        var bukkitPlayer = BukkitAdapter.toBukkit(getOwner(), org.bukkit.entity.Player.class);
+        var otherBukkitEntity = BukkitAdapter.toBukkit(other, org.bukkit.entity.Player.class);
         return bukkitPlayer.canSee(otherBukkitEntity);
     }
 }
