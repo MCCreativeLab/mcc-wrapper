@@ -16,14 +16,34 @@ import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingR
 import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTransformRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTrimRecipe;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 public interface RecipeBuilder {
+    /**
+     * Creates an ingredient that only allows the specified item types
+     */
+    default MCCIngredient createIngredient(MCCItemType... allowedTypes) {
+        Set<MCCItemType> set = Set.of(allowedTypes);
+        return createIngredient(mccItemStack -> set.contains(mccItemStack.getType()), set.stream().map(MCCItemType::createItem).toArray(MCCItemStack[]::new));
+    }
+
+    /**
+     * Creates an ingredient that only allows the specified item stacks
+     */
+    default MCCIngredient createIngredient(MCCItemStack... allowedItemStacks) {
+        Set<MCCItemStack> set = Set.of(allowedItemStacks);
+        return createIngredient(set::contains, set.toArray(MCCItemStack[]::new));
+    }
+
+    /**
+     * Creates an ingredient with a custom predicate
+     */
+    MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples);
+
     Standard.Crafting.Shaped createShapedRecipe();
 
     Standard.Crafting.Shapeless createShapelessRecipe();
@@ -49,7 +69,7 @@ public interface RecipeBuilder {
             this.recipe = recipe;
         }
 
-        T getDraft() {
+        public T getDraft() {
             return recipe;
         }
     }
@@ -108,6 +128,10 @@ public interface RecipeBuilder {
         }
 
         public static abstract class Crafting<T extends MCCCraftingRecipe, SELF extends Crafting<T, SELF>> extends Standard<T, SELF, MCCRecipeBookCategory> {
+            public Crafting() {
+                this.category(MCCRecipeBookCategory.MISC);
+            }
+
             public static abstract class Shaped extends Crafting<MCCShapedRecipe, Shaped> {
                 protected boolean showNotification = true;
                 protected MCCShapedRecipe.RecipePattern recipePattern;
@@ -144,6 +168,11 @@ public interface RecipeBuilder {
             }
 
             public static abstract class Cooking<T extends MCCCookingRecipe, SELF extends Cooking<T, SELF>> extends Single<T, SELF, MCCCookingBookCategory> {
+
+                public Cooking() {
+                    this.category(MCCCookingBookCategory.MISC);
+                }
+
                 protected float experience;
                 protected int cookingTime;
 
