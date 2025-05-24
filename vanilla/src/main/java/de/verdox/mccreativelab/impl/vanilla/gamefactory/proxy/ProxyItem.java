@@ -1,5 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
+package de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
@@ -25,12 +26,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 
-public class ProxyItem extends Item implements GameProxy {
+public class ProxyItem implements GameProxy {
     private final Item delegate;
     private final MCCCustomItemType customItemType;
 
     public ProxyItem(Item delegate, MCCCustomItemType customItemType) {
-        super(new Properties());
         this.delegate = delegate;
         this.customItemType = customItemType;
     }
@@ -38,7 +38,6 @@ public class ProxyItem extends Item implements GameProxy {
     /**
      * Called when this item is used when targeting a Block
      */
-    @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
         return proxy(
                 delegate::useOn,
@@ -49,7 +48,6 @@ public class ProxyItem extends Item implements GameProxy {
         );
     }
 
-    @Override
     public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         proxy(
                 delegate::postHurtEnemy,
@@ -60,7 +58,6 @@ public class ProxyItem extends Item implements GameProxy {
         );
     }
 
-    @Override
     public boolean isCorrectToolForDrops(@NotNull ItemStack stack, @NotNull BlockState state) {
         var result = delegate.isCorrectToolForDrops(stack, state);
         if (result) {
@@ -69,7 +66,6 @@ public class ProxyItem extends Item implements GameProxy {
         return getProxy().isCorrectToolForDrops(conversionService().wrap(stack, MCCItemStack.class), conversionService().wrap(state, MCCBlockState.class));
     }
 
-    @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity interactionTarget, @NotNull InteractionHand usedHand) {
         return proxy(
                 delegate::interactLivingEntity,
@@ -83,7 +79,6 @@ public class ProxyItem extends Item implements GameProxy {
         );
     }
 
-    @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
         proxy(
                 delegate::inventoryTick,
@@ -96,7 +91,6 @@ public class ProxyItem extends Item implements GameProxy {
         );
     }
 
-    @Override
     public void onCraftedBy(@NotNull ItemStack stack, @NotNull Level level, @NotNull Player player) {
         proxy(
                 delegate::onCraftedBy,
@@ -107,7 +101,6 @@ public class ProxyItem extends Item implements GameProxy {
         );
     }
 
-    @Override
     public void onCraftedPostProcess(@NotNull ItemStack stack, @NotNull Level level) {
         proxy(
                 delegate::onCraftedPostProcess,
@@ -118,7 +111,6 @@ public class ProxyItem extends Item implements GameProxy {
     }
 
 
-    @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity livingEntity, @NotNull ItemStack stack, int remainingUseDuration) {
         proxy(
                 delegate::onUseTick,
@@ -133,18 +125,16 @@ public class ProxyItem extends Item implements GameProxy {
     /**
      * Called when the player finishes using this Item (E.g. finishes eating.). Not called when the player stops using the Item before the action is complete.
      */
-    @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity livingEntity) {
         try {
             return delegate.finishUsingItem(stack, level, livingEntity);
         } finally {
             if (isProxy()) {
-                getProxy().finishUsingItem(getConversionService().wrap(stack), getConversionService().wrap(level), getConversionService().wrap(livingEntity));
+                getProxy().finishUsingItem(getConversionService().wrap(stack, new TypeToken<>() {}), getConversionService().wrap(level, new TypeToken<>() {}), getConversionService().wrap(livingEntity, new TypeToken<>() {}));
             }
         }
     }
 
-    @Override
     public void onDestroyed(@NotNull ItemEntity itemEntity) {
         proxy(
                 delegate::onDestroyed,

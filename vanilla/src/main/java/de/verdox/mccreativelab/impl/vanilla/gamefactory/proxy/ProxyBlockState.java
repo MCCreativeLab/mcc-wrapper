@@ -1,5 +1,6 @@
-package de.verdox.mccreativelab.impl.vanilla.mixins.proxy;
+package de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.serialization.MapCodec;
 import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
@@ -51,8 +52,9 @@ public class ProxyBlockState extends BlockState implements GameProxy {
         super(block, reference2ObjectArrayMap, mapCodec);
     }
 
-    @Override
-    public boolean isRandomlyTicking() {
+
+    //We don't use Override here because in paper this method is final
+    public boolean hasRandomTicks() {
         return proxy(super::isRandomlyTicking, () -> getProxy().isRandomlyTicking());
     }
 
@@ -206,12 +208,12 @@ public class ProxyBlockState extends BlockState implements GameProxy {
                     //TODO Add Support for block entity
                     BlockEntity blockEntity = parameters.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
 
-                    MCCWorld mccWorld = getConversionService().wrap(world);
+                    MCCWorld mccWorld = getConversionService().wrap(world, new TypeToken<>() {});
 
                     return getProxy().getDrops(
                             new MCCLocation(mccWorld, origin.x(), origin.y(), origin.z()),
-                            getConversionService().wrap(entity),
-                            getConversionService().wrap(tool)
+                            getConversionService().wrap(entity, new TypeToken<>() {}),
+                            getConversionService().wrap(tool, new TypeToken<>() {})
                     );
                 }
         );
@@ -219,7 +221,7 @@ public class ProxyBlockState extends BlockState implements GameProxy {
 
     @Override
     public @Nullable MenuProvider getMenuProvider(Level level, BlockPos pos) {
-        MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()));
+        MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level, new TypeToken<>() {}), pos.getX(), pos.getY(), pos.getZ()));
         if (menuProvider == null) {
             return null;
         }
@@ -231,17 +233,17 @@ public class ProxyBlockState extends BlockState implements GameProxy {
 
             @Override
             public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player), menuProvider.getTitle()));
+                return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player, new TypeToken<>() {}), menuProvider.getTitle()));
             }
         };
     }
 
     public void handlePrecipitation(Level level, BlockPos pos, Biome.Precipitation precipitation) {
-        getProxy().handlePrecipitation(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(precipitation));
+        getProxy().handlePrecipitation(new MCCLocation(conversionService().wrap(level, new TypeToken<>() {}), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(precipitation, new TypeToken<>() {}));
     }
 
     public void stepOn(Level level, BlockPos pos, Entity entity) {
-        getProxy().stepOn(new MCCLocation(conversionService().wrap(level), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(entity));
+        getProxy().stepOn(new MCCLocation(conversionService().wrap(level, new TypeToken<>() {}), pos.getX(), pos.getY(), pos.getZ()), conversionService().wrap(entity, new TypeToken<>() {}));
     }
 
     @Override
