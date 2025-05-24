@@ -81,6 +81,13 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
                 player.sendMessage(Component.text("Stopping hud " + hud.key() + " for player " + player.getPlayerName()));
             }
         }));
+
+        Bukkit.getCommandMap().register("", new RegistryLookUpCommand<>("customItem", MCCGameFactory.ITEM_REGISTRY.get(), (player, item) -> {
+            MCCItemStack stack = item.createItem();
+            player.addItemOrDrop(stack);
+        }));
+
+        MCCPlatform.LOGGER.info("Block states: " + Block.BLOCK_STATE_REGISTRY.size());
     }
 
     @EventHandler
