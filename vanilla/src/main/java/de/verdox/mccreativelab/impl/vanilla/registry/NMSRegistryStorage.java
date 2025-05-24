@@ -156,14 +156,14 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     @Nullable
     private <T> MCCRegistry<T> searchForRegistry(Key registryKey) {
         if (registryKey.equals(Key.key("minecraft", "root"))) {
-            return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY, new TypeToken<>() {});
+            return MCCPlatform.getInstance().getConversionService().wrap(BuiltInRegistries.REGISTRY);
         }
 
         if (!registryKey.namespace().equals("minecraft")) {
             if (CUSTOM_REGISTRIES.containsKey(registryKey)) {
-                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey), new TypeToken<>() {});
+                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_REGISTRIES.get(registryKey));
             } else if (CUSTOM_OPEN_REGISTRIES.containsKey(registryKey)) {
-                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey), new TypeToken<>() {});
+                return MCCPlatform.getInstance().getConversionService().wrap(CUSTOM_OPEN_REGISTRIES.get(registryKey));
             } else {
                 throw new NoSuchElementException("Could not find the registry " + registryKey);
             }
