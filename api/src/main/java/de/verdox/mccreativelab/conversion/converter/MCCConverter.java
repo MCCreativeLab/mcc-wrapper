@@ -1,5 +1,14 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * A converter that defines logic to convert between a native platform type and an api type implementation.
  * In the mcc conversion ecosystem one native type is always mapped to one api type. However, api types may have different implementation types.
@@ -17,12 +26,32 @@ public interface MCCConverter<F, T> {
     ConversionResult<T> wrap(F nativeType);
 
     /**
+     * Wraps the provided native type into an api type impl
+     *
+     * @param nativeType the native type
+     * @return the result
+     */
+    default ConversionResult<T> wrap(F nativeType, TypeToken<T> toType) {
+        return wrap(nativeType);
+    }
+
+    /**
      * Unwraps the provided api type impl into a native type.
      *
      * @param platformImplType the api type impl
      * @return the result
      */
     ConversionResult<F> unwrap(T platformImplType);
+
+    /**
+     * Unwraps the provided api type impl into a native type.
+     *
+     * @param platformImplType the api type impl
+     * @return the result
+     */
+    default ConversionResult<F> unwrap(T platformImplType, TypeToken<F> fromType) {
+        return unwrap(platformImplType);
+    }
 
     /**
      * The api impl class
@@ -97,5 +126,15 @@ public interface MCCConverter<F, T> {
      */
     default String toReadableString() {
         return "MCCConverter<" + nativeMinecraftType() + " <-> " + apiImplementationClass() + ">";
+    }
+
+    default List<TypeToken<?>> getTypeArguments(TypeToken<?> token) {
+        Type type = token.getType();
+        if (type instanceof ParameterizedType parameterizedType) {
+            return Arrays.stream(parameterizedType.getActualTypeArguments())
+                    .map(TypeToken::of)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 }

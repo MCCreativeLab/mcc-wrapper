@@ -1,8 +1,10 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -48,5 +50,32 @@ public class CollectionConverter <C extends Collection, T extends C> extends Con
     @Override
     public Class<C> nativeMinecraftType() {
         return collectionType;
+    }
+
+    @Override
+    public ConversionResult<C> wrap(C nativeType, TypeToken<C> typeToken) {
+        // Extrahiere den Elementtyp aus dem Collection-Typ
+        List<TypeToken<?>> typeArguments = getTypeArguments(typeToken);
+        TypeToken<?> elementType = typeArguments.isEmpty() ? TypeToken.of(Object.class) : typeArguments.get(0);
+
+        C newCollection = constructor.get();
+        for (Object element : nativeType) {
+            Object wrapped = getConversionService().wrap(element, elementType);
+            newCollection.add(wrapped);
+        }
+        return done(newCollection);
+    }
+
+    @Override
+    public ConversionResult<C> unwrap(C platformImplType, TypeToken<C> typeToken) {
+        List<TypeToken<?>> typeArguments = getTypeArguments(typeToken);
+        TypeToken<?> elementType = typeArguments.isEmpty() ? TypeToken.of(Object.class) : typeArguments.get(0);
+
+        C newCollection = constructor.get();
+        for (Object element : platformImplType) {
+            Object unwrapped = getConversionService().unwrap(element, elementType);
+            newCollection.add(unwrapped);
+        }
+        return done(newCollection);
     }
 }
