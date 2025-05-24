@@ -21,7 +21,7 @@ public class NBTSerializerTests extends SerializerTests {
 
     @BeforeAll
     public static void boostrap() {
-        NMSTestBase.bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()));
+        NMSTestBase.bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup(), RegistryHelper.getDataPack().getRecipeManager()));
     }
 
     @Override
