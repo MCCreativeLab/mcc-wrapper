@@ -1,39 +1,53 @@
 package de.verdox.mccreativelab.impl.vanilla.gamefactory;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
-import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
-import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
-import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.builder.NMSRecipeBuilder;
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.MutableRecipeManager;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
 import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
+import de.verdox.mccreativelab.wrapper.typed.MCCRegistries;
 import net.kyori.adventure.key.Key;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class NMSGameFactory implements MCCGameFactory {
-    private final MCCPlatform platform;
+
+    private final NMSPlatform platform;
     protected final MCCBlockStatePropertyFactory nmsBlockStatePropertyFactory;
 
-    public NMSGameFactory(MCCPlatform platform) {
+    public NMSGameFactory(NMSPlatform platform) {
         this.platform = platform;
-        createRegistries();
         this.nmsBlockStatePropertyFactory = new NMSBlockStatePropertyFactory();
     }
 
-    private void createRegistries() {
-        platform.getRegistryStorage().createMinecraftRegistry(MCCGameFactory.ATTRIBUTE_REGISTRY.key());
-        platform.getRegistryStorage().createMinecraftRegistry(MCCGameFactory.BLOCK_REGISTRY.key());
-        platform.getRegistryStorage().createMinecraftRegistry(MCCGameFactory.ITEM_REGISTRY.key());
-        platform.getRegistryStorage().createMinecraftRegistry(MCCGameFactory.POI_TYPE_REGISTRY.key());
-        platform.getRegistryStorage().createMinecraftRegistry(MCCGameFactory.VILLAGER_PROFESSION_REGISTRY.key());
+    @Override
+    public void registerCustomRecipe(Key key, RecipeBuilder.RecipeDraft<?> recipeDraft) {
+        MCCPlatform.getInstance().checkForMixins();
+        registerCustom(RECIPE_REGISTRY, key, recipeDraft.getDraft());
+        MCCTypedKey<MCCRecipe> typedKey = MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, MCCRegistries.RECIPE_REGISTRY.getRegistryKey());
+
+        Recipe<?> recipe = MCCPlatform.getInstance().getConversionService().unwrap(recipeDraft.getDraft(), Recipe.class);
+        ResourceKey<Recipe<?>> recipeResourceKey = MCCPlatform.getInstance().getConversionService().unwrap(typedKey, new TypeToken<>() {});
+
+        RecipeHolder<?> recipeHolder = new RecipeHolder<>(recipeResourceKey, recipe);
+
+        RecipeManager recipeManager = platform.getServer().getRecipeManager();
+        if (recipeManager instanceof MutableRecipeManager mutableRecipeManager) {
+            mutableRecipeManager.mcc_wrapper$addCustomRecipe(recipeHolder);
+        }
     }
 
     @Override
@@ -53,14 +67,7 @@ public class NMSGameFactory implements MCCGameFactory {
     }
 
     @Override
-    public MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples) {
-        platform.checkForMixins();
-        Ingredient ingredient = Ingredient.of(Items.BEDROCK);
-        Object ingredientAsObject = ingredient;
-        if (!(ingredientAsObject instanceof PredicateIngredient predicateIngredient)) {
-            throw new IllegalStateException("Ingredients should implement " + PredicateIngredient.class + " through mixins.");
-        }
-        predicateIngredient.setItemPredicate(new RecipePredicate(ingredientPredicate, Arrays.stream(recipeBookExamples).toList()));
-        return MCCPlatform.getInstance().getConversionService().wrap(ingredient, MCCIngredient.class);
+    public RecipeBuilder createRecipe() {
+        return new NMSRecipeBuilder();
     }
 }
