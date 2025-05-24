@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * This class is responsible for mapping unused vanilla block states to custom block states.
@@ -27,6 +28,7 @@ import java.util.*;
  * The mapper will persistently save its mappings to a file so they can be recovered after a restart.
  */
 public class MCCBlockStateMapping {
+    public static final Logger LOGGER = Logger.getLogger(MCCBlockStateMapping.class.getName());
     private MappingStorage mappingStorage = new MappingStorage();
 
     private static MCCBlockStateMapping INSTANCE;
@@ -43,9 +45,11 @@ public class MCCBlockStateMapping {
     }
 
     private MCCBlockStateMapping() throws IOException, SerializationException {
+        LOGGER.info("Initializing MCCBlockStateMapping");
         File file = new File("/mcc_block_mapping/mapping_storage.json");
         file.getParentFile().mkdirs();
         if(file.exists()) {
+            LOGGER.info("Found old custom block type mappings");
             JsonSerializerContext serializerContext = new JsonSerializerContext();
             SerializationElement serializationElement = serializerContext.readFromFile(file);
             mappingStorage = MappingStorage.SERIALIZER.deserialize(serializationElement);
