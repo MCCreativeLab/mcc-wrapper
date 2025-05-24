@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.paper.platform;
 
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockHardnessSettings;
 import de.verdox.mccreativelab.impl.paper.block.settings.PaperBlockSoundSettings;
@@ -11,15 +12,15 @@ import de.verdox.mccreativelab.impl.paper.component.entity.PaperPersistent;
 import de.verdox.mccreativelab.impl.paper.component.entity.PaperPluginMessenger;
 import de.verdox.mccreativelab.impl.paper.entity.PaperAttributeInstance;
 import de.verdox.mccreativelab.impl.paper.entity.types.PaperPlayer;
-import de.verdox.mccreativelab.impl.paper.events.PlatformEvents;
+import de.verdox.mccreativelab.impl.paper.gamefactory.PaperGameFactory;
 import de.verdox.mccreativelab.impl.paper.pack.PaperGeneratorHelper;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.paper.platform.converter.ComponentConverter;
 import de.verdox.mccreativelab.impl.paper.platform.task.PaperTaskScheduler;
+import de.verdox.mccreativelab.impl.paper.test.GameFactoryTestData;
 import de.verdox.mccreativelab.impl.paper.world.PaperWorld;
 import de.verdox.mccreativelab.impl.paper.world.chunk.PaperChunk;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
-import de.verdox.mccreativelab.impl.vanilla.world.chunk.NMSChunk;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
@@ -36,6 +37,7 @@ import net.kyori.adventure.text.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -60,8 +62,8 @@ public class PaperPlatform extends NMSPlatform {
         super(useGeneratedConverters);
     }
 
-    public PaperPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
-        super(fullRegistryAccess, reloadableRegistries);
+    public PaperPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries, RecipeManager recipeManager) {
+        super(fullRegistryAccess, reloadableRegistries, recipeManager);
     }
 
     @Override
@@ -96,7 +98,7 @@ public class PaperPlatform extends NMSPlatform {
         Bukkit.getPluginManager().registerEvents(paperBlockHardnessSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(paperFurnaceSettings, javaPlugin);
         Bukkit.getPluginManager().registerEvents(blockSoundSettings, javaPlugin);
-
+        GameFactoryTestData.init();
         //PlatformEvents.init(javaPlugin);
     }
 
@@ -128,5 +130,10 @@ public class PaperPlatform extends NMSPlatform {
     @Override
     public GeneratorPlatformHelper constructPackGeneratorHelper(CustomResourcePack customResourcePack) {
         return new PaperGeneratorHelper(customResourcePack);
+    }
+
+    @Override
+    protected MCCGameFactory constructGameFactory() {
+        return new PaperGameFactory(this);
     }
 }
