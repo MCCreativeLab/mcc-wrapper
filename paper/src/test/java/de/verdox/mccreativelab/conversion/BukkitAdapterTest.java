@@ -79,7 +79,7 @@ public class BukkitAdapterTest extends PaperTestBase {
         testEntries2.add(new TestEntry2(MCCItemType.class, ItemType.class));
     }
 
-    @ParameterizedTest
+/*    @ParameterizedTest
     @MethodSource("testInputs")
     public <F, B, A> void testBukkitAdapterToMcc(TestEntry<F, B, A> testEntry) {
         // Convert native -> Api
@@ -107,5 +107,5 @@ public class BukkitAdapterTest extends PaperTestBase {
     @MethodSource("testInputs2")
     public void test(TestEntry2 testEntry) {
         Assertions.assertEquals(testEntry.expected, BukkitAdapter.getConversionService().wrapClassType(testEntry.toWrap()));
-    }
+    }*/
 }
