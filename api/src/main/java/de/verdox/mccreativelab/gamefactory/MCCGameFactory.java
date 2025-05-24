@@ -8,6 +8,8 @@ import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropert
 import de.verdox.mccreativelab.gamefactory.item.ItemVisuals;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
 import de.verdox.mccreativelab.generator.resourcepack.types.ItemTextureData;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
@@ -36,7 +38,6 @@ import java.util.function.Predicate;
  * For now the game factory is only used to inject built in data types. Data driven types are injected via data packs.
  * As this api grows we will implement logic to inject data driven objects aswell.
  */
-@MCCRequireMixin
 public interface MCCGameFactory {
 
     // A registry holding custom attributes
@@ -45,6 +46,8 @@ public interface MCCGameFactory {
     MCCTypedKey<MCCRegistry<MCCCustomBlockType>> BLOCK_REGISTRY = registry("block", new TypeToken<>() {});
     // A registry holding custom item types
     MCCTypedKey<MCCRegistry<MCCCustomItemType>> ITEM_REGISTRY = registry("item", new TypeToken<>() {});
+    // A registry holding custom recipes
+    MCCTypedKey<MCCRegistry<MCCRecipe>> RECIPE_REGISTRY = registry("recipe", new TypeToken<>() {});
     // A registry holding custom poi types
     MCCTypedKey<MCCRegistry<MCCPoiType>> POI_TYPE_REGISTRY = registry("poi_type", new TypeToken<>() {});
     // A registry holding custom villager professions
@@ -54,21 +57,24 @@ public interface MCCGameFactory {
      * Generic register function
      */
     default <T extends MCCKeyedWrapper> void registerCustom(MCCTypedKey<MCCRegistry<T>> customRegistry, Key key, T customType) {
-        if (customType.isVanilla()) {
-            throw new IllegalArgumentException("Cannot register data that is marked as vanilla");
-        }
-        if (customRegistry.key().equals(customType.getRegistryKey())) {
-            throw new IllegalArgumentException("Registry mismatch! The custom type belongs to the registry " + customType.getRegistryKey() + " but you want to register it to the custom registry " + customRegistry);
-        }
+/*        if (customType.isVanilla()) {
+            throw new IllegalArgumentException("Cannot register data that is marked as vanilla: " + key + ", " + customType);
+        }*/
+        //TODO: Does not work for recipes.
+/*        if (!customRegistry.key().equals(customType.getRegistryKey())) {
+            throw new IllegalArgumentException("Registry mismatch! The custom type belongs to the registry " + customType.getRegistryKey() + " but you want to register it to the custom registry " + customRegistry.key());
+        }*/
         MCCTypedKey<T> typedKey = MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, customType.getRegistryKey());
         customRegistry.getAsReference().get().register(typedKey, customType);
-
     }
+
+    void registerCustomRecipe(Key key, RecipeBuilder.RecipeDraft<?> recipeDraft);
 
     /**
      * Used to register a custom item type
      */
     default void registerCustomItemType(Key key, MCCCustomItemType customItemType, ItemVisuals itemVisuals) {
+        MCCPlatform.getInstance().checkForMixins();
         registerCustom(ITEM_REGISTRY, key, customItemType);
         PlatformResourcePack.INSTANCE.get().register(itemVisuals.asTextureData(key));
     }
@@ -78,6 +84,7 @@ public interface MCCGameFactory {
      */
     @ApiStatus.Experimental
     default void registerCustomBlock(Key key, MCCCustomBlockType customBlockType) {
+        MCCPlatform.getInstance().checkForMixins();
         registerCustom(BLOCK_REGISTRY, key, customBlockType);
 
         for (MCCBlockState customState : customBlockType.getAllBlockStates()) {
@@ -122,23 +129,7 @@ public interface MCCGameFactory {
     MCCBlockStatePropertyFactory getBlockStatePropertyFactory();
 
     /**
-     * Creates an ingredient that only allows the specified item types
+     * Creates a recipe builder
      */
-    default MCCIngredient createIngredient(MCCItemType... allowedTypes) {
-        Set<MCCItemType> set = Set.of(allowedTypes);
-        return createIngredient(mccItemStack -> set.contains(mccItemStack.getType()), set.stream().map(MCCItemType::createItem).toArray(MCCItemStack[]::new));
-    }
-
-    /**
-     * Creates an ingredient that only allows the specified item stacks
-     */
-    default MCCIngredient createIngredient(MCCItemStack... allowedItemStacks) {
-        Set<MCCItemStack> set = Set.of(allowedItemStacks);
-        return createIngredient(set::contains, set.toArray(MCCItemStack[]::new));
-    }
-
-    /**
-     * Creates an ingredient with a custom predicate
-     */
-    MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples);
+    RecipeBuilder createRecipe();
 }
