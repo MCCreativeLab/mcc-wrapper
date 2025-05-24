@@ -88,7 +88,6 @@ public class ConversionServiceImpl implements ConversionService {
         if (nativeObject == null) {
             return null;
         }
-
         T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
                 .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
@@ -98,7 +97,7 @@ public class ConversionServiceImpl implements ConversionService {
                     return expectedIsAssignableFromActual || actualIsAssignableFromExpected;
                 })
                 .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
-                .map(mccConverter -> mccConverter.wrap(nativeObject))
+                .map(mccConverter -> mccConverter.wrap(nativeObject, apiTypeToConvertTo))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
                 .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
@@ -111,7 +110,7 @@ public class ConversionServiceImpl implements ConversionService {
         try {
             return (T) apiTypeToConvertTo.getRawType().cast(nativeObject);
         } catch (ClassCastException e) {
-            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + "). Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result " + conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
+            throw new NoConverterFoundException("Could not find a converter to wrap the native type " + nativeObject + " (" + nativeObject.getClass().getCanonicalName() + ") to an object of type " + apiTypeToConvertTo.getRawType() + ". Make sure that you have registered a converter for the given object type. None of the following potential converters could produce a valid result " + conversionCache.streamAllVariantsForNativeType(nativeObject.getClass()).map(MCCConverter::toReadableString).toList());
         }
     }
 

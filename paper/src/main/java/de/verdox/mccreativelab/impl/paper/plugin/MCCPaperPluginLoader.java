@@ -21,7 +21,7 @@ public class MCCPaperPluginLoader implements PluginLoader {
         String version = readVersion();
 
         try {
-            NMSPlatform.class.getSimpleName();
+            NMSPlatform.isMixinSupported = true;
             classpathBuilder.getContext().getLogger().info(Component.text("Found paper mod provided by ignite."));
         } catch (Throwable e) {
             classpathBuilder.getContext().getLogger().info(Component.text("Downloading dependencies for MCC Paper Platform " + version) + ". Consider using ignite and the paper mod to use game factory api");

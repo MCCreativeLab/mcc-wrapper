@@ -16,7 +16,7 @@ public class NMSEffectTarget extends AbstractComponent<LivingEntity, MCCLivingEn
 
     @Override
     public Collection<MCCEffect> getActiveEffects() {
-        return conversionService.wrap(handle.getActiveEffects());
+        return conversionService.wrap(handle.getActiveEffects(), new TypeToken<>() {});
     }
 
     @Override

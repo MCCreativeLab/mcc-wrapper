@@ -44,7 +44,7 @@ public class PaperGUIFrontEndBehavior extends GUIFrontEndBehavior implements Lis
         if (!isRightContainer(e.getInventory())) {
             return;
         }
-        onDrag(BukkitAdapter.wrap((Player) e.getWhoClicked()), e.getInventorySlots().stream().toList(), new MCCCancellable() {
+        onDrag(BukkitAdapter.toMcc((Player) e.getWhoClicked()), e.getInventorySlots().stream().toList(), new MCCCancellable() {
             @Override
             public boolean isCancelled() {
                 return e.isCancelled();
@@ -62,7 +62,7 @@ public class PaperGUIFrontEndBehavior extends GUIFrontEndBehavior implements Lis
         if (!isRightContainer(e.getInventory())) {
             return;
         }
-        onClose(BukkitAdapter.wrap(e.getPlayer()), to(e.getReason()));
+        onClose(BukkitAdapter.toMcc(e.getPlayer()), to(e.getReason()));
         //Bukkit.getPluginManager().callEvent(new GUICloseEvent((Player) e.getPlayer(), getActiveGUI(), e.getReason()));
     }
 
@@ -98,10 +98,10 @@ public class PaperGUIFrontEndBehavior extends GUIFrontEndBehavior implements Lis
     }
 
     public static GUIClickAction to(InventoryClickEvent e) {
-        MCCPlayer player = BukkitAdapter.wrap((Player) e.getWhoClicked());
+        MCCPlayer player = BukkitAdapter.toMcc((Player) e.getWhoClicked());
         boolean isUpperInventoryClicked = e.getView().getTopInventory().equals(e.getClickedInventory());
 
-        return new GUIClickAction(BukkitAdapter.wrap(e.getClickedInventory()), player, isUpperInventoryClicked, e.getSlot(), e.getRawSlot(), BukkitAdapter.wrap(e.getCurrentItem()), BukkitAdapter.wrap(e.getCursor()), to(e.getSlotType()), to(e.getClick()), to(e.getAction())) {
+        return new GUIClickAction(BukkitAdapter.toMcc(e.getClickedInventory()), player, isUpperInventoryClicked, e.getSlot(), e.getRawSlot(), BukkitAdapter.toMcc(e.getCurrentItem()), BukkitAdapter.toMcc(e.getCursor()), to(e.getSlotType()), to(e.getClick()), to(e.getAction())) {
             @Override
             public void setCancelled(boolean cancelled) {
                 e.setCancelled(cancelled);

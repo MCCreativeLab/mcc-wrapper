@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.platform.factory;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.math.Transformation;
 import de.verdox.mccreativelab.impl.vanilla.entity.types.NMSDisplayEntity;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
@@ -42,7 +43,7 @@ public class NMSElementFactory implements MCCElementFactory {
 
     @Override
     public MCCDataComponentMap createEmptyDataComponentMap() {
-        return nmsPlatform.getConversionService().wrap(new PatchedDataComponentMap(DataComponentMap.builder().build()));
+        return nmsPlatform.getConversionService().wrap(new PatchedDataComponentMap(DataComponentMap.builder().build()), new TypeToken<>() {});
     }
 
     @Override

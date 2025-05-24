@@ -34,7 +34,7 @@ public class ConversionBenchmarkTests extends TestBase {
 
     @Setup(Level.Trial)
     public void setup() {
-        bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()));
+        bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup(), RegistryHelper.getDataPack().getRecipeManager()));
         for (Class<?> aClass : ReflectionUtils.findAllClassesInPackage(MCCBlocks.class.getPackageName(), aClass -> !aClass.isSynthetic() && !aClass.isAnonymousClass(), s -> true)) {
             addAllFields(aClass);
         }

@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
@@ -31,8 +32,8 @@ public class NMSTypedKey<T, F> extends MCCHandle<ResourceKey<F>> implements MCCT
 
     public NMSTypedKey(ResourceKey<F> resourceKey) {
         super(resourceKey);
-        this.key = conversionService.wrap(Objects.requireNonNull(resourceKey.location(), "The conversion produced no value key. This is a bug"));
-        this.registryKey = conversionService.wrap(Objects.requireNonNull(resourceKey.registry(), "The conversion produced no registry key. This is a bug"));
+        this.key = conversionService.wrap(Objects.requireNonNull(resourceKey.location(), "The conversion produced no value key. This is a bug"), new TypeToken<>() {});
+        this.registryKey = conversionService.wrap(Objects.requireNonNull(resourceKey.registry(), "The conversion produced no registry key. This is a bug"), new TypeToken<>() {});
     }
 
     @Override

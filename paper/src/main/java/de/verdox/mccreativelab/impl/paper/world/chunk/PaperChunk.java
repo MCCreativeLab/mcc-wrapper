@@ -21,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 public class PaperChunk extends NMSChunk {
     public static final MCCConverter<LevelChunk, PaperChunk> CONVERTER = converter(PaperChunk.class, LevelChunk.class, PaperChunk::new, MCCHandle::getHandle);
@@ -71,8 +70,8 @@ public class PaperChunk extends NMSChunk {
 
     @Override
     public boolean teleport(@NotNull Pos<?> pos, @NotNull MCCEntity entity, MCCTeleportFlag... flags) {
-        var bukkitFlags = Arrays.stream(flags).map(mccTeleportFlag -> BukkitAdapter.unwrap(mccTeleportFlag, TeleportFlag.EntityState.class)).toArray(TeleportFlag.EntityState[]::new);
-        Entity bukkitEntity = BukkitAdapter.unwrap(entity, Entity.class);
-        return bukkitEntity.teleport(BukkitAdapter.unwrap(pos, Location.class), PlayerTeleportEvent.TeleportCause.PLUGIN, bukkitFlags);
+        var bukkitFlags = Arrays.stream(flags).map(BukkitAdapter::toBukkit).toArray(TeleportFlag.EntityState[]::new);
+        Entity bukkitEntity = BukkitAdapter.toBukkit(entity);
+        return bukkitEntity.teleport(BukkitAdapter.toBukkit(getWorld(), pos), PlayerTeleportEvent.TeleportCause.PLUGIN, bukkitFlags);
     }
 }

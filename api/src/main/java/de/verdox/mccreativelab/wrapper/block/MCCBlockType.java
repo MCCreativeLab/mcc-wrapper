@@ -61,16 +61,9 @@ public interface MCCBlockType extends MCCKeyedWrapper {
      */
     MCCBlockState getDefaultState();
 
-    default int getIndexOfState(MCCBlockState mccBlockState){
+    default int getIndexOfState(MCCBlockState mccBlockState) {
         return getAllBlockStates().indexOf(mccBlockState);
     }
-
-    /**
-     * Returns the sound group of this block type
-     *
-     * @return the sound group
-     */
-    MCCBlockSoundGroup getSoundGroup();
 
     /**
      * Gets the drops of a block state at a location.
@@ -85,47 +78,19 @@ public interface MCCBlockType extends MCCKeyedWrapper {
         return blockState.getDrops(mccLocation, entityBreakingTheBlock, tool);
     }
 
-    /**
-     * Returns the explosion resistance of this block type
-     *
-     * @return the explosion resistance
-     */
-    float getExplosionResistance();
-
-    /**
-     * Returns the hardness of this block type
-     *
-     * @return the hardness
-     */
-    float getHardness();
-
-    /**
-     * Returns the friction of this block type
-     *
-     * @return the friction
-     */
-    float getFriction();
-
-    /**
-     * Returns the jump factor of this block type
-     *
-     * @return the jump factor
-     */
-    float getJumpFactor();
-
-    /**
-     * Returns the speed factor of this block type
-     *
-     * @return the speed factor
-     */
-    float getSpeedFactor();
-
     //TODO: 
     // - Piston Push Reaction
     // - Light Level
 
     @Override
-    default Key getRegistryKey(){
+    default Key getRegistryKey() {
         return MCCRegistries.BLOCK_REGISTRY.key();
     }
+
+    /**
+     * Returns the properties of this block
+     *
+     * @return the block properties
+     */
+    MCCBlockProperties getBlockProperties();
 }

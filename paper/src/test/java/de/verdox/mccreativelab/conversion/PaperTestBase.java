@@ -9,7 +9,7 @@ public class PaperTestBase extends TestBase {
 
     @BeforeAll
     public static void bootstrap() {
-        bootstrap(() -> new PaperPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()));
+        bootstrap(() -> new PaperPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup(), RegistryHelper.getDataPack().getRecipeManager()));
     }
 
 }

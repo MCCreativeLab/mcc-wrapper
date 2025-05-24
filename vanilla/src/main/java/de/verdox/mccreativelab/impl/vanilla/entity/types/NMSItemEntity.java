@@ -40,7 +40,7 @@ public class NMSItemEntity<T extends ItemEntity> extends NMSEntity<T> implements
 
     @Override
     public MCCItemStack getItem() {
-        return conversionService.wrap(handle.getItem());
+        return conversionService.wrap(handle.getItem(), new TypeToken<>() {});
     }
 
     @Override

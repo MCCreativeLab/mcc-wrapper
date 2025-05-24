@@ -1,7 +1,9 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -38,6 +40,36 @@ public class MapConverter<M extends Map, T extends M> extends ContainerConverter
         platformImplType.forEach((wrappedKey, wrappedValue) -> {
             Object nativeKey = getConversionService().unwrap(wrappedKey);
             Object nativeValue = getConversionService().unwrap(wrappedValue);
+            newMap.put(nativeKey, nativeValue);
+        });
+        return done(newMap);
+    }
+
+    @Override
+    public ConversionResult<M> wrap(M nativeType, TypeToken<M> toType) {
+        List<TypeToken<?>> args = getTypeArguments(toType);
+        TypeToken<?> keyType = args.size() > 0 ? args.get(0) : TypeToken.of(Object.class);
+        TypeToken<?> valueType = args.size() > 1 ? args.get(1) : TypeToken.of(Object.class);
+
+        M newMap = constructor.get();
+        nativeType.forEach((nativeKey, nativeValue) -> {
+            Object wrappedKey = getConversionService().wrap(nativeKey, keyType);
+            Object wrappedValue = getConversionService().wrap(nativeValue, valueType);
+            newMap.put(wrappedKey, wrappedValue);
+        });
+        return done(newMap);
+    }
+
+    @Override
+    public ConversionResult<M> unwrap(M platformImplType, TypeToken<M> fromType) {
+        List<TypeToken<?>> args = getTypeArguments(fromType);
+        TypeToken<?> keyType = args.size() > 0 ? args.get(0) : TypeToken.of(Object.class);
+        TypeToken<?> valueType = args.size() > 1 ? args.get(1) : TypeToken.of(Object.class);
+
+        M newMap = constructor.get();
+        platformImplType.forEach((wrappedKey, wrappedValue) -> {
+            Object nativeKey = getConversionService().unwrap(wrappedKey, keyType);
+            Object nativeValue = getConversionService().unwrap(wrappedValue, valueType);
             newMap.put(nativeKey, nativeValue);
         });
         return done(newMap);

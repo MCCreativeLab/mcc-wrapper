@@ -76,7 +76,7 @@ public abstract class NMSFurnaceContainerMenu<T extends AbstractFurnaceMenu> ext
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("container"));
+        return conversionService.wrap(readContainerFromField("container"), new TypeToken<>() {});
     }
 
     protected abstract RecipeType<? extends AbstractCookingRecipe> getRecipeType();

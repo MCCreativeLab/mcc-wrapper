@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.conversion.converter;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 
 import java.util.Objects;
@@ -17,6 +18,7 @@ public abstract class ContainerConverter<F, T> implements MCCConverter<F, T> {
         Objects.requireNonNull(conversionService);
         this.conversionService = conversionService;
     }
+
 
     /**
      * Returns the conversion service that should be used to convert the values of the containers

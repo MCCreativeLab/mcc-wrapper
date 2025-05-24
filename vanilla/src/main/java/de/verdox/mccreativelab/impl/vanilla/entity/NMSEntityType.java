@@ -27,6 +27,6 @@ public class NMSEntityType extends MCCHandle<EntityType<?>> implements MCCEntity
 
     @Override
     public MCCEntity constructNewEntity(MCCWorld world, MCCEntitySpawnReason spawnReason) {
-        return conversionService.wrap(handle.create(conversionService.unwrap(world), conversionService.unwrap(spawnReason)));
+        return conversionService.wrap(handle.create(conversionService.unwrap(world), conversionService.unwrap(spawnReason)), new TypeToken<>() {});
     }
 }
