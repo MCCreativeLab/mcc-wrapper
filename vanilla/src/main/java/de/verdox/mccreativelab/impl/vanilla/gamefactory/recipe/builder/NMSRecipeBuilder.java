@@ -1,6 +1,8 @@
 package de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.builder;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
+import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
 import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapedRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapelessRecipe;
@@ -11,6 +13,7 @@ import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCFur
 import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCSmokingRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTransformRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTrimRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSIngredient;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapedRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapelessRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.NMSStonecutterRecipe;
@@ -20,10 +23,51 @@ import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.c
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSSmokingRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTransformRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTrimRecipe;
+import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
+import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
+import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 public class NMSRecipeBuilder implements RecipeBuilder {
+
+    @Override
+    public MCCIngredient createIngredient(MCCItemType... allowedTypes) {
+        if (NMSPlatform.isMixinSupported) {
+            return RecipeBuilder.super.createIngredient(allowedTypes);
+        }
+
+        Item[] items = new Item[allowedTypes.length];
+        for (int i = 0; i < allowedTypes.length; i++) {
+            MCCItemType allowedType = allowedTypes[i];
+            if (!allowedType.isVanilla()) {
+                allowedType.requireVanilla();
+                break;
+            }
+            items[i] = MCCPlatform.getInstance().getConversionService().unwrap(allowedType, Item.class);
+        }
+        Ingredient ingredient = Ingredient.of(items);
+        return new NMSIngredient(ingredient);
+    }
+
+    @Override
+    public MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples) {
+        MCCPlatform.getInstance().checkForMixins();
+        Ingredient ingredient = Ingredient.of(Items.BEDROCK);
+        Object ingredientAsObject = ingredient;
+        if (!(ingredientAsObject instanceof PredicateIngredient predicateIngredient)) {
+            throw new IllegalStateException("Ingredients should implement " + PredicateIngredient.class + " through mixins.");
+        }
+        predicateIngredient.mcc_wrapper$setItemPredicate(new RecipePredicate(ingredientPredicate, Arrays.stream(recipeBookExamples).toList()));
+        return MCCPlatform.getInstance().getConversionService().wrap(ingredient, MCCIngredient.class);
+    }
 
     @Override
     public Standard.Crafting.Shaped createShapedRecipe() {
