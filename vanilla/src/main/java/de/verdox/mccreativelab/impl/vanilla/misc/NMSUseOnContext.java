@@ -23,26 +23,26 @@ public class NMSUseOnContext extends MCCHandle<UseOnContext> implements MCCUseOn
 
     @Override
     public @Nullable MCCPlayer getPlayer() {
-        return conversionService.wrap(handle.getPlayer());
+        return conversionService.wrap(handle.getPlayer(), new TypeToken<>() {});
     }
 
     @Override
     public MCCInteractionHand getHand() {
-        return conversionService.wrap(handle.getHand());
+        return conversionService.wrap(handle.getHand(), new TypeToken<>() {});
     }
 
     @Override
     public MCCBlockHitResult getHit() {
-        return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "hitResult", new TypeToken<BlockHitResult>() {}));
+        return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "hitResult", new TypeToken<BlockHitResult>() {}), new TypeToken<>() {});
     }
 
     @Override
     public MCCWorld getWorld() {
-        return conversionService.wrap(handle.getLevel());
+        return conversionService.wrap(handle.getLevel(), new TypeToken<>() {});
     }
 
     @Override
     public MCCItemStack getItemStack() {
-        return conversionService.wrap(handle.getItemInHand());
+        return conversionService.wrap(handle.getItemInHand(), new TypeToken<>() {});
     }
 }

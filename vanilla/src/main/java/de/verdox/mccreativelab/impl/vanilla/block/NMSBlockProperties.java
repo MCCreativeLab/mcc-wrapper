@@ -39,13 +39,13 @@ public class NMSBlockProperties extends MCCHandle<BlockBehaviour.Properties> imp
     @Override
     @MCCReflective
     public MCCNoteBlockInstrument instrument() {
-        return ReflectionUtils.readFieldFromClass(handle, "instrument", new TypeToken<>() {});
+        return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "instrument", new TypeToken<>() {}), new TypeToken<>() {});
     }
 
     @Override
     @MCCReflective
     public MCCBlockSoundGroup soundType() {
-        return ReflectionUtils.readFieldFromClass(handle, "soundType", new TypeToken<>() {});
+        return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "soundType", new TypeToken<>() {}), new TypeToken<>() {});
     }
 
     @Override
@@ -87,6 +87,6 @@ public class NMSBlockProperties extends MCCHandle<BlockBehaviour.Properties> imp
     @Override
     @MCCReflective
     public MCCPushReaction pushReaction() {
-        return ReflectionUtils.readFieldFromClass(handle, "pushReaction", new TypeToken<>() {});
+        return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "pushReaction", new TypeToken<>() {}),  new TypeToken<>() {});
     }
 }

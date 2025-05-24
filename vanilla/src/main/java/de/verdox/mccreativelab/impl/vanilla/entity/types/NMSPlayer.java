@@ -7,6 +7,7 @@ import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.entity.player.client.NMSSkinParts;
 import de.verdox.mccreativelab.reflection.ReflectionUtils;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
 import de.verdox.mccreativelab.wrapper.entity.player.client.MCCClientOption;
@@ -52,6 +53,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -120,7 +122,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
         return new MCCEntityProperty<>() {
             @Override
             public @Nullable MCCGameMode get() {
-                return conversionService.wrap(getServerPlayer().gameMode.getGameModeForPlayer());
+                return conversionService.wrap(getServerPlayer().gameMode.getGameModeForPlayer(), new TypeToken<>() {});
             }
 
             @Override
@@ -138,7 +140,7 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public @Nullable MCCGameMode getPreviousGameMode() {
-        return conversionService.wrap(getServerPlayer().gameMode.getPreviousGameModeForPlayer());
+        return conversionService.wrap(getServerPlayer().gameMode.getPreviousGameModeForPlayer(), new TypeToken<>() {});
     }
 
     @Override
@@ -215,6 +217,11 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
     }
 
     @Override
+    public boolean hasCorrectToolForDrops(MCCBlockState state) {
+        return handle.hasCorrectToolForDrops(conversionService.unwrap(state, new TypeToken<>() {}));
+    }
+
+    @Override
     public void setCamera(@Nullable MCCEntity entityToSpectate) {
         getServerPlayer().setCamera(conversionService.unwrap(entityToSpectate, Entity.class));
     }
@@ -232,12 +239,12 @@ public class NMSPlayer extends NMSLivingEntity<Player> implements MCCPlayer {
 
     @Override
     public @Nullable MCCContainerMenu<?, ?> getCurrentlyViewedInventory() {
-        return conversionService.wrap(handle.containerMenu);
+        return conversionService.wrap(handle.containerMenu, new TypeToken<>() {});
     }
 
     @Override
     public MCCItemStack getCursorItem() {
-        return conversionService.wrap(this.getHandle().containerMenu.getCarried());
+        return conversionService.wrap(this.getHandle().containerMenu.getCarried(), new TypeToken<>() {});
     }
 
     @Override

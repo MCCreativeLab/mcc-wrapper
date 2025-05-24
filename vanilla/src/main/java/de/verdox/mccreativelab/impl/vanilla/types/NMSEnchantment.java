@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEquipmentSlotGroup;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
@@ -22,22 +23,22 @@ public class NMSEnchantment extends MCCHandle<Enchantment> implements MCCEnchant
 
     @Override
     public Component getDescription() {
-        return conversionService.wrap(handle.description());
+        return conversionService.wrap(handle.description(), new TypeToken<>() {});
     }
 
     @Override
     public MCCDataComponentMap getEffects() {
-        return conversionService.wrap(handle.effects());
+        return conversionService.wrap(handle.effects(), new TypeToken<>() {});
     }
 
     @Override
     public MCCReferenceSet<MCCEnchantment> getExclusiveSet() {
-        return conversionService.wrap(handle.exclusiveSet());
+        return conversionService.wrap(handle.exclusiveSet(), new TypeToken<>() {});
     }
 
     @Override
     public Definition getDefinition() {
-        return conversionService.wrap(handle.definition());
+        return conversionService.wrap(handle.definition(), new TypeToken<>() {});
     }
 
     public static class NMSDefinition extends MCCHandle<Enchantment.EnchantmentDefinition> implements Definition {
@@ -49,12 +50,12 @@ public class NMSEnchantment extends MCCHandle<Enchantment> implements MCCEnchant
 
         @Override
         public MCCReferenceSet<MCCItemType> getSupportedItems() {
-            return conversionService.wrap(handle.supportedItems());
+            return conversionService.wrap(handle.supportedItems(), new TypeToken<>() {});
         }
 
         @Override
         public Optional<MCCReferenceSet<MCCItemType>> getPrimaryItems() {
-            return conversionService.wrap(handle.primaryItems());
+            return conversionService.wrap(handle.primaryItems(), new TypeToken<>() {});
         }
 
         @Override
@@ -69,12 +70,12 @@ public class NMSEnchantment extends MCCHandle<Enchantment> implements MCCEnchant
 
         @Override
         public Cost getMinCost() {
-            return conversionService.wrap(handle.minCost());
+            return conversionService.wrap(handle.minCost(), new TypeToken<>() {});
         }
 
         @Override
         public Cost getMaxCost() {
-            return conversionService.wrap(handle.maxCost());
+            return conversionService.wrap(handle.maxCost(), new TypeToken<>() {});
         }
 
         @Override
@@ -84,7 +85,7 @@ public class NMSEnchantment extends MCCHandle<Enchantment> implements MCCEnchant
 
         @Override
         public List<MCCEquipmentSlotGroup> getSlots() {
-            return conversionService.wrap(handle.slots());
+            return conversionService.wrap(handle.slots(), new TypeToken<>() {});
         }
     }
 

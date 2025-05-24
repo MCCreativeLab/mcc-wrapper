@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.misc;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.misc.MCCBlockHitResult;
 import de.verdox.mccreativelab.wrapper.misc.MCCDirection;
@@ -16,7 +17,7 @@ public class NMSBlockHitResult extends NMSHitResult<BlockHitResult> implements M
 
     @Override
     public MCCDirection getDirection() {
-        return conversionService.wrap(handle.getDirection());
+        return conversionService.wrap(handle.getDirection(), new TypeToken<>() {});
     }
 
     @Override

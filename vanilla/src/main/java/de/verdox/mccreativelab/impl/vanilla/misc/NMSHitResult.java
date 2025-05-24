@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.misc;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.misc.MCCHitResult;
 import de.verdox.mccreativelab.wrapper.misc.MCCHitType;
@@ -30,6 +31,6 @@ public class NMSHitResult<T extends HitResult> extends MCCHandle<T> implements M
 
     @Override
     public MCCHitType getType() {
-        return conversionService.wrap(getType());
+        return conversionService.wrap(getType(), new TypeToken<>() {});
     }
 }

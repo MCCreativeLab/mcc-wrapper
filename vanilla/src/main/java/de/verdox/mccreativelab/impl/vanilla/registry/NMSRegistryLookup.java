@@ -49,7 +49,7 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
     @Override
     public Optional<MCCTypedKey<T>> getTypedKey(T value) {
         R unwrapped = conversionService.unwrap(value);
-        return handle.listElements().filter(rReference -> rReference.value().equals(unwrapped)).findAny().map(rReference -> conversionService.wrap(rReference.key()));
+        return handle.listElements().filter(rReference -> rReference.value().equals(unwrapped)).findAny().map(rReference -> conversionService.wrap(rReference.key(), new TypeToken<>() {}));
 
     }
 
@@ -60,12 +60,12 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
 
     @Override
     public @Nullable T get(@Nullable Key key) {
-        return get(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, conversionService.wrap(registryKey.location())));
+        return get(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, conversionService.wrap(registryKey.location(), new TypeToken<>() {})));
     }
 
     @Override
     public Optional<MCCReference<T>> getAny() {
-        return handle.listElements().findAny().map(rReference -> conversionService.wrap(rReference));
+        return handle.listElements().findAny().map(rReference -> conversionService.wrap(rReference, new TypeToken<>() {}));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
 
     @Override
     public Set<MCCTypedKey<T>> registryKeySet() {
-        return handle.listElementIds().map(resourceKey -> conversionService.<ResourceKey<R>, MCCTypedKey<T>>wrap(resourceKey)).collect(Collectors.toSet());
+        return handle.listElementIds().map(resourceKey -> conversionService.wrap(resourceKey, new TypeToken<MCCTypedKey<T>>() {})).collect(Collectors.toSet());
     }
 
     @Override
@@ -95,12 +95,12 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
 
     @Override
     public Optional<MCCReference<T>> getReference(Key key) {
-        return getReference(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, conversionService.wrap(registryKey.location())));
+        return getReference(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, conversionService.wrap(registryKey.location(), new TypeToken<>() {})));
     }
 
     @Override
     public Optional<MCCReference<T>> getReference(MCCTypedKey<T> key) {
-        return conversionService.wrap(handle.get(conversionService.unwrap(key, new TypeToken<ResourceKey<R>>() {})));
+        return conversionService.wrap(handle.get(conversionService.unwrap(key, new TypeToken<ResourceKey<R>>() {})), new TypeToken<>() {});
     }
 
     @Override
@@ -116,14 +116,14 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
     public Optional<MCCReferenceSet<T>> getTagValues(MCCTag<T> tag) {
         TagKey<R> tagKey = conversionService.unwrap(tag);
         Optional<HolderSet.Named<R>> holderSet = handle.get(tagKey);
-        return conversionService.wrap(holderSet);
+        return conversionService.wrap(holderSet, new TypeToken<>() {});
     }
 
     @Override
     public MCCReferenceSet<T> getOrCreateTag(MCCTag<T> tag) {
         TagKey<R> tagKey = conversionService.unwrap(tag);
         HolderSet.Named<R> holderSet = handle.getOrThrow(tagKey);
-        return conversionService.wrap(holderSet);
+        return conversionService.wrap(holderSet, new TypeToken<>() {});
     }
 
     @Override
@@ -138,7 +138,7 @@ public class NMSRegistryLookup<T, R> extends MCCHandle<HolderLookup<R>> implemen
 
     @Override
     public Stream<MCCTag<T>> getTagNames() {
-        return handle.listTagIds().map(rTagKey -> conversionService.wrap(rTagKey));
+        return handle.listTagIds().map(rTagKey -> conversionService.wrap(rTagKey, new TypeToken<>() {}));
     }
 
     @Override

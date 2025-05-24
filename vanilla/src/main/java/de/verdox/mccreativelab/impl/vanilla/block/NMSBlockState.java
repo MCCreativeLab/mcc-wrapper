@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +89,6 @@ public class NMSBlockState extends MCCHandle<BlockState> implements MCCBlockStat
 
     @Override
     public <T extends Comparable<T>> MCCBlockState newState(MCCBlockStateProperty<T> property, T value) {
-        return conversionService.wrap(handle.trySetValue(conversionService.unwrap(property), conversionService.unwrap(value)));
+        return conversionService.wrap(handle.trySetValue(conversionService.unwrap(property, new TypeToken<Property<T>>() {}), conversionService.unwrap(value)), new TypeToken<>() {});
     }
 }

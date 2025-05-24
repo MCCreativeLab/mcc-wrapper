@@ -35,7 +35,7 @@ public class NMSBlockType extends MCCHandle<Block> implements MCCBlockType {
 
     @Override
     public MCCBlockProperties getBlockProperties() {
-        return conversionService.wrap(handle.properties());
+        return conversionService.wrap(handle.properties(), new TypeToken<>() {});
     }
 
     @Override

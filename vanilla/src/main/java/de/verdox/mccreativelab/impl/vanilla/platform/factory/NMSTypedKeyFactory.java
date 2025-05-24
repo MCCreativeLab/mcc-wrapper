@@ -48,7 +48,7 @@ public class NMSTypedKeyFactory implements TypedKeyFactory {
         Objects.requireNonNull(key);
         Objects.requireNonNull(values);
         return new MCCTag<>() {
-            private final MCCReferenceSet<T> set = MCCPlatform.getInstance().getConversionService().wrap(HolderSet.direct(values.stream().map(Holder::direct).toArray(Holder[]::new)));
+            private final MCCReferenceSet<T> set = MCCPlatform.getInstance().getConversionService().wrap(HolderSet.direct(values.stream().map(Holder::direct).toArray(Holder[]::new)), new TypeToken<>() {});
 
             @Override
             public boolean isFor(MCCTypedKey<? extends MCCRegistry<?>> registryKey) {

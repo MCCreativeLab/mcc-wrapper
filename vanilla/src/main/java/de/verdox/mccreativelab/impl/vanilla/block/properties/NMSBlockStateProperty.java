@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.block.properties;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -21,7 +22,7 @@ public class NMSBlockStateProperty<F extends Comparable<F>, T extends Comparable
 
     @Override
     public MCCBlockStateProperty.Value<T> value(T value) {
-        return conversionService.wrap(handle.value(conversionService.unwrap(value, handle.getValueClass())));
+        return conversionService.wrap(handle.value(conversionService.unwrap(value, handle.getValueClass())), new TypeToken<>() {});
     }
 
     @Override
@@ -48,7 +49,7 @@ public class NMSBlockStateProperty<F extends Comparable<F>, T extends Comparable
 
         @Override
         public MCCBlockStateProperty<T> property() {
-            return conversionService.wrap(handle.property());
+            return conversionService.wrap(handle.property(), new TypeToken<>() {});
         }
 
         @Override

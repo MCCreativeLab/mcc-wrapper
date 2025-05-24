@@ -22,7 +22,7 @@ public class NMSLifecycleTrigger implements MCCLifecycleTrigger {
     public void beforeWorldLoad() {
         LOGGER.info("Freezing custom registries");
         MCCPlatform.getInstance().getRegistryStorage().freezeCustomRegistries();
-        initBlockCache();
+        //initBlockCache();
     }
 
     @Override
@@ -42,7 +42,6 @@ public class NMSLifecycleTrigger implements MCCLifecycleTrigger {
     private static void initBlockCache() {
         for (Block block : BuiltInRegistries.BLOCK) {
             for (BlockState blockState : block.getStateDefinition().getPossibleStates()) {
-                Block.BLOCK_STATE_REGISTRY.add(blockState);
                 blockState.initCache();
             }
         }

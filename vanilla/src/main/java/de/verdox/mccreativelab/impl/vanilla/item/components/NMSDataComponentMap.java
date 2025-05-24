@@ -70,7 +70,7 @@ public class NMSDataComponentMap extends MCCHandle<DataComponentMap> implements 
 
     @Override
     public Set<MCCDataComponentType<?>> keySet() {
-        return MCCPlatform.getInstance().getConversionService().wrap(handle.keySet());
+        return MCCPlatform.getInstance().getConversionService().wrap(handle.keySet(), new TypeToken<>() {});
     }
 
     @Override

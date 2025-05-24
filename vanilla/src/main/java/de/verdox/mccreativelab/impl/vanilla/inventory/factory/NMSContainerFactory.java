@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.factory;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Function4;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.impl.vanilla.inventory.factory.creator.AbstractLocationBasedMenuCreatorInstance;
@@ -59,7 +60,7 @@ public class NMSContainerFactory implements MCCContainerFactory {
 
     @Override
     public MCCContainer createSimpleContainer(@Positive int size) {
-        return mccPlatform.getConversionService().wrap(new SimpleContainer(size));
+        return mccPlatform.getConversionService().wrap(new SimpleContainer(size), new TypeToken<>() {});
     }
 
     @Override
@@ -370,7 +371,7 @@ public class NMSContainerFactory implements MCCContainerFactory {
                 }
 
                 nmsContainerFactory.sharedBasedCache.put(menuType, function);
-                nmsContainerFactory.standardCache.put(menuType, () -> function.apply(nmsContainerFactory.mccPlatform.getConversionService().wrap(Objects.requireNonNull(containerCreator.get(), "The container supplier of "+menuType.key()+" cannot produce null containers."))));
+                nmsContainerFactory.standardCache.put(menuType, () -> function.apply(nmsContainerFactory.mccPlatform.getConversionService().wrap(Objects.requireNonNull(containerCreator.get(), "The container supplier of " + menuType.key() + " cannot produce null containers."), new TypeToken<>() {})));
 
             }
         }

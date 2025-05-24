@@ -401,7 +401,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @Nullable MCCPlayer getOnlinePlayer(@NotNull UUID uuid) {
-        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid));
+        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid), new TypeToken<>() {});
     }
 
     @Override

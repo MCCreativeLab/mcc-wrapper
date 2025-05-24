@@ -42,7 +42,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public List<MCCPlayer> getPlayers() {
-        return conversionService.wrap(handle.getPlayers(serverPlayer -> true));
+        return conversionService.wrap(handle.getPlayers(serverPlayer -> true), new TypeToken<>() {});
     }
 
     @Override
@@ -74,7 +74,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     public List<MCCEntity> getEntities(@Nullable MCCEntity entityToExclude, AxisAlignedBoundingBox boundingBox, Predicate<MCCEntity> filter) {
         Entity nmsToExclude = conversionService.unwrap(entityToExclude, Entity.class);
         AABB aabb = new AABB(boundingBox.minX(), boundingBox.minY(), boundingBox.minZ(), boundingBox.maxX(), boundingBox.maxY(), boundingBox.maxZ());
-        return conversionService.wrap(handle.getEntities(nmsToExclude, aabb, entity -> filter.test(conversionService.wrap(entity))));
+        return conversionService.wrap(handle.getEntities(nmsToExclude, aabb, entity -> filter.test(conversionService.wrap(entity, new TypeToken<>() {}))), new TypeToken<>() {});
     }
 
     @Override
@@ -89,7 +89,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @Nullable MCCPlayer getPlayer(UUID playerUUID) {
-        return conversionService.wrap(handle.getPlayerByUUID(playerUUID));
+        return conversionService.wrap(handle.getPlayerByUUID(playerUUID), new TypeToken<>() {});
     }
 
     @Override
@@ -101,7 +101,7 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
 
     @Override
     public @NotNull Key key() {
-        return conversionService.wrap(handle.dimension().location());
+        return conversionService.wrap(handle.dimension().location(), new TypeToken<>() {});
     }
 
     @Override
@@ -130,14 +130,14 @@ public class NMSWorld extends MCCHandle<ServerLevel> implements MCCWorld {
     public CompletableFuture<MCCChunk> getOrLoadChunk(Pos<?> pos) {
         CompletableFuture<MCCChunk> future = new CompletableFuture<>();
         MCChunkPos chunkPos = pos.toChunkPos();
-        future.complete(conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, true)));
+        future.complete(conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, true), new TypeToken<>() {}));
         return future;
     }
 
     @Override
     public @Nullable MCCChunk getChunkImmediately(Pos<?> pos) {
         MCChunkPos chunkPos = pos.toChunkPos();
-        return conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, false));
+        return conversionService.wrap(handle.getChunk(chunkPos.x(), chunkPos.z(), ChunkStatus.FULL, false), new TypeToken<>() {});
     }
 
     @Override
