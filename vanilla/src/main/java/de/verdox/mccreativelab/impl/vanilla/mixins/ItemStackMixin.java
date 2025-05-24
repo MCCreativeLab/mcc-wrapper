@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Mixin(ItemStack.class)
@@ -224,7 +223,7 @@ public abstract class ItemStackMixin {
         }
 
         mcc_wrapper$cachedItem = getItem();
-        Optional<MCCCustomItemType> optionalMCCCustomItemType = MCCPlatform.getInstance().getGameFactory().extract(MCCPlatform.getInstance().getConversionService().wrap(self(), new TypeToken<>() {}));
+        Optional<MCCCustomItemType> optionalMCCCustomItemType = MCCPlatform.getInstance().getGameFactory().extract(MCCPlatform.getInstance().getConversionService().wrap(self(), MCCItemStack.class));
         mcc_wrapper$customItemType = optionalMCCCustomItemType.orElse(null);
         return mcc_wrapper$customItemType;
     }
