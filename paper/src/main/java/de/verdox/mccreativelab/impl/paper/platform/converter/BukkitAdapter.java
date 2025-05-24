@@ -133,11 +133,13 @@ public class BukkitAdapter {
     // PLAYER
 
     public static MCCPlayer toMcc(HumanEntity bukkit) {
+        if(bukkit == null) return null;
         CraftPlayer craft = (CraftPlayer) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.getHandle(), MCCPlayer.class);
     }
 
     public static HumanEntity toBukkit(MCCPlayer mcc) {
+        if(mcc == null) return null;
         NMSPlayer nms = (NMSPlayer) mcc;
         return nms.getHandle().getBukkitEntity();
     }
@@ -145,11 +147,13 @@ public class BukkitAdapter {
     // ENTITY
 
     public static MCCEntity toMcc(org.bukkit.entity.Entity bukkit) {
+        if(bukkit == null) return null;
         CraftEntity craft = (CraftEntity) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.getHandle(), MCCEntity.class);
     }
 
     public static org.bukkit.entity.Entity toBukkit(MCCEntity mcc) {
+        if(mcc == null) return null;
         NMSEntity<?> nms = (NMSEntity<?>) mcc;
         return nms.getHandle().getBukkitEntity();
     }
@@ -157,11 +161,13 @@ public class BukkitAdapter {
     // ITEMSTACK
 
     public static MCCItemStack toMcc(org.bukkit.inventory.ItemStack bukkit) {
+        if(bukkit == null) return null;
         CraftItemStack craft = (CraftItemStack) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.handle, MCCItemStack.class);
     }
 
     public static org.bukkit.inventory.ItemStack toBukkit(MCCItemStack mcc) {
+        if(mcc == null) return null;
         NMSItemStack nms = (NMSItemStack) mcc;
         return nms.getHandle().asBukkitMirror();
     }
@@ -169,17 +175,20 @@ public class BukkitAdapter {
     // BLOCK
 
     public static MCCBlock toMcc(org.bukkit.block.Block bukkit) {
+        if(bukkit == null) return null;
         CraftBlock craft = (CraftBlock) bukkit;
         return new BukkitBlockConverter().wrap(craft).value();
     }
 
     public static org.bukkit.block.Block toBukkit(MCCBlock mcc) {
+        if(mcc == null) return null;
         return toBukkit(mcc.getWorld()).getBlockAt(toBukkit(mcc.getLocation()));
     }
 
     // INVENTORY
 
     public static MCCContainer toMcc(Inventory bukkit) {
+        if(bukkit == null) return null;
         CraftInventory craft = (CraftInventory) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.getInventory(), MCCContainer.class);
     }
@@ -187,6 +196,7 @@ public class BukkitAdapter {
     // CHUNK
 
     public static MCCChunk toMcc(Chunk bukkit) {
+        if(bukkit == null) return null;
         CraftChunk craft = (CraftChunk) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.getHandle(ChunkStatus.FULL), MCCChunk.class);
     }
@@ -194,61 +204,73 @@ public class BukkitAdapter {
     // WORLD
 
     public static MCCWorld toMcc(World bukkit) {
+        if(bukkit == null) return null;
         CraftWorld craft = (CraftWorld) bukkit;
         return MCCPlatform.getInstance().getConversionService().wrap(craft.getHandle(), MCCWorld.class);
     }
 
     public static World toBukkit(MCCWorld mcc) {
+        if(mcc == null) return null;
         NMSWorld nms = (NMSWorld) mcc;
         return nms.getHandle().getWorld();
     }
 
     // LOCATION
 
-    public static MCCLocation toMcc(Location location) {
-        return new BukkitLocationConverter().wrap(location).value();
+    public static MCCLocation toMcc(Location bukkit) {
+        if(bukkit == null) return null;
+        return new BukkitLocationConverter().wrap(bukkit).value();
     }
 
     public static Location toBukkit(MCCLocation mcc) {
+        if(mcc == null) return null;
         return new BukkitLocationConverter().unwrap(mcc).value();
     }
 
     public static Location toBukkit(MCCWorld mccWorld, Pos<?> pos) {
+        if(pos == null) return null;
         if (pos instanceof MCCLocation location) {
             return toBukkit(location);
         }
+        if(mccWorld == null) return null;
         return toBukkit(new MCCLocation(mccWorld, pos.toPos()));
     }
 
     //
 
-    public static TeleportFlag.EntityState toBukkit(MCCTeleportFlag mccTeleportFlag) {
-        return new EnumConverter<>(TeleportFlag.EntityState.class, MCCTeleportFlag.class).unwrap(mccTeleportFlag).value();
+    public static TeleportFlag.EntityState toBukkit(MCCTeleportFlag mcc) {
+        if(mcc == null) return null;
+        return new EnumConverter<>(TeleportFlag.EntityState.class, MCCTeleportFlag.class).unwrap(mcc).value();
     }
 
-    public static MCCBlockFace toMcc(@NotNull BlockFace bukkit) {
+    public static MCCBlockFace toMcc(BlockFace bukkit) {
+        if(bukkit == null) return null;
         return BLOCK_FACE.wrap(bukkit).value();
     }
 
-    public static MCCBlockState toMcc(@NotNull BlockData bukkit) {
+    public static MCCBlockState toMcc(BlockData bukkit) {
+        if(bukkit == null) return null;
         return BLOCK_DATA.wrap((CraftBlockData) bukkit).value();
     }
 
-    public static MCCEquipmentSlot toMcc(@NotNull EquipmentSlot bukkit) {
+    public static MCCEquipmentSlot toMcc(EquipmentSlot bukkit) {
         return EQUIPMENT_SLOT.wrap(bukkit).value();
     }
 
-    public static MCCBlockType toMcc(@Nullable BlockType bukkit) {
+    public static MCCBlockType toMcc(BlockType bukkit) {
+        if(bukkit == null) return null;
         CraftBlockType<?> craftBlockType = (CraftBlockType<?>) bukkit;
         return conversionService.wrap(craftBlockType.getHandle(), MCCBlockType.class);
     }
 
-    public static MCCItemType toMcc(@Nullable ItemType bukkit) {
+    public static MCCItemType toMcc(ItemType bukkit) {
+        if(bukkit == null) return null;
         CraftItemType<?> craftItemType = (CraftItemType<?>) bukkit;
         return conversionService.wrap(craftItemType.getHandle(), MCCItemType.class);
     }
 
     public static MCCEntityType<?> toMcc(org.bukkit.entity.EntityType bukkit) {
+        if(bukkit == null) return null;
         return ENTITY_TYPE.wrap(bukkit).value();
     }
 
