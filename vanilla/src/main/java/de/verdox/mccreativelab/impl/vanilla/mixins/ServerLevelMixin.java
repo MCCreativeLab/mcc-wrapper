@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins;
 
-import de.verdox.mccreativelab.impl.vanilla.mixins.proxy.ProxyBlockState;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy.ProxyBlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -21,7 +21,7 @@ public class ServerLevelMixin {
             )
     )
     private void redirectHandlePrecipitation(Block instance, BlockState state, Level level, BlockPos pos, Biome.Precipitation precipitation) {
-        if(state instanceof ProxyBlockState proxyBlockState) {
+        if(state instanceof ProxyBlockState proxyBlockState && proxyBlockState.isProxy()) {
             proxyBlockState.handlePrecipitation(level, pos, precipitation);
         }
         else {

@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins;
 
-import de.verdox.mccreativelab.impl.vanilla.mixins.proxy.ProxyBlockState;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy.ProxyBlockState;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;

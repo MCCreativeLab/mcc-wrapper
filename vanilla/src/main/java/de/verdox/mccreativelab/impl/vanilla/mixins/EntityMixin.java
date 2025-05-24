@@ -1,6 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.mixins;
 
-import de.verdox.mccreativelab.impl.vanilla.mixins.proxy.ProxyBlockState;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy.ProxyBlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -20,7 +20,7 @@ public class EntityMixin {
             )
     )
     public void stepOn(Block instance, Level level, BlockPos pos, BlockState state, Entity entity) {
-        if(state instanceof ProxyBlockState proxyBlockState) {
+        if(state instanceof ProxyBlockState proxyBlockState && proxyBlockState.isProxy()) {
             proxyBlockState.stepOn(level, pos, entity);
         }
         else {
