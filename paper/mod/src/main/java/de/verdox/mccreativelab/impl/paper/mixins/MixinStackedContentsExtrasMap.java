@@ -35,9 +35,9 @@ public class MixinStackedContentsExtrasMap {
     @Inject(method = "initialize", at = @At("TAIL"))
     private void injectInitialize(Recipe<?> recipe, CallbackInfo ci) {
         for (net.minecraft.world.item.crafting.Ingredient ingredient : recipe.placementInfo().ingredients()) {
-            if (((PredicateIngredient) (Object) ingredient).getItemPredicate() != null) {
+            if (((PredicateIngredient) (Object) ingredient).mcc_wrapper$getItemPredicate() != null) {
                 this.hasPredicateChoice = true;
-                this.predicateChoices.add(((PredicateIngredient) (Object) ingredient).getItemPredicate());
+                this.predicateChoices.add(((PredicateIngredient) (Object) ingredient).mcc_wrapper$getItemPredicate());
             }
         }
     }
