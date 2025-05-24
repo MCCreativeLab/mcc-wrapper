@@ -10,12 +10,12 @@ class BukkitBlockConverter implements MCCConverter<Block, MCCBlock> {
 
     @Override
     public ConversionResult<MCCBlock> wrap(Block nativeType) {
-        return done(new MCCBlock(BukkitAdapter.toMcc(nativeType.getLocation()), BukkitAdapter.toMcc(nativeType.getChunk(), new TypeToken<>() {})));
+        return done(new MCCBlock(BukkitAdapter.toMcc(nativeType.getLocation()), BukkitAdapter.toMcc(nativeType.getChunk())));
     }
 
     @Override
     public ConversionResult<Block> unwrap(MCCBlock platformImplType) {
-        return done(BukkitAdapter.toBukkit(platformImplType.getLocation().world(), new TypeToken<World>() {}).getBlockAt(BukkitAdapter.toBukkit(platformImplType.getLocation())));
+        return done(BukkitAdapter.toBukkit(platformImplType.getLocation().world()).getBlockAt(BukkitAdapter.toBukkit(platformImplType.getLocation())));
     }
 
     @Override

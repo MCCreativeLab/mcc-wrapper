@@ -30,8 +30,8 @@ public class PaperCapturedBlockState extends MCCCapturedBlockState {
     public PaperCapturedBlockState(@NotNull MCCBlock block, int flag) {
         super(block, flag);
 
-        World world = BukkitAdapter.toBukkit(block.getLocation().world(), new TypeToken<>() {});
-        Location location = BukkitAdapter.toBukkit(block.getLocation(), new TypeToken<>() {});
+        World world = BukkitAdapter.toBukkit(block.getLocation().world());
+        Location location = BukkitAdapter.toBukkit(block.getLocation());
         CraftBlockState craftBlockState = (CraftBlockState) world.getBlockAt(location).getState(true);
         try {
             bukkitBlockState = createProxy(craftBlockState.getClass(), craftBlockState);

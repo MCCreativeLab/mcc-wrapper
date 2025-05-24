@@ -22,7 +22,7 @@ public class PaperWorld extends NMSWorld {
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(Pos<?> pos) {
         MCChunkPos chunkPos = pos.toChunkPos();
-        return handle.getWorld().getChunkAtAsync(chunkPos.x(), chunkPos.z()).thenApply(chunk -> BukkitAdapter.toMcc(chunk, MCCChunk.class));
+        return handle.getWorld().getChunkAtAsync(chunkPos.x(), chunkPos.z()).thenApply(BukkitAdapter::toMcc);
     }
 
     @Override

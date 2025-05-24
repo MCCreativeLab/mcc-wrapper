@@ -7,50 +7,53 @@ import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import java.util.function.Function;
 
 /**
- * @param <F> The native minecraft type
- * @param <B> A craft bukkit object that wraps this native minecraft type but does not have an abstraction layer to share with other classes of this type like {@link org.bukkit.craftbukkit.inventory.CraftItemStack} or {@link org.bukkit.craftbukkit.entity.CraftEntity}
- * @param <T> The MCC type to convert to
+ * @param <NATIVE> The native minecraft type
+ * @param <CRAFT_TYPE> A craft bukkit object that wraps this native minecraft type but does not have an abstraction layer to share with other classes of this type like {@link org.bukkit.craftbukkit.inventory.CraftItemStack} or {@link org.bukkit.craftbukkit.entity.CraftEntity}
+ * @param <API_IMPL> The MCC type to convert to
  */
-public class BukkitCraftConverter<F, B, T> implements MCCConverter<B, T> {
-    private final TypeToken<B> bukkitType;
-    private final TypeToken<T> apiImplType;
-    private final Function<B, F> getter;
-    private final Function<F, B> wrapper;
+public class BukkitCraftConverter<NATIVE, CRAFT_TYPE, API, API_IMPL> implements MCCConverter<CRAFT_TYPE, API_IMPL> {
+    private final TypeToken<CRAFT_TYPE> bukkitType;
+    private final TypeToken<API> typeToken;
+    private final TypeToken<API_IMPL> apiImplType;
+    private final Function<CRAFT_TYPE, NATIVE> getter;
+    private final Function<NATIVE, CRAFT_TYPE> wrapper;
 
-    public BukkitCraftConverter(TypeToken<B> bukkitType, TypeToken<T> apiImplType, Function<B, F> getter, Function<F,B> wrapper) {
+    public BukkitCraftConverter(TypeToken<CRAFT_TYPE> bukkitType, TypeToken<API> api, TypeToken<API_IMPL> apiImplType, Function<CRAFT_TYPE, NATIVE> getter, Function<NATIVE, CRAFT_TYPE> wrapper) {
         this.bukkitType = bukkitType;
+        this.typeToken = api;
         this.apiImplType = apiImplType;
         this.getter = getter;
         this.wrapper = wrapper;
     }
 
     @Override
-    public ConversionResult<T> wrap(B nativeType) {
-        F nmsObject = getter.apply(nativeType);
-        if(nmsObject == null){
+    public ConversionResult<API_IMPL> wrap(CRAFT_TYPE bukkitType) {
+        NATIVE nmsObject = getter.apply(bukkitType);
+        if (nmsObject == null) {
             return notDone(null);
         }
-        return done(MCCPlatform.getInstance().getConversionService().wrap(nmsObject, apiImplType));
+        API api = MCCPlatform.getInstance().getConversionService().wrap(nmsObject, typeToken);
+        return done((API_IMPL) api);
     }
 
     @Override
-    public ConversionResult<B> unwrap(T platformImplType) {
-        F unwrappedNativeType = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType);
-        B bukkitType = wrapper.apply(unwrappedNativeType);
-        if(bukkitType == null){
+    public ConversionResult<CRAFT_TYPE> unwrap(API_IMPL platformImplType) {
+        NATIVE unwrappedNativeType = MCCPlatform.getInstance().getConversionService().unwrap(platformImplType);
+        CRAFT_TYPE bukkitType = wrapper.apply(unwrappedNativeType);
+        if (bukkitType == null) {
             return notDone(null);
         }
         return done(bukkitType);
     }
 
     @Override
-    public Class<T> apiImplementationClass() {
-        return (Class<T>) apiImplType.getRawType();
+    public Class<API_IMPL> apiImplementationClass() {
+        return (Class<API_IMPL>) apiImplType.getRawType();
     }
 
     @Override
-    public Class<B> nativeMinecraftType() {
-        return (Class<B>) bukkitType.getRawType();
+    public Class<CRAFT_TYPE> nativeMinecraftType() {
+        return (Class<CRAFT_TYPE>) bukkitType.getRawType();
     }
 
     @Override

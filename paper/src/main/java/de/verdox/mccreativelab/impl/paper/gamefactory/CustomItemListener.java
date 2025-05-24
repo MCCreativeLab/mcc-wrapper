@@ -39,7 +39,7 @@ public class CustomItemListener implements Listener {
             if(matrix == null) {
                 continue;
             }
-            MCCItemStack stack = BukkitAdapter.toMcc(matrix, MCCItemStack.class);
+            MCCItemStack stack = BukkitAdapter.toMcc(matrix);
             if(repairedType == null) {
                 repairedType = stack.getType();
             }
