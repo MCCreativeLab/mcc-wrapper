@@ -21,7 +21,7 @@ public class RecipePatcher {
         interceptor.exclude(MCCDataPackInterceptor.PackAssetType.RECIPE, Key.key("minecraft", name));
     }
 
-    private static void patchResult(JsonObjectBuilder jsonObjectBuilder, String name, int result) {
+    public static void patchResult(JsonObjectBuilder jsonObjectBuilder, String name, int result) {
         jsonObjectBuilder.add("result",
                 JsonObjectBuilder
                         .create()
@@ -30,7 +30,7 @@ public class RecipePatcher {
         );
     }
 
-    private static void patchResult(JsonObjectBuilder jsonObjectBuilder, String name) {
+    public static void patchResult(JsonObjectBuilder jsonObjectBuilder, String name) {
         jsonObjectBuilder.add("result",
                 JsonObjectBuilder
                         .create()
@@ -46,27 +46,27 @@ public class RecipePatcher {
         patchRecipe(name, jsonObjectBuilder -> patchResult(jsonObjectBuilder, name, result));
     }
 
-    private static void patchFoodRecipe(String name, int smokerSeconds, int campfireSeconds, boolean delete) {
+    public static void patchFoodRecipe(String name, int smokerSeconds, int campfireSeconds, boolean delete) {
         if (delete)
             removeRecipe(name);
         patchSmeltingTime(name + "_from_smoking", smokerSeconds);
         patchSmeltingTime(name + "_from_campfire_cooking", campfireSeconds);
     }
 
-    private static void patchSmeltingType(String name, String smeltingType) {
+    public static void patchSmeltingType(String name, String smeltingType) {
         patchRecipe(name, jsonObjectBuilder -> jsonObjectBuilder.add("type", smeltingType));
     }
 
-    private static void patchSmeltingTime(String name, int timeInSeconds) {
+    public static void patchSmeltingTime(String name, int timeInSeconds) {
         patchRecipe(name, jsonObjectBuilder -> jsonObjectBuilder.add("cookingtime", timeInSeconds * 20));
     }
 
-    private static void patchSmeltingResult(String name, String result) {
+    public static void patchSmeltingResult(String name, String result) {
         patchRecipe(name, jsonObjectBuilder -> patchResult(jsonObjectBuilder, result));
     }
 
 
-    private static void patchOreRecipe(String name, boolean isIngot, boolean isLapis, int blastingSeconds, String newResult) {
+    public static void patchOreRecipe(String name, boolean isIngot, boolean isLapis, int blastingSeconds, String newResult) {
         var exactName = name;
         if (isIngot)
             exactName = name + "_ingot";
@@ -82,7 +82,7 @@ public class RecipePatcher {
         }
     }
 
-    private static void patchOreRawMaterial(String name, int blastingSeconds, boolean delete, String newResult) {
+    public static void patchOreRawMaterial(String name, int blastingSeconds, boolean delete, String newResult) {
         if (delete) {
             removeRecipe(name + "_ingot_from_smelting_raw_" + name);
         }
@@ -91,7 +91,7 @@ public class RecipePatcher {
             patchSmeltingResult(name + "_ingot_from_blasting_raw_" + name, newResult);
     }
 
-    private static void patchSmeltingRecipe(String name, int smeltingSeconds, boolean smeltingPrefix, boolean deleteSmoker, boolean deleteBlasting) {
+    public static void patchSmeltingRecipe(String name, int smeltingSeconds, boolean smeltingPrefix, boolean deleteSmoker, boolean deleteBlasting) {
         if (deleteSmoker)
             removeRecipe(name + "_from_smoking");
         if (deleteBlasting)
