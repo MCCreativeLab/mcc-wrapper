@@ -1,13 +1,11 @@
 package de.verdox.mccreativelab.impl.paper.mixins;
 
 import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
-import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
+import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import io.papermc.paper.inventory.recipe.ItemOrExact;
-import net.minecraft.core.Holder;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
@@ -42,14 +40,14 @@ public class MixinIngredient implements PredicateIngredient {
     @Inject(method = "test", at = @At("HEAD"), cancellable = true)
     public void injectPredicateTest(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (this.mcc_wrapper$itemPredicate != null) {
-            cir.setReturnValue(this.mcc_wrapper$itemPredicate.predicate().test(MCCPlatform.getInstance().getConversionService().wrap(stack, MCCItemStack.class)));
+            cir.setReturnValue(this.mcc_wrapper$itemPredicate.predicate().test(new NMSItemStack(stack)));
         }
     }
 
     @Inject(method = "acceptsItem(Lio/papermc/paper/inventory/recipe/ItemOrExact;)Z", at = @At("HEAD"), cancellable = true)
     public void injectAcceptsItem(ItemOrExact itemOrExact, CallbackInfoReturnable<Boolean> cir) {
-        if(this.mcc_wrapper$itemPredicate != null && itemOrExact instanceof ItemOrExact.Exact exact) {
-            cir.setReturnValue(mcc_wrapper$itemPredicate.predicate().test(MCCPlatform.getInstance().getConversionService().wrap(exact.stack(), MCCItemStack.class)));
+        if (this.mcc_wrapper$itemPredicate != null && itemOrExact instanceof ItemOrExact.Exact exact) {
+            cir.setReturnValue(mcc_wrapper$itemPredicate.predicate().test(new NMSItemStack(exact.stack())));
         }
     }
 

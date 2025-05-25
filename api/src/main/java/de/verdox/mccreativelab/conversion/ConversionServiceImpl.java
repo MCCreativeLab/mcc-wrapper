@@ -84,19 +84,27 @@ public class ConversionServiceImpl implements ConversionService {
         if (nativeObject == null) {
             return null;
         }
+
+        var rawType  = apiTypeToConvertTo.getRawType();
+
         T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
-                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
+                    boolean isRightNativeType = mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass());
+                    if(!isRightNativeType) {
+                        return false;
+                    }
+
                     Class<?> converterApiResultType = mccConverter.apiImplementationClass();
-                    boolean expectedIsAssignableFromActual = apiTypeToConvertTo.getRawType().isAssignableFrom(converterApiResultType);
-                    boolean actualIsAssignableFromExpected = converterApiResultType.isAssignableFrom(apiTypeToConvertTo.getRawType());
+                    boolean expectedIsAssignableFromActual = rawType.isAssignableFrom(converterApiResultType);
+                    boolean actualIsAssignableFromExpected = converterApiResultType.isAssignableFrom(rawType);
                     return expectedIsAssignableFromActual || actualIsAssignableFromExpected;
                 })
-                .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
-                .map(mccConverter -> mccConverter.wrap(nativeObject, apiTypeToConvertTo))
-                .filter(objectConversionResult -> objectConversionResult.result().isDone())
+                .map(mccConverter -> {
+                    MCCConverter<F, T> conv = (MCCConverter<F, T>) mccConverter;
+                    return conv.wrap(nativeObject, apiTypeToConvertTo);
+                })
+                .filter(objectConversionResult -> objectConversionResult.result().isDone() && rawType.isInstance(objectConversionResult.value()))
                 .map(MCCConverter.ConversionResult::value)
-                .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
                 .findAny().orElse(null);
         if (result != null) {
             return result;

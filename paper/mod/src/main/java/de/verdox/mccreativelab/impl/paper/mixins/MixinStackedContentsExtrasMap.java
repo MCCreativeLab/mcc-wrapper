@@ -1,9 +1,8 @@
 package de.verdox.mccreativelab.impl.paper.mixins;
 
 import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
+import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
-import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import io.papermc.paper.inventory.recipe.ItemOrExact;
 import io.papermc.paper.inventory.recipe.StackedContentsExtrasMap;
 import net.minecraft.world.entity.player.StackedContents;
@@ -50,7 +49,7 @@ public class MixinStackedContentsExtrasMap {
     private void injectAccountStack(ItemStack stack, int count, CallbackInfoReturnable<Boolean> cir) {
         if (this.mcc_wrapper$hasPredicateChoice) {
             for (RecipePredicate predicateChoice : this.mcc_wrapper$predicateChoices) {
-                if (predicateChoice.predicate().test(MCCPlatform.getInstance().getConversionService().wrap(stack, MCCItemStack.class))) {
+                if (predicateChoice.predicate().test(new NMSItemStack(stack))) {
                     this.contents.account(new ItemOrExact.Exact(stack), count);
                     cir.setReturnValue(true);
                     return;
