@@ -126,8 +126,7 @@ public class ConversionCache<V> {
      * @return the values
      */
     public Stream<V> streamAllVariantsForNativeType(Class<?> nativeType) {
-        List<Class<?>> foundImplTypes = nativeToImpls.getAllMatching(nativeType).stream().flatMap(Collection::stream).toList();
-        return foundImplTypes.stream().map(implToValue::get);
+        return nativeToImpls.getAllMatching(nativeType).stream().flatMap(Collection::stream).toList().stream().map(implToValue::get);
     }
 
     /**
@@ -154,8 +153,7 @@ public class ConversionCache<V> {
      */
     @NotNull
     public Stream<V> streamAllVariantsForApiType(Class<?> apiType) {
-        List<Class<?>> foundImplTypes = apiToImpls.getAllMatching(apiType).stream().flatMap(Collection::stream).toList();
-        return foundImplTypes.stream().map(implToValue::get);
+        return apiToImpls.getAllMatching(apiType).stream().flatMap(Collection::stream).map(implToValue::get);
     }
 
     /**
