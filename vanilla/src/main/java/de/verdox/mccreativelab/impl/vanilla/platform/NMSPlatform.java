@@ -5,6 +5,7 @@ import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.loottable.MCCLootTable;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCCookingBookCategory;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipeBookCategory;
@@ -21,6 +22,7 @@ import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingT
 import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTrimRecipe;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockProperties;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.loottable.NMSLootTable;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSIngredient;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSSpecialRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapedRecipe;
