@@ -11,6 +11,7 @@ import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
+import de.verdox.mccreativelab.wrapper.annotations.MCCRequireMixin;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
@@ -96,6 +97,9 @@ public interface MCCGameFactory {
     static <T> MCCTypedKey<MCCRegistry<T>> registry(String registryKey, TypeToken<T> type) {
         return MCCPlatform.getInstance().getRegistryStorage().createMinecraftRegistry(Key.key("mcc", registryKey), type).unwrapKey().get();
     }
+
+    @MCCRequireMixin
+    MCCItemStack createItem(MCCCustomItemType customItemType);
 
     /**
      * Used to extract a potential custom item type from an item stack
