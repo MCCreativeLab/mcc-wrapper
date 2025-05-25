@@ -84,13 +84,8 @@ public class ConversionServiceImpl implements ConversionService {
         if (nativeObject == null) {
             return null;
         }
-        LOGGER.log(Level.FINE, "Wrapping " + nativeObject + " (" + nativeObject.getClass().getName() + ") to " + apiTypeToConvertTo);
         T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
-                .filter(mccConverter -> {
-                    boolean res = mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass());
-                    LOGGER.log(Level.FINER, "Is " + mccConverter.nativeMinecraftType() + " an assignable from" + nativeObject.getClass().getName() + " ? -> " + res);
-                    return res;
-                })
+                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
                     Class<?> converterApiResultType = mccConverter.apiImplementationClass();
                     boolean expectedIsAssignableFromActual = apiTypeToConvertTo.getRawType().isAssignableFrom(converterApiResultType);
@@ -101,13 +96,8 @@ public class ConversionServiceImpl implements ConversionService {
                 .map(mccConverter -> mccConverter.wrap(nativeObject, apiTypeToConvertTo))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .filter(wrapped -> {
-                    var res = apiTypeToConvertTo.getRawType().isInstance(wrapped);
-                    LOGGER.log(Level.FINER, "Is " + wrapped + " (" + wrapped.getClass().getName() + ") an instance of " + apiTypeToConvertTo + " ? -> " + res);
-                    return res;
-                })
+                .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
                 .findAny().orElse(null);
-        LOGGER.log(Level.FINE, "Wrapped " + nativeObject + " to " + result);
         if (result != null) {
             return result;
         }
