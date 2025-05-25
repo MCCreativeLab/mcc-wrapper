@@ -7,16 +7,12 @@ import de.verdox.mccreativelab.gamefactory.block.MCCCustomBlockType;
 import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
 import de.verdox.mccreativelab.gamefactory.item.ItemVisuals;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
-import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
-import de.verdox.mccreativelab.generator.resourcepack.types.ItemTextureData;
 import de.verdox.mccreativelab.platform.PlatformResourcePack;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
-import de.verdox.mccreativelab.wrapper.annotations.MCCRequireMixin;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
-import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
@@ -30,8 +26,7 @@ import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 /**
  * Entrypoint for the custom data api used to inject custom types into the platform (e.g. blocks, items, attributes, etc...)
@@ -39,6 +34,7 @@ import java.util.function.Predicate;
  * As this api grows we will implement logic to inject data driven objects aswell.
  */
 public interface MCCGameFactory {
+    Logger LOGGER = Logger.getLogger(MCCGameFactory.class.getName());
 
     // A registry holding custom attributes
     MCCTypedKey<MCCRegistry<MCCAttribute>> ATTRIBUTE_REGISTRY = registry("attribute", new TypeToken<>() {});
@@ -46,8 +42,6 @@ public interface MCCGameFactory {
     MCCTypedKey<MCCRegistry<MCCCustomBlockType>> BLOCK_REGISTRY = registry("block", new TypeToken<>() {});
     // A registry holding custom item types
     MCCTypedKey<MCCRegistry<MCCCustomItemType>> ITEM_REGISTRY = registry("item", new TypeToken<>() {});
-    // A registry holding custom recipes
-    MCCTypedKey<MCCRegistry<MCCRecipe>> RECIPE_REGISTRY = registry("recipe", new TypeToken<>() {});
     // A registry holding custom poi types
     MCCTypedKey<MCCRegistry<MCCPoiType>> POI_TYPE_REGISTRY = registry("poi_type", new TypeToken<>() {});
     // A registry holding custom villager professions
@@ -77,6 +71,10 @@ public interface MCCGameFactory {
         MCCPlatform.getInstance().checkForMixins();
         registerCustom(ITEM_REGISTRY, key, customItemType);
         PlatformResourcePack.INSTANCE.get().register(itemVisuals.asTextureData(key));
+        if (itemVisuals.getName(key) != null) {
+            PlatformResourcePack.INSTANCE.get().getLanguageStorage().addTranslation(itemVisuals.getName(key));
+        }
+        customItemType.linkItemVisuals(itemVisuals);
     }
 
     /**
@@ -100,23 +98,6 @@ public interface MCCGameFactory {
     }
 
     /**
-     * Instantiates a custom item type with all valid data components for identification
-     * @param mccItemType the custom item type
-     */
-    default MCCItemStack instantiateCustomItem(MCCCustomItemType mccItemType) {
-        if (mccItemType.isVanilla()) {
-            throw new IllegalArgumentException("Please provide a custom item type");
-        }
-        MCCItemStack stack = MCCItems.STICK.get().createItem();
-        stack.components().set(MCCDataComponentTypes.ITEM_MODEL.get(), mccItemType.key());
-        var standardComponents = mccItemType.getItemStandardComponentMap();
-        for (MCCDataComponentType<?> mccDataComponentType : mccItemType.getItemStandardComponentMap()) {
-            stack.components().copyFrom(mccDataComponentType, standardComponents);
-        }
-        return stack;
-    }
-
-    /**
      * Used to extract a potential custom item type from an item stack
      * @param mccItemStack the item stack
      */
@@ -132,4 +113,6 @@ public interface MCCGameFactory {
      * Creates a recipe builder
      */
     RecipeBuilder createRecipe();
+
+    void loadAfterBootstrap();
 }

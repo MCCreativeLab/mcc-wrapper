@@ -15,12 +15,18 @@ import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class NMSShapedRecipe extends NMSCraftingRecipe<ShapedRecipe> implements MCCShapedRecipe {
     public static final MCCConverter<ShapedRecipe, NMSShapedRecipe> CONVERTER = converter(NMSShapedRecipe.class, ShapedRecipe.class, NMSShapedRecipe::new, MCCHandle::getHandle);
 
     public NMSShapedRecipe(ShapedRecipe handle) {
         super(handle);
+    }
+
+    public NMSShapedRecipe(ShapedRecipe handle, boolean custom) {
+        super(handle, custom);
     }
 
     @Override
@@ -58,5 +64,15 @@ public class NMSShapedRecipe extends NMSCraftingRecipe<ShapedRecipe> implements 
         Map<Character, Ingredient> mapping = new HashMap<>();
         recipePattern.mapping().forEach((character, mccIngredient) -> mapping.put(character, MCCPlatform.getInstance().getConversionService().unwrap(mccIngredient, Ingredient.class)));
         return ShapedRecipePattern.of(mapping, recipePattern.pattern());
+    }
+
+    @Override
+    public Stream<MCCIngredient> getAllIngredientsWithoutContext() {
+        return getPatternFromHandle()
+                .ingredients()
+                .stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(ingredient -> conversionService.wrap(ingredient, MCCIngredient.class));
     }
 }

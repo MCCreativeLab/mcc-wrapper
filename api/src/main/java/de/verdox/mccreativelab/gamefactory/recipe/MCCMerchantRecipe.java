@@ -4,6 +4,8 @@ import de.verdox.mccreativelab.gamefactory.recipe.standard.MCCStandardRecipe;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 public record MCCMerchantRecipe(@NotNull MCCItemStack result, int uses, int maxUses, boolean experienceReward,
                                 int villagerExperience, float priceMultiplier, int demand, int specialPrice,
                                 boolean ignoreDiscounts) implements MCCStandardRecipe {
@@ -21,5 +23,10 @@ public record MCCMerchantRecipe(@NotNull MCCItemStack result, int uses, int maxU
     @Override
     public MCCRecipeBookCategory getCategory() {
         return null;
+    }
+
+    @Override
+    public Stream<MCCIngredient> getAllIngredientsWithoutContext() {
+        return Stream.empty();
     }
 }

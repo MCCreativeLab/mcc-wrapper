@@ -21,6 +21,7 @@ import de.verdox.mccreativelab.impl.paper.test.GameFactoryTestData;
 import de.verdox.mccreativelab.impl.paper.world.PaperWorld;
 import de.verdox.mccreativelab.impl.paper.world.chunk.PaperChunk;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.registry.NMSRegistryStorage;
 import de.verdox.mccreativelab.platform.GeneratorPlatformHelper;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;

@@ -1,7 +1,9 @@
 package de.verdox.mccreativelab.gamefactory.item;
 
 import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.generator.resourcepack.types.ItemTextureData;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.misc.MCCUseOnContext;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
@@ -12,16 +14,36 @@ import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
 import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentMap;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
+import de.verdox.mccreativelab.wrapper.typed.MCCDataComponentTypes;
+import de.verdox.mccreativelab.wrapper.typed.MCCItems;
 import de.verdox.mccreativelab.wrapper.world.MCCInteractionResult;
 import de.verdox.mccreativelab.wrapper.world.MCCWorld;
 import net.kyori.adventure.key.Key;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 public abstract class MCCCustomItemType implements MCCItemType {
     private final MCCDataComponentMap standardComponents;
+    private ItemVisuals itemVisuals;
+    private ItemTextureData itemTextureData;
 
     public MCCCustomItemType(MCCDataComponentMap standardComponents) {
         this.standardComponents = standardComponents;
+    }
+
+    public MCCCustomItemType(Consumer<MCCDataComponentMap> standardComponentSetup) {
+        this(MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap());
+        standardComponentSetup.accept(standardComponents);
+    }
+
+    public void linkItemVisuals(ItemVisuals itemVisuals) {
+        if (this.itemVisuals != null) {
+            throw new IllegalStateException("MCCCustomItemType is already linked");
+        }
+        this.itemVisuals = itemVisuals;
+        this.itemVisuals.seal();
+        this.itemTextureData = itemVisuals.asTextureData(key());
     }
 
     public MCCInteractionResult useOn(MCCUseOnContext context) {
@@ -124,7 +146,12 @@ public abstract class MCCCustomItemType implements MCCItemType {
 
     @Override
     public final @NotNull MCCItemStack createItem() {
-        return MCCPlatform.getInstance().getGameFactory().instantiateCustomItem(this);
+        MCCItemStack stack = itemTextureData.createItem();
+        var standardComponents = getItemStandardComponentMap();
+        for (MCCDataComponentType<?> mccDataComponentType : getItemStandardComponentMap()) {
+            stack.components().copyFrom(mccDataComponentType, standardComponents);
+        }
+        return stack;
     }
 
     @Override

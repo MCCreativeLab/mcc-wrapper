@@ -16,6 +16,10 @@ public class NMSSmithingTransformRecipe extends NMSSmithingRecipe<SmithingTransf
         super(handle);
     }
 
+    public NMSSmithingTransformRecipe(SmithingTransformRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
+
     @Override
     @MCCReflective
     public MCCItemStack getResult() {

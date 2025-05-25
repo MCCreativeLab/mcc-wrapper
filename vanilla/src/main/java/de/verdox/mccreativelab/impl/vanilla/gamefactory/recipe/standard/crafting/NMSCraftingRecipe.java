@@ -10,6 +10,10 @@ public abstract class NMSCraftingRecipe<T extends CraftingRecipe> extends NMSRec
         super(handle);
     }
 
+    public NMSCraftingRecipe(T handle, boolean custom) {
+        super(handle, custom);
+    }
+
     @Override
     public String getGroup() {
         return handle.group();

@@ -32,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -60,7 +61,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
     @Override
     public MCCIngredient createIngredient(Predicate<MCCItemStack> ingredientPredicate, MCCItemStack... recipeBookExamples) {
         MCCPlatform.getInstance().checkForMixins();
-        Ingredient ingredient = Ingredient.of(Items.BEDROCK);
+        Ingredient ingredient = Ingredient.of(Arrays.stream(recipeBookExamples).map(mccItemStack -> MCCPlatform.getInstance().getConversionService().unwrap(mccItemStack, ItemStack.class)).map(ItemStack::getItem));
         Object ingredientAsObject = ingredient;
         if (!(ingredientAsObject instanceof PredicateIngredient predicateIngredient)) {
             throw new IllegalStateException("Ingredients should implement " + PredicateIngredient.class + " through mixins.");
@@ -125,7 +126,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     conversionService().unwrap(result, ItemStack.class),
                     showNotification
             );
-            return new RecipeDraft<>(new NMSShapedRecipe(recipe));
+            return new RecipeDraft<>(new NMSShapedRecipe(recipe, true));
         }
     }
 
@@ -139,7 +140,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     conversionService().unwrap(result, ItemStack.class),
                     conversionService().unwrap(ingredients, new TypeToken<>() {})
             );
-            return new RecipeDraft<>(new NMSShapelessRecipe(recipe));
+            return new RecipeDraft<>(new NMSShapelessRecipe(recipe, true));
         }
     }
 
@@ -155,7 +156,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     experience,
                     cookingTime
             );
-            return new RecipeDraft<>(new NMSBlastingRecipe(recipe));
+            return new RecipeDraft<>(new NMSBlastingRecipe(recipe, true));
         }
     }
 
@@ -171,7 +172,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     experience,
                     cookingTime
             );
-            return new RecipeDraft<>(new NMSFurnaceRecipe(recipe));
+            return new RecipeDraft<>(new NMSFurnaceRecipe(recipe, true));
         }
     }
 
@@ -187,7 +188,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     experience,
                     cookingTime
             );
-            return new RecipeDraft<>(new NMSSmokingRecipe(recipe));
+            return new RecipeDraft<>(new NMSSmokingRecipe(recipe, true));
         }
     }
 
@@ -203,7 +204,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     experience,
                     cookingTime
             );
-            return new RecipeDraft<>(new NMSCampfireRecipe(recipe));
+            return new RecipeDraft<>(new NMSCampfireRecipe(recipe, true));
         }
     }
 
@@ -216,7 +217,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     conversionService().unwrap(ingredient, Ingredient.class),
                     conversionService().unwrap(result, ItemStack.class)
             );
-            return new RecipeDraft<>(new NMSStonecutterRecipe(recipe));
+            return new RecipeDraft<>(new NMSStonecutterRecipe(recipe, true));
         }
     }
 
@@ -230,7 +231,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     conversionService().unwrap(additionIngredient, new TypeToken<>() {}),
                     conversionService().unwrap(result, ItemStack.class)
             );
-            return new RecipeDraft<>(new NMSSmithingTransformRecipe(recipe));
+            return new RecipeDraft<>(new NMSSmithingTransformRecipe(recipe, true));
         }
     }
 
@@ -243,7 +244,7 @@ public class NMSRecipeBuilder implements RecipeBuilder {
                     conversionService().unwrap(baseIngredient, new TypeToken<>() {}),
                     conversionService().unwrap(additionIngredient, new TypeToken<>() {})
             );
-            return new RecipeDraft<>(new NMSSmithingTrimRecipe(recipe));
+            return new RecipeDraft<>(new NMSSmithingTrimRecipe(recipe, true));
         }
     }
 }

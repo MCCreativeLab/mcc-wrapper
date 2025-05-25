@@ -11,4 +11,8 @@ public class NMSSmokingRecipe extends NMSCookingRecipe<SmokingRecipe> implements
     public NMSSmokingRecipe(SmokingRecipe handle) {
         super(handle);
     }
+
+    public NMSSmokingRecipe(SmokingRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

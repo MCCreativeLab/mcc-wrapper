@@ -11,4 +11,8 @@ public class NMSFurnaceRecipe extends NMSCookingRecipe<SmeltingRecipe> implement
     public NMSFurnaceRecipe(SmeltingRecipe handle) {
         super(handle);
     }
+
+    public NMSFurnaceRecipe(SmeltingRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

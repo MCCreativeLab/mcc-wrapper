@@ -37,7 +37,7 @@ public class NMSRecipeManager extends MCCHandle<RecipeManager> implements MCCReg
                 .stream()
                 .filter(recipeHolder -> recipeHolder.value().equals(recipe))
                 .findFirst()
-                .map(recipeHolder -> MCCPlatform.getInstance().getConversionService().wrap(recipeHolder.id(), new TypeToken<Key>() {}))
+                .map(recipeHolder -> MCCPlatform.getInstance().getConversionService().wrap(recipeHolder.id().location(), new TypeToken<Key>() {}))
                 .orElse(null);
     }
 
@@ -47,7 +47,7 @@ public class NMSRecipeManager extends MCCHandle<RecipeManager> implements MCCReg
         if (key == null) {
             return Optional.empty();
         }
-        return Optional.of(MCCPlatform.getInstance().getTypedKeyFactory().getKey(RECIPE_REGISTRY_KEY.key(), key));
+        return Optional.of(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, RECIPE_REGISTRY_KEY.key()));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class NMSRecipeManager extends MCCHandle<RecipeManager> implements MCCReg
 
     @Override
     public @Nullable MCCRecipe get(@Nullable Key key) {
-        return get(MCCPlatform.getInstance().getTypedKeyFactory().getKey(RECIPE_REGISTRY_KEY.key(), key));
+        return get(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, RECIPE_REGISTRY_KEY.key()));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class NMSRecipeManager extends MCCHandle<RecipeManager> implements MCCReg
 
     @Override
     public boolean containsKey(Key key) {
-        return containsKey(MCCPlatform.getInstance().getTypedKeyFactory().getKey(RECIPE_REGISTRY_KEY.key(), key));
+        return containsKey(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, RECIPE_REGISTRY_KEY.key()));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class NMSRecipeManager extends MCCHandle<RecipeManager> implements MCCReg
 
     @Override
     public Optional<MCCReference<MCCRecipe>> getReference(Key key) {
-        return getReference(MCCPlatform.getInstance().getTypedKeyFactory().getKey(RECIPE_REGISTRY_KEY.key(), key));
+        return getReference(MCCPlatform.getInstance().getTypedKeyFactory().getKey(key, RECIPE_REGISTRY_KEY.key()));
     }
 
     @Override

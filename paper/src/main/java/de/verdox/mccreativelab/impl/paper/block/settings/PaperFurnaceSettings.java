@@ -1,10 +1,9 @@
 package de.verdox.mccreativelab.impl.paper.block.settings;
 
-import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
-import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.typed.MCCItemTags;
 import de.verdox.mccreativelab.wrapper.typed.MCCItems;
 import org.bukkit.block.BlastFurnace;
@@ -119,7 +118,7 @@ public class PaperFurnaceSettings implements MCCFurnaceSettings, Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void changeFuelBurnTime(FurnaceBurnEvent e) {
-        MCCItemStack mccItemStack = MCCPlatform.getInstance().getConversionService().wrap(e.getFuel(), new TypeToken<>() {});
+        MCCItemStack mccItemStack = BukkitAdapter.toMcc(e.getFuel());
 
         int burnTimeTicks = -1;
         if (e.getBlock().getState() instanceof BlastFurnace) {
@@ -131,10 +130,10 @@ public class PaperFurnaceSettings implements MCCFurnaceSettings, Listener {
             burnTimeTicks = getFurnaceFuelBurnDuration(mccItemStack.getType());
         }
 
-        if(burnTimeTicks == -1){
+        if (burnTimeTicks == -1) {
             e.setCancelled(true);
-        }
-        else {
+            e.setConsumeFuel(false);
+        } else {
             e.setBurnTime(burnTimeTicks);
         }
     }

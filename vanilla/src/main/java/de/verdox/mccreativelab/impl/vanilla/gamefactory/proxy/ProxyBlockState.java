@@ -221,21 +221,24 @@ public class ProxyBlockState extends BlockState implements GameProxy {
 
     @Override
     public @Nullable MenuProvider getMenuProvider(Level level, BlockPos pos) {
-        MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level, new TypeToken<>() {}), pos.getX(), pos.getY(), pos.getZ()));
-        if (menuProvider == null) {
-            return null;
-        }
-        return new MenuProvider() {
-            @Override
-            public Component getDisplayName() {
-                return conversionService().unwrap(menuProvider.getTitle());
+        if(isProxy()) {
+            MCCMenuProvider<?> menuProvider = getProxy().getMenuProvider(new MCCLocation(conversionService().wrap(level, new TypeToken<>() {}), pos.getX(), pos.getY(), pos.getZ()));
+            if (menuProvider == null) {
+                return null;
             }
+            return new MenuProvider() {
+                @Override
+                public Component getDisplayName() {
+                    return conversionService().unwrap(menuProvider.getTitle());
+                }
 
-            @Override
-            public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player, new TypeToken<>() {}), menuProvider.getTitle()));
-            }
-        };
+                @Override
+                public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                    return conversionService().unwrap(menuProvider.getCreatorInstance().createMenuForPlayer(conversionService().wrap(player, new TypeToken<>() {}), menuProvider.getTitle()));
+                }
+            };
+        }
+        return super.getMenuProvider(level, pos);
     }
 
     public void handlePrecipitation(Level level, BlockPos pos, Biome.Precipitation precipitation) {

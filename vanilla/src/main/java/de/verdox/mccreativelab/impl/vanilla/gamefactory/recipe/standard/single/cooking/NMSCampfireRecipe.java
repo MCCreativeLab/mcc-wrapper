@@ -11,4 +11,8 @@ public class NMSCampfireRecipe extends NMSCookingRecipe<CampfireCookingRecipe> i
     public NMSCampfireRecipe(CampfireCookingRecipe handle) {
         super(handle);
     }
+
+    public NMSCampfireRecipe(CampfireCookingRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

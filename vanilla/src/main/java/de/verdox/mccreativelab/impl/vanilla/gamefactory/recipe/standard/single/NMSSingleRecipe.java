@@ -9,9 +9,15 @@ import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import net.minecraft.world.item.crafting.*;
 
+import java.util.stream.Stream;
+
 public abstract class NMSSingleRecipe<T extends SingleItemRecipe> extends NMSRecipe<T> implements MCCSingleItemRecipe {
     public NMSSingleRecipe(T handle) {
         super(handle);
+    }
+
+    public NMSSingleRecipe(T handle, boolean custom) {
+        super(handle, custom);
     }
 
     @Override
@@ -33,5 +39,10 @@ public abstract class NMSSingleRecipe<T extends SingleItemRecipe> extends NMSRec
     @Override
     public MCCRecipeBookCategory getCategory() {
         return conversionService.wrap(handle.recipeBookCategory(), MCCRecipeBookCategory.class);
+    }
+
+    @Override
+    public Stream<MCCIngredient> getAllIngredientsWithoutContext() {
+        return Stream.of(getInput());
     }
 }

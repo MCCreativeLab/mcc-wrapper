@@ -6,11 +6,18 @@ import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingR
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public abstract class NMSSmithingRecipe<T extends SmithingRecipe> extends NMSRecipe<T> implements MCCSmithingRecipe {
     public NMSSmithingRecipe(T handle) {
         super(handle);
+    }
+
+    public NMSSmithingRecipe(T handle, boolean custom) {
+        super(handle, custom);
     }
 
     @Override
@@ -31,5 +38,14 @@ public abstract class NMSSmithingRecipe<T extends SmithingRecipe> extends NMSRec
     @Override
     public MCCRecipeBookCategory getCategory() {
         return conversionService.wrap(handle.recipeBookCategory(), MCCRecipeBookCategory.class);
+    }
+
+    @Override
+    public Stream<MCCIngredient> getAllIngredientsWithoutContext() {
+        List<MCCIngredient> ingredients = new ArrayList<>();
+        templateIngredient().ifPresent(ingredients::add);
+        baseIngredient().ifPresent(ingredients::add);
+        additionIngredient().ifPresent(ingredients::add);
+        return ingredients.stream();
     }
 }

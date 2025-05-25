@@ -25,7 +25,7 @@ public class GameFactoryTestData {
 
         var shapedRecipe = recipeBuilder.createShapedRecipe()
                 .pattern(
-                        MCCShapedRecipe.createPattern().withRow('A', 'A', 'A')
+                        MCCShapedRecipe.createPattern().shape("AAA")
                                 .ingredient('A', recipeBuilder.createIngredient(MCCItems.ACACIA_BOAT.get()))
                                 .build()
                 )
@@ -33,7 +33,18 @@ public class GameFactoryTestData {
                 .build();
         factory.registerCustomRecipe(Key.key("test", "shaped"), shapedRecipe);
 
-        factory.registerCustomItemType(Key.key("test", "test_item"), new TestItem(MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap()), new ItemVisuals());
+        TestItem testItem = new TestItem(MCCPlatform.getInstance().getElementFactory().createEmptyDataComponentMap());
+        factory.registerCustomItemType(Key.key("test", "test_item"), testItem, new ItemVisuals());
+
+        var shapedWithTestItem = recipeBuilder.createShapedRecipe()
+                .pattern(
+                        MCCShapedRecipe.createPattern().shape("AAA")
+                                .ingredient('A', recipeBuilder.createIngredient(testItem))
+                                .build()
+                )
+                .result(MCCItems.DIRT.get().createItem())
+                .build();
+        factory.registerCustomRecipe(Key.key("test", "shaped_with_predicate"), shapedWithTestItem);
     }
     
     public static class TestItem extends MCCCustomItemType {

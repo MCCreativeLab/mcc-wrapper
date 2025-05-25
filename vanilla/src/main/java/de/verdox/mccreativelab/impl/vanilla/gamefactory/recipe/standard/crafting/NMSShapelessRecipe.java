@@ -12,12 +12,17 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class NMSShapelessRecipe extends NMSCraftingRecipe<ShapelessRecipe> implements MCCShapelessRecipe {
     public static final MCCConverter<ShapelessRecipe, NMSShapelessRecipe> CONVERTER = converter(NMSShapelessRecipe.class, ShapelessRecipe.class, NMSShapelessRecipe::new, MCCHandle::getHandle);
 
     public NMSShapelessRecipe(ShapelessRecipe handle) {
         super(handle);
+    }
+
+    public NMSShapelessRecipe(ShapelessRecipe handle, boolean custom) {
+        super(handle, custom);
     }
 
     @Override
@@ -28,5 +33,10 @@ public class NMSShapelessRecipe extends NMSCraftingRecipe<ShapelessRecipe> imple
     @Override
     public List<MCCIngredient> getIngredients() {
         return conversionService.wrap(ReflectionUtils.readFieldFromClass(handle, "ingredients", new TypeToken<List<Ingredient>>() {}), new TypeToken<>() {});
+    }
+
+    @Override
+    public Stream<MCCIngredient> getAllIngredientsWithoutContext() {
+        return getIngredients().stream();
     }
 }

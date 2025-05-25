@@ -8,8 +8,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public interface ConversionService {
+    Logger LOGGER = Logger.getLogger(ConversionService.class.getSimpleName());
     /**
      * Registers a new converter that converts between an impl type and a native type. The impl type implements the api type
      * @param apiType the api type

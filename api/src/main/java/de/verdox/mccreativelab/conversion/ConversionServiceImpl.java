@@ -7,12 +7,8 @@ import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ConversionServiceImpl implements ConversionService {
-    //TODO: Introduce caching of nativeObjects to object allocations
-    private static final Logger LOGGER = Logger.getLogger(ConversionService.class.getSimpleName());
-
     private final ConversionCache<MCCConverter<?, ?>> conversionCache = new ConversionCache<>();
 
     public ConversionServiceImpl() {
@@ -88,21 +84,30 @@ public class ConversionServiceImpl implements ConversionService {
         if (nativeObject == null) {
             return null;
         }
+        LOGGER.log(Level.FINE, "Wrapping " + nativeObject + " (" + nativeObject.getClass().getName() + ") to " + apiTypeToConvertTo);
         T result = conversionCache.streamAllVariantsForNativeType(nativeObject.getClass())
-                .filter(mccConverter -> mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass()))
                 .filter(mccConverter -> {
-                    Class<?> converterApiClass = mccConverter.apiImplementationClass();
-                    boolean expectedIsAssignableFromActual = apiTypeToConvertTo.getRawType().isAssignableFrom(converterApiClass);
-                    boolean actualIsAssignableFromExpected = converterApiClass.isAssignableFrom(apiTypeToConvertTo.getRawType());
+                    boolean res = mccConverter.nativeMinecraftType().isAssignableFrom(nativeObject.getClass());
+                    LOGGER.log(Level.FINER, "Is " + mccConverter.nativeMinecraftType() + " an assignable from" + nativeObject.getClass().getName() + " ? -> " + res);
+                    return res;
+                })
+                .filter(mccConverter -> {
+                    Class<?> converterApiResultType = mccConverter.apiImplementationClass();
+                    boolean expectedIsAssignableFromActual = apiTypeToConvertTo.getRawType().isAssignableFrom(converterApiResultType);
+                    boolean actualIsAssignableFromExpected = converterApiResultType.isAssignableFrom(apiTypeToConvertTo.getRawType());
                     return expectedIsAssignableFromActual || actualIsAssignableFromExpected;
                 })
                 .map(mccConverter -> (MCCConverter<F, T>) mccConverter)
                 .map(mccConverter -> mccConverter.wrap(nativeObject, apiTypeToConvertTo))
                 .filter(objectConversionResult -> objectConversionResult.result().isDone())
                 .map(MCCConverter.ConversionResult::value)
-                .filter(wrapped -> apiTypeToConvertTo.getRawType().isInstance(wrapped))
+                .filter(wrapped -> {
+                    var res = apiTypeToConvertTo.getRawType().isInstance(wrapped);
+                    LOGGER.log(Level.FINER, "Is " + wrapped + " (" + wrapped.getClass().getName() + ") an instance of " + apiTypeToConvertTo + " ? -> " + res);
+                    return res;
+                })
                 .findAny().orElse(null);
-
+        LOGGER.log(Level.FINE, "Wrapped " + nativeObject + " to " + result);
         if (result != null) {
             return result;
         }

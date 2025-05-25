@@ -11,4 +11,8 @@ public class NMSSmithingTrimRecipe extends NMSSmithingRecipe<SmithingTrimRecipe>
     public NMSSmithingTrimRecipe(SmithingTrimRecipe handle) {
         super(handle);
     }
+
+    public NMSSmithingTrimRecipe(SmithingTrimRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

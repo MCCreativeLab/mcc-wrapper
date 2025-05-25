@@ -85,7 +85,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
-        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
+        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key, ResourceLocation.class);
         ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
         DelayedFreezingRegistry<T> mappedRegistry = new DelayedFreezingRegistry<>(registryKey, Lifecycle.stable());
         CUSTOM_REGISTRIES.put(key, mappedRegistry);

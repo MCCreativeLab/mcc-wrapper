@@ -11,4 +11,8 @@ public class NMSStonecutterRecipe extends NMSSingleRecipe<StonecutterRecipe> imp
     public NMSStonecutterRecipe(StonecutterRecipe handle) {
         super(handle);
     }
+
+    public NMSStonecutterRecipe(StonecutterRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

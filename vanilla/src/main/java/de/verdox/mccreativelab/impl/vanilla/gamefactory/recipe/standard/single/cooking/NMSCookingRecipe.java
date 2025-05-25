@@ -9,6 +9,10 @@ public abstract class NMSCookingRecipe<T extends AbstractCookingRecipe> extends 
         super(handle);
     }
 
+    public NMSCookingRecipe(T handle, boolean custom) {
+        super(handle, custom);
+    }
+
     @Override
     public float getExperience() {
         return handle.experience();

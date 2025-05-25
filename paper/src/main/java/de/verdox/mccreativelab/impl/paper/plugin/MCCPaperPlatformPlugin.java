@@ -49,6 +49,7 @@ public class MCCPaperPlatformPlugin extends JavaPlugin implements Listener {
     public void onLoad() {
         INSTANCE = this;
         platform = (PaperPlatform) MCCPlatform.getInstance();
+        platform.getGameFactory().loadAfterBootstrap();
         Bukkit.getServicesManager().register(MCCPlatform.class, platform, this, ServicePriority.Highest);
         try {
             platform.getResourcePackManager().init(platform);

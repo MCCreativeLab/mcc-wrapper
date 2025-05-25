@@ -11,4 +11,8 @@ public class NMSBlastingRecipe extends NMSCookingRecipe<BlastingRecipe> implemen
     public NMSBlastingRecipe(BlastingRecipe handle) {
         super(handle);
     }
+
+    public NMSBlastingRecipe(BlastingRecipe handle, boolean custom) {
+        super(handle, custom);
+    }
 }

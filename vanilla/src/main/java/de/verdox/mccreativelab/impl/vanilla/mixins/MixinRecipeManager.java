@@ -16,9 +16,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
@@ -47,6 +44,7 @@ public abstract class MixinRecipeManager implements MutableRecipeManager {
         MinecraftServer minecraftServer = ((NMSPlatform) MCCPlatform.getInstance()).getServer();
         FeatureFlagSet featureFlagSet = minecraftServer.getPackRepository().getSelectedPacks().stream().map(Pack::getRequestedFeatures).reduce(FeatureFlagSet::join).orElse(FeatureFlagSet.of());
         finalizeRecipeLoading(featureFlagSet);
+        minecraftServer.getPlayerList().reloadResources();
         PlayerList playerList = minecraftServer.getPlayerList();
         ClientboundUpdateRecipesPacket clientboundUpdateRecipesPacket = new ClientboundUpdateRecipesPacket(getSynchronizedItemProperties(), getSynchronizedStonecutterRecipes());
         for (ServerPlayer serverPlayer : playerList.getPlayers()) {

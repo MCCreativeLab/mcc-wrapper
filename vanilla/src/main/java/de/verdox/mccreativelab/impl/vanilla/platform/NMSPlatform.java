@@ -11,6 +11,7 @@ import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipeBookCategory;
 import de.verdox.mccreativelab.gamefactory.recipe.MCCSpecialRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapedRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapelessRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCTransmuteRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.single.MCCStonecutterRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCBlastingRecipe;
 import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCCampfireRecipe;
@@ -24,6 +25,7 @@ import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSIngredient;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSSpecialRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapedRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapelessRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSTransmuteRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.NMSStonecutterRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSBlastingRecipe;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSCampfireRecipe;
@@ -39,7 +41,6 @@ import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulat
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
 import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
-import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
@@ -565,6 +566,7 @@ public class NMSPlatform implements MCCPlatform {
 
         prepareConverter(MCCShapelessRecipe.class, NMSShapelessRecipe.CONVERTER);
         prepareConverter(MCCShapedRecipe.class, NMSShapedRecipe.CONVERTER);
+        prepareConverter(MCCTransmuteRecipe.class, NMSTransmuteRecipe.CONVERTER);
 
         prepareConverter(MCCBlastingRecipe.class, NMSBlastingRecipe.CONVERTER);
         prepareConverter(MCCCampfireRecipe.class, NMSCampfireRecipe.CONVERTER);
