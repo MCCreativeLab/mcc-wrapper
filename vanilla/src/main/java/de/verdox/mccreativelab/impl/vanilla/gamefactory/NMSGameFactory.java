@@ -9,12 +9,15 @@ import de.verdox.mccreativelab.gamefactory.recipe.RecipePredicate;
 import de.verdox.mccreativelab.gamefactory.recipe.builder.RecipeBuilder;
 import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStatePropertyFactory;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.builder.NMSRecipeBuilder;
+import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
 import de.verdox.mccreativelab.impl.vanilla.registry.recipe.NMSRecipeManager;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.ItemStackWithCustomType;
 import de.verdox.mccreativelab.impl.vanilla.util.mixin.MutableRecipeManager;
 import de.verdox.mccreativelab.impl.vanilla.util.mixin.PredicateIngredient;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.item.MCCItemType;
+import de.verdox.mccreativelab.wrapper.item.components.MCCDataComponentType;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCRegistry;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
@@ -26,6 +29,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 
 import java.util.Optional;
@@ -90,13 +94,31 @@ public class NMSGameFactory implements MCCGameFactory {
     }
 
     @Override
-    public Optional<MCCCustomItemType> extract(MCCItemStack mccItemStack) {
-        Key itemModelKey = mccItemStack.components().get(MCCDataComponentTypes.ITEM_MODEL.get());
-
-        if (itemModelKey != null && !itemModelKey.namespace().equals("minecraft")) {
-            return MCCGameFactory.ITEM_REGISTRY.get().getOptional(itemModelKey);
+    public MCCItemStack createItem(MCCCustomItemType customItemType) {
+        MCCPlatform.getInstance().checkForMixins();
+        MCCItemStack stack = customItemType.getItemTextureData().createItem();
+        var standardComponents = customItemType.getItemStandardComponentMap();
+        for (MCCDataComponentType<?> mccDataComponentType : customItemType.getItemStandardComponentMap()) {
+            stack.components().copyFrom(mccDataComponentType, standardComponents);
         }
-        return Optional.empty();
+        ItemStack nmsStack = platform.getConversionService().unwrap(stack, ItemStack.class);
+        if (!(((Object) nmsStack) instanceof ItemStackWithCustomType itemStackWithCustomType)) {
+            throw new IllegalStateException("The ItemStack class should extend " + ItemStackWithCustomType.class.getName());
+        }
+        itemStackWithCustomType.setMcc_wrapper$customItemType(customItemType);
+        return stack;
+    }
+
+    @Override
+    public Optional<MCCCustomItemType> extract(MCCItemStack mccItemStack) {
+        if(!NMSPlatform.isMixinSupported) {
+            return Optional.empty();
+        }
+        ItemStack stack = ((NMSItemStack) mccItemStack).getHandle();
+        if (!(((Object) stack) instanceof ItemStackWithCustomType itemStackWithCustomType)) {
+            throw new IllegalStateException("The ItemStack class should extend " + ItemStackWithCustomType.class.getName());
+        }
+        return Optional.of(itemStackWithCustomType.getMcc_wrapper$customItemType());
     }
 
     @Override
