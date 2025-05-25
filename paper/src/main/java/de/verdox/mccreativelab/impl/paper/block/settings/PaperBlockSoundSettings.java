@@ -1,6 +1,5 @@
 package de.verdox.mccreativelab.impl.paper.block.settings;
 
-import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
