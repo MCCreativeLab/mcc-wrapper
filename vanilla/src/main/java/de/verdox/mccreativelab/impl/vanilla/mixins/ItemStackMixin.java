@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.impl.vanilla.mixins;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.gamefactory.item.MCCCustomItemType;
 import de.verdox.mccreativelab.impl.vanilla.gamefactory.proxy.ProxyItem;
+import de.verdox.mccreativelab.impl.vanilla.util.mixin.ItemStackWithCustomType;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import net.minecraft.core.component.DataComponentMap;
@@ -33,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin {
+public abstract class ItemStackMixin implements ItemStackWithCustomType {
 
     @Unique
     private MCCCustomItemType mcc_wrapper$customItemType;
@@ -58,6 +59,18 @@ public abstract class ItemStackMixin {
 
     public ItemStack self() {
         return (ItemStack) (Object) this;
+    }
+
+    @Unique
+    @Override
+    public MCCCustomItemType getMcc_wrapper$customItemType() {
+        return mcc_wrapper$customItemType;
+    }
+
+    @Unique
+    @Override
+    public void setMcc_wrapper$customItemType(MCCCustomItemType mcc_wrapper$customItemType) {
+        this.mcc_wrapper$customItemType = mcc_wrapper$customItemType;
     }
 
     @Redirect(
@@ -116,8 +129,7 @@ public abstract class ItemStackMixin {
     public void redirectIsCorrectTool(BlockState state, CallbackInfoReturnable<Boolean> cir) {
         if (mcc_wrapper$hasProxyItem()) {
             cir.setReturnValue(mcc_wrapper$proxyItem().isCorrectToolForDrops(self(), state));
-        }
-        else {
+        } else {
             cir.setReturnValue(getItem().isCorrectToolForDrops(self(), state));
         }
     }
@@ -126,8 +138,7 @@ public abstract class ItemStackMixin {
     public void redirectInteractLiving(Player player, LivingEntity entity, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
         if (mcc_wrapper$hasProxyItem()) {
             cir.setReturnValue(mcc_wrapper$proxyItem().interactLivingEntity(self(), player, entity, hand));
-        }
-        else {
+        } else {
             cir.setReturnValue(getItem().interactLivingEntity(self(), player, entity, hand));
         }
     }
@@ -140,8 +151,7 @@ public abstract class ItemStackMixin {
 
         if (mcc_wrapper$hasProxyItem()) {
             mcc_wrapper$proxyItem().inventoryTick(self(), level, entity, slot, selected);
-        }
-        else {
+        } else {
             getItem().inventoryTick(self(), level, entity, slot, selected);
         }
         ci.cancel();
@@ -152,8 +162,7 @@ public abstract class ItemStackMixin {
         player.awardStat(Stats.ITEM_CRAFTED.get(getItem()), amount);
         if (mcc_wrapper$hasProxyItem()) {
             mcc_wrapper$proxyItem().onCraftedBy(self(), level, player);
-        }
-        else {
+        } else {
             getItem().onCraftedBy(self(), level, player);
         }
         ci.cancel();
@@ -163,8 +172,7 @@ public abstract class ItemStackMixin {
     public void redirectOnCraftedBySystem(Level level, CallbackInfo ci) {
         if (mcc_wrapper$hasProxyItem()) {
             mcc_wrapper$proxyItem().onCraftedPostProcess(self(), level);
-        }
-        else {
+        } else {
             getItem().onCraftedPostProcess(self(), level);
         }
         ci.cancel();
@@ -177,10 +185,9 @@ public abstract class ItemStackMixin {
             consumable.emitParticlesAndSounds(entity.getRandom(), entity, self(), 5);
         }
 
-        if(mcc_wrapper$proxyItem().isProxy()) {
+        if (mcc_wrapper$proxyItem().isProxy()) {
             mcc_wrapper$proxyItem().onUseTick(level, entity, self(), remainingUseDuration);
-        }
-        else {
+        } else {
             this.getItem().onUseTick(level, entity, self(), remainingUseDuration);
         }
         ci.cancel();
@@ -188,10 +195,9 @@ public abstract class ItemStackMixin {
 
     @Inject(method = "onDestroyed", at = @At("HEAD"), cancellable = true)
     public void redirectOnDestroyed(ItemEntity entity, CallbackInfo ci) {
-        if(mcc_wrapper$proxyItem().isProxy()) {
+        if (mcc_wrapper$proxyItem().isProxy()) {
             mcc_wrapper$proxyItem().onDestroyed(entity);
-        }
-        else {
+        } else {
             getItem().onDestroyed(entity);
         }
         ci.cancel();
@@ -199,33 +205,18 @@ public abstract class ItemStackMixin {
 
     @Unique
     private boolean mcc_wrapper$hasProxyItem() {
-        MCCCustomItemType customType = mcc_wrapper$extractFromItem();
-        return customType != null;
+        return mcc_wrapper$customItemType != null;
     }
 
     @Unique
     private ProxyItem mcc_wrapper$proxyItem() {
-        MCCCustomItemType customType = mcc_wrapper$extractFromItem();
-        if (customType == null) {
+        if (mcc_wrapper$customItemType == null) {
             throw new IllegalStateException("MCCCustomItemType was not set");
         }
         if (mcc_wrapper$proxyItem == null) {
             mcc_wrapper$proxyItem = new ProxyItem(getItem(), mcc_wrapper$customItemType);
         }
         return mcc_wrapper$proxyItem;
-    }
-
-    @Unique
-    @Nullable
-    private MCCCustomItemType mcc_wrapper$extractFromItem() {
-        if (getItem().equals(mcc_wrapper$cachedItem)) {
-            return mcc_wrapper$customItemType;
-        }
-
-        mcc_wrapper$cachedItem = getItem();
-        Optional<MCCCustomItemType> optionalMCCCustomItemType = MCCPlatform.getInstance().getGameFactory().extract(MCCPlatform.getInstance().getConversionService().wrap(self(), MCCItemStack.class));
-        mcc_wrapper$customItemType = optionalMCCCustomItemType.orElse(null);
-        return mcc_wrapper$customItemType;
     }
 }
 
