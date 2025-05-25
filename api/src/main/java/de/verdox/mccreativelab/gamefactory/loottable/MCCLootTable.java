@@ -1,4 +1,4 @@
-package de.verdox.mccreativelab.wrapper.types;
+package de.verdox.mccreativelab.gamefactory.loottable;
 
 import de.verdox.mccreativelab.wrapper.MCCWrapped;
 

@@ -4,7 +4,7 @@ import de.verdox.mccreativelab.gamefactory.advancement.MCCAdvancementRewardBuild
 import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import de.verdox.mccreativelab.wrapper.types.MCCLootTable;
+import de.verdox.mccreativelab.gamefactory.loottable.MCCLootTable;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

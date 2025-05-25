@@ -1,8 +1,8 @@
-package de.verdox.mccreativelab.impl.vanilla.types;
+package de.verdox.mccreativelab.impl.vanilla.gamefactory.loottable;
 
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
-import de.verdox.mccreativelab.wrapper.types.MCCLootTable;
+import de.verdox.mccreativelab.gamefactory.loottable.MCCLootTable;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 public class NMSLootTable extends MCCHandle<LootTable> implements MCCLootTable {

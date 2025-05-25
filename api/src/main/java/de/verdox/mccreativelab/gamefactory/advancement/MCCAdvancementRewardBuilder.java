@@ -2,7 +2,7 @@ package de.verdox.mccreativelab.gamefactory.advancement;
 
 import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.registry.MCCTypedKey;
-import de.verdox.mccreativelab.wrapper.types.MCCLootTable;
+import de.verdox.mccreativelab.gamefactory.loottable.MCCLootTable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
