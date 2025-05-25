@@ -39,3 +39,31 @@ sourceSets {
         }
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            pom {
+                groupId = providers.gradleProperty("wrapper_group").get()
+                version = providers.gradleProperty("version").get()
+                artifactId = "paper-mod"
+
+                //artifact(tasks.named("shadowJar"))
+                from(components["java"])
+                licenses {
+                    license {
+                        name = "GNU GENERAL PUBLIC LICENSE Version 3"
+                        url = "https://www.gnu.org/licenses/gpl-3.0.en.html"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "verdox"
+                        name = "Lukas Jonsson"
+                        email = "mail.ysp@web.de"
+                    }
+                }
+            }
+        }
+    }
+}
