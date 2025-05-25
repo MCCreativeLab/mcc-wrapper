@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.block;
 
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
 import de.verdox.mccreativelab.wrapper.MCCKeyedWrapper;
 import de.verdox.mccreativelab.wrapper.annotations.MCCBuiltIn;
 import de.verdox.mccreativelab.wrapper.annotations.MCCInstantiationSource;
@@ -21,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 @MCCInstantiationSource(sourceClasses = MCCChunk.class)
 @MCCBuiltIn(syncState = MCCBuiltIn.SyncState.SYNCED, clientEntersErrorStateOnDesync = true)
 public interface MCCBlockState extends MCCKeyedWrapper {
-
     /**
      * Returns the parent block type of this block state
      *
@@ -61,7 +61,12 @@ public interface MCCBlockState extends MCCKeyedWrapper {
         return !requiresCorrectToolForDrops() || nmsItem.isCorrectToolForDrops(this);
     }
 
-    float getDestroySpeed(MCCPlayer player, MCCItemStack mccItemStack, boolean considerEnchants);
+    /**
+     * This method is only used by {@link de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings} to determine the block break speed of a player.
+     * @param player the player
+     * @return the block hardness
+     */
+    float getBlockHardness(MCCPlayer player);
 
     /**
      * Returns all drops of this block as if it was broken by an entity.
@@ -88,7 +93,19 @@ public interface MCCBlockState extends MCCKeyedWrapper {
     boolean requiresCorrectToolForDrops();
 
     @Override
-    default Key getRegistryKey(){
+    default Key getRegistryKey() {
         return getBlockType().getRegistryKey();
     }
+
+    @Override
+    @NotNull
+    default Key key() {
+        return getBlockType().key();
+    }
+
+    <T extends Comparable<T>> boolean hasProperty(MCCBlockStateProperty<T> property);
+
+    <T extends Comparable<T>> T getValue(MCCBlockStateProperty<T> property);
+
+    <T extends Comparable<T>> MCCBlockState newState(MCCBlockStateProperty<T> property, T value);
 }

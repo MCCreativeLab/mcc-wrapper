@@ -3,14 +3,12 @@ package de.verdox.mccreativelab.impl.paper.world;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
 import de.verdox.mccreativelab.impl.vanilla.world.NMSWorld;
-import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.world.chunk.MCCChunk;
 import de.verdox.mccreativelab.wrapper.world.coordinates.MCChunkPos;
 import de.verdox.mccreativelab.wrapper.world.coordinates.Pos;
 import net.minecraft.server.level.ServerLevel;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +22,7 @@ public class PaperWorld extends NMSWorld {
     @Override
     public CompletableFuture<MCCChunk> getOrLoadChunk(Pos<?> pos) {
         MCChunkPos chunkPos = pos.toChunkPos();
-        return handle.getWorld().getChunkAtAsync(chunkPos.x(), chunkPos.z()).thenApply(chunk -> BukkitAdapter.wrap(chunk, MCCChunk.class));
+        return handle.getWorld().getChunkAtAsync(chunkPos.x(), chunkPos.z()).thenApply(BukkitAdapter::toMcc);
     }
 
     @Override

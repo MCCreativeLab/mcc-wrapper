@@ -57,6 +57,6 @@ public class NMSBrewingStandContainerMenu extends NMSContainerMenu<MCCBlockConta
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("brewingStand"));
+        return conversionService.wrap(readContainerFromField("brewingStand"), new TypeToken<>() {});
     }
 }

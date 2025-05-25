@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Lifecycle;
 import de.verdox.mccreativelab.impl.vanilla.platform.NMSPlatform;
+import de.verdox.mccreativelab.impl.vanilla.registry.recipe.NMSRecipeManager;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.*;
@@ -15,14 +16,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -36,20 +35,22 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
     private final Map<Key, OpenRegistry<?>> CUSTOM_OPEN_REGISTRIES = new HashMap<>();
     private final Supplier<RegistryAccess.Frozen> fullRegistryAccess;
     private final Supplier<RegistryAccess.Frozen> reloadableRegistries;
+    private final Supplier<RecipeManager> recipeManager;
     private boolean frozen;
 
     public NMSRegistryStorage() {
-        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().lookup());
+        this(() -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().registries().compositeAccess(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().reloadableRegistries().lookup(), () -> ((NMSPlatform) MCCPlatform.getInstance()).getServer().getRecipeManager());
     }
 
     @VisibleForTesting
-    public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
-        this(() -> fullRegistryAccess, () -> reloadableRegistries);
+    public NMSRegistryStorage(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries, RecipeManager recipeManager) {
+        this(() -> fullRegistryAccess, () -> reloadableRegistries, () -> recipeManager);
     }
 
-    public NMSRegistryStorage(Supplier<RegistryAccess.Frozen> fullRegistryAccess, Supplier<HolderGetter.Provider> reloadableRegistries) {
+    public NMSRegistryStorage(Supplier<RegistryAccess.Frozen> fullRegistryAccess, Supplier<HolderGetter.Provider> reloadableRegistries, Supplier<RecipeManager> recipeManager) {
         this.fullRegistryAccess = fullRegistryAccess;
         this.reloadableRegistries = () -> (RegistryAccess.Frozen) reloadableRegistries.get();
+        this.recipeManager = recipeManager;
     }
 
     @Override
@@ -84,15 +85,15 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             throw new IllegalStateException("A registry with the key " + key + " does already exist.");
         }
 
-        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key);
+        ResourceLocation registryLocation = MCCPlatform.getInstance().getConversionService().unwrap(key, ResourceLocation.class);
         ResourceKey<? extends Registry<T>> registryKey = ResourceKey.createRegistryKey(registryLocation);
         DelayedFreezingRegistry<T> mappedRegistry = new DelayedFreezingRegistry<>(registryKey, Lifecycle.stable());
         CUSTOM_REGISTRIES.put(key, mappedRegistry);
-        LOGGER.info("Creating the custom minecraft registry "+key);
+        LOGGER.info("Creating the custom minecraft registry " + key);
 
         Holder<DelayedFreezingRegistry<T>> holder = new DelayedFreezingRegistryHolder<>(mappedRegistry, registryLocation, registryKey);
 
-        return MCCPlatform.getInstance().getConversionService().wrap(holder);
+        return MCCPlatform.getInstance().getConversionService().wrap(holder, new TypeToken<>() {});
     }
 
     @Override
@@ -106,7 +107,7 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
 
         OpenRegistry<T> openRegistry = OpenRegistry.createUnboundRegistry(key);
         CUSTOM_OPEN_REGISTRIES.put(key, openRegistry);
-        LOGGER.info("Creating the custom open registry "+key);
+        LOGGER.info("Creating the custom open registry " + key);
 
         AtomicReference<MCCReference<OpenRegistry<T>>> reference = new AtomicReference<>();
         AtomicReference<MCCTypedKey<OpenRegistry<T>>> typedKey = new AtomicReference<>();
@@ -168,12 +169,17 @@ public class NMSRegistryStorage implements MCCRegistryStorage {
             }
         }
 
+        if (registryKey.equals(Key.key("minecraft", "recipe"))) {
+            Objects.requireNonNull(recipeManager.get(), "The platform recipe manager was not initialized yet");
+            return (MCCRegistry<T>) new NMSRecipeManager(recipeManager.get());
+        }
+
         ResourceKey<? extends Registry<?>> registryResourceKey = ResourceKey.createRegistryKey(MCCPlatform.getInstance().getConversionService().unwrap(registryKey));
 
         Optional<Registry<Object>> optionalFoundRegistry = fullRegistryAccess.get().lookup(registryResourceKey);
 
         if (optionalFoundRegistry.isEmpty()) {
-            optionalFoundRegistry = (Optional<Registry<Object>>) reloadableRegistries.get().lookup(registryResourceKey);
+            optionalFoundRegistry = reloadableRegistries.get().lookup(registryResourceKey);
         }
 
         return optionalFoundRegistry.<MCCRegistry<T>>map(NMSRegistryLookup::new).orElse(null);

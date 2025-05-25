@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.wrapper.entity;
 
+import de.verdox.mccreativelab.wrapper.item.MCCAttributeModifier;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import de.verdox.mccreativelab.wrapper.types.MCCAttribute;
 import net.kyori.adventure.key.Key;
@@ -49,6 +50,16 @@ public interface MCCAttributeMap {
      * @return the value
      */
     double getValue(MCCReference<MCCAttribute> attribute);
+
+    /**
+     * Returns the final value of the attribute but ignores the provided modifiers
+     * @param attribute the attribute
+     * @param attributeModifiers the ignored modifiers
+     * @return the value
+     */
+    default double getValueWithoutModifiers(MCCReference<MCCAttribute> attribute, MCCAttributeModifier... attributeModifiers) {
+        return getAttributeInstance(attribute).getValueWithoutModifiers(attributeModifiers);
+    }
 
     /**
      * Gets the base value of a particular attribute

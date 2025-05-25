@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.registry;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -50,12 +51,12 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public @Nullable Key getKey(T value) {
-        return conversionService.wrap(handle.getKey(unwrap(value)));
+        return conversionService.wrap(handle.getKey(unwrap(value)), new TypeToken<>() {});
     }
 
     @Override
     public Optional<MCCTypedKey<T>> getTypedKey(T value) {
-        return conversionService.wrap(handle.getResourceKey(unwrap(value)));
+        return conversionService.wrap(handle.getResourceKey(unwrap(value)), new TypeToken<>() {});
     }
 
     @Override
@@ -70,7 +71,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Optional<MCCReference<T>> getAny() {
-        return conversionService.wrap(handle.getAny());
+        return conversionService.wrap(handle.getAny(), new TypeToken<>() {});
     }
 
     @Override
@@ -80,12 +81,12 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Set<Key> keySet() {
-        return conversionService.wrap(handle.keySet());
+        return conversionService.wrap(handle.keySet(), new TypeToken<>() {});
     }
 
     @Override
     public Set<MCCTypedKey<T>> registryKeySet() {
-        return conversionService.wrap(handle.registryKeySet());
+        return conversionService.wrap(handle.registryKeySet(), new TypeToken<>() {});
     }
 
     @Override
@@ -100,7 +101,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Optional<MCCReference<T>> getReference(Key key) {
-        return conversionService.wrap(handle.get(unwrap(key)));
+        return conversionService.wrap(handle.get(unwrap(key)), new TypeToken<>() {});
     }
 
     @Override
@@ -110,7 +111,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public MCCReference<T> wrapAsReference(T value) {
-        return conversionService.wrap(handle.wrapAsHolder(unwrap(value)));
+        return conversionService.wrap(handle.wrapAsHolder(unwrap(value)), new TypeToken<>() {});
     }
 
     @Override
@@ -121,7 +122,7 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
     @Override
     public MCCReferenceSet<T> getOrCreateTag(MCCTag<T> tag) {
         List<MCCReference<T>> list = new ArrayList<>();
-        handle.getTagOrEmpty(conversionService.unwrap(tag)).iterator().forEachRemaining(rHolder -> list.add(conversionService.wrap(rHolder)));
+        handle.getTagOrEmpty(conversionService.unwrap(tag)).iterator().forEachRemaining(rHolder -> list.add(conversionService.wrap(rHolder, new TypeToken<>() {})));
         return MCCPlatform.getInstance().getTypedKeyFactory().createImmutableSetWithoutKey(list);
     }
 
@@ -132,12 +133,12 @@ public class NMSRegistry<T, R> extends MCCHandle<Registry<R>> implements MCCRegi
 
     @Override
     public Stream<MCCTag<T>> getTagNames() {
-        return handle.getTags().map(conversionService::wrap);
+        return handle.getTags().map(holders -> conversionService.wrap(holders, new TypeToken<>() {}));
     }
 
     @Override
     public MCCReference<T> register(MCCTypedKey<T> key, T value) {
         WritableRegistry<R> writableRegistry = (WritableRegistry<R>) handle;
-        return conversionService.wrap(writableRegistry.register(conversionService.unwrap(key), conversionService.unwrap(value), RegistrationInfo.BUILT_IN));
+        return conversionService.wrap(writableRegistry.register(conversionService.unwrap(key), conversionService.unwrap(value), RegistrationInfo.BUILT_IN), new TypeToken<>() {});
     }
 }

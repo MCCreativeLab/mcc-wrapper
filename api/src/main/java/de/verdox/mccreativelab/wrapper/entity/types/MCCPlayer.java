@@ -3,6 +3,7 @@ package de.verdox.mccreativelab.wrapper.entity.types;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.wrapper.annotations.MCCLogic;
 import de.verdox.mccreativelab.wrapper.block.MCCBlock;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEffectTarget;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCEntityHiding;
 import de.verdox.mccreativelab.wrapper.component.entity.MCCPluginMessenger;
@@ -144,10 +145,20 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      */
     void sendBlockDamage(@NotNull MCCLocation location, @Range(from = 0, to = 1) float progress, int entityId);
 
+    /**
+     * Breaks a block for a player
+     * @param block the block
+     * @return true if the block was broken
+     */
     boolean breakBlock(MCCBlock block);
 
     <T> T getClientOption(MCCClientOption<T> type);
 
+    /**
+     * @param state the state to drop
+     * @return whether the player has the correct tool for drops of the state
+     */
+    boolean hasCorrectToolForDrops(MCCBlockState state);
 
     /**
      * Adds the item stack from the provided inventory at the provided slot into the player's inventory
@@ -172,7 +183,7 @@ public interface MCCPlayer extends MCCLivingEntity, ContainerViewer, Identified 
      * @param stack the item stack
      */
     default void addItemOrDrop(MCCItemStack stack) {
-        getChunk().dropItem(getLocation(), stack, mccItemEntity -> mccItemEntity.setOwner(getUUID()));
+        getInventory().addItem(stack).forEach((integer, mccItemStack) -> getChunk().dropItem(getLocation(), mccItemStack, mccItemEntity -> mccItemEntity.setOwner(getUUID())));
     }
 
     /**

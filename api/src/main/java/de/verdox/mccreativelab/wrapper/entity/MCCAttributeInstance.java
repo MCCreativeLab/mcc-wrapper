@@ -86,4 +86,11 @@ public interface MCCAttributeInstance {
      * @return server default value
      */
     double getDefaultValue();
+
+    /**
+     * Returns the final value of the attribute but ignores the provided modifiers
+     * @param attributeModifiers the ignored modifiers
+     * @return the value
+     */
+    double getValueWithoutModifiers(MCCAttributeModifier... attributeModifiers);
 }

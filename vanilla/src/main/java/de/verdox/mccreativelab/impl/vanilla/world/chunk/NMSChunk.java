@@ -162,7 +162,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         }
 
         this.getHandle().getLevel().addFreshEntity(entity);
-        return conversionService.wrap(entity);
+        return conversionService.wrap(entity, new TypeToken<>() {});
     }
 
     @Override
@@ -247,7 +247,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
 
         ItemEntity entity = new ItemEntity(getHandle().getLevel(), mcPos.x(), mcPos.y(), mcPos.z(), conversionService.unwrap(item.copy()));
         entity.setPickUpDelay(10);
-        MCCItemEntity mccEntity = conversionService.wrap(entity);
+        MCCItemEntity mccEntity = conversionService.wrap(entity, new TypeToken<>() {});
         if (dropCallback != null) {
             dropCallback.accept(mccEntity);
         }

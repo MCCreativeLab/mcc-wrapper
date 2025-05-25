@@ -5,5 +5,7 @@
   "injectors": {
     "defaultRequire": 0
   },
-  "mixins": []
+  "mixins": ["BlockMixin","EntityMixin","ItemStackMixin","MixinBlockStateBase","MixinPathPackResources","MixinRecipeManager","MixinRecipeMap","ServerLevelMixin"],
+  "client": [],
+  "server": []
 }

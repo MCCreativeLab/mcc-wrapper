@@ -51,6 +51,6 @@ public interface MCCBlockSoundSettings {
         if (!mccBlockType.isVanilla()) {
             return true;
         }
-        return !mccBlockType.getSoundGroup().equals(getSoundGroup(mccBlockType));
+        return !mccBlockType.getBlockProperties().soundType().equals(getSoundGroup(mccBlockType));
     }
 }

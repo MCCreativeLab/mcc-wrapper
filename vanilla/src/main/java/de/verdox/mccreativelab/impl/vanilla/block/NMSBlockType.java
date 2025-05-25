@@ -2,6 +2,7 @@ package de.verdox.mccreativelab.impl.vanilla.block;
 
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -33,33 +34,8 @@ public class NMSBlockType extends MCCHandle<Block> implements MCCBlockType {
     }
 
     @Override
-    public MCCBlockSoundGroup getSoundGroup() {
-        return new NMSBlockSoundGroup(handle.defaultBlockState().getSoundType());
-    }
-
-    @Override
-    public float getExplosionResistance() {
-        return handle.getExplosionResistance();
-    }
-
-    @Override
-    public float getHardness() {
-        return handle.defaultDestroyTime();
-    }
-
-    @Override
-    public float getFriction() {
-        return handle.getFriction();
-    }
-
-    @Override
-    public float getJumpFactor() {
-        return handle.getJumpFactor();
-    }
-
-    @Override
-    public float getSpeedFactor() {
-        return handle.getSpeedFactor();
+    public MCCBlockProperties getBlockProperties() {
+        return conversionService.wrap(handle.properties(), new TypeToken<>() {});
     }
 
     @Override

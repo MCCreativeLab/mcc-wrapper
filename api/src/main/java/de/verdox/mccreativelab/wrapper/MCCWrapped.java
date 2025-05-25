@@ -13,8 +13,12 @@ public interface MCCWrapped {
     }
 
     default void requireVanilla(){
+        requireVanilla("This operation is exclusive to native minecraft elements. Custom types are now allowed here.");
+    }
+
+    default void requireVanilla(String errorMsg){
         if(!isVanilla()){
-            throw new UnsupportedOperationException("This operation is exclusive to native minecraft elements. Custom types are now allowed here.");
+            throw new UnsupportedOperationException(errorMsg);
         }
     }
 

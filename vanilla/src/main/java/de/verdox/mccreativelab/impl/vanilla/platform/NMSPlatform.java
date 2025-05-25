@@ -4,10 +4,44 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.ConversionService;
 import de.verdox.mccreativelab.conversion.ConversionServiceImpl;
 import de.verdox.mccreativelab.conversion.converter.EnumConverter;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStateProperty;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCCookingBookCategory;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCIngredient;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipeBookCategory;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCSpecialRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapedRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCShapelessRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.crafting.MCCTransmuteRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.MCCStonecutterRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCBlastingRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCCampfireRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCFurnaceRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.single.cooking.MCCSmokingRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTransformRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.standard.smithing.MCCSmithingTrimRecipe;
+import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockProperties;
+import de.verdox.mccreativelab.impl.vanilla.block.properties.NMSBlockStateProperty;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSIngredient;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.NMSSpecialRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapedRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSShapelessRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.crafting.NMSTransmuteRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.NMSStonecutterRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSBlastingRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSCampfireRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSFurnaceRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.single.cooking.NMSSmokingRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTransformRecipe;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.recipe.standard.smithing.NMSSmithingTrimRecipe;
+import de.verdox.mccreativelab.impl.vanilla.registry.recipe.NMSRecipeManager;
+import de.verdox.mccreativelab.impl.vanilla.registry.recipe.NMSRecipeReference;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.generator.resourcepack.CustomResourcePack;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.impl.vanilla.gamefactory.NMSGameFactory;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockSoundGroup;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockState;
 import de.verdox.mccreativelab.impl.vanilla.block.NMSBlockType;
@@ -23,6 +57,10 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.types.menu.*;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemStack;
 import de.verdox.mccreativelab.impl.vanilla.item.NMSItemType;
 import de.verdox.mccreativelab.impl.vanilla.item.components.*;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSBlockHitResult;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSHitResult;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSRandomSource;
+import de.verdox.mccreativelab.impl.vanilla.misc.NMSUseOnContext;
 import de.verdox.mccreativelab.impl.vanilla.item.equipment.NMSEquipmentAsset;
 import de.verdox.mccreativelab.impl.vanilla.pack.ResourcePackManager;
 import de.verdox.mccreativelab.impl.vanilla.pack.VanillaGeneratorHelper;
@@ -44,6 +82,13 @@ import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockSoundSettings;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCFurnaceSettings;
+
+import de.verdox.mccreativelab.wrapper.misc.*;
+import de.verdox.mccreativelab.wrapper.entity.player.MCCInteractionHand;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCItemEntity;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCLivingEntity;
+import de.verdox.mccreativelab.wrapper.entity.types.MCCPlayer;
+
 import de.verdox.mccreativelab.wrapper.component.GameComponentRegistry;
 import de.verdox.mccreativelab.wrapper.entity.*;
 import de.verdox.mccreativelab.wrapper.entity.player.MCCGameMode;
@@ -80,6 +125,7 @@ import de.verdox.mccreativelab.wrapper.world.level.biome.MCCBiome;
 import de.verdox.vserializer.generic.SerializationContext;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
@@ -90,9 +136,16 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerSettings;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -103,11 +156,14 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class NMSPlatform implements MCCPlatform {
+    public static boolean isMixinSupported = false;
     protected final NMSTypedKeyFactory typedKeyFactory;
     protected final ConversionService conversionService;
     protected final MCCContainerFactory containerFactory;
     protected final NMSRegistryStorage registryStorage;
     protected final NMSLifecycleTrigger lifecycleTrigger;
+    protected MCCGameFactory nmsGameFactory;
+
     protected final NMSElementFactory elementFactory = new NMSElementFactory(this);
     protected final NMSSerializers serializers = new NMSSerializers();
     private final boolean useGeneratedConverters;
@@ -137,11 +193,11 @@ public class NMSPlatform implements MCCPlatform {
      * @param reloadableRegistries the registry access to the reloadable resources
      */
     @VisibleForTesting
-    public NMSPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries) {
+    public NMSPlatform(RegistryAccess.Frozen fullRegistryAccess, HolderGetter.Provider reloadableRegistries, RecipeManager recipeManager) {
         this.typedKeyFactory = new NMSTypedKeyFactory();
         this.conversionService = new ConversionServiceImpl();
         this.containerFactory = new NMSContainerFactory(this);
-        this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries);
+        this.registryStorage = new NMSRegistryStorage(fullRegistryAccess, reloadableRegistries, recipeManager);
         this.lifecycleTrigger = new NMSLifecycleTrigger(this);
         this.useGeneratedConverters = true;
     }
@@ -149,6 +205,7 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public void load() {
         prepareConverter(MCCBlockState.class, NMSBlockState.CONVERTER);
+        prepareConverter(MCCBlockProperties.class, NMSBlockProperties.CONVERTER);
         prepareConverter(MCCBlockSoundGroup.class, NMSBlockSoundGroup.CONVERTER);
         prepareConverter(MCCBlockType.class, NMSBlockType.CONVERTER);
         prepareConverter(MCCAttribute.class, NMSAttribute.CONVERTER);
@@ -192,15 +249,28 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCEnchantment.Definition.class, NMSEnchantment.NMSDefinition.CONVERTER);
         prepareConverter(MCCEnchantment.Cost.class, NMSEnchantment.NMSCost.CONVERTER);
 
+        prepareConverter(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
+
         prepareConverter(MCCConsumeEffect.class, NMSConsumeEffect.CONVERTER);
 
+        prepareConverter(MCCHitResult.class, NMSHitResult.CONVERTER);
+        prepareConverter(MCCBlockHitResult.class, NMSBlockHitResult.CONVERTER);
+        prepareConverter(MCCRandomSource.class, NMSRandomSource.CONVERTER);
+        prepareConverter(MCCUseOnContext.class, NMSUseOnContext.CONVERTER);
         prepareConverter(MCCEquipmentAsset.class, NMSEquipmentAsset.CONVERTER);
+
+        prepareConverter(MCCBlockStateProperty.class, NMSBlockStateProperty.CONVERTER);
+        prepareConverter(MCCBlockStateProperty.Value.class, NMSBlockStateProperty.Value.CONVERTER);
+
+        prepareConverter(MCCReference.class, NMSRecipeReference.CONVERTER);
+        prepareConverter(MCCRegistry.class, NMSRecipeManager.CONVERTER);
 
         registerMenuTypes();
         registerContainerTypes();
         registerEnumConverters();
         registerEntityClasses();
         registerItemComponentConverters();
+        registerRecipeConverters();
         if (useGeneratedConverters) {
             GeneratedConverters.init(conversionService);
         }
@@ -210,6 +280,7 @@ public class NMSPlatform implements MCCPlatform {
     public void setupConversionService() {
         LOGGER.info("Initializing conversion service with " + preparedConverters.size() + " converters");
         preparedConverters.forEach((aClass, preparedConverter) -> preparedConverter.register(conversionService));
+        getGameFactory();
     }
 
     @Override
@@ -257,6 +328,15 @@ public class NMSPlatform implements MCCPlatform {
     }
 
     @Override
+    public MCCGameFactory getGameFactory() {
+        if (this.nmsGameFactory == null) {
+            LOGGER.info("Constructing GameFactoryAPI");
+            this.nmsGameFactory = constructGameFactory();
+        }
+        return nmsGameFactory;
+    }
+
+    @Override
     public MCCElementFactory getElementFactory() {
         return elementFactory;
     }
@@ -289,6 +369,13 @@ public class NMSPlatform implements MCCPlatform {
     @Override
     public @NotNull MCCVanillaRegistryManipulator getRegistryManipulator() {
         return registryManipulator;
+    }
+
+    @Override
+    public void checkForMixins() throws IllegalStateException {
+        if (!isMixinSupported) {
+            throw new IllegalStateException("Mixins are necessary for this feature. If you want to use this feature consider using an environment that supports mixins. If you run papermc please use ignite and the mcc-paper-mod to enable mixins on your papermc server.");
+        }
     }
 
     @Override
@@ -327,7 +414,7 @@ public class NMSPlatform implements MCCPlatform {
 
     @Override
     public @Nullable MCCPlayer getOnlinePlayer(@NotNull UUID uuid) {
-        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid));
+        return conversionService.wrap(getServer().getPlayerList().getPlayer(uuid), new TypeToken<>() {});
     }
 
     @Override
@@ -375,6 +462,14 @@ public class NMSPlatform implements MCCPlatform {
 
     public MinecraftServer getServer() {
         return null;
+    }
+
+    /**
+     * Can be overridden by a platform to inject its own game factory
+     * @return a new game factory
+     */
+    protected MCCGameFactory constructGameFactory() {
+        return new NMSGameFactory(this);
     }
 
     private void registerMenuTypes() {
@@ -429,7 +524,17 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCEquipmentSlotGroup.class, new EnumConverter<>(EquipmentSlotGroup.class, MCCEquipmentSlotGroup.class));
         prepareConverter(MCCGameMode.class, new EnumConverter<>(GameType.class, MCCGameMode.class));
         prepareConverter(MCCDifficulty.class, new EnumConverter<>(Difficulty.class, MCCDifficulty.class));
+        prepareConverter(MCCInteractionHand.class, new EnumConverter<>(InteractionHand.class, MCCInteractionHand.class));
+        prepareConverter(MCCDirection.class, new EnumConverter<>(Direction.class, MCCDirection.class));
+        prepareConverter(MCCHitType.class, new EnumConverter<>(HitResult.Type.class, MCCHitType.class));
+        prepareConverter(MCCStateMirror.class, new EnumConverter<>(Mirror.class, MCCStateMirror.class));
+        prepareConverter(MCCStateRotation.class, new EnumConverter<>(Rotation.class, MCCStateRotation.class));
+        prepareConverter(MCCNoteBlockInstrument.class, new EnumConverter<>(NoteBlockInstrument.class, MCCNoteBlockInstrument.class));
+        prepareConverter(MCCPushReaction.class, new EnumConverter<>(PushReaction.class, MCCPushReaction.class));
         prepareConverter(MCCEntitySpawnReason.class, new EnumConverter<>(EntitySpawnReason.class, MCCEntitySpawnReason.class));
+
+        prepareConverter(MCCRecipeBookCategory.class, new EnumConverter<>(CraftingBookCategory.class, MCCRecipeBookCategory.class));
+        prepareConverter(MCCCookingBookCategory.class, new EnumConverter<>(CookingBookCategory.class, MCCCookingBookCategory.class));
     }
 
     private void registerItemComponentConverters() {
@@ -454,6 +559,26 @@ public class NMSPlatform implements MCCPlatform {
         prepareConverter(MCCChargedProjectiles.class, NMSChargedProjectiles.CONVERTER);
         prepareConverter(MCCFoodProperties.class, NMSFoodProperties.CONVERTER);
         prepareConverter(MCCDataComponentType.class, new DataComponentTypeConverter());
+    }
+
+    private void registerRecipeConverters() {
+        prepareConverter(MCCIngredient.class, NMSIngredient.CONVERTER);
+
+        prepareConverter(MCCShapelessRecipe.class, NMSShapelessRecipe.CONVERTER);
+        prepareConverter(MCCShapedRecipe.class, NMSShapedRecipe.CONVERTER);
+        prepareConverter(MCCTransmuteRecipe.class, NMSTransmuteRecipe.CONVERTER);
+
+        prepareConverter(MCCBlastingRecipe.class, NMSBlastingRecipe.CONVERTER);
+        prepareConverter(MCCCampfireRecipe.class, NMSCampfireRecipe.CONVERTER);
+        prepareConverter(MCCFurnaceRecipe.class, NMSFurnaceRecipe.CONVERTER);
+        prepareConverter(MCCSmokingRecipe.class, NMSSmokingRecipe.CONVERTER);
+
+        prepareConverter(MCCStonecutterRecipe.class, NMSStonecutterRecipe.CONVERTER);
+
+        prepareConverter(MCCSmithingTransformRecipe.class, NMSSmithingTransformRecipe.CONVERTER);
+        prepareConverter(MCCSmithingTrimRecipe.class, NMSSmithingTrimRecipe.CONVERTER);
+
+        prepareConverter(MCCSpecialRecipe.class, NMSSpecialRecipe.CONVERTER);
     }
 
     public ResourcePackManager getResourcePackManager() {

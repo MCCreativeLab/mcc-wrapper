@@ -7,6 +7,6 @@ public class NMSTestBase extends TestBase {
 
     @BeforeAll
     public static void bootstrap() {
-        bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup()));
+        bootstrap(() -> new NMSPlatform(RegistryHelper.getRegistry(), RegistryHelper.getDataPack().fullRegistries().lookup(), RegistryHelper.getDataPack().getRecipeManager()));
     }
 }

@@ -10,10 +10,13 @@ import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
 import de.verdox.mccreativelab.wrapper.platform.MCCPlatform;
 import de.verdox.mccreativelab.wrapper.registry.MCCReference;
 import net.kyori.adventure.key.Key;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class NMSAttributeInstance extends MCCHandle<AttributeInstance> implements MCCAttributeInstance {
     public static final MCCConverter<AttributeInstance, NMSAttributeInstance> CONVERTER = converter(NMSAttributeInstance.class, AttributeInstance.class, NMSAttributeInstance::new, MCCHandle::getHandle);
@@ -70,5 +73,35 @@ public class NMSAttributeInstance extends MCCHandle<AttributeInstance> implement
     @Override
     public double getDefaultValue() {
         return handle.getBaseValue();
+    }
+
+    @Override
+    public double getValueWithoutModifiers(MCCAttributeModifier... attributeModifiers) {
+        double base = this.getBaseValue();
+        Set<ResourceLocation> prohibited = new HashSet<>();
+        for (MCCAttributeModifier attributeModifier : attributeModifiers) {
+            prohibited.add(conversionService.unwrap(attributeModifier.key()));
+        }
+
+        Map<AttributeModifier.Operation, List<AttributeModifier>> grouped = handle.getModifiers()
+                .stream()
+                .filter(attributeModifier -> !prohibited.contains(attributeModifier.id()))
+                .collect(Collectors.groupingBy(AttributeModifier::operation));
+
+        for (AttributeModifier attributeModifier : grouped.getOrDefault(AttributeModifier.Operation.ADD_VALUE, new LinkedList<>())) {
+            base += attributeModifier.amount();
+        }
+
+        double finalValue = base;
+
+        for (AttributeModifier attributeModifier : grouped.getOrDefault(AttributeModifier.Operation.ADD_MULTIPLIED_BASE, new LinkedList<>())) {
+            finalValue += base * attributeModifier.amount();
+        }
+
+        for (AttributeModifier attributeModifier : grouped.getOrDefault(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, new LinkedList<>())) {
+            finalValue *= 1.0 + attributeModifier.amount();
+        }
+
+        return handle.getAttribute().value().sanitizeValue(finalValue);
     }
 }

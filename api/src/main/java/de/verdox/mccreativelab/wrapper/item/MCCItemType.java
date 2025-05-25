@@ -38,4 +38,10 @@ public interface MCCItemType extends MCCKeyedWrapper {
     default Key getRegistryKey() {
         return MCCRegistries.ITEM_REGISTRY.key();
     }
+
+    @Override
+    @NotNull
+    default Key key() {
+        return MCCRegistries.ITEM_REGISTRY.get().getKey(this);
+    }
 }

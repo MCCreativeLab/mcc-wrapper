@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.conversion;
 
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
+import de.verdox.mccreativelab.wrapper.block.MCCBlockProperties;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockSoundGroup;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockState;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
@@ -29,33 +30,8 @@ public class TestBlockTypeImpl extends MCCHandle<StonecutterBlock> implements MC
     }
 
     @Override
-    public MCCBlockSoundGroup getSoundGroup() {
+    public MCCBlockProperties getBlockProperties() {
         return null;
-    }
-
-    @Override
-    public float getExplosionResistance() {
-        return 0;
-    }
-
-    @Override
-    public float getHardness() {
-        return 0;
-    }
-
-    @Override
-    public float getFriction() {
-        return 0;
-    }
-
-    @Override
-    public float getJumpFactor() {
-        return 0;
-    }
-
-    @Override
-    public float getSpeedFactor() {
-        return 0;
     }
 
     @Override

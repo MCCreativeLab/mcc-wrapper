@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
 import de.verdox.mccreativelab.wrapper.item.MCCItemStack;
@@ -29,7 +30,7 @@ public class NMSContainer extends MCCHandle<Container> implements MCCContainer {
 
     @Override
     public MCCItemStack getItem(int index) {
-        return conversionService.wrap(handle.getItem(index));
+        return conversionService.wrap(handle.getItem(index), new TypeToken<>() {});
     }
 
     @Override

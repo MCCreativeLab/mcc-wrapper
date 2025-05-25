@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.wrapper.typed;
 
 import com.google.common.reflect.TypeToken;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCRecipe;
 import de.verdox.mccreativelab.wrapper.block.MCCBlockType;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntityType;
 import de.verdox.mccreativelab.wrapper.types.*;
@@ -50,6 +51,7 @@ public interface MCCRegistries {
     MCCTypedKey<MCCRegistry<MCCPotion>> POTION_REGISTRY = builtIn("potion", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCVillagerProfession>> VILLAGER_PROFESSION_REGISTRY = builtIn("villager_profession", new TypeToken<>() {});
 
+    MCCTypedKey<MCCRegistry<MCCRecipe>> RECIPE_REGISTRY = dataDriven("recipe", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCInstrument>> INSTRUMENT_REGISTRY = dataDriven("instrument", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCJukeboxSong>> JUKEBOX_SONG_REGISTRY = dataDriven("jukebox_song", new TypeToken<>() {});
     MCCTypedKey<MCCRegistry<MCCPaintingVariant>> PAINTING_VARIANT_REGISTRY = dataDriven("painting_variant", new TypeToken<>() {});

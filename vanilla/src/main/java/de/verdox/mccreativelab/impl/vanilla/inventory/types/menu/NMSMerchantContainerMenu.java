@@ -6,7 +6,7 @@ import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
 import de.verdox.mccreativelab.wrapper.annotations.MCCReflective;
 import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
-import de.verdox.mccreativelab.wrapper.inventory.recipe.MCCMerchantRecipe;
+import de.verdox.mccreativelab.gamefactory.recipe.MCCMerchantRecipe;
 import de.verdox.mccreativelab.wrapper.inventory.source.MCCEntityContainerSource;
 import de.verdox.mccreativelab.wrapper.inventory.types.menu.MCCMerchantContainerMenu;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -99,7 +99,7 @@ public class NMSMerchantContainerMenu extends NMSContainerMenu<MCCEntityContaine
 
     @Override
     public MCCContainer getContainerOfMerchant() {
-        return conversionService.wrap(readContainerDataFromField("tradeContainer"));
+        return conversionService.wrap(readContainerDataFromField("tradeContainer"), new TypeToken<>() {});
     }
 
     @Override
@@ -116,6 +116,6 @@ public class NMSMerchantContainerMenu extends NMSContainerMenu<MCCEntityContaine
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("trader"));
+        return conversionService.wrap(readContainerFromField("trader"), new TypeToken<>() {});
     }
 }

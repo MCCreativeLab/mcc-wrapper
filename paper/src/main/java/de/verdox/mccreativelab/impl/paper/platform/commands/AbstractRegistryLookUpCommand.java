@@ -15,12 +15,12 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
-public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
-    protected final R registry;
-    private final BiConsumer<MCCPlayer, T> consumeEntry;
+public abstract class AbstractRegistryLookUpCommand<ENTRY, REGISTRY> extends Command {
+    protected final REGISTRY registry;
+    private final BiConsumer<MCCPlayer, ENTRY> consumeEntry;
     private final String subCommand;
 
-    public AbstractRegistryLookUpCommand(@NotNull String name, String subCommand, R registry, BiConsumer<MCCPlayer, T> consumeEntry) {
+    public AbstractRegistryLookUpCommand(@NotNull String name, String subCommand, REGISTRY registry, BiConsumer<MCCPlayer, ENTRY> consumeEntry) {
         super(name);
         this.subCommand = subCommand;
         Objects.requireNonNull(registry);
@@ -30,7 +30,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
         setPermission("mccreativelab.command.registry.lookup." + getName().toLowerCase(Locale.ROOT));
     }
 
-    public AbstractRegistryLookUpCommand(@NotNull String name, R registry, BiConsumer<MCCPlayer, T> consumeEntry) {
+    public AbstractRegistryLookUpCommand(@NotNull String name, REGISTRY registry, BiConsumer<MCCPlayer, ENTRY> consumeEntry) {
         this(name, "get", registry, consumeEntry);
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
                         sender.sendMessage("Please provide a valid entry");
                         return false;
                     }
-                    T entry = getValueFromRegistry(keyAsString);
+                    ENTRY entry = getValueFromRegistry(keyAsString);
 
                     Player playerToShow = player;
                     if (args.length == 3) {
@@ -61,7 +61,7 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
                         }
                     }
 
-                    consumeEntry.accept(BukkitAdapter.wrap(playerToShow, MCCPlayer.class), entry);
+                    consumeEntry.accept(BukkitAdapter.toMcc(playerToShow), entry);
                 } catch (Exception e) {
                     sender.sendMessage("An internal error occured while doing the registry lookup");
                     e.printStackTrace();
@@ -85,5 +85,5 @@ public abstract class AbstractRegistryLookUpCommand<T, R> extends Command {
 
     protected abstract boolean contains(String key);
 
-    protected abstract T getValueFromRegistry(String key);
+    protected abstract ENTRY getValueFromRegistry(String key);
 }

@@ -1,5 +1,6 @@
 package de.verdox.mccreativelab.impl.vanilla.types;
 
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.wrapper.entity.MCCEffect;
 import de.verdox.mccreativelab.wrapper.platform.MCCHandle;
@@ -22,7 +23,7 @@ public class NMSPotion extends MCCHandle<Potion> implements MCCPotion {
 
     @Override
     public List<MCCEffect> getEffects() {
-        return conversionService.wrap(handle.getEffects());
+        return conversionService.wrap(handle.getEffects(), new TypeToken<>() {});
     }
 
     @Override

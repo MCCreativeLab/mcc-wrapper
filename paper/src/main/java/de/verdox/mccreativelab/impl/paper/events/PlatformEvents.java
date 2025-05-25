@@ -1,26 +1,27 @@
 package de.verdox.mccreativelab.impl.paper.events;
 
-import com.google.common.reflect.TypeToken;
-import de.verdox.mccreativelab.reflection.ReflectionUtils;
+import de.verdox.mccreativelab.impl.paper.platform.converter.BukkitAdapter;
+import de.verdox.mccreativelab.wrapper.entity.MCCEntity;
 import de.verdox.mccreativelab.wrapper.event.block.MCCFluidLevelChangeEvent;
 import de.verdox.mccreativelab.wrapper.event.block.MCCLeavesDecayEvent;
 import de.verdox.mccreativelab.wrapper.event.block.MCCSculkBloomEvent;
 import de.verdox.mccreativelab.wrapper.event.entity.*;
-import de.verdox.mccreativelab.wrapper.event.hanging.MCCHangingEvent;
 import de.verdox.mccreativelab.wrapper.event.inventory.MCCFurnaceExtractEvent;
-import de.verdox.mccreativelab.wrapper.event.weather.MCCWeatherEvent;
 import de.verdox.mccreativelab.wrapper.event.world.MCCSpawnChangeEvent;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.FluidLevelChangeEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SculkBloomEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.weather.WeatherEvent;
 import org.bukkit.event.world.SpawnChangeEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlatformEvents extends EventBase {
 
@@ -46,34 +47,34 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(FluidLevelChangeEvent event) {
         callEvent(event, new MCCFluidLevelChangeEvent(
-                wrap(event.getBlock(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getBlock()),
                 event.isCancelled(),
-                wrap(event.getNewData(), new TypeToken<>() {})
+                BukkitAdapter.toMcc(event.getNewData())
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(LeavesDecayEvent event) {
         callEvent(event, new MCCLeavesDecayEvent(
-                        wrap(event.getBlock(), new TypeToken<>() {}),
-                        event.isCancelled()
-                ));
+                BukkitAdapter.toMcc(event.getBlock()),
+                event.isCancelled()
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(SculkBloomEvent event) {
         callEvent(event, new MCCSculkBloomEvent(
-                        wrap(event.getBlock(), new TypeToken<>() {}),
-                        event.isCancelled(),
-                        event.getCharge()
-                ));
+                BukkitAdapter.toMcc(event.getBlock()),
+                event.isCancelled(),
+                event.getCharge()
+        ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(AreaEffectCloudApplyEvent event) {
         callEvent(event, new MCCAreaEffectCloudApplyEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
-                wrap(event.getAffectedEntities(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
+                BukkitAdapter.toMcc(event.getAffectedEntities(), BukkitAdapter::toMcc, ArrayList::new),
                 event.isCancelled()
         ));
     }
@@ -81,7 +82,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ArrowBodyCountChangeEvent event) {
         callEvent(event, new MCCArrowBodyCountChangeEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
                 event.isReset(),
                 event.getOldAmount(),
@@ -92,7 +93,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(BatToggleSleepEvent event) {
         callEvent(event, new MCCBatToggleSleepEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
                 event.isAwake()
         ));
@@ -101,10 +102,10 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ExpBottleEvent event) {
         callEvent(event, new MCCExpBottleEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
-                wrap(event.getHitEntity(), new TypeToken<>() {}),
-                wrap(event.getHitBlock(), new TypeToken<>() {}),
-                wrap(event.getHitBlockFace(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
+                BukkitAdapter.toMcc(event.getHitEntity()),
+                BukkitAdapter.toMcc(event.getHitBlock()),
+                BukkitAdapter.toMcc(event.getHitBlockFace()),
                 event.isCancelled(),
                 event.getExperience(),
                 event.getShowEffect()
@@ -114,7 +115,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(ExplosionPrimeEvent event) {
         callEvent(event, new MCCExplosionPrimeEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
                 event.getRadius(),
                 event.getFire()
@@ -124,7 +125,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(FireworkExplodeEvent event) {
         callEvent(event, new MCCFireworkExplodeEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled()
         ));
     }
@@ -132,7 +133,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(HorseJumpEvent event) {
         callEvent(event, new MCCHorseJumpEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
                 event.getPower()
         ));
@@ -144,41 +145,45 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(PigZombieAngerEvent event) {
         callEvent(event, new MCCPigZombieAngerEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
-                wrap(event.getTarget(), new TypeToken<>() {}),
-                wrap(event.getNewAnger(), new TypeToken<>() {})
+                BukkitAdapter.toMcc(event.getTarget()),
+                event.getNewAnger()
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PlayerLeashEntityEvent event) {
         callEvent(event, new MCCPlayerLeashEntityEvent(
-                wrap(event.getLeashHolder(), new TypeToken<>() {}),
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getLeashHolder()),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
-                wrap(event.getPlayer(), new TypeToken<>() {}),
-                wrap(event.getHand(), new TypeToken<>() {})
+                BukkitAdapter.toMcc(event.getPlayer()),
+                BukkitAdapter.toMcc(event.getHand())
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(PotionSplashEvent event) {
+        Map<MCCEntity, Double> affectedEntities = new HashMap<>();
+        for (LivingEntity affectedEntity : event.getAffectedEntities()) {
+            affectedEntities.put(BukkitAdapter.toMcc(affectedEntity), event.getIntensity(affectedEntity));
+        }
         callEvent(event, new MCCPotionSplashEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
-                wrap(event.getHitEntity(), new TypeToken<>() {}),
-                wrap(event.getHitBlock(), new TypeToken<>() {}),
-                wrap(event.getHitBlockFace(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
+                BukkitAdapter.toMcc(event.getHitEntity()),
+                BukkitAdapter.toMcc(event.getHitBlock()),
+                BukkitAdapter.toMcc(event.getHitBlockFace()),
                 event.isCancelled(),
                 event.isCancelled(), // duplicate
-                wrap(event.getAffectedEntities(), new TypeToken<>() {})
+                affectedEntities
         ));
     }
 
     @EventHandler(ignoreCancelled = true)
     public void handle(SheepRegrowWoolEvent event) {
         callEvent(event, new MCCSheepRegrowWoolEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled()
         ));
     }
@@ -186,7 +191,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(SlimeSplitEvent event) {
         callEvent(event, new MCCSlimeSplitEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isCancelled(),
                 event.getCount()
         ));
@@ -195,7 +200,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(StriderTemperatureChangeEvent event) {
         callEvent(event, new MCCStriderTemperatureChangeEvent(
-                wrap(event.getEntity(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getEntity()),
                 event.isShivering(),
                 event.isCancelled()
         ));
@@ -205,17 +210,17 @@ public class PlatformEvents extends EventBase {
 /*    @EventHandler(ignoreCancelled = true)
     public void handle(HangingEvent event) {
         callEvent(event, new MCCHangingEvent(
-                wrap(event.getEntity())
+                BukkitAdapter.toMcc(event.getEntity())
         ));
     }*/
 
     @EventHandler(ignoreCancelled = true)
     public void handle(FurnaceExtractEvent event) {
         callEvent(event, new MCCFurnaceExtractEvent(
-                wrap(event.getBlock(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getBlock()),
                 event.getExpToDrop(),
-                wrap(event.getPlayer(), new TypeToken<>() {}),
-                wrap(event.getItemType(), new TypeToken<>() {}),
+                BukkitAdapter.toMcc(event.getPlayer()),
+                BukkitAdapter.toMcc(event.getItemType().asItemType()),
                 event.getItemAmount()
         ));
     }
@@ -225,7 +230,7 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(WeatherEvent event) {
         callEvent(event, new MCCWeatherEvent(
-                wrap(event.getWorld())
+                BukkitAdapter.toMcc(event.getWorld())
         ));
     }
 */
@@ -233,8 +238,8 @@ public class PlatformEvents extends EventBase {
     @EventHandler(ignoreCancelled = true)
     public void handle(SpawnChangeEvent event) {
         callEvent(event, new MCCSpawnChangeEvent(
-                wrap(event.getWorld(), new TypeToken<>() {}),
-                wrap(event.getPreviousLocation(), new TypeToken<>() {})
+                BukkitAdapter.toMcc(event.getWorld()),
+                BukkitAdapter.toMcc(event.getPreviousLocation())
         ));
     }
 }

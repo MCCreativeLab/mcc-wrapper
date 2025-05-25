@@ -1,6 +1,7 @@
 package de.verdox.mccreativelab.impl.vanilla.inventory.types.menu;
 
 import com.google.common.base.Preconditions;
+import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import de.verdox.mccreativelab.impl.vanilla.inventory.NMSContainerMenu;
 import de.verdox.mccreativelab.wrapper.inventory.MCCContainer;
@@ -30,6 +31,6 @@ public class NMSLecternContainerMenu extends NMSContainerMenu<MCCBlockContainerS
 
     @Override
     public MCCContainer getContainer() {
-        return conversionService.wrap(readContainerFromField("lectern"));
+        return conversionService.wrap(readContainerFromField("lectern"), new TypeToken<>() {});
     }
 }

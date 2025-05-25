@@ -3,6 +3,9 @@ package de.verdox.mccreativelab.wrapper.platform;
 import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.Singleton;
 import de.verdox.mccreativelab.conversion.ConversionService;
+import de.verdox.mccreativelab.gamefactory.MCCGameFactory;
+import de.verdox.mccreativelab.gamefactory.block.properties.MCCBlockStatePropertyFactory;
+import de.verdox.mccreativelab.wrapper.annotations.MCCRequireMixin;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCDataPackInterceptor;
 import de.verdox.mccreativelab.wrapper.platform.data.MCCVanillaRegistryManipulator;
 import de.verdox.mccreativelab.wrapper.block.settings.MCCBlockHardnessSettings;
@@ -228,6 +231,14 @@ public interface MCCPlatform extends MCCTicking {
             this.lifecycleFunction = lifecycleFunction;
         }
     }
+  
+    /**
+     * Returns the game factory used to inject custom types into the platform
+     *
+     * @return the game factory
+     */
+    @MCCRequireMixin
+    MCCGameFactory getGameFactory();
 
     <API, VALUE> Signal<VALUE> createSignal(Key key, API apiObject, Supplier<Sinks.Many<VALUE>> sinkCreator);
 
@@ -255,4 +266,11 @@ public interface MCCPlatform extends MCCTicking {
      * @return the vanilla registry manipulator
      */
     @NotNull MCCVanillaRegistryManipulator getRegistryManipulator();
+
+    /**
+     * Internal method that is used to check for the existence of mixins. If no mixins are available in the runtime an exception is thrown
+     * @throws IllegalStateException when no mixins are available
+     */
+    @MCCRequireMixin
+    void checkForMixins() throws IllegalStateException;
 }

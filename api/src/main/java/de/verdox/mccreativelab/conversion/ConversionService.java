@@ -4,7 +4,14 @@ import com.google.common.reflect.TypeToken;
 import de.verdox.mccreativelab.conversion.converter.MCCConverter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
+
 public interface ConversionService {
+    Logger LOGGER = Logger.getLogger(ConversionService.class.getSimpleName());
     /**
      * Registers a new converter that converts between an impl type and a native type. The impl type implements the api type
      * @param apiType the api type
@@ -128,4 +135,34 @@ public interface ConversionService {
     default <F, T> F unwrap(@Nullable T apiObject, Class<F> nativePlatformType) {
         return unwrap(apiObject, TypeToken.of(nativePlatformType));
     }
+
+    default <FROM, TO> boolean convertsCollection(FROM from, TypeToken<TO> toTypeToken) {
+        return Collection.class.isAssignableFrom(from.getClass()) && toTypeToken.isSubtypeOf(new TypeToken<Collection<?>>() {});
+    }
+
+    default <FROM, TO> boolean convertsMap(FROM from, TypeToken<TO> toTypeToken) {
+        return Map.class.isAssignableFrom(from.getClass()) &&
+                toTypeToken.isSubtypeOf(new TypeToken<Map<?, ?>>() {});
+    }
+
+    default <FROM, TO> boolean convertsMapEntry(FROM from, TypeToken<TO> toTypeToken) {
+        return Map.Entry.class.isAssignableFrom(from.getClass()) &&
+                toTypeToken.isSubtypeOf(new TypeToken<Map.Entry<?, ?>>() {});
+    }
+
+    default <FROM, TO> boolean convertsOptional(FROM from, TypeToken<TO> toTypeToken) {
+        return from instanceof Optional &&
+                toTypeToken.isSubtypeOf(new TypeToken<Optional<?>>() {});
+    }
+
+    default <FROM, TO> boolean convertsIterator(FROM from, TypeToken<TO> toTypeToken) {
+        return Iterator.class.isAssignableFrom(from.getClass()) &&
+                toTypeToken.isSubtypeOf(new TypeToken<Iterator<?>>() {});
+    }
+
+    default <FROM, TO> boolean convertsIterable(FROM from, TypeToken<TO> toTypeToken) {
+        return Iterable.class.isAssignableFrom(from.getClass()) &&
+                toTypeToken.isSubtypeOf(new TypeToken<Iterable<?>>() {});
+    }
+
 }
