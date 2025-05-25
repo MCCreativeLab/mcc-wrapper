@@ -118,7 +118,7 @@ public class NMSGameFactory implements MCCGameFactory {
         if (!(((Object) stack) instanceof ItemStackWithCustomType itemStackWithCustomType)) {
             throw new IllegalStateException("The ItemStack class should extend " + ItemStackWithCustomType.class.getName());
         }
-        return Optional.of(itemStackWithCustomType.getMcc_wrapper$customItemType());
+        return Optional.ofNullable(itemStackWithCustomType.getMcc_wrapper$customItemType());
     }
 
     @Override
