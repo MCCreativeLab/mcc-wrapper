@@ -146,12 +146,7 @@ public abstract class MCCCustomItemType implements MCCItemType {
 
     @Override
     public final @NotNull MCCItemStack createItem() {
-        MCCItemStack stack = itemTextureData.createItem();
-        var standardComponents = getItemStandardComponentMap();
-        for (MCCDataComponentType<?> mccDataComponentType : getItemStandardComponentMap()) {
-            stack.components().copyFrom(mccDataComponentType, standardComponents);
-        }
-        return stack;
+        return MCCPlatform.getInstance().getGameFactory().createItem(this);
     }
 
     @Override
@@ -178,5 +173,9 @@ public abstract class MCCCustomItemType implements MCCItemType {
     @Override
     public final boolean isVanilla() {
         return false;
+    }
+
+    public ItemTextureData getItemTextureData() {
+        return itemTextureData;
     }
 }
