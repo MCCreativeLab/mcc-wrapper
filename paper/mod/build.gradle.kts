@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("java")
     id("java-library")
@@ -9,6 +11,10 @@ sourceSets {
     main {
         java.srcDir("./vanilla/mod/src")
     }
+}
+
+tasks.named<ShadowJar>("shadowJar").configure {
+    destinationDirectory.set(file("$rootDir/paper/build/libs"))
 }
 
 dependencies {
