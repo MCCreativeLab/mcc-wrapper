@@ -33,9 +33,11 @@ public class MixinStackedContentsExtrasMap {
     @Unique
     private final List<RecipePredicate> mcc_wrapper$predicateChoices = new ArrayList<>();
 
-    // Injection in initialize() am Ende, um PredicateChoices zu sammeln
+
     @Inject(method = "initialize", at = @At("TAIL"))
     private void injectInitialize(Recipe<?> recipe, CallbackInfo ci) {
+        mcc_wrapper$hasPredicateChoice = false;
+        mcc_wrapper$predicateChoices.clear();
         for (net.minecraft.world.item.crafting.Ingredient ingredient : recipe.placementInfo().ingredients()) {
             if (((PredicateIngredient) (Object) ingredient).mcc_wrapper$getItemPredicate() != null) {
                 this.mcc_wrapper$hasPredicateChoice = true;
@@ -44,8 +46,14 @@ public class MixinStackedContentsExtrasMap {
         }
     }
 
+    @Inject(method = "resetExtras", at = @At("TAIL"))
+    public void injectResetExtras(CallbackInfo ci) {
+        mcc_wrapper$hasPredicateChoice = false;
+        mcc_wrapper$predicateChoices.clear();
+    }
+
     // Injection in accountStack() vor dem return
-    @Inject(method = "accountStack", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "accountStack", at = @At("HEAD"), cancellable = true)
     private void injectAccountStack(ItemStack stack, int count, CallbackInfoReturnable<Boolean> cir) {
         if (this.mcc_wrapper$hasPredicateChoice) {
             for (RecipePredicate predicateChoice : this.mcc_wrapper$predicateChoices) {
