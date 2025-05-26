@@ -219,7 +219,7 @@ public abstract class ItemStackMixin implements ItemStackWithCustomType {
             consumable.emitParticlesAndSounds(entity.getRandom(), entity, self(), 5);
         }
 
-        if (mcc_wrapper$proxyItem().isProxy()) {
+        if (mcc_wrapper$hasProxyItem()) {
             mcc_wrapper$proxyItem().onUseTick(level, entity, self(), remainingUseDuration);
         } else {
             this.getItem().onUseTick(level, entity, self(), remainingUseDuration);
@@ -229,7 +229,7 @@ public abstract class ItemStackMixin implements ItemStackWithCustomType {
 
     @Inject(method = "onDestroyed", at = @At("HEAD"), cancellable = true)
     public void redirectOnDestroyed(ItemEntity entity, CallbackInfo ci) {
-        if (mcc_wrapper$proxyItem().isProxy()) {
+        if (mcc_wrapper$hasProxyItem()) {
             mcc_wrapper$proxyItem().onDestroyed(entity);
         } else {
             getItem().onDestroyed(entity);
