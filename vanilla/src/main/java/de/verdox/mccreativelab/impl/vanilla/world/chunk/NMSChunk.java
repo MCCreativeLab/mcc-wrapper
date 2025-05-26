@@ -151,7 +151,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         Preconditions.checkArgument(mccEntityType != null, "mccEntityType cannot be null");
         Preconditions.checkArgument(spawnReason != null, "spawnReason cannot be null");
         checkAccess(pos);
-        MCCEntity constructedEntity = mccEntityType.constructNewEntity(getWorld(), spawnReason);
+        T constructedEntity = mccEntityType.constructNewEntity(getWorld(), spawnReason);
         Objects.requireNonNull(constructedEntity, "Could not construct an entity of type " + mccEntityType.key());
         Entity entity = conversionService.unwrap(constructedEntity);
 
@@ -162,7 +162,7 @@ public class NMSChunk extends MCCHandle<LevelChunk> implements MCCChunk {
         }
 
         this.getHandle().getLevel().addFreshEntity(entity);
-        return conversionService.wrap(entity, new TypeToken<>() {});
+        return constructedEntity;
     }
 
     @Override
