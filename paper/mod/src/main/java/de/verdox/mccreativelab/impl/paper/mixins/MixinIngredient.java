@@ -37,7 +37,7 @@ public class MixinIngredient implements PredicateIngredient {
     }
 
 
-    @Inject(method = "test", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "test*", at = @At("HEAD"), cancellable = true)
     public void injectPredicateTest(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (this.mcc_wrapper$itemPredicate != null) {
             cir.setReturnValue(this.mcc_wrapper$itemPredicate.predicate().test(new NMSItemStack(stack)));
@@ -48,6 +48,8 @@ public class MixinIngredient implements PredicateIngredient {
     public void injectAcceptsItem(ItemOrExact itemOrExact, CallbackInfoReturnable<Boolean> cir) {
         if (this.mcc_wrapper$itemPredicate != null && itemOrExact instanceof ItemOrExact.Exact exact) {
             cir.setReturnValue(mcc_wrapper$itemPredicate.predicate().test(new NMSItemStack(exact.stack())));
+        } else if (this.mcc_wrapper$itemPredicate != null && itemOrExact instanceof ItemOrExact.Item item) {
+            cir.setReturnValue(mcc_wrapper$itemPredicate.predicate().test(new NMSItemStack(new ItemStack(item.item()))));
         }
     }
 
