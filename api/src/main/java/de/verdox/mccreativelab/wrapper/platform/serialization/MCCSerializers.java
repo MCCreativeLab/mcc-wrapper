@@ -59,7 +59,7 @@ public interface MCCSerializers {
      */
     Serializer<MCCDataComponentMap> DATA_COMPONENT_MAP = new DataComponentMapSerializer();
 
-    Serializer<MCCLocation> SERIALIZER = SerializerBuilder.create("location", MCCLocation.class)
+    Serializer<MCCLocation> LOCATION = SerializerBuilder.create("location", MCCLocation.class)
             .constructor(
                     new SerializableField<>("world", KEY, location -> location.world().key()),
                     new SerializableField<>("x", Serializer.Primitive.DOUBLE, MCCLocation::x),
